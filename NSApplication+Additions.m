@@ -18,16 +18,13 @@ static NSLock *errorsLock = nil;
 - (void)presentErrors:(NSArray *)errors withTitle:(NSString *)title {
 	@synchronized(self) {
 		if (errorsLock == nil) errorsLock = [[NSLock alloc] init];
+		[errorsLock lock];
 	}
-	
-	[errorsLock lock];
 	
 	KDErrorsController *controller = [[KDErrorsController alloc] initWithWindowNibName:@"Errors"];
 	controller.errors = errors;
 	controller.title = title;
-	
-	//[controller showWindow:nil];
-	
+		
 	[NSApp runModalForWindow:[controller window]];
 	[NSApp requestUserAttention:NSCriticalRequest];
 }

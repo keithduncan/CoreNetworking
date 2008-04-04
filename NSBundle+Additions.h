@@ -13,6 +13,7 @@
 @end
 
 @interface NSBundle (Additions)
+- (NSImage *)alertImage;
 - (NSImage *)bundleImage;
 
 - (NSString *)version;
@@ -20,4 +21,16 @@
 
 - (NSString *)name;
 - (NSString *)displayName;
+
+// These return the Info.plist object for the respective AF* key
+- (NSString *)companyName;
+- (NSString *)companySite;
 @end
+
+@interface NSBundle (PathAdditions)
+- (NSString *)applicationSupportPath:(NSUInteger)domain;
+@end
+
+extern NSString *const AFAlertImageNameKey;
+extern NSString *const AFCompanyNameKey;
+extern NSString *const AFCompanySiteKey;

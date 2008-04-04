@@ -132,69 +132,61 @@ typedef NSUInteger Action;
 	OpenSSL_add_all_algorithms();
 	ERR_load_crypto_strings();
 	
-	@try {
-		NSData *keyData = [NSData dataWithBytes:[key cStringUsingEncoding:NSASCIIStringEncoding] length:[key lengthOfBytesUsingEncoding:NSASCIIStringEncoding]];
-		
-		BIO *keyBIO = NULL; RSA *keyRSA = NULL;
-		
-		if (!(keyBIO = BIO_new_mem_buf((unsigned char *)[keyData bytes], [keyData length]))) {
-			NSLog(@"BIO_new_mem_buf(); failed");
-			return nil;
-		}
-		
-		BOOL encrypting = (action == ENCRYPT);
-		if (encrypting) {
-			if (!PEM_read_bio_RSAPrivateKey(keyBIO, &keyRSA, NULL, NULL)) {
-				NSLog(@"PEM_read_bio_RSAPrivateKey(); failed");
-				return nil;
-			}
-			
-			// RSA_check_key() returns 1 if rsa is a valid RSA key, and 0 otherwise.
-			unsigned long check = RSA_check_key(keyRSA);
-			if (check != 1) {
-				NSLog(@"RSA_check_key(); returned %d", check);
-				return nil;
-			}
-		} else {
-			if (!PEM_read_bio_RSA_PUBKEY(keyBIO, &keyRSA, NULL, NULL)) {
-				NSLog(@"PEM_read_bio_RSA_PUBKEY(); failed");
-				return nil;
-			}
-		}
-		
-		NSInteger outlen;
-		unsigned char *outbuf = (unsigned char *)malloc(RSA_size(keyRSA));
-		
-		if (encrypting) {
-			if(!(outlen = RSA_private_encrypt(inlen, input, outbuf, keyRSA, RSA_PKCS1_PADDING))) {
-				NSLog(@"RSA_private_encrypt(); failed");
-				return nil;
-			}
-		} else {
-			if (!(outlen = RSA_public_decrypt(inlen, input, outbuf, keyRSA, RSA_PKCS1_PADDING))) {
-				NSLog(@"RSA_public_decrypt(); failed");
-				return nil;
-			}
-		}
-		
-		if (outlen == -1) {
-			NSLog(@"%@ error: %s (%s)", (encrypting ? @"Encrypt" : @"Decrypt"), ERR_error_string(ERR_get_error(), NULL), ERR_reason_error_string(ERR_get_error()));
-			return nil;
-		}
-		
-		if (keyBIO) BIO_free(keyBIO); if (keyRSA) RSA_free(keyRSA);
-		
-		return [NSData dataWithBytesNoCopy:outbuf length:outlen];
-	}
-	@catch (NSException *exception) {
-		@throw;
-	}
-	@finally {
-		EVP_cleanup();
-		ERR_free_strings();
+	NSData *keyData = [NSData dataWithBytes:[key cStringUsingEncoding:NSASCIIStringEncoding] length:[key lengthOfBytesUsingEncoding:NSASCIIStringEncoding]];
+	
+	BIO *keyBIO = NULL; RSA *keyRSA = NULL;
+	
+	if (!(keyBIO = BIO_new_mem_buf((unsigned char *)[keyData bytes], [keyData length]))) {
+		NSLog(@"BIO_new_mem_buf(); failed");
+		return nil;
 	}
 	
-	return nil;
+	BOOL encrypting = (action == ENCRYPT);
+	if (encrypting) {
+		if (!PEM_read_bio_RSAPrivateKey(keyBIO, &keyRSA, NULL, NULL)) {
+			NSLog(@"PEM_read_bio_RSAPrivateKey(); failed");
+			return nil;
+		}
+		
+		// RSA_check_key() returns 1 if rsa is a valid RSA key, and 0 otherwise.
+		unsigned long check = RSA_check_key(keyRSA);
+		if (check != 1) {
+			NSLog(@"RSA_check_key(); returned %d", check);
+			return nil;
+		}
+	} else {
+		if (!PEM_read_bio_RSA_PUBKEY(keyBIO, &keyRSA, NULL, NULL)) {
+			NSLog(@"PEM_read_bio_RSA_PUBKEY(); failed");
+			return nil;
+		}
+	}
+	
+	NSInteger outlen;
+	unsigned char *outbuf = (unsigned char *)malloc(RSA_size(keyRSA));
+	
+	if (encrypting) {
+		if(!(outlen = RSA_private_encrypt(inlen, input, outbuf, keyRSA, RSA_PKCS1_PADDING))) {
+			NSLog(@"RSA_private_encrypt(); failed");
+			return nil;
+		}
+	} else {
+		if (!(outlen = RSA_public_decrypt(inlen, input, outbuf, keyRSA, RSA_PKCS1_PADDING))) {
+			NSLog(@"RSA_public_decrypt(); failed");
+			return nil;
+		}
+	}
+	
+	if (outlen == -1) {
+		NSLog(@"%@ error: %s (%s)", (encrypting ? @"Encrypt" : @"Decrypt"), ERR_error_string(ERR_get_error(), NULL), ERR_reason_error_string(ERR_get_error()));
+		return nil;
+	}
+	
+	EVP_cleanup();
+	ERR_free_strings();
+	
+	if (keyBIO != NULL) BIO_free(keyBIO); if (keyRSA != NULL) RSA_free(keyRSA);
+	
+	return [NSData dataWithBytesNoCopy:outbuf length:outlen];
 }
 
 @end
@@ -224,10 +216,10 @@ typedef NSUInteger Action;
 @implementation NSData (BaseConversion)
 
 + (id)dataWithBase32String:(NSString *)encoded {
-	/* First valid character that can be indexed in decode lookup table */
+	// First valid character that can be indexed in decode lookup table
 	static int charDigitsBase = '2';
 	
-	/* Lookup table used to decode() characters in encoded strings */
+	// Lookup table used to decode() characters in encoded strings
 	static int charDigits[] = {
 		26,27,28,29,30,31,-1,-1,-1,-1,-1,-1,-1,-1,		 // 23456789:;<=>?
 		-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14, // @ABCDEFGHIJKLMNO
@@ -251,10 +243,11 @@ typedef NSUInteger Action;
 		case 6: // 30 bits in subblock: 24 useful bits but 6 discarded
 			return nil; // non-canonical length
 	}
-	int charDigitsLen = sizeof(charDigits);
-	int bytesLen = (charsLen * 5) >> 3;
-	Byte bytes[bytesLen];
+	
 	int bytesOffset = 0, charsOffset = 0;
+	int charDigitsLen = sizeof(charDigits), bytesLen = (charsLen * 5) >> 3;
+	Byte bytes[bytesLen];
+	
 	// Also the code below does test that other discarded bits
 	// (1 to 4 bits at end) are effectively 0.
 	while (charsLen > 0) {
@@ -329,7 +322,7 @@ typedef NSUInteger Action;
 }
 
 - (NSString *)base32String {
-	/* Lookup table used to canonically encode() groups of data bits */
+	// Lookup table used to canonically encode() groups of data bits
 	static char canonicalChars[] = {
 		'A','B','C','D','E','F','G','H','I','J','K','L','M', // 00..12
 		'N','O','P','Q','R','S','T','U','V','W','X','Y','Z', // 13..25
@@ -337,9 +330,11 @@ typedef NSUInteger Action;
 	};
 	
 	const Byte *bytes = [self bytes];
+	
 	int bytesOffset = 0, bytesLen = [self length];
 	int charsOffset = 0, charsLen = ((bytesLen << 3) + 4) / 5;
 	char chars[charsLen];
+	
 	while (bytesLen != 0) {
 		int digit, lastDigit;
 		// INVARIANTS FOR EACH STEP n in [0..5[; digit in [0..31[;
@@ -406,7 +401,7 @@ typedef NSUInteger Action;
     char inbuf[512];
 	
 	NSMutableData *data = [NSMutableData data];
-    while ((inlen = BIO_read(mem, inbuf, sizeof(inbuf))) > 0) [data appendBytes: inbuf length: inlen];
+    while ((inlen = BIO_read(mem, inbuf, sizeof(inbuf))) > 0) [data appendBytes:inbuf length:inlen];
 	BIO_free_all(mem);
 	
     return data;
@@ -427,11 +422,12 @@ typedef NSUInteger Action;
     
     // Create a new string from the data in the memory buffer
     char *base64Pointer;
-    long base64Length = BIO_get_mem_data(mem, &base64Pointer);
-    NSString *base64String = [NSString stringWithCString:base64Pointer length:base64Length];
+	long length = BIO_get_mem_data(mem, &base64Pointer);
+    NSString *base64String = [NSString stringWithCString:base64Pointer length:length];
     
     // Clean up and go home
     BIO_free_all(mem);
+	
     return base64String;
 }
 

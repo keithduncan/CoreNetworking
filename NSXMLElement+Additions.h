@@ -1,6 +1,6 @@
 //
 //  NSXMLElement+Additions.h
-//  Sparkle2
+//  TimelineUpdates
 //
 //  Created by Keith Duncan on 22/11/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.

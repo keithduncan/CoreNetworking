@@ -18,10 +18,14 @@
 	return NO;
 }
 
-- (NSString *)transformedValue:(NSArray *)value {
+- (NSString *)transformedValue:(id)value {
 	if (value == nil) return @"";
 	
-	return ([value count] > 1 ? @"s" : @"");
+	if ([value isKindOfClass:[NSArray class]]) {
+		return ([value count] > 1 ? @"s" : @"");
+	} else if ([value isKindOfClass:[NSNumber class]]) {
+		return ([value integerValue] > 1 ? @"s" : @"");
+	} else return nil;
 }
 
 @end

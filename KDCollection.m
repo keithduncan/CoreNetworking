@@ -51,20 +51,15 @@
 
 @implementation NSDictionary (Additions)
 
-- (NSDictionary *)diff:(NSDictionary *)dictionary {
+- (NSDictionary *)diff:(id)dictionary {
 	NSMutableDictionary *difference = [NSMutableDictionary dictionary];
 	
-	for (id currentKey in dictionary)
-		if (![[self allKeys] containsObject:currentKey] || ![[self objectForKey:currentKey] isEqual:[dictionary objectForKey:currentKey]]) 
-			[difference setObject:[dictionary objectForKey:currentKey] forKey:currentKey];
+	for (id currentKey in self) {		
+		if (![[self objectForKey:currentKey] isEqual:[dictionary valueForKey:currentKey]])
+			[difference setObject:[dictionary valueForKey:currentKey] forKey:currentKey];
+	}
 	
 	return difference;
-}
-
-- (NSDictionary *)applyDifference:(NSDictionary *)diff {
-	NSMutableDictionary *mutableSelf = [[self mutableCopy] autorelease];
-	for (id currentKey in diff) [mutableSelf setObject:[diff objectForKey:currentKey] forKey:currentKey];
-	return mutableSelf;
 }
 
 @end

@@ -14,6 +14,7 @@
 #import "Amber/KDKeyValueBinding.h"
 
 #import "Amber/KDBoolToColor.h"
+#import "Amber/KDPluralTransformer.h"
 #import "Amber/KDDateToString.h"
 
 #import "Amber/ErrorPresentation.h"

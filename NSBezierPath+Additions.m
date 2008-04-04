@@ -21,11 +21,11 @@
 
 + (NSBezierPath *)bezierPathWithString:(NSString *)text inFont:(NSFont *)font aligned:(NSTextAlignment)alignment inFrame:(NSRect)frame {
 	NSBezierPath *textPath = [self bezierPathWithString:text inFont:font];
-	NSRect textPathBounds = (NSRect){NSMinX([textPath bounds]), [font descender], NSWidth([textPath bounds]), [font ascender] - [font descender]};
+	NSRect textPathBounds = NSMakeRect(NSMinX([textPath bounds]), [font descender], NSWidth([textPath bounds]), [font ascender] - [font descender]);
 	
 	NSAffineTransform *scale = [NSAffineTransform transform];
-	CGFloat xScale = NSWidth(frame) / NSWidth(textPathBounds);
-	CGFloat yScale = NSHeight(frame) / NSHeight(textPathBounds);
+	CGFloat xScale = NSWidth(frame)/NSWidth(textPathBounds);
+	CGFloat yScale = NSHeight(frame)/NSHeight(textPathBounds);
 	[scale scaleBy:MIN(xScale, yScale)];
 	[textPath transformUsingAffineTransform:scale];
 	
@@ -55,7 +55,7 @@
 	NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:text];
 	CTLineRef line = CTLineCreateWithAttributedString((CFAttributedStringRef)attributedString);
 	[attributedString release];
-			
+	
 	CFArrayRef glyphRuns = CTLineGetGlyphRuns(line);
 	CFIndex count = CFArrayGetCount(glyphRuns);
 	
@@ -70,7 +70,7 @@
 		NSGlyph bezierPathGlyphs[glyphCount];
 		for (CFIndex glyphIndex = 0; glyphIndex < glyphCount; glyphIndex++)
 			bezierPathGlyphs[glyphIndex] = glyphs[glyphIndex];
-			
+		
 		[self appendBezierPathWithGlyphs:bezierPathGlyphs count:glyphCount inFont:font];
 	}
 	
@@ -110,7 +110,6 @@
 		[path lineToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect))];
 	
 	[path closePath];
-	
 	return path;
 }
 

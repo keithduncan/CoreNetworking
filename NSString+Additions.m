@@ -20,6 +20,11 @@
 	return [[self trimWhiteSpace] isEqualToString:@""];
 }
 
+- (NSString *)stringByAppendingElipsisAfterCharacters:(NSUInteger)count {
+	if ([self length] <= count) return self;
+	else return [[self substringToIndex:count] stringByAppendingString:@"..."];
+}
+
 @end
 
 @implementation NSString (KDKeyValueCoding)
@@ -48,6 +53,10 @@ static NSString *const KDKeyPathComponentSeparator = @".";
 
 - (NSArray *)keyPathComponents {
 	return [self componentsSeparatedByString:KDKeyPathComponentSeparator];
+}
+
+- (NSString *)lastKeyPathComponent {
+	return [[self keyPathComponents] lastObject];
 }
 
 - (NSString *)stringByAppendingKeyPath:(NSString *)keyPath {

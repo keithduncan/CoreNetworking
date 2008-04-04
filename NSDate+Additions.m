@@ -33,37 +33,26 @@ NSString *KeyForWeekday(Weekday day) {
 @implementation NSDate (Additions)
 
 - (NSUInteger)day {
-	return [[[NSCalendar autoupdatingCurrentCalendar] components:NSDayCalendarUnit fromDate:self] day];
+	return [[[NSCalendar currentCalendar] components:NSDayCalendarUnit fromDate:self] day];
 }
 
 - (void)getDay:(NSUInteger *)day month:(NSUInteger *)month year:(NSUInteger *)year {
-	NSDateComponents *components = [[NSCalendar autoupdatingCurrentCalendar] components:(NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit) fromDate:self];
+	NSDateComponents *components = [[NSCalendar currentCalendar] components:(NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit) fromDate:self];
 	*day = [components day], *month = [components month], *year = [components year];
 }
 
 - (BOOL)components:(NSUInteger)flags matchDate:(NSDate *)otherDate {
-	NSDateComponents *selfComponents = [[NSCalendar autoupdatingCurrentCalendar] components:flags fromDate:self];
-	NSDateComponents *dateComponents = [[NSCalendar autoupdatingCurrentCalendar] components:flags fromDate:otherDate];
+	NSDateComponents *selfComponents = [[NSCalendar currentCalendar] components:flags fromDate:self];
+	NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:flags fromDate:otherDate];
 	
-	if ((flags & NSYearCalendarUnit) && ([dateComponents year] != [selfComponents year])) return NO;
-	if ((flags & NSSecondCalendarUnit) && ([dateComponents second] != [selfComponents second])) return NO;
-	if ((flags & NSMinuteCalendarUnit) && ([dateComponents minute] != [selfComponents minute])) return NO;
-	if ((flags & NSHourCalendarUnit) && ([dateComponents hour] != [selfComponents hour])) return NO;
-	if ((flags & NSWeekCalendarUnit) && ([dateComponents week] != [selfComponents week])) return NO;
-	if ((flags & NSDayCalendarUnit) && ([dateComponents day] != [selfComponents day])) return NO;
-	if ((flags & NSMonthCalendarUnit) && ([dateComponents month] != [selfComponents month])) return NO;
-	if ((flags & NSWeekdayCalendarUnit) && ([dateComponents weekday] != [selfComponents weekday])) return NO;
-	if ((flags & NSWeekdayOrdinalCalendarUnit) && ([dateComponents weekdayOrdinal] != [selfComponents weekdayOrdinal])) return NO;
-	if ((flags & NSEraCalendarUnit) && ([dateComponents era] != [selfComponents era])) return NO;
-	
-	return YES;
+	return [selfComponents components:flags match:dateComponents];
 }
 
 - (NSDate *)dateByAddingDays:(NSInteger)days {
 	NSDateComponents *components = [[NSDateComponents alloc] init];
 	[components setDay:days];
 	
-	NSDate *returnDate = [[NSCalendar autoupdatingCurrentCalendar] dateByAddingComponents:components toDate:self options:0];
+	NSDate *returnDate = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:self options:0];
 	[components release];
 	
 	return returnDate;
@@ -73,10 +62,31 @@ NSString *KeyForWeekday(Weekday day) {
 	NSDateComponents *components = [[NSDateComponents alloc] init];
 	[components setMonth:months];
 	
-	NSDate *returnDate = [[NSCalendar autoupdatingCurrentCalendar] dateByAddingComponents:components toDate:self options:0];
+	NSDate *returnDate = [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:self options:0];
 	[components release];
 	
 	return returnDate;
+}
+
+@end
+
+@implementation NSDateComponents (Additions)
+
+- (BOOL)components:(NSUInteger)flags match:(NSDateComponents *)components {
+	if (self == components) return YES;
+	
+	if ((flags & NSYearCalendarUnit) && ([components year] != [self year])) return NO;
+	if ((flags & NSSecondCalendarUnit) && ([components second] != [self second])) return NO;
+	if ((flags & NSMinuteCalendarUnit) && ([components minute] != [self minute])) return NO;
+	if ((flags & NSHourCalendarUnit) && ([components hour] != [self hour])) return NO;
+	if ((flags & NSWeekCalendarUnit) && ([components week] != [self week])) return NO;
+	if ((flags & NSDayCalendarUnit) && ([components day] != [self day])) return NO;
+	if ((flags & NSMonthCalendarUnit) && ([components month] != [self month])) return NO;
+	if ((flags & NSWeekdayCalendarUnit) && ([components weekday] != [self weekday])) return NO;
+	if ((flags & NSWeekdayOrdinalCalendarUnit) && ([components weekdayOrdinal] != [self weekdayOrdinal])) return NO;
+	if ((flags & NSEraCalendarUnit) && ([components era] != [self era])) return NO;
+	
+	return YES;
 }
 
 @end

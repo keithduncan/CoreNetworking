@@ -19,8 +19,6 @@ enum {
 };
 typedef NSUInteger Weekday;
 
-extern NSString *KeyForWeekday(Weekday day);
-
 enum {
 	JANUARY = 1,
 	FEBRUARY,
@@ -37,15 +35,21 @@ enum {
 };
 typedef NSUInteger Month;
 
+extern NSString *KeyForWeekday(Weekday day);
 
 @interface NSDate (Additions)
 
 - (NSUInteger)day;
 
 - (void)getDay:(NSUInteger *)day month:(NSUInteger *)month year:(NSUInteger *)year;
+
 - (BOOL)components:(NSUInteger)flags matchDate:(NSDate *)otherDate;
 
 - (NSDate *)dateByAddingDays:(NSInteger)days;
 - (NSDate *)dateByAddingMonths:(NSInteger)months;
 
+@end
+
+@interface NSDateComponents (Additions)
+- (BOOL)components:(NSUInteger)flags match:(NSDateComponents *)components;
 @end

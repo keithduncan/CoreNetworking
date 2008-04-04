@@ -3,8 +3,36 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 44;
+	objectVersion = 45;
 	objects = {
+
+/* Begin PBXAggregateTarget section */
+		539B6E590D4BBB7C00C86E48 /* Install Frameworks */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 539B6EA00D4BBBA600C86E48 /* Build configuration list for PBXAggregateTarget "Install Frameworks" */;
+			buildPhases = (
+				539B6E580D4BBB7C00C86E48 /* CopyFiles */,
+			);
+			dependencies = (
+				539B6E5D0D4BBB8000C86E48 /* PBXTargetDependency */,
+				539B6E5F0D4BBB8000C86E48 /* PBXTargetDependency */,
+			);
+			name = "Install Frameworks";
+			productName = "Install Frameworks";
+		};
+		53B1EF620D8565590044C965 /* Build Frameworks */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 53B1EF6C0D8565AC0044C965 /* Build configuration list for PBXAggregateTarget "Build Frameworks" */;
+			buildPhases = (
+			);
+			dependencies = (
+				53B1EF690D8565780044C965 /* PBXTargetDependency */,
+				53B1EF660D8565760044C965 /* PBXTargetDependency */,
+			);
+			name = "Build Frameworks";
+			productName = "Build Frameworks";
+		};
+/* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
 		5343E7240C21FBEA00B63E6E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
@@ -26,8 +54,6 @@
 		539A61310D269D84001CD14A /* NSSortDescriptor+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539F52470C32EA3F00E65AD1 /* NSSortDescriptor+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A61320D269D96001CD14A /* NSString+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5360202D0CD7E40B007EDF87 /* NSString+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A61330D269D96001CD14A /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5360202E0CD7E40B007EDF87 /* NSString+Additions.m */; };
-		539A61360D269DDA001CD14A /* NSUserDefaults+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B567AD0CD0FED300B25843 /* NSUserDefaults+Additions.m */; };
-		539A61370D269DDA001CD14A /* NSUserDefaults+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B567AC0CD0FED300B25843 /* NSUserDefaults+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A64430D287DD8001CD14A /* NSXMLElement+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A64400D287DD8001CD14A /* NSXMLElement+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A64440D287DD8001CD14A /* NSXMLElement+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */; };
 		539A67FA0D296CBD001CD14A /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
@@ -65,6 +91,10 @@
 		539A686E0D296DAF001CD14A /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A686F0D296DCD001CD14A /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E536F0CFC8CB80084F920 /* md5.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A68700D296DCD001CD14A /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 537E53700CFC8CB80084F920 /* md5.c */; };
+		539B6E7E0D4BBB8E00C86E48 /* Amber.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5343E70E0C21FB4200B63E6E /* Amber.framework */; };
+		539B6E7F0D4BBB8E00C86E48 /* AmberFoundation.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
+		53DC99BC0D48D2D500A7B8C3 /* KDRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DC99BA0D48D2D500A7B8C3 /* KDRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53DC99BD0D48D2D500A7B8C3 /* KDRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DC99BB0D48D2D500A7B8C3 /* KDRange.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,7 +105,49 @@
 			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
 			remoteInfo = FoundationAmber;
 		};
+		539B6E5C0D4BBB8000C86E48 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5343E70D0C21FB4200B63E6E;
+			remoteInfo = Amber;
+		};
+		539B6E5E0D4BBB8000C86E48 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
+			remoteInfo = AmberFoundation;
+		};
+		53B1EF650D8565760044C965 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5343E70D0C21FB4200B63E6E;
+			remoteInfo = Amber;
+		};
+		53B1EF680D8565780044C965 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
+			remoteInfo = AmberFoundation;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		539B6E580D4BBB7C00C86E48 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /Library/Frameworks;
+			dstSubfolderSpec = 0;
+			files = (
+				539B6E7E0D4BBB8E00C86E48 /* Amber.framework in CopyFiles */,
+				539B6E7F0D4BBB8E00C86E48 /* AmberFoundation.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		5313D3030C785C9F00252228 /* KDBoolToColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDBoolToColor.h; sourceTree = "<group>"; };
@@ -106,11 +178,9 @@
 		539028F80C89CAB300DFC044 /* KDPropertyListProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDPropertyListProtocol.h; sourceTree = "<group>"; };
 		539028F90C89CAB300DFC044 /* KDPropertyListProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDPropertyListProtocol.m; sourceTree = "<group>"; };
 		539A60C30D2698B7001CD14A /* AmberFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmberFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		539A60C40D2698B7001CD14A /* FoundationAmber-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FoundationAmber-Info.plist"; sourceTree = "<group>"; };
-		539A60D00D2698C5001CD14A /* AppKitAmber-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppKitAmber-Info.plist"; sourceTree = "<group>"; };
+		539A60C40D2698B7001CD14A /* AmberFoundation-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AmberFoundation-Info.plist"; sourceTree = "<group>"; };
 		539A60DA0D269932001CD14A /* AmberFoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation.h; sourceTree = "<group>"; };
 		539A612D0D269CFA001CD14A /* AmberFoundation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation_Prefix.pch; sourceTree = "<group>"; };
-		539A612F0D269D3A001CD14A /* AmberAppKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberAppKit_Prefix.pch; sourceTree = "<group>"; };
 		539A64400D287DD8001CD14A /* NSXMLElement+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLElement+Additions.h"; sourceTree = "<group>"; };
 		539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSXMLElement+Additions.m"; sourceTree = "<group>"; };
 		539A68450D296D51001CD14A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -119,8 +189,6 @@
 		53B0E5420C8A37DE002BD6A6 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Additions.m"; sourceTree = "<group>"; };
 		53B0E5430C8A37DE002BD6A6 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Additions.h"; sourceTree = "<group>"; };
 		53B0E5770C8A3A2C002BD6A6 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
-		53B567AC0CD0FED300B25843 /* NSUserDefaults+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+Additions.h"; sourceTree = "<group>"; };
-		53B567AD0CD0FED300B25843 /* NSUserDefaults+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+Additions.m"; sourceTree = "<group>"; };
 		53C356140CC11E410098F021 /* NSObject+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Additions.h"; sourceTree = "<group>"; };
 		53C356150CC11E410098F021 /* NSObject+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Additions.m"; sourceTree = "<group>"; };
 		53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSBezierPath+Additions.h"; sourceTree = "<group>"; };
@@ -141,6 +209,8 @@
 		53D664020CA0757E0070E943 /* ErrorPresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorPresentation.h; sourceTree = "<group>"; };
 		53D664210CA076030070E943 /* KDPluralTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDPluralTransformer.h; sourceTree = "<group>"; };
 		53D664220CA076030070E943 /* KDPluralTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDPluralTransformer.m; sourceTree = "<group>"; };
+		53DC99BA0D48D2D500A7B8C3 /* KDRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDRange.h; sourceTree = "<group>"; };
+		53DC99BB0D48D2D500A7B8C3 /* KDRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDRange.m; sourceTree = "<group>"; };
 		53DEF9E70C229F4D007DF0AD /* KDCollection.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = KDCollection.h; sourceTree = "<group>"; };
 		53DEF9E80C229F4D007DF0AD /* KDCollection.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = KDCollection.m; sourceTree = "<group>"; };
 		53DEF9E90C229F4D007DF0AD /* NSDate+Additions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSDate+Additions.h"; sourceTree = "<group>"; };
@@ -173,7 +243,6 @@
 			children = (
 				539A60FA0D269B54001CD14A /* Amber */,
 				539A60F70D269B40001CD14A /* Amber Foundation */,
-				537E532D0CFC89830084F920 /* Other Sources */,
 				539A60FD0D269B6C001CD14A /* Resources */,
 				537E52F10CFC89760084F920 /* Frameworks */,
 				5343E70F0C21FB4200B63E6E /* Products */,
@@ -192,6 +261,8 @@
 		5376ACBF0C25645E0034854C /* Value Transformers */ = {
 			isa = PBXGroup;
 			children = (
+				53D664210CA076030070E943 /* KDPluralTransformer.h */,
+				53D664220CA076030070E943 /* KDPluralTransformer.m */,
 				5313D3030C785C9F00252228 /* KDBoolToColor.h */,
 				5313D3040C785C9F00252228 /* KDBoolToColor.m */,
 				5376ACC20C2564820034854C /* KDDateToString.h */,
@@ -208,14 +279,6 @@
 				53B0E5770C8A3A2C002BD6A6 /* Security.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		537E532D0CFC89830084F920 /* Other Sources */ = {
-			isa = PBXGroup;
-			children = (
-				537E532E0CFC89930084F920 /* Amber_Prefix.pch */,
-			);
-			name = "Other Sources";
 			sourceTree = "<group>";
 		};
 		539A60F70D269B40001CD14A /* Amber Foundation */ = {
@@ -235,8 +298,8 @@
 				537E53A00CFC8D400084F920 /* Amber.h */,
 				539A613E0D269EA8001CD14A /* General */,
 				5376ACBF0C25645E0034854C /* Value Transformers */,
-				53D663670CA0738D0070E943 /* Error Presentation */,
 				539A610F0D269C8F001CD14A /* Categories */,
+				53DC9A840D48F73C00A7B8C3 /* Components */,
 				539A612E0D269D1C001CD14A /* Other Sources */,
 			);
 			name = Amber;
@@ -246,8 +309,7 @@
 			isa = PBXGroup;
 			children = (
 				5343E7100C21FB4200B63E6E /* Amber-Info.plist */,
-				539A60C40D2698B7001CD14A /* FoundationAmber-Info.plist */,
-				539A60D00D2698C5001CD14A /* AppKitAmber-Info.plist */,
+				539A60C40D2698B7001CD14A /* AmberFoundation-Info.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -269,8 +331,6 @@
 				539F52480C32EA3F00E65AD1 /* NSSortDescriptor+Additions.m */,
 				5360202D0CD7E40B007EDF87 /* NSString+Additions.h */,
 				5360202E0CD7E40B007EDF87 /* NSString+Additions.m */,
-				53B567AC0CD0FED300B25843 /* NSUserDefaults+Additions.h */,
-				53B567AD0CD0FED300B25843 /* NSUserDefaults+Additions.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -307,7 +367,7 @@
 			children = (
 				537E53700CFC8CB80084F920 /* md5.c */,
 				537E536F0CFC8CB80084F920 /* md5.h */,
-				539A612F0D269D3A001CD14A /* AmberAppKit_Prefix.pch */,
+				537E532E0CFC89930084F920 /* Amber_Prefix.pch */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -319,6 +379,8 @@
 				536E8AFA0C8E1055009783A5 /* KDGeometry.m */,
 				539028F80C89CAB300DFC044 /* KDPropertyListProtocol.h */,
 				539028F90C89CAB300DFC044 /* KDPropertyListProtocol.m */,
+				53DC99BA0D48D2D500A7B8C3 /* KDRange.h */,
+				53DC99BB0D48D2D500A7B8C3 /* KDRange.m */,
 			);
 			name = General;
 			sourceTree = "<group>";
@@ -336,21 +398,83 @@
 			isa = PBXGroup;
 			children = (
 				53D664020CA0757E0070E943 /* ErrorPresentation.h */,
-				53D663680CA073A40070E943 /* NSApplication+Additions.h */,
-				53D663690CA073A40070E943 /* NSApplication+Additions.m */,
-				53D663D70CA075110070E943 /* KDErrorsController.h */,
-				53D663D80CA075110070E943 /* KDErrorsController.m */,
-				53D664210CA076030070E943 /* KDPluralTransformer.h */,
-				53D664220CA076030070E943 /* KDPluralTransformer.m */,
+				53DC9A890D48F78E00A7B8C3 /* Controller */,
+				53DC9A880D48F78100A7B8C3 /* View */,
+				53DC9A870D48F77600A7B8C3 /* Model */,
+				53DC9A8B0D48F80700A7B8C3 /* Categories */,
+				53DC9A8A0D48F7F600A7B8C3 /* Resources */,
+			);
+			name = "Error Presentation";
+			sourceTree = "<group>";
+		};
+		53DC9A840D48F73C00A7B8C3 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				53DC9A860D48F75400A7B8C3 /* Preference Window */,
+				53DC9A850D48F74A00A7B8C3 /* Registration */,
+				53D663670CA0738D0070E943 /* Error Presentation */,
+			);
+			name = Components;
+			sourceTree = "<group>";
+		};
+		53DC9A850D48F74A00A7B8C3 /* Registration */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Registration;
+			sourceTree = "<group>";
+		};
+		53DC9A860D48F75400A7B8C3 /* Preference Window */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Preference Window";
+			sourceTree = "<group>";
+		};
+		53DC9A870D48F77600A7B8C3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
 				53D6636A0CA073A40070E943 /* KDError.h */,
 				53D6636B0CA073A40070E943 /* KDError.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		53DC9A880D48F78100A7B8C3 /* View */ = {
+			isa = PBXGroup;
+			children = (
 				53D6636C0CA073A40070E943 /* KDErrorCell.h */,
 				53D6636D0CA073A40070E943 /* KDErrorCell.m */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		53DC9A890D48F78E00A7B8C3 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				53D663D70CA075110070E943 /* KDErrorsController.h */,
+				53D663D80CA075110070E943 /* KDErrorsController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		53DC9A8A0D48F7F600A7B8C3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
 				53D6636E0CA073A40070E943 /* Stop.tiff */,
 				53D6636F0CA073A40070E943 /* Orange Ball.tiff */,
 				53D663700CA073A40070E943 /* Errors.xib */,
 			);
-			name = "Error Presentation";
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		53DC9A8B0D48F80700A7B8C3 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				53D663680CA073A40070E943 /* NSApplication+Additions.h */,
+				53D663690CA073A40070E943 /* NSApplication+Additions.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -393,8 +517,8 @@
 				539A61290D269CD4001CD14A /* NSObject+Additions.h in Headers */,
 				539A61310D269D84001CD14A /* NSSortDescriptor+Additions.h in Headers */,
 				539A61320D269D96001CD14A /* NSString+Additions.h in Headers */,
-				539A61370D269DDA001CD14A /* NSUserDefaults+Additions.h in Headers */,
 				539A64430D287DD8001CD14A /* NSXMLElement+Additions.h in Headers */,
+				53DC99BC0D48D2D500A7B8C3 /* KDRange.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,6 +533,7 @@
 				539A68470D296D51001CD14A /* Sources */,
 				5343E70C0C21FB4200B63E6E /* Frameworks */,
 				539A68720D296DEF001CD14A /* Resources */,
+				531C3A480D44B2E80070DEBB /* Generate Bridge Metadata */,
 			);
 			buildRules = (
 			);
@@ -427,6 +552,7 @@
 				539A60BE0D2698B7001CD14A /* Headers */,
 				539A60C00D2698B7001CD14A /* Sources */,
 				539A60C10D2698B7001CD14A /* Frameworks */,
+				531C39EA0D44B0D80070DEBB /* Generate Bridge Metadata */,
 			);
 			buildRules = (
 			);
@@ -446,7 +572,7 @@
 				BuildIndependentTargetsInParallel = YES;
 			};
 			buildConfigurationList = 5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "Amber" */;
-			compatibilityVersion = "Xcode 3.0";
+			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 0;
 			mainGroup = 5343E6FB0C21FB1000B63E6E;
 			productRefGroup = 5343E70F0C21FB4200B63E6E /* Products */;
@@ -455,6 +581,8 @@
 			targets = (
 				5343E70D0C21FB4200B63E6E /* Amber */,
 				539A60C20D2698B7001CD14A /* AmberFoundation */,
+				53B1EF620D8565590044C965 /* Build Frameworks */,
+				539B6E590D4BBB7C00C86E48 /* Install Frameworks */,
 			);
 		};
 /* End PBXProject section */
@@ -471,6 +599,37 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		531C39EA0D44B0D80070DEBB /* Generate Bridge Metadata */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Bridge Metadata";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" != \"Release\" ]; then\n\texit\nfi\n\nif [ -f \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Resources/BridgeSupport/${PRODUCT_NAME}.bridgesupport\" ]; then\n\texit\nfi\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Resources/BridgeSupport\"\ngen_bridge_metadata -f \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\" -o \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Resources/BridgeSupport/${PRODUCT_NAME}.bridgesupport\"";
+		};
+		531C3A480D44B2E80070DEBB /* Generate Bridge Metadata */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Bridge Metadata";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" != \"Release\" ]; then\n\texit\nfi\n\nif [ -f \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Resources/BridgeSupport/${PRODUCT_NAME}.bridgesupport\" ]; then\n\texit\nfi\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Resources/BridgeSupport\"\ngen_bridge_metadata -f \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\" -o \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Resources/BridgeSupport/${PRODUCT_NAME}.bridgesupport\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		539A60C00D2698B7001CD14A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -484,8 +643,8 @@
 				539A612A0D269CD5001CD14A /* NSObject+Additions.m in Sources */,
 				539A61300D269D84001CD14A /* NSSortDescriptor+Additions.m in Sources */,
 				539A61330D269D96001CD14A /* NSString+Additions.m in Sources */,
-				539A61360D269DDA001CD14A /* NSUserDefaults+Additions.m in Sources */,
 				539A64440D287DD8001CD14A /* NSXMLElement+Additions.m in Sources */,
+				53DC99BD0D48D2D500A7B8C3 /* KDRange.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -519,31 +678,55 @@
 			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
 			targetProxy = 539A60E90D269A7C001CD14A /* PBXContainerItemProxy */;
 		};
+		539B6E5D0D4BBB8000C86E48 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5343E70D0C21FB4200B63E6E /* Amber */;
+			targetProxy = 539B6E5C0D4BBB8000C86E48 /* PBXContainerItemProxy */;
+		};
+		539B6E5F0D4BBB8000C86E48 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			targetProxy = 539B6E5E0D4BBB8000C86E48 /* PBXContainerItemProxy */;
+		};
+		53B1EF660D8565760044C965 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5343E70D0C21FB4200B63E6E /* Amber */;
+			targetProxy = 53B1EF650D8565760044C965 /* PBXContainerItemProxy */;
+		};
+		53B1EF690D8565780044C965 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			targetProxy = 53B1EF680D8565780044C965 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		5343E6FF0C21FB1000B63E6E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.5;
 			};
 			name = Debug;
 		};
 		5343E7000C21FB1000B63E6E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-					ppc64,
-					x86_64,
-				);
-				COPY_PHASE_STRIP = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "thirty-three";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_ENABLE_OBJC_GC = unsupported;
+				GCC_OPTIMIZATION_LEVEL = s;
+				OTHER_CODE_SIGN_FLAGS = "-i com.thirty-three.amber";
+				SDKROOT = macosx10.5;
 			};
 			name = Release;
 		};
@@ -554,11 +737,9 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
-				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Amber_Prefix.pch;
 				INFOPLIST_FILE = "Amber-Info.plist";
@@ -566,6 +747,7 @@
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
 				LD_RUNPATH_SEARCH_PATHS = /Library/Frameworks;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-sub_umbrella",
 					AmberFoundation,
@@ -579,12 +761,13 @@
 		5343E7140C21FB4300B63E6E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_PASCAL_STRINGS = NO;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_MODEL_TUNING = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Amber_Prefix.pch;
@@ -600,25 +783,25 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = Amber;
+				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
 		};
 		539A60C50D2698B8001CD14A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmberFoundation_Prefix.pch;
-				INFOPLIST_FILE = "FoundationAmber-Info.plist";
+				INFOPLIST_FILE = "AmberFoundation-Info.plist";
 				INSTALL_PATH = "@rpath/";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -633,18 +816,15 @@
 		539A60C60D2698B8001CD14A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmberFoundation_Prefix.pch;
-				INFOPLIST_FILE = "FoundationAmber-Info.plist";
+				INFOPLIST_FILE = "AmberFoundation-Info.plist";
 				INSTALL_PATH = "@rpath/";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -653,6 +833,49 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
+				STRIP_INSTALLED_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		539B6E5A0D4BBB7D00C86E48 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Install Frameworks";
+			};
+			name = Debug;
+		};
+		539B6E5B0D4BBB7D00C86E48 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = "Install Frameworks";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		53B1EF630D8565590044C965 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Build Frameworks";
+			};
+			name = Debug;
+		};
+		53B1EF640D8565590044C965 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = "Build Frameworks";
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -682,6 +905,24 @@
 			buildConfigurations = (
 				539A60C50D2698B8001CD14A /* Debug */,
 				539A60C60D2698B8001CD14A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		539B6EA00D4BBBA600C86E48 /* Build configuration list for PBXAggregateTarget "Install Frameworks" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				539B6E5A0D4BBB7D00C86E48 /* Debug */,
+				539B6E5B0D4BBB7D00C86E48 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		53B1EF6C0D8565AC0044C965 /* Build configuration list for PBXAggregateTarget "Build Frameworks" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				53B1EF630D8565590044C965 /* Debug */,
+				53B1EF640D8565590044C965 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

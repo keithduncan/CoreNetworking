@@ -8,13 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSSet (Additions)
-- (NSSet *)setByAddingObjects:(id)firstObject, ... NS_REQUIRES_NIL_TERMINATION;
-@end
+#ifndef Amber_KDCollection
+#define Amber_KDCollection
 
 NS_INLINE BOOL KDArrayContainsIndex(NSArray *array, NSUInteger index) {
 	return NSLocationInRange(index, (NSRange){0, [array count]});
 }
+
+NS_INLINE id KDSafeObjectAtIndex(NSArray *array, NSUInteger index) {
+	return (KDArrayContainsIndex(array, index) ? [array objectAtIndex:index] : nil);
+}
+
+#endif
+
+@interface NSSet (Additions)
+- (NSSet *)setByAddingObjects:(id)firstObject, ... NS_REQUIRES_NIL_TERMINATION;
+@end
 
 @interface NSArray (Additions)
 - (NSArray *)arrayByAddingObjectsFromSet:(NSSet *)set;
@@ -23,6 +32,5 @@ NS_INLINE BOOL KDArrayContainsIndex(NSArray *array, NSUInteger index) {
 @end
 
 @interface NSDictionary (Additions)
-- (NSDictionary *)diff:(NSDictionary *)dictionary;
-- (NSDictionary *)applyDifference:(NSDictionary *)diff;
+- (NSDictionary *)diff:(id)dictionary;
 @end
