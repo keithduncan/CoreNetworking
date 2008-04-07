@@ -8,9 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#ifndef Amber_KDCollection
-#define Amber_KDCollection
-
 NS_INLINE BOOL KDArrayContainsIndex(NSArray *array, NSUInteger index) {
 	return NSLocationInRange(index, (NSRange){0, [array count]});
 }
@@ -18,8 +15,6 @@ NS_INLINE BOOL KDArrayContainsIndex(NSArray *array, NSUInteger index) {
 NS_INLINE id KDSafeObjectAtIndex(NSArray *array, NSUInteger index) {
 	return (KDArrayContainsIndex(array, index) ? [array objectAtIndex:index] : nil);
 }
-
-#endif
 
 @interface NSSet (Additions)
 - (NSSet *)setByAddingObjects:(id)firstObject, ... NS_REQUIRES_NIL_TERMINATION;
