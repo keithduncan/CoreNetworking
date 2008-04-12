@@ -162,13 +162,14 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 - (BOOL)synchronize {
 	NSDictionary *currentDefaults = [_defaults objectForKey:kKDBundleIdentifierDefaults];
 	
-	NSMutableArray *removedKeys = [[(NSArray *)CFPreferencesCopyKeyList((CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost) autorelease] mutableCopy];
-	[removedKeys removeObjectsInArray:[currentDefaults allKeys]];
+	NSArray *newKeys = [currentDefaults allKeys];
+	NSArray *savedKeys = (NSArray *)CFPreferencesCopyKeyList((CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
 	
-	CFPreferencesSetMultiple((CFDictionaryRef)currentDefaults, (CFArrayRef)removedKeys, (CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+	NSMutableSet *removedKeys = [NSMutableSet set];
+	for (NSString *currentKey in savedKeys) if (![newKeys containsObject:currentKey]) [removedKeys addObject:currentKey];
 	
-	[removedKeys release];
-	
+	CFPreferencesSetMultiple((CFDictionaryRef)currentDefaults, (CFArrayRef)[removedKeys allObjects], (CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+		
 	return CFPreferencesSynchronize((CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
 }
 
