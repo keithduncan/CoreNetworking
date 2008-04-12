@@ -12,6 +12,7 @@
 #import "AmberFoundation/KDRange.h"
 #import "AmberFoundation/KDGeometry.h"
 #import "AmberFoundation/KDPropertyListProtocol.h"
+#import "AmberFoundation/KDUserDefaults.h"
 
 #import "AmberFoundation/NSObject+Additions.h"
 #import "AmberFoundation/KDCollection.h"

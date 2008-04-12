@@ -20,18 +20,6 @@
 			name = "Install Frameworks";
 			productName = "Install Frameworks";
 		};
-		53B1EF620D8565590044C965 /* Build Frameworks */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 53B1EF6C0D8565AC0044C965 /* Build configuration list for PBXAggregateTarget "Build Frameworks" */;
-			buildPhases = (
-			);
-			dependencies = (
-				53B1EF690D8565780044C965 /* PBXTargetDependency */,
-				53B1EF660D8565760044C965 /* PBXTargetDependency */,
-			);
-			name = "Build Frameworks";
-			productName = "Build Frameworks";
-		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -95,6 +83,8 @@
 		539B6E7F0D4BBB8E00C86E48 /* AmberFoundation.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53DC99BC0D48D2D500A7B8C3 /* KDRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DC99BA0D48D2D500A7B8C3 /* KDRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53DC99BD0D48D2D500A7B8C3 /* KDRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DC99BB0D48D2D500A7B8C3 /* KDRange.m */; };
+		53E64C110DAAD06700954F49 /* KDUserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 53E64C0F0DAAD06700954F49 /* KDUserDefaults.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53E64C120DAAD06700954F49 /* KDUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 53E64C100DAAD06700954F49 /* KDUserDefaults.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,20 +103,6 @@
 			remoteInfo = Amber;
 		};
 		539B6E5E0D4BBB8000C86E48 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
-			remoteInfo = AmberFoundation;
-		};
-		53B1EF650D8565760044C965 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5343E70D0C21FB4200B63E6E;
-			remoteInfo = Amber;
-		};
-		53B1EF680D8565780044C965 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
 			proxyType = 1;
@@ -215,6 +191,8 @@
 		53DEF9E80C229F4D007DF0AD /* KDCollection.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = KDCollection.m; sourceTree = "<group>"; };
 		53DEF9E90C229F4D007DF0AD /* NSDate+Additions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSDate+Additions.h"; sourceTree = "<group>"; };
 		53DEF9EA0C229F4D007DF0AD /* NSDate+Additions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Additions.m"; sourceTree = "<group>"; };
+		53E64C0F0DAAD06700954F49 /* KDUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDUserDefaults.h; sourceTree = "<group>"; };
+		53E64C100DAAD06700954F49 /* KDUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDUserDefaults.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -381,6 +359,8 @@
 				539028F90C89CAB300DFC044 /* KDPropertyListProtocol.m */,
 				53DC99BA0D48D2D500A7B8C3 /* KDRange.h */,
 				53DC99BB0D48D2D500A7B8C3 /* KDRange.m */,
+				53E64C0F0DAAD06700954F49 /* KDUserDefaults.h */,
+				53E64C100DAAD06700954F49 /* KDUserDefaults.m */,
 			);
 			name = General;
 			sourceTree = "<group>";
@@ -519,6 +499,7 @@
 				539A61320D269D96001CD14A /* NSString+Additions.h in Headers */,
 				539A64430D287DD8001CD14A /* NSXMLElement+Additions.h in Headers */,
 				53DC99BC0D48D2D500A7B8C3 /* KDRange.h in Headers */,
+				53E64C110DAAD06700954F49 /* KDUserDefaults.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -581,7 +562,6 @@
 			targets = (
 				5343E70D0C21FB4200B63E6E /* Amber */,
 				539A60C20D2698B7001CD14A /* AmberFoundation */,
-				53B1EF620D8565590044C965 /* Build Frameworks */,
 				539B6E590D4BBB7C00C86E48 /* Install Frameworks */,
 			);
 		};
@@ -645,6 +625,7 @@
 				539A61330D269D96001CD14A /* NSString+Additions.m in Sources */,
 				539A64440D287DD8001CD14A /* NSXMLElement+Additions.m in Sources */,
 				53DC99BD0D48D2D500A7B8C3 /* KDRange.m in Sources */,
+				53E64C120DAAD06700954F49 /* KDUserDefaults.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -687,16 +668,6 @@
 			isa = PBXTargetDependency;
 			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
 			targetProxy = 539B6E5E0D4BBB8000C86E48 /* PBXContainerItemProxy */;
-		};
-		53B1EF660D8565760044C965 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5343E70D0C21FB4200B63E6E /* Amber */;
-			targetProxy = 53B1EF650D8565760044C965 /* PBXContainerItemProxy */;
-		};
-		53B1EF690D8565780044C965 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
-			targetProxy = 53B1EF680D8565780044C965 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -858,27 +829,6 @@
 			};
 			name = Release;
 		};
-		53B1EF630D8565590044C965 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "Build Frameworks";
-			};
-			name = Debug;
-		};
-		53B1EF640D8565590044C965 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "Build Frameworks";
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -914,15 +864,6 @@
 			buildConfigurations = (
 				539B6E5A0D4BBB7D00C86E48 /* Debug */,
 				539B6E5B0D4BBB7D00C86E48 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		53B1EF6C0D8565AC0044C965 /* Build configuration list for PBXAggregateTarget "Build Frameworks" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				53B1EF630D8565590044C965 /* Debug */,
-				53B1EF640D8565590044C965 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
