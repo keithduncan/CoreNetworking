@@ -41,7 +41,6 @@ static NSString *const KDKeyPathComponentSeparator = @".";
 		va_start(keyList, component);
 		
 		while (component = va_arg(keyList, NSString *)) {
-			if (!NSEqualRanges([component rangeOfString:KDKeyPathComponentSeparator], (NSRange){NSNotFound, 0})) [NSException raise:NSInvalidArgumentException format:@"-[%@ %s], this method doesn't accept arguments containing the key path separator %@", NSStringFromClass(self), _cmd, KDKeyPathComponentSeparator];
 			[returnString appendFormat:@"%@%@", KDKeyPathComponentSeparator, component];
 		}
 		
