@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface NSObject (Additions)
-- (id)mainThreadProxy;
+- (id)mainThreadProxy; // This returns a proxy to the main thread, any messages sent will be performed synchronously
 @end
