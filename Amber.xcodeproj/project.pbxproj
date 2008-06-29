@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 44;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -553,7 +553,7 @@
 				BuildIndependentTargetsInParallel = YES;
 			};
 			buildConfigurationList = 5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "Amber" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.0";
 			hasScannedForEncodings = 0;
 			mainGroup = 5343E6FB0C21FB1000B63E6E;
 			productRefGroup = 5343E70F0C21FB4200B63E6E /* Products */;

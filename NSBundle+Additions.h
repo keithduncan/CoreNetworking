@@ -33,4 +33,4 @@
 
 extern NSString *const AFAlertImageNameKey;
 extern NSString *const AFCompanyNameKey;
-extern NSString *const AFCompanySiteKey;
+extern NSString *const AFRootCompanySiteURLKey;

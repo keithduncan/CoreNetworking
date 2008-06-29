@@ -9,9 +9,9 @@
 #import "KDUserDefaults.h"
 
 #import <objc/runtime.h>
-#import "CoreFoundation/CFPreferences.h"
+#import <CoreFoundation/CFPreferences.h>
 
-#import "NSString+Additions.h"
+#import "AmberFoundation/NSString+Additions.h"
 
 static NSString *kKDBundleIdentifierDefaults = @"kIdentifierDefaults";
 static NSString *kKDBundleRegisteredDefaults = @"kRegisteredDefaults";
@@ -68,6 +68,9 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 - (id)initWithBundleIdentifier:(NSString *)identifier {
 	if (identifier == nil || [identifier isEmpty]) {
 		[NSException raise:NSInvalidArgumentException format:@"-[%@ %s], passed a nil or empty indentifer", NSStringFromClass([self class]), _cmd, nil];
+		
+		[self release];
+		return nil;
 	}
 	
 	[self init];

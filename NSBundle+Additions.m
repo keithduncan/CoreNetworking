@@ -54,7 +54,7 @@ NSImage *KDCacheImageFromBundle(NSBundle *bundle, NSString *name) {
 }
 
 - (NSString *)companySite {
-	return [self objectForInfoDictionaryKey:AFCompanySiteKey];
+	return [self objectForInfoDictionaryKey:AFRootCompanySiteURLKey];
 }
 
 @end
@@ -69,4 +69,4 @@ NSImage *KDCacheImageFromBundle(NSBundle *bundle, NSString *name) {
 
 NSString *const AFAlertImageNameKey = @"AFAlertImageName";
 NSString *const AFCompanyNameKey = @"AFCompanyName";
-NSString *const AFCompanySiteKey = @"AFCompanySite";
+NSString *const AFRootCompanySiteURLKey = @"AFRootCompanySiteURL";

@@ -15,7 +15,7 @@
 @interface _KDObjectProxy : NSProxy {
 @public
 	NSThread *_thread;
-	id <NSObject> *_target;
+	NSObject *_target;
 }
 
 @end

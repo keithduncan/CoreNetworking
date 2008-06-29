@@ -27,11 +27,6 @@
 - (void)setObject:(id)value forKey:(NSString *)key;
 - (void)removeObjectForKey:(NSString *)key;
 
-- (NSString *)stringForKey:(NSString *)key;
-- (NSArray *)arrayForKey:(NSString *)key;
-- (NSDictionary *)dictionaryForKey:(NSString *)key;
-- (NSData *)dataForKey:(NSString *)key;
-
 - (float)floatForKey:(NSString *)key;
 - (void)setFloat:(float)value forKey:(NSString *)key;
 
@@ -50,4 +45,11 @@
 
 - (BOOL)synchronize;
 
+@end
+
+@interface KDUserDefaults (Accessors)
+- (NSString *)stringForKey:(NSString *)key;
+- (NSArray *)arrayForKey:(NSString *)key;
+- (NSDictionary *)dictionaryForKey:(NSString *)key;
+- (NSData *)dataForKey:(NSString *)key;
 @end
