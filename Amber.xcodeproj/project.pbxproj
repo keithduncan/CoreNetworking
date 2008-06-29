@@ -167,6 +167,7 @@
 		53B0E5770C8A3A2C002BD6A6 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		53C356140CC11E410098F021 /* NSObject+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Additions.h"; sourceTree = "<group>"; };
 		53C356150CC11E410098F021 /* NSObject+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Additions.m"; sourceTree = "<group>"; };
+		53C949B60E17CD7700E21E15 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSBezierPath+Additions.h"; sourceTree = "<group>"; };
 		53D46FE50C2EB83D00BF18ED /* NSBezierPath+Additions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSBezierPath+Additions.m"; sourceTree = "<group>"; };
 		53D527C00C6E8F2200BCF98C /* KDKeyValueBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDKeyValueBinding.h; sourceTree = "<group>"; };
@@ -219,6 +220,7 @@
 		5343E6FB0C21FB1000B63E6E = {
 			isa = PBXGroup;
 			children = (
+				53C949B60E17CD7700E21E15 /* LICENSE */,
 				539A60FA0D269B54001CD14A /* Amber */,
 				539A60F70D269B40001CD14A /* Amber Foundation */,
 				539A60FD0D269B6C001CD14A /* Resources */,

@@ -12,7 +12,6 @@
 
 // FOLLOWING GRADIENTS SHOULD BE DRAWN WITH AN ANGLE OF 90 DEGREES
 
-+ (NSGradient *)keySourceListSelectionGradient;
-+ (NSGradient *)sourceListSelectionGradient;
++ (NSGradient *)sourceListSelectionGradientIsKey:(BOOL)key;
 
 @end
