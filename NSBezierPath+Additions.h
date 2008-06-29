@@ -8,9 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-#ifndef Amber_NSBezierPathAdditions
-#define Amber_NSBezierPathAdditions
-
 enum {
 	KDLowerLeftCorner = 0x01,
 	KDLowerRightCorner = 0x02,
@@ -18,8 +15,6 @@ enum {
 	KDUpperRightCorner = 0x08
 };
 typedef NSUInteger KDRoundedCornerOptions;
-
-#endif
 
 @interface NSBezierPath (Additions)
 + (NSBezierPath *)bezierPathWithString:(NSString *)text inFont:(NSFont *)font;
