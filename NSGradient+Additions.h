@@ -10,8 +10,7 @@
 
 @interface NSGradient (Additions)
 
-// FOLLOWING GRADIENTS SHOULD BE DRAWN WITH AN ANGLE OF 90 DEGREES
-
+// Draw at +90 degrees
 + (NSGradient *)sourceListSelectionGradientIsKey:(BOOL)key;
 
 @end
