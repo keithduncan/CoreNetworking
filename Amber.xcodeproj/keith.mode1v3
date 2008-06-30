@@ -232,8 +232,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -320,6 +318,8 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -337,7 +337,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>53932CFD0E191A04007F1586</string>
+										<string>53932DE90E191E8D007F1586</string>
 										<key>history</key>
 										<array>
 											<string>5386B79B0DA6A3DD00EB022E</string>
@@ -364,7 +364,7 @@
 											<string>53C94ABA0E17FA8F00E21E15</string>
 											<string>53C94ABB0E17FA8F00E21E15</string>
 											<string>53C94ABC0E17FA8F00E21E15</string>
-											<string>53932A540E191136007F1586</string>
+											<string>53932D000E191A12007F1586</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -450,9 +450,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>53932CFE0E191A04007F1586</string>
+				<string>53932DE70E191E89007F1586</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>53932CFF0E191A04007F1586</string>
+				<string>53932DE80E191E89007F1586</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -588,8 +588,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>53592B4A0DA66C7100662136</string>
-		<string>537E536D0CFC8CAE0084F920</string>
 		<string>/Users/keith/Projects/Source/amber-framework/Amber.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
