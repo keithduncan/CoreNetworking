@@ -2,8 +2,12 @@
 //  KDCrypto.m
 //  Encrypter
 //
-//  Created by Keith Duncan on 04/01/2007.
-//  Copyright 2007 dAX development. All rights reserved.
+//  File created by Keith Duncan on 04/01/2007.
+//
+
+//
+//	NB: Not all of this code is mine, I can't remember where I found it either
+//		The copyright notice has been ammended to reflect this
 //
 
 #import "NSData+Additions.h"
@@ -388,47 +392,42 @@ typedef NSUInteger Action;
 }
 
 + (id)dataWithBase64String:(NSString *)encoded {
-	// Create a memory buffer containing Base64 encoded string data
 	void *encodedString = (void *)[encoded cStringUsingEncoding:NSASCIIStringEncoding];
-    BIO *mem = BIO_new_mem_buf(encodedString, strlen(encodedString));
+	BIO *mem = BIO_new_mem_buf(encodedString, strlen(encodedString));
 	
-    // Push a Base64 filter so that reading from the buffer decodes it
-    BIO *b64 = BIO_new(BIO_f_base64());
+	// Push a Base64 filter so that reading from the buffer decodes it
+	BIO *b64 = BIO_new(BIO_f_base64());
 	BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
-    mem = BIO_push(b64, mem);
+	mem = BIO_push(b64, mem);
     
 	int inlen;
-    char inbuf[512];
+	char inbuf[512];
 	
 	NSMutableData *data = [NSMutableData data];
-    while ((inlen = BIO_read(mem, inbuf, sizeof(inbuf))) > 0) [data appendBytes:inbuf length:inlen];
+	while ((inlen = BIO_read(mem, inbuf, sizeof(inbuf))) > 0) [data appendBytes:inbuf length:inlen];
 	BIO_free_all(mem);
 	
-    return data;
+	return data;
 }
 
 - (NSString *)base64String {
-	// Create a memory buffer which will contain the Base64 encoded string
-    BIO *mem = BIO_new(BIO_s_mem());
-    
-    // Push on a Base64 filter so that writing to the buffer encodes the data
-    BIO *b64 = BIO_new(BIO_f_base64());
-    BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
-    mem = BIO_push(b64, mem);
-    
-    // Encode all the data
-    BIO_write(mem, [self bytes], [self length]);
-    BIO_flush(mem);
-    
-    // Create a new string from the data in the memory buffer
-    char *base64Pointer;
-	long length = BIO_get_mem_data(mem, &base64Pointer);
-    NSString *base64String = [NSString stringWithCString:base64Pointer length:length];
-    
-    // Clean up and go home
-    BIO_free_all(mem);
+	BIO *mem = BIO_new(BIO_s_mem());
 	
-    return base64String;
+	// Push on a Base64 filter so that writing to the buffer encodes the data
+	BIO *b64 = BIO_new(BIO_f_base64());
+	BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
+	mem = BIO_push(b64, mem);
+	
+	BIO_write(mem, [self bytes], [self length]);
+	BIO_flush(mem);
+	
+	char *base64Pointer;
+	long length = BIO_get_mem_data(mem, &base64Pointer);
+	NSString *base64String = [NSString stringWithCString:base64Pointer length:length];
+	
+	BIO_free_all(mem);
+	
+	return base64String;
 }
 
 @end
