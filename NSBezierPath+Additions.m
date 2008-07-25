@@ -20,35 +20,7 @@
 }
 
 + (NSBezierPath *)bezierPathWithString:(NSString *)text inFont:(NSFont *)font aligned:(NSTextAlignment)alignment inFrame:(NSRect)frame {
-	NSBezierPath *textPath = [self bezierPathWithString:text inFont:font];
-	NSRect textPathBounds = NSMakeRect(NSMinX([textPath bounds]), [font descender], NSWidth([textPath bounds]), [font ascender] - [font descender]);
-	
-	NSAffineTransform *scale = [NSAffineTransform transform];
-	CGFloat xScale = NSWidth(frame)/NSWidth(textPathBounds);
-	CGFloat yScale = NSHeight(frame)/NSHeight(textPathBounds);
-	[scale scaleBy:MIN(xScale, yScale)];
-	[textPath transformUsingAffineTransform:scale];
-	
-	textPathBounds.origin = [scale transformPoint:textPathBounds.origin];
-	textPathBounds.size = [scale transformSize:textPathBounds.size];
-	
-	NSAffineTransform *originCorrection = [NSAffineTransform transform];
-	NSPoint centeredOrigin = SizeCenteredInRect(textPathBounds.size, frame).origin;
-	[originCorrection translateXBy:(centeredOrigin.x - NSMinX(textPathBounds)) yBy:(centeredOrigin.y - NSMinY(textPathBounds))];
-	[textPath transformUsingAffineTransform:originCorrection];
-	
-	if (alignment != NSJustifiedTextAlignment && alignment != NSCenterTextAlignment) {
-		NSAffineTransform *alignmentTransform = [NSAffineTransform transform];
-		
-		CGFloat deltaX = 0;
-		if (alignment == NSLeftTextAlignment) deltaX = -(NSMinX([textPath bounds]) - NSMinX(frame));
-		else if (alignment == NSRightTextAlignment) deltaX = (NSMaxX(frame) - NSMaxX([textPath bounds]));
-		[alignmentTransform translateXBy:deltaX yBy:0];
-		
-		[textPath transformUsingAffineTransform:alignmentTransform];
-	}
-	
-	return textPath;
+	return (NSBezierPath *)AFDrawStringAlignedInFrame(text, font, alignment, frame);
 }
 
 - (void)appendBezierPathWithString:(NSString *)text inFont:(NSFont *)font {
@@ -114,3 +86,35 @@
 }
 
 @end
+
+extern void *AFDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlignment alignment, NSRect frame) {
+	NSBezierPath *textPath = [NSBezierPath bezierPathWithString:text inFont:font];
+	NSRect textPathBounds = NSMakeRect(NSMinX([textPath bounds]), [font descender], NSWidth([textPath bounds]), [font ascender] - [font descender]);
+	
+	NSAffineTransform *scale = [NSAffineTransform transform];
+	CGFloat xScale = NSWidth(frame)/NSWidth(textPathBounds);
+	CGFloat yScale = NSHeight(frame)/NSHeight(textPathBounds);
+	[scale scaleBy:MIN(xScale, yScale)];
+	[textPath transformUsingAffineTransform:scale];
+	
+	textPathBounds.origin = [scale transformPoint:textPathBounds.origin];
+	textPathBounds.size = [scale transformSize:textPathBounds.size];
+	
+	NSAffineTransform *originCorrection = [NSAffineTransform transform];
+	NSPoint centeredOrigin = SizeCenteredInRect(textPathBounds.size, frame).origin;
+	[originCorrection translateXBy:(centeredOrigin.x - NSMinX(textPathBounds)) yBy:(centeredOrigin.y - NSMinY(textPathBounds))];
+	[textPath transformUsingAffineTransform:originCorrection];
+	
+	if (alignment != NSJustifiedTextAlignment && alignment != NSCenterTextAlignment) {
+		NSAffineTransform *alignmentTransform = [NSAffineTransform transform];
+		
+		CGFloat deltaX = 0;
+		if (alignment == NSLeftTextAlignment) deltaX = -(NSMinX([textPath bounds]) - NSMinX(frame));
+		else if (alignment == NSRightTextAlignment) deltaX = (NSMaxX(frame) - NSMaxX([textPath bounds]));
+		[alignmentTransform translateXBy:deltaX yBy:0];
+		
+		[textPath transformUsingAffineTransform:alignmentTransform];
+	}
+	
+	return textPath;
+}
