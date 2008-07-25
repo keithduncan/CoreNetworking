@@ -1,11 +1,11 @@
 //
-//  KDRange.m
+//  AFRange.h
 //  Amber
 //
 //  Created by Keith Duncan on 24/01/2008.
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import "KDRange.h"
+#import <Cocoa/Cocoa.h>
 
-const NSRange KDEmptyRange = {0, 0};
+extern const NSRange AFEmptyRange;

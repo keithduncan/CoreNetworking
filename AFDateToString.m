@@ -1,14 +1,14 @@
  //
-//  KDDateToMonthAndYear.m
-//  KDStringViewPlugin
+//  AFDateToMonthAndYear.m
+//  AFStringViewPlugin
 //
 //  Created by Keith Duncan on 11/02/2007.
 //  Copyright 2007 dAX development. All rights reserved.
 //
 
-#import "KDDateToString.h"
+#import "AFDateToString.h"
 
-@implementation KDDateToString
+@implementation AFDateToString
 
 @synthesize dateFormat;
 

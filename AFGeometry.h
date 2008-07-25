@@ -1,6 +1,6 @@
 //
-//  KDGeometry.h
-//  KDCalendarView
+//  AFGeometry.h
+//  AFCalendarView
 //
 //  Created by Keith Duncan on 12/06/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
@@ -25,4 +25,4 @@ NS_INLINE NSRect RectFromCentrePoint(NSPoint point, NSSize size) {
 }
 
 // This divides the given rect into count pieces and stores them in buffer, buffer must be able to hold count NSRects
-extern void KDDivideRect(NSRect rect, NSRectEdge edge, NSUInteger count, NSRectArray buffer);
+extern void AFDivideRect(NSRect rect, NSRectEdge edge, NSUInteger count, NSRectArray buffer);

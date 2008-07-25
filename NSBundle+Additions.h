@@ -8,13 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-@protocol KDBundleDiscoveryProtocol <NSObject>
+@protocol AFBundleDiscoveryProtocol <NSObject>
 - (NSBundle *)bundle;
 @end
 
-@interface NSBundle (Additions)
+@interface NSBundle (AFAdditions)
+- (NSImage *)icon;
 - (NSImage *)alertImage;
-- (NSImage *)bundleImage;
 
 - (NSString *)version;
 - (NSString *)displayVersion;
@@ -27,7 +27,7 @@
 - (NSString *)companySite;
 @end
 
-@interface NSBundle (PathAdditions)
+@interface NSBundle (AFPathAdditions)
 - (NSString *)applicationSupportPath:(NSUInteger)domain;
 @end
 

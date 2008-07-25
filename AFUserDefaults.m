@@ -1,30 +1,30 @@
 //
-//  KDUserDefaults.m
+//  AFUserDefaults.m
 //  iLog fitness
 //
 //  Created by Keith Duncan on 04/04/2008.
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import "KDUserDefaults.h"
+#import "AFUserDefaults.h"
 
 #import <objc/runtime.h>
 #import <CoreFoundation/CFPreferences.h>
 
 #import "AmberFoundation/NSString+Additions.h"
 
-static NSString *kKDBundleIdentifierDefaults = @"kIdentifierDefaults";
-static NSString *kKDBundleRegisteredDefaults = @"kRegisteredDefaults";
+static NSString *kAFBundleIdentifierDefaults = @"kIdentifierDefaults";
+static NSString *kAFBundleRegisteredDefaults = @"kRegisteredDefaults";
 
-@interface KDUserDefaults ()
+@interface AFUserDefaults ()
 @property(readwrite, copy) NSString *identifier;
 @end
 
-@interface KDUserDefaults (Private)
+@interface AFUserDefaults (Private)
 - (NSArray *)_searchList;
 @end
 
-@implementation KDUserDefaults
+@implementation AFUserDefaults
 
 @synthesize identifier=_identifier;
 
@@ -48,7 +48,7 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 }
 
 + (void)initialize {
-	if (self == [KDUserDefaults class]) {
+	if (self == [AFUserDefaults class]) {
 		class_addMethod(self, @selector(stringForKey:), (IMP)TypedValueForKey, "@@:@");
 		class_addMethod(self, @selector(arrayForKey:), (IMP)TypedValueForKey, "@@:@");
 		class_addMethod(self, @selector(dictionaryForKey:), (IMP)TypedValueForKey, "@@:@");
@@ -79,7 +79,7 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 	
 	CFArrayRef allKeys = CFPreferencesCopyKeyList((CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
 	CFDictionaryRef values = CFPreferencesCopyMultiple(allKeys, (CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
-	[_defaults setObject:(id)values forKey:kKDBundleIdentifierDefaults];
+	[_defaults setObject:(id)values forKey:kAFBundleIdentifierDefaults];
 	CFRelease(values);
 	
 	return self;
@@ -107,11 +107,11 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 	if (oldValue != nil && [oldValue isEqual:value]) return;
 	else if (!isPlistObject(value)) [NSException raise:NSInvalidArgumentException format:@"-[%@ %s], %@ is not a valid plist object.", NSStringFromClass([self class]), _cmd, value];
 	
-	[[_defaults objectForKey:kKDBundleIdentifierDefaults] setObject:value forKey:key];
+	[[_defaults objectForKey:kAFBundleIdentifierDefaults] setObject:value forKey:key];
 }
 
 - (void)removeObjectForKey:(NSString *)key {
-	[[_defaults objectForKey:kKDBundleIdentifierDefaults] removeObjectForKey:key];
+	[[_defaults objectForKey:kAFBundleIdentifierDefaults] removeObjectForKey:key];
 }
 
 - (float)floatForKey:(NSString *)key {
@@ -151,7 +151,7 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 }
 
 - (void)registerDefaults:(NSDictionary *)registrationDictionary {
-	[_defaults setObject:registrationDictionary forKey:kKDBundleRegisteredDefaults];
+	[_defaults setObject:registrationDictionary forKey:kAFBundleRegisteredDefaults];
 }
 
 - (NSDictionary *)dictionaryRepresentation {
@@ -163,7 +163,7 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 }
 
 - (BOOL)synchronize {
-	NSDictionary *currentDefaults = [_defaults objectForKey:kKDBundleIdentifierDefaults];
+	NSDictionary *currentDefaults = [_defaults objectForKey:kAFBundleIdentifierDefaults];
 	
 	NSArray *newKeys = [currentDefaults allKeys];
 	NSArray *savedKeys = (NSArray *)CFPreferencesCopyKeyList((CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
@@ -178,10 +178,10 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 
 @end
 
-@implementation KDUserDefaults (Private)
+@implementation AFUserDefaults (Private)
 
 - (NSArray *)_searchList {
-	return  [NSArray arrayWithObjects:[_defaults objectForKey:kKDBundleIdentifierDefaults], [_defaults objectForKey:kKDBundleRegisteredDefaults], nil];
+	return  [NSArray arrayWithObjects:[_defaults objectForKey:kAFBundleIdentifierDefaults], [_defaults objectForKey:kAFBundleRegisteredDefaults], nil];
 }
 
 @end

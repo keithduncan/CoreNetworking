@@ -1,16 +1,16 @@
 //
-//  KDKeyValueBinding.m
+//  AFKeyValueBinding.m
 //  Shared Source
 //
 //  Created by Keith Duncan on 12/08/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import "KDKeyValueBinding.h"
+#import "AFKeyValueBinding.h"
 
-NSString *const KDUnboundValueKey = @"KDUnboundValue";
+NSString *const AFUnboundValueKey = @"AFUnboundValue";
 
-@implementation NSObject (NSKeyValueBindingAdditions)
+@implementation NSObject (AFKeyValueBindingAdditions)
 
 - (void *)contextForBinding:(NSString *)binding {
 	return nil;
@@ -18,7 +18,7 @@ NSString *const KDUnboundValueKey = @"KDUnboundValue";
 
 - (id)valueForBinding:(NSString *)binding {
 	id controller = [self controllerForBinding:binding];
-	id value = (controller == nil ? [[self infoForBinding:binding] objectForKey:KDUnboundValueKey] : [controller valueForKeyPath:[self keyPathForBinding:binding]]);
+	id value = (controller == nil ? [[self infoForBinding:binding] objectForKey:AFUnboundValueKey] : [controller valueForKeyPath:[self keyPathForBinding:binding]]);
 	
 	NSValueTransformer *transformer = [self valueTransformerForBinding:binding];
 	return (transformer == nil ? value : [transformer transformedValue:value]);
@@ -33,7 +33,7 @@ NSString *const KDUnboundValueKey = @"KDUnboundValue";
 	id controller = [self controllerForBinding:binding];
 	
 	if (controller == nil) {
-		[[self bindingInfoContainer] setValue:(value != nil ? [NSDictionary dictionaryWithObject:value forKey:KDUnboundValueKey] : nil) forKey:binding];
+		[[self bindingInfoContainer] setValue:(value != nil ? [NSDictionary dictionaryWithObject:value forKey:AFUnboundValueKey] : nil) forKey:binding];
 		[self observeValueForKeyPath:binding ofObject:nil change:nil context:[self contextForBinding:binding]];
 	} else [controller setValue:value forKeyPath:[self keyPathForBinding:binding]];
 }
@@ -55,5 +55,5 @@ NSString *const KDUnboundValueKey = @"KDUnboundValue";
 
 @end
 
-NSString *const KDCurrentMonthBinding = @"currentMonth";
-NSString *const KDSelectionIndexPathBinding = @"selectionIndexPath";
+NSString *const AFCurrentMonthBinding = @"currentMonth";
+NSString *const AFSelectionIndexPathBinding = @"selectionIndexPath";

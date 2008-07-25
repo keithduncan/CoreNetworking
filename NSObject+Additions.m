@@ -8,11 +8,11 @@
 
 #import "NSObject+Additions.h"
 
-@interface NSObject (PrivateAdditions)
+@interface NSObject (AFPrivateAdditions)
 - (id)threadProxy:(NSThread *)thread;
 @end
 
-@interface _KDObjectProxy : NSProxy {
+@interface _AFObjectProxy : NSProxy {
 @public
 	NSThread *_thread;
 	NSObject *_target;
@@ -20,7 +20,7 @@
 
 @end
 
-@implementation NSObject (Additions)
+@implementation NSObject (AFAdditions)
 
 - (id)mainThreadProxy {
 	return [self threadProxy:[NSThread mainThread]];
@@ -28,10 +28,10 @@
 
 @end
 
-@implementation NSObject (PrivateAdditions)
+@implementation NSObject (AFPrivateAdditions)
 
 - (id)threadProxy:(NSThread *)thread {
-	_KDObjectProxy *proxy = [[_KDObjectProxy alloc] autorelease];
+	_AFObjectProxy *proxy = [[_AFObjectProxy alloc] autorelease];
 	proxy->_thread = [thread retain];
 	proxy->_target = [self retain];
 	return proxy;
@@ -41,7 +41,7 @@
 
 #pragma mark -
 
-@implementation _KDObjectProxy
+@implementation _AFObjectProxy
 
 - (void)dealloc {
 	[_thread release];

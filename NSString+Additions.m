@@ -8,7 +8,7 @@
 
 #import "NSString+Additions.h"
 
-@implementation NSString (Additions)
+@implementation NSString (AFAdditions)
 
 - (NSString *)trimWhiteSpace {
 	NSMutableString *newString = [[self mutableCopy] autorelease];
@@ -27,9 +27,9 @@
 
 @end
 
-@implementation NSString (KDKeyValueCoding)
+@implementation NSString (AFKeyValueCoding)
 
-static NSString *const KDKeyPathComponentSeparator = @".";
+static NSString *const AFKeyPathComponentSeparator = @".";
 
 + (NSString *)keyPathForComponents:(NSString *)component, ... {
 	va_list keyList;
@@ -41,7 +41,7 @@ static NSString *const KDKeyPathComponentSeparator = @".";
 		va_start(keyList, component);
 		
 		while (component = va_arg(keyList, NSString *)) {
-			[returnString appendFormat:@"%@%@", KDKeyPathComponentSeparator, component];
+			[returnString appendFormat:@"%@%@", AFKeyPathComponentSeparator, component];
 		}
 		
 		va_end(keyList);
@@ -51,7 +51,7 @@ static NSString *const KDKeyPathComponentSeparator = @".";
 }
 
 - (NSArray *)keyPathComponents {
-	return [self componentsSeparatedByString:KDKeyPathComponentSeparator];
+	return [self componentsSeparatedByString:AFKeyPathComponentSeparator];
 }
 
 - (NSString *)lastKeyPathComponent {
@@ -59,17 +59,17 @@ static NSString *const KDKeyPathComponentSeparator = @".";
 }
 
 - (NSString *)stringByAppendingKeyPath:(NSString *)keyPath {
-	return [self stringByAppendingFormat:@"%@%@", KDKeyPathComponentSeparator, keyPath];
+	return [self stringByAppendingFormat:@"%@%@", AFKeyPathComponentSeparator, keyPath];
 }
 
 - (NSString *)stringByRemovingKeyPathComponentAtIndex:(NSUInteger)index {
 	NSArray *keyPathComponents = [self keyPathComponents];
-	if (!NSLocationInRange(index, (NSRange){0, [keyPathComponents count]})) [NSException raise:NSRangeException format:@"-[NSString(KDKeyPathUtilities) &s] attempting to access keypath component at index %d beyond range.", _cmd, index];
+	if (!NSLocationInRange(index, (NSRange){0, [keyPathComponents count]})) [NSException raise:NSRangeException format:@"-[NSString(AFKeyPathUtilities) &s] attempting to access keypath component at index %d beyond range.", _cmd, index];
 	
 	NSMutableArray *mutableKeyPathComponents = [keyPathComponents mutableCopy];
 	[mutableKeyPathComponents removeObjectAtIndex:index];
 	
-	NSString *newKeyPath = [mutableKeyPathComponents componentsJoinedByString:KDKeyPathComponentSeparator];
+	NSString *newKeyPath = [mutableKeyPathComponents componentsJoinedByString:AFKeyPathComponentSeparator];
 	[mutableKeyPathComponents release];
 	
 	return newKeyPath;

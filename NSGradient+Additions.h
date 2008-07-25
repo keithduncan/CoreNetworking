@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface NSGradient (Additions)
+@interface NSGradient (AFAdditions)
 
 // Draw at +90 degrees
 + (NSGradient *)sourceListSelectionGradientIsKey:(BOOL)key;

@@ -1,5 +1,5 @@
 //
-//  KDNSDate.m
+//  NSDate+Additions.m
 //  dawn
 //
 //  Created by Keith Duncan on 03/12/2006.
@@ -30,7 +30,7 @@ NSString *KeyForWeekday(Weekday day) {
 	return nil;
 }
 
-@implementation NSDate (Additions)
+@implementation NSDate (AFAdditions)
 
 - (NSUInteger)day {
 	return [[[NSCalendar currentCalendar] components:NSDayCalendarUnit fromDate:self] day];
@@ -70,7 +70,7 @@ NSString *KeyForWeekday(Weekday day) {
 
 @end
 
-@implementation NSDateComponents (Additions)
+@implementation NSDateComponents (AFAdditions)
 
 - (BOOL)components:(NSUInteger)flags match:(NSDateComponents *)components {
 	if (self == components) return YES;

@@ -8,10 +8,10 @@
 
 #import "NSApplication+Additions.h"
 
-#import "KDError.h"
-#import "KDErrorsController.h"
+#import "AFError.h"
+#import "AFErrorsController.h"
 
-@implementation NSApplication (Additions)
+@implementation NSApplication (AFAdditions)
 
 static NSLock *errorsLock = nil;
 
@@ -21,7 +21,7 @@ static NSLock *errorsLock = nil;
 		[errorsLock lock];
 	}
 	
-	KDErrorsController *controller = [[KDErrorsController alloc] initWithWindowNibName:@"Errors"];
+	AFErrorsController *controller = [[AFErrorsController alloc] initWithWindowNibName:@"Errors"];
 	controller.errors = errors;
 	controller.title = title;
 		

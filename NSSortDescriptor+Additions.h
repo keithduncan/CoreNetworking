@@ -8,6 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSSortDescriptor (Additions)
+@interface NSSortDescriptor (AFAdditions)
 + (NSArray *)ascending:(BOOL)ascending descriptorsForKeys:(NSString *)firstKey, ... NS_REQUIRES_NIL_TERMINATION;
 @end

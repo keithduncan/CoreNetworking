@@ -15,7 +15,7 @@
 #import "md5.h"
 #import "NSData+Additions.h"
 
-@implementation NSFileManager (VerificationAdditions)
+@implementation NSFileManager (AFVerificationAdditions)
 
 - (BOOL)validatePath:(NSString *)path withMD5Hash:(NSString *)hash {
 	NSData *data = [NSData dataWithContentsOfFile:path];

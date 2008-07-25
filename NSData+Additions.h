@@ -1,5 +1,5 @@
 //
-//  KDCrypto.h
+//  AFCrypto.h
 //  Encrypter
 //
 //  Created by Keith Duncan on 04/01/2007.

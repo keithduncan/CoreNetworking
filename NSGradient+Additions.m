@@ -8,7 +8,7 @@
 
 #import "NSGradient+Additions.h"
 
-@implementation NSGradient (Additions)
+@implementation NSGradient (AFAdditions)
 
 + (NSGradient *)sourceListSelectionGradientIsKey:(BOOL)key {
 	if (key) {

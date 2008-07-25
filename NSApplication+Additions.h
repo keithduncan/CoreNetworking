@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface NSApplication (Additions)
+@interface NSApplication (AFAdditions)
 - (void)presentErrors:(NSArray *)errors withTitle:(NSString *)title;
 - (void)errorsPresented;
 @end

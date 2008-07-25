@@ -8,14 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (Additions)
+@interface NSString (AFAdditions)
 - (NSString *)trimWhiteSpace;
 - (BOOL)isEmpty;
 
 - (NSString *)stringByAppendingElipsisAfterCharacters:(NSUInteger)count;
 @end
 
-@interface NSString (KDKeyValueCoding)
+@interface NSString (AFKeyValueCoding)
 + (NSString *)keyPathForComponents:(NSString *)component, ... NS_REQUIRES_NIL_TERMINATION;
 
 - (NSArray *)keyPathComponents;

@@ -8,7 +8,7 @@
 
 #import "NSUserDefaults+Additions.h"
 
-@interface KDUserDefaultsDictionary : NSObject {
+@interface AFUserDefaultsDictionary : NSObject {
 @public
 	NSString *bundleIdentifier;
 	NSMutableDictionary *dictionary;
@@ -18,13 +18,13 @@
 
 static NSMapTable *_observingDefaults = nil;
 
-@implementation NSUserDefaults (Additions)
+@implementation NSUserDefaults (AFAdditions)
 
 + (NSMutableDictionary *)persistentDomainForBundleIdentifier:(NSString *)bundleIdentifier {
-	KDUserDefaultsDictionary *domain = [_observingDefaults objectForKey:bundleIdentifier];
+	AFUserDefaultsDictionary *domain = [_observingDefaults objectForKey:bundleIdentifier];
 	
 	if (domain == nil) {
-		domain = [[[KDUserDefaultsDictionary alloc] init] autorelease];
+		domain = [[[AFUserDefaultsDictionary alloc] init] autorelease];
 		domain->dictionary = [[[self standardUserDefaults] persistentDomainForName:bundleIdentifier] mutableCopy];
 		domain->bundleIdentifier = [bundleIdentifier copy];
 		
@@ -36,7 +36,7 @@ static NSMapTable *_observingDefaults = nil;
 
 @end
 
-@implementation KDUserDefaultsDictionary
+@implementation AFUserDefaultsDictionary
 
 + (void)initialize {
 	NSUInteger options = (NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality);

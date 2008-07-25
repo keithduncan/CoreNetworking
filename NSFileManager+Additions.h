@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSFileManager (Additions)
+@interface NSFileManager (AFAdditions)
 - (BOOL)validatePath:(NSString *)path withMD5Hash:(NSString *)hash;
 - (BOOL)validatePath:(NSString *)path withDSASignature:(NSString *)signature publicDSAKey:(NSString *)publicKey;
 @end

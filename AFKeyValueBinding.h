@@ -1,5 +1,5 @@
 //
-//  KDKeyValueBinding.h
+//  AFKeyValueBinding.h
 //  Shared Source
 //
 //  Created by Keith Duncan on 12/08/2007.
@@ -12,17 +12,17 @@
  This is an extention of the NSKeyValueBinding protocol
  */
 
-extern NSString *const KDUnboundValueKey;
+extern NSString *const AFUnboundValueKey;
 
-@interface NSObject (KDKeyValueBinding) // These are to be implemented by adpoters
+@interface NSObject (AFKeyValueBinding) // These are to be implemented by adpoters
 - (NSMutableDictionary *)bindingInfoContainer;
 - (void *)contextForBinding:(NSString *)binding;
 @end
 
-// These are implemented in NSObject and require KDKeyValueBinding
-@interface NSObject (NSKeyValueBindingAdditions)
+// These are implemented in NSObject and require AFKeyValueBinding
+@interface NSObject (AFKeyValueBindingAdditions)
 // These take care of running the value through a value transformer if required.
-// These store/retrieve an unbound value in a dictionary under the KDUnboundValueKey of the controller object == nil
+// These store/retrieve an unbound value in a dictionary under the AFUnboundValueKey of the controller object == nil
 - (id)valueForBinding:(NSString *)binding;
 - (void)setValue:(id)value forBinding:(NSString *)binding;
 
@@ -35,5 +35,5 @@ extern NSString *const KDUnboundValueKey;
  These are common additional bindings
  */
 
-extern NSString *const KDCurrentMonthBinding;
-extern NSString *const KDSelectionIndexPathBinding;
+extern NSString *const AFCurrentMonthBinding;
+extern NSString *const AFSelectionIndexPathBinding;

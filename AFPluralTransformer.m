@@ -1,14 +1,14 @@
 //
-//  KDPluralTransformer.m
+//  AFPluralTransformer.m
 //  iLog fitness
 //
 //  Created by Keith Duncan on 21/06/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import "KDPluralTransformer.h"
+#import "AFPluralTransformer.h"
 
-@implementation KDPluralTransformer
+@implementation AFPluralTransformer
 
 + (Class)transformedValueClass {
 	return [NSString class];

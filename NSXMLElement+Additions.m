@@ -8,10 +8,10 @@
 
 #import "NSXMLElement+Additions.h"
 
-#import "KDCollection.h"
+#import "AFCollection.h"
 #import "NSString+Additions.h"
 
-@implementation NSXMLElement (Additions)
+@implementation NSXMLElement (AFAdditions)
 
 NSXMLNode *NodeForKey(NSXMLElement *element, NSString *key) {
 	NSArray *elements = [element elementsForName:key];

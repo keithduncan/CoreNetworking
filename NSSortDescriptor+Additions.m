@@ -8,7 +8,7 @@
 
 #import "NSSortDescriptor+Additions.h"
 
-@implementation NSSortDescriptor (Additions)
+@implementation NSSortDescriptor (AFAdditions)
 
 + (NSArray *)ascending:(BOOL)ascending descriptorsForKeys:(NSString *)currentKey, ... {
 	va_list keyList;

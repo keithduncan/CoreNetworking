@@ -7,7 +7,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface NSTreeController (Additions)
+@interface NSTreeController (AFAdditions)
 - (void)setSelectedObjects:(NSArray *)newSelectedObjects;
 - (NSIndexPath *)indexPathToObject:(id)object;
 @end

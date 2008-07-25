@@ -1,5 +1,5 @@
 //
-//  KDBoolToColor.h
+//  AFBoolToColor.h
 //  dawn
 //
 //  Created by Keith Duncan on 05/07/2007.
@@ -8,6 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@interface KDBoolToColor : NSValueTransformer
+@interface AFBoolToColor : NSValueTransformer
 
 @end

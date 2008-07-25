@@ -7,8 +7,8 @@
  *
  */
 
-#import "KDError.h"
-#import "KDErrorCell.h"
+#import "AFError.h"
+#import "AFErrorCell.h"
 
-#import "KDErrorsController.h"
+#import "AFErrorsController.h"
 #import "NSApplication+Additions.h"

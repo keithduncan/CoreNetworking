@@ -1,5 +1,5 @@
 //
-//  KDUserDefaults.h
+//  AFUserDefaults.h
 //  iLog fitness
 //
 //  Created by Keith Duncan on 04/04/2008.
@@ -14,7 +14,7 @@
     @discussion  It doesn't register for termination notifications nor does it save the values occasionally, this must be handled externally.
 */
 
-@interface KDUserDefaults : NSObject {
+@interface AFUserDefaults : NSObject {
 	id _defaults;
 	NSString *_identifier;
 }
@@ -47,7 +47,7 @@
 
 @end
 
-@interface KDUserDefaults (Accessors)
+@interface AFUserDefaults (Accessors)
 - (NSString *)stringForKey:(NSString *)key;
 - (NSArray *)arrayForKey:(NSString *)key;
 - (NSDictionary *)dictionaryForKey:(NSString *)key;

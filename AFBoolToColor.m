@@ -1,14 +1,14 @@
 //
-//  KDBoolToColor.m
+//  AFBoolToColor.m
 //  dawn
 //
 //  Created by Keith Duncan on 05/07/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import "KDBoolToColor.h"
+#import "AFBoolToColor.h"
 
-@implementation KDBoolToColor
+@implementation AFBoolToColor
 
 + (Class)transformedValueClass {
 	return [NSColor class];

@@ -11,11 +11,11 @@
 
 #import "AmberFoundation/AmberFoundation.h"
 
-#import "Amber/KDKeyValueBinding.h"
+#import "Amber/AFKeyValueBinding.h"
 
-#import "Amber/KDBoolToColor.h"
-#import "Amber/KDPluralTransformer.h"
-#import "Amber/KDDateToString.h"
+#import "Amber/AFBoolToColor.h"
+#import "Amber/AFPluralTransformer.h"
+#import "Amber/AFDateToString.h"
 
 #import "Amber/ErrorPresentation.h"
 

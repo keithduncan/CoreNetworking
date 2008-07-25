@@ -1,6 +1,6 @@
 //
-//  KDDateToMonthAndYear.h
-//  KDStringViewPlugin
+//  AFDateToMonthAndYear.h
+//  AFStringViewPlugin
 //
 //  Created by Keith Duncan on 11/02/2007.
 //  Copyright 2007 dAX development. All rights reserved.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface KDDateToString : NSValueTransformer {
+@interface AFDateToString : NSValueTransformer {
 	NSString *dateFormat;
 	NSDateFormatter *formatter;
 }

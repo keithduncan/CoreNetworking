@@ -1,5 +1,5 @@
 //
-//  KDError.h
+//  AFError.h
 //  iLog fitness
 //
 //  Created by Keith Duncan on 21/06/2007.
@@ -14,7 +14,7 @@ enum {
 };
 typedef NSUInteger errorType;
 
-@interface KDError : NSObject <NSCopying> {
+@interface AFError : NSObject <NSCopying> {
 	errorType type;
 	NSString *name , *reason;
 }
@@ -31,7 +31,7 @@ typedef NSUInteger errorType;
 
 @end
 
-@interface NSImage (KDError)
+@interface NSImage (AFError)
 + (NSImage *)errorImage;
 + (NSImage *)warningImage;
 @end

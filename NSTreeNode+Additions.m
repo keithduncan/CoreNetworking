@@ -35,11 +35,11 @@ id CollectionFromNode(Class collectionClass, id node, BOOL inclusive) {
 	return collection;
 }
 
-@interface _NSControllerTreeProxy (PrivateAdditions)
+@interface _NSControllerTreeProxy (AFPrivateAdditions)
 - (void)addChildrenToCollection:(id)collection;
 @end
 
-@implementation _NSControllerTreeProxy (PrivateAdditions)
+@implementation _NSControllerTreeProxy (AFPrivateAdditions)
 
 #warning this is a stop-gap measure until Apple fixes _NSControllerTreeProxy to inherit from NSTreeNode
 
@@ -63,7 +63,7 @@ id CollectionFromNode(Class collectionClass, id node, BOOL inclusive) {
 
 @end
 
-@implementation NSTreeNode (PrivateAdditions)
+@implementation NSTreeNode (AFPrivateAdditions)
 
 - (NSSet *)objectsAtIndexPaths:(NSArray *)indexPaths {
 	NSMutableSet *objects = [NSMutableSet setWithCapacity:[indexPaths count]];

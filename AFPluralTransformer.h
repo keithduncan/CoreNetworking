@@ -1,5 +1,5 @@
 //
-//  KDPluralTransformer.h
+//  AFPluralTransformer.h
 //  iLog fitness
 //
 //  Created by Keith Duncan on 21/06/2007.
@@ -8,6 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface KDPluralTransformer : NSValueTransformer
+@interface AFPluralTransformer : NSValueTransformer
 
 @end

@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface NSTreeNode (Additions)
+@interface NSTreeNode (AFAdditions)
 - (NSSet *)objectsAtIndexPaths:(NSArray *)indexPaths;
 
 - (NSMutableSet *)setFromNodeInclusive:(BOOL)inclusive;

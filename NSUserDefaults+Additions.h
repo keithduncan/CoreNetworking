@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSUserDefaults (Additions)
+@interface NSUserDefaults (AFAdditions)
 // Changes will be commited to NSUserDefaults at the end of the run loop
 + (NSMutableDictionary *)persistentDomainForBundleIdentifier:(NSString *)bundleIdentifier;
 @end

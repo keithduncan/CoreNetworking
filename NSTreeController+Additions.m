@@ -7,11 +7,11 @@
 
 #import "NSTreeController+Additions.h"
 
-@interface NSTreeController (AdditionsPrivate)
+@interface NSTreeController (AFPrivateAdditions)
 - (NSIndexPath *)_indexPathToObject:(id)object inTree:(NSTreeNode *)tree;
 @end
 
-@implementation NSTreeController (Additions)
+@implementation NSTreeController (AFAdditions)
 
 - (void)setSelectedObjects:(NSArray *)newSelectedObjects {
 	NSMutableArray *indexPaths = [NSMutableArray array];
@@ -29,7 +29,7 @@
 
 @end
 
-@implementation NSTreeController (AdditionsPrivate)
+@implementation NSTreeController (AFPrivateAdditions)
 
 - (NSIndexPath *)_indexPathToObject:(id)object inTree:(NSTreeNode *)node {
 	for (NSTreeNode *currentNode in [node childNodes]) {

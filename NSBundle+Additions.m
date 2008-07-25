@@ -10,9 +10,9 @@
 
 #import <objc/runtime.h>
 
-@implementation NSBundle (Additions)
+@implementation NSBundle (AFAdditions)
 
-NSImage *KDCacheImageFromBundle(NSBundle *bundle, NSString *name) {
+NSImage *AFCacheImageFromBundle(NSBundle *bundle, NSString *name) {
 	NSImage *bundleImage = nil;
 	NSString *imageName = [bundle objectForInfoDictionaryKey:name];
 	
@@ -25,12 +25,12 @@ NSImage *KDCacheImageFromBundle(NSBundle *bundle, NSString *name) {
 	return bundleImage;
 }
 
-- (NSImage *)alertImage {
-	return KDCacheImageFromBundle(self, AFAlertImageNameKey);
+- (NSImage *)icon {
+	return AFCacheImageFromBundle(self, @"CFBundleIconFile");
 }
 
-- (NSImage *)bundleImage {
-	return KDCacheImageFromBundle(self, @"CFBundleIconFile");
+- (NSImage *)alertImage {
+	return AFCacheImageFromBundle(self, AFAlertImageNameKey);
 }
 
 - (NSString *)version {
@@ -59,10 +59,10 @@ NSImage *KDCacheImageFromBundle(NSBundle *bundle, NSString *name) {
 
 @end
 
-@implementation NSBundle (PathAdditions)
+@implementation NSBundle (AFPathAdditions)
 
 - (NSString *)applicationSupportPath:(NSUInteger)domain {
-	return [KDSafeObjectAtIndex(NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, domain, YES), 0) stringByAppendingPathComponent:[self name]];
+	return [AFSafeObjectAtIndex(NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, domain, YES), 0) stringByAppendingPathComponent:[self name]];
 }
 
 @end

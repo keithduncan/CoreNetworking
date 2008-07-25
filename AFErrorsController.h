@@ -1,5 +1,5 @@
 //
-//  KDErrorsController.h
+//  AFErrorsController.h
 //  iLog fitness
 //
 //  Created by Keith Duncan on 21/06/2007.
@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface KDErrorsController : NSWindowController {
+@interface AFErrorsController : NSWindowController {
 	NSString *_title;
 	
 	NSArray *_errors;

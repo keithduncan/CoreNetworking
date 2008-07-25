@@ -1,15 +1,15 @@
 //
-//  KDPropertyListProtocol.m
+//  AFPropertyListProtocol.m
 //  dawn
 //
 //  Created by Keith Duncan on 14/03/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import "KDPropertyListProtocol.h"
+#import "AFPropertyListProtocol.h"
 
-NSString *const KDClassNameKey = @"propertyListClass";
-NSString *const KDObjectDataKey = @"propertyListData";
+NSString *const AFClassNameKey = @"propertyListClass";
+NSString *const AFObjectDataKey = @"propertyListData";
 
 static BOOL isPlistObject(id object) {
 	if ([object isKindOfClass:[NSString class]]) return YES;
@@ -33,10 +33,10 @@ static BOOL isPlistObject(id object) {
 }
 
 static BOOL isPlistRepresentation(id object) {
-	return ([object isKindOfClass:[NSDictionary class]] && [object count] == 2 && [object objectForKey:KDClassNameKey] != nil && [object objectForKey:KDObjectDataKey] != nil);
+	return ([object isKindOfClass:[NSDictionary class]] && [object count] == 2 && [object objectForKey:AFClassNameKey] != nil && [object objectForKey:AFObjectDataKey] != nil);
 }
 
-@implementation NSArray (KDPropertyList)
+@implementation NSArray (AFPropertyList)
 
 + (id)arrayWithPropertyListRepresentation:(id)propertyListRepresentation {
 	return [[[self alloc] initWithPropertyListRepresentation:propertyListRepresentation] autorelease];
@@ -47,7 +47,7 @@ static BOOL isPlistRepresentation(id object) {
 		NSMutableArray *newArray = [[NSMutableArray alloc] init];
 		for (id currentObject in propertyListRepresentation) {			
 			if (isPlistRepresentation(currentObject)) {				
-				id newObject = [[NSClassFromString([currentObject objectForKey:KDClassNameKey]) alloc] initWithPropertyListRepresentation:[currentObject valueForKey:KDObjectDataKey]];
+				id newObject = [[NSClassFromString([currentObject objectForKey:AFClassNameKey]) alloc] initWithPropertyListRepresentation:[currentObject valueForKey:AFObjectDataKey]];
 				[newArray addObject:newObject];
 				[newObject release];
 			} else [newArray addObject:currentObject];
@@ -66,13 +66,13 @@ static BOOL isPlistRepresentation(id object) {
 }
 
 - (id)propertyListRepresentation {
-	//if (!isPlistObject(self)) [NSException raise:NSInternalInconsistencyException format:[NSString stringWithFormat:@"-[NSArray(KDPropertyList) %s], tried to archive object \"%@\", which doesn't conform to the KDPropertyListProtocol", _cmd, self]];
+	//if (!isPlistObject(self)) [NSException raise:NSInternalInconsistencyException format:[NSString stringWithFormat:@"-[NSArray(AFPropertyList) %s], tried to archive object \"%@\", which doesn't conform to the AFPropertyListProtocol", _cmd, self]];
 	
 	NSMutableArray *propertyListRepresentation = [NSMutableArray array];
-	for (NSObject <KDPropertyListProtocol> *currentObject in self) {		
+	for (NSObject <AFPropertyListProtocol> *currentObject in self) {		
 		NSDictionary *objectDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-											[currentObject propertyListRepresentation], KDObjectDataKey, 
-											NSStringFromClass([currentObject class]), KDClassNameKey, nil];
+											[currentObject propertyListRepresentation], AFObjectDataKey, 
+											NSStringFromClass([currentObject class]), AFClassNameKey, nil];
 		
 		[propertyListRepresentation addObject:objectDictionary];
 	}
@@ -82,7 +82,7 @@ static BOOL isPlistRepresentation(id object) {
 
 @end
 
-@implementation NSSet (KDPropertyList)
+@implementation NSSet (AFPropertyList)
 
 + (id)setWithPropertyListRepresentation:(id)propertyListRepresentation {
 	return [[[self alloc] initWithPropertyListRepresentation:propertyListRepresentation] autorelease];
@@ -109,7 +109,7 @@ static BOOL isPlistRepresentation(id object) {
 @end
 
 #if 0
-@implementation NSDictionary (KDPropertyList)
+@implementation NSDictionary (AFPropertyList)
 
 + (id)dictionaryWithPropertyListRepresentation:(id)propertyListRepresentation {
 	return [[[self alloc] initWithPropertyListRepresentation:propertyListRepresentation] autorelease];
@@ -120,7 +120,7 @@ static BOOL isPlistRepresentation(id object) {
 }
 
 - (id)propertyListRepresentation {
-	if (!isPlistObject(self)) [NSException raise:NSInternalInconsistencyException format:[NSString stringWithFormat:@"-[NSDictionary(KDPropertyList) %s], tried to archive object \"%@\", which doesn't conform to the KDPropertyListProtocol", _cmd, self]];
+	if (!isPlistObject(self)) [NSException raise:NSInternalInconsistencyException format:[NSString stringWithFormat:@"-[NSDictionary(AFPropertyList) %s], tried to archive object \"%@\", which doesn't conform to the AFPropertyListProtocol", _cmd, self]];
 	
 	NSMutableDictionary *propertyListRepresentation = [NSMutableDictionary dictionaryWithCapacity:[self count]];
 	

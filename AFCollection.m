@@ -1,14 +1,14 @@
 //
-//  KDSet.m
-//  KDCalendarView
+//  AFSet.m
+//  AFCalendarView
 //
 //  Created by Keith Duncan on 27/03/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import "KDCollection.h"
+#import "AFCollection.h"
 
-@implementation NSSet (Additions)
+@implementation NSSet (AFAdditions)
 
 - (NSSet *)setByAddingObjects:(id)currentObject, ... {
 	va_list objectList;
@@ -29,7 +29,7 @@
 
 @end
 
-@implementation NSArray (Additions)
+@implementation NSArray (AFAdditions)
 
 - (NSArray *)arrayByAddingObjectsFromSet:(NSSet *)set {
 	NSMutableArray *newArray = [[NSMutableArray arrayWithCapacity:([self count] + [set count])] retain];
@@ -49,7 +49,7 @@
 
 @end
 
-@implementation NSDictionary (Additions)
+@implementation NSDictionary (AFAdditions)
 
 - (NSDictionary *)diff:(id)dictionary {
 	NSMutableDictionary *difference = [NSMutableDictionary dictionary];

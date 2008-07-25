@@ -37,7 +37,7 @@ typedef NSUInteger Month;
 
 extern NSString *KeyForWeekday(Weekday day);
 
-@interface NSDate (Additions)
+@interface NSDate (AFAdditions)
 
 - (NSUInteger)day;
 
@@ -50,6 +50,6 @@ extern NSString *KeyForWeekday(Weekday day);
 
 @end
 
-@interface NSDateComponents (Additions)
+@interface NSDateComponents (AFAdditions)
 - (BOOL)components:(NSUInteger)flags match:(NSDateComponents *)components;
 @end

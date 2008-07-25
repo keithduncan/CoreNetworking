@@ -1,5 +1,5 @@
 //
-//  KDErrorsController.m
+//  AFErrorsController.m
 //  iLog fitness
 //
 //  Created by Keith Duncan on 21/06/2007.
@@ -8,16 +8,16 @@
 
 #import "ErrorPresentation.h"
 
-#import "KDPluralTransformer.h"
+#import "AFPluralTransformer.h"
 
-@implementation KDErrorsController
+@implementation AFErrorsController
 
 @synthesize title=_title;
 @synthesize errors=_errors;
 
 + (void)initialize {
-	KDPluralTransformer *transformer = [[KDPluralTransformer alloc] init];
-	[NSValueTransformer setValueTransformer:transformer forName:@"KDPluralTransformer"];
+	AFPluralTransformer *transformer = [[AFPluralTransformer alloc] init];
+	[NSValueTransformer setValueTransformer:transformer forName:@"AFPluralTransformer"];
 	[transformer release];
 }
 
@@ -29,7 +29,7 @@
 }
 
 - (void)windowDidLoad {
-	KDErrorCell *cell = [[KDErrorCell alloc] init];
+	AFErrorCell *cell = [[AFErrorCell alloc] init];
 	[cell setLineBreakMode:NSLineBreakByTruncatingTail];
 	[errorColumn setDataCell:cell];
 	[cell release];

@@ -1,22 +1,22 @@
 //
-//  KDErrorCell.m
+//  AFErrorCell.m
 //  iLog fitness
 //
 //  Created by Keith Duncan on 21/06/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import "KDErrorCell.h"
+#import "AFErrorCell.h"
 
-#import "KDError.h"
+#import "AFError.h"
 
-@implementation KDErrorCell
+@implementation AFErrorCell
 
-// objectValue should be a KDError object
+// objectValue should be a AFError object
 - (void)drawWithFrame:(NSRect)frame inView:(NSView *)view {
-	KDError *error = [self objectValue];
+	AFError *error = [self objectValue];
 	
-	if (![error isKindOfClass:[KDError class]]) [NSException raise:NSInternalInconsistencyException format:@"-[KDErrorCell drawWithFrame:inView:], the object value is not a KDError object - cannot draw it!"];
+	if (![error isKindOfClass:[AFError class]]) [NSException raise:NSInternalInconsistencyException format:@"-[AFErrorCell drawWithFrame:inView:], the object value is not a AFError object - cannot draw it!"];
 
 	NSRect titleRect, descriptionRect;
 	NSDivideRect(frame, &titleRect, &descriptionRect, NSHeight(frame) / 2.0, NSMinYEdge);

@@ -9,13 +9,13 @@
 
 // This framework reserves the (Additions) category namespace, don't use it!
 
-#import "AmberFoundation/KDRange.h"
-#import "AmberFoundation/KDGeometry.h"
-#import "AmberFoundation/KDPropertyListProtocol.h"
-#import "AmberFoundation/KDUserDefaults.h"
+#import "AmberFoundation/AFRange.h"
+#import "AmberFoundation/AFGeometry.h"
+#import "AmberFoundation/AFPropertyListProtocol.h"
+#import "AmberFoundation/AFUserDefaults.h"
 
 #import "AmberFoundation/NSObject+Additions.h"
-#import "AmberFoundation/KDCollection.h"
+#import "AmberFoundation/AFCollection.h"
 #import "AmberFoundation/NSData+Additions.h"
 #import "AmberFoundation/NSDate+Additions.h"
 #import "AmberFoundation/NSSortDescriptor+Additions.h"

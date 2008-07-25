@@ -1,14 +1,14 @@
 //
-//  KDError.m
+//  AFError.m
 //  iLog fitness
 //
 //  Created by Keith Duncan on 21/06/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import "KDError.h"
+#import "AFError.h"
 
-@implementation KDError
+@implementation AFError
 
 @synthesize type, name, reason;
 
@@ -32,7 +32,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-	return [[KDError alloc] initWithType:type name:name reason:reason];
+	return [[AFError alloc] initWithType:type name:name reason:reason];
 }
 
 - (NSImage *)image {
@@ -41,7 +41,7 @@
 
 @end
 
-@implementation NSImage (KDError)
+@implementation NSImage (AFError)
 
 + (NSImage *)errorImage {
 	return [NSImage imageNamed:@"Stop"];

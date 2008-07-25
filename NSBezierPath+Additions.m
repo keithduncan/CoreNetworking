@@ -1,6 +1,6 @@
 //
 //  NSBezierPath+Additions.m
-//  KDStringView
+//  AFStringView
 //
 //  Created by Keith Duncan on 24/06/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
@@ -8,9 +8,9 @@
 
 #import "NSBezierPath+Additions.h"
 
-#import "KDGeometry.h"
+#import "AFGeometry.h"
 
-@implementation NSBezierPath (Additions)
+@implementation NSBezierPath (AFAdditions)
 
 + (NSBezierPath *)bezierPathWithString:(NSString *)text inFont:(NSFont *)font {
 	NSBezierPath *textPath = [self bezierPath];
@@ -77,34 +77,34 @@
 	CFRelease(line);
 }
 
-+ (NSBezierPath *)bezierPathWithRoundedRect:(NSRect)rect corners:(KDRoundedCornerOptions)corners radius:(CGFloat)radius {
++ (NSBezierPath *)bezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius {
 	NSBezierPath *path = [self bezierPath];
 	[path moveToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect))];
 	
 	radius = MIN(radius, MIN(NSWidth(rect), NSHeight(rect))/2.0);
 	
-	if (corners & KDLowerRightCorner)
+	if (corners & AFLowerRightCorner)
 		[path appendBezierPathWithArcFromPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect)) toPoint:NSMakePoint(NSMaxX(rect), NSMidY(rect)) radius:radius];
 	else {
 		[path lineToPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))];
 		[path lineToPoint:NSMakePoint(NSMaxX(rect), NSMidY(rect))];
 	}
 	
-	if (corners & KDUpperRightCorner)
+	if (corners & AFUpperRightCorner)
 		[path appendBezierPathWithArcFromPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect)) toPoint:NSMakePoint(NSMidX(rect), NSMaxY(rect)) radius:radius];
 	else {
 		[path lineToPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
 		[path lineToPoint:NSMakePoint(NSMidX(rect), NSMaxY(rect))];
 	}
 	
-	if (corners & KDUpperLeftCorner)
+	if (corners & AFUpperLeftCorner)
 		[path appendBezierPathWithArcFromPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect)) toPoint:NSMakePoint(NSMinX(rect), NSMidY(rect)) radius:radius];
 	else {
 		[path lineToPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))];
 		[path lineToPoint:NSMakePoint(NSMinX(rect), NSMidY(rect))];
 	}
 	
-	if (corners & KDLowerLeftCorner)
+	if (corners & AFLowerLeftCorner)
 		[path appendBezierPathWithArcFromPoint:NSMakePoint(NSMinX(rect), NSMinY(rect)) toPoint:NSMakePoint(NSMidX(rect), NSMinY(rect)) radius:radius];
 	else 
 		[path lineToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect))];
