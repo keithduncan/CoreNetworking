@@ -18,11 +18,10 @@ typedef NSUInteger AFRoundedCornerOptions;
 
 @interface NSBezierPath (AFAdditions)
 + (NSBezierPath *)bezierPathWithString:(NSString *)text inFont:(NSFont *)font;
-+ (NSBezierPath *)bezierPathWithString:(NSString *)text inFont:(NSFont *)font aligned:(NSTextAlignment)aligned inFrame:(NSRect)frame __attribute__((deprecated));
-
 - (void)appendBezierPathWithString:(NSString *)text inFont:(NSFont *)font;
 
 + (NSBezierPath *)bezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius;
+- (void)appendBezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius;
 @end
 
-extern void *AFDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlignment alignment, NSRect frame);
+extern void AFDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlignment alignment, NSRect frame);

@@ -10,84 +10,7 @@
 
 #import "AFGeometry.h"
 
-@implementation NSBezierPath (AFAdditions)
-
-+ (NSBezierPath *)bezierPathWithString:(NSString *)text inFont:(NSFont *)font {
-	NSBezierPath *textPath = [self bezierPath];
-	[textPath moveToPoint:NSZeroPoint];
-	[textPath appendBezierPathWithString:text inFont:font];
-	return textPath;
-}
-
-+ (NSBezierPath *)bezierPathWithString:(NSString *)text inFont:(NSFont *)font aligned:(NSTextAlignment)alignment inFrame:(NSRect)frame {
-	return (NSBezierPath *)AFDrawStringAlignedInFrame(text, font, alignment, frame);
-}
-
-- (void)appendBezierPathWithString:(NSString *)text inFont:(NSFont *)font {
-	NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:text];
-	CTLineRef line = CTLineCreateWithAttributedString((CFAttributedStringRef)attributedString);
-	[attributedString release];
-	
-	CFArrayRef glyphRuns = CTLineGetGlyphRuns(line);
-	CFIndex count = CFArrayGetCount(glyphRuns);
-	
-	for (CFIndex index = 0; index < count; index++) {
-		CTRunRef currentRun = CFArrayGetValueAtIndex(glyphRuns, index);
-		
-		CFIndex glyphCount = CTRunGetGlyphCount(currentRun);
-		
-		CGGlyph glyphs[glyphCount];
-		CTRunGetGlyphs(currentRun, CTRunGetStringRange(currentRun), glyphs);
-		
-		NSGlyph bezierPathGlyphs[glyphCount];
-		for (CFIndex glyphIndex = 0; glyphIndex < glyphCount; glyphIndex++)
-			bezierPathGlyphs[glyphIndex] = glyphs[glyphIndex];
-		
-		[self appendBezierPathWithGlyphs:bezierPathGlyphs count:glyphCount inFont:font];
-	}
-	
-	CFRelease(line);
-}
-
-+ (NSBezierPath *)bezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius {
-	NSBezierPath *path = [self bezierPath];
-	[path moveToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect))];
-	
-	radius = MIN(radius, MIN(NSWidth(rect), NSHeight(rect))/2.0);
-	
-	if (corners & AFLowerRightCorner)
-		[path appendBezierPathWithArcFromPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect)) toPoint:NSMakePoint(NSMaxX(rect), NSMidY(rect)) radius:radius];
-	else {
-		[path lineToPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))];
-		[path lineToPoint:NSMakePoint(NSMaxX(rect), NSMidY(rect))];
-	}
-	
-	if (corners & AFUpperRightCorner)
-		[path appendBezierPathWithArcFromPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect)) toPoint:NSMakePoint(NSMidX(rect), NSMaxY(rect)) radius:radius];
-	else {
-		[path lineToPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
-		[path lineToPoint:NSMakePoint(NSMidX(rect), NSMaxY(rect))];
-	}
-	
-	if (corners & AFUpperLeftCorner)
-		[path appendBezierPathWithArcFromPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect)) toPoint:NSMakePoint(NSMinX(rect), NSMidY(rect)) radius:radius];
-	else {
-		[path lineToPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))];
-		[path lineToPoint:NSMakePoint(NSMinX(rect), NSMidY(rect))];
-	}
-	
-	if (corners & AFLowerLeftCorner)
-		[path appendBezierPathWithArcFromPoint:NSMakePoint(NSMinX(rect), NSMinY(rect)) toPoint:NSMakePoint(NSMidX(rect), NSMinY(rect)) radius:radius];
-	else 
-		[path lineToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect))];
-	
-	[path closePath];
-	return path;
-}
-
-@end
-
-extern void *AFDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlignment alignment, NSRect frame) {
+extern void AFDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlignment alignment, NSRect frame) {
 	NSBezierPath *textPath = [NSBezierPath bezierPathWithString:text inFont:font];
 	NSRect textPathBounds = NSMakeRect(NSMinX([textPath bounds]), [font descender], NSWidth([textPath bounds]), [font ascender] - [font descender]);
 	
@@ -116,5 +39,83 @@ extern void *AFDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlig
 		[textPath transformUsingAffineTransform:alignmentTransform];
 	}
 	
+	[textPath fill];
+}
+
+@implementation NSBezierPath (AFAdditions)
+
++ (NSBezierPath *)bezierPathWithString:(NSString *)text inFont:(NSFont *)font {
+	NSBezierPath *textPath = [self bezierPath];
+	[textPath appendBezierPathWithString:text inFont:font];
 	return textPath;
 }
+
+- (void)appendBezierPathWithString:(NSString *)text inFont:(NSFont *)font {
+	if ([self isEmpty]) [self moveToPoint:NSZeroPoint];
+	
+	NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:text];
+	CTLineRef line = CTLineCreateWithAttributedString((CFAttributedStringRef)attributedString);
+	[attributedString release];
+	
+	CFArrayRef glyphRuns = CTLineGetGlyphRuns(line);
+	CFIndex count = CFArrayGetCount(glyphRuns);
+	
+	for (CFIndex index = 0; index < count; index++) {
+		CTRunRef currentRun = CFArrayGetValueAtIndex(glyphRuns, index);
+		
+		CFIndex glyphCount = CTRunGetGlyphCount(currentRun);
+		
+		CGGlyph glyphs[glyphCount];
+		CTRunGetGlyphs(currentRun, CTRunGetStringRange(currentRun), glyphs);
+		
+		NSGlyph bezierPathGlyphs[glyphCount];
+		for (CFIndex glyphIndex = 0; glyphIndex < glyphCount; glyphIndex++)
+			bezierPathGlyphs[glyphIndex] = glyphs[glyphIndex];
+		
+		[self appendBezierPathWithGlyphs:bezierPathGlyphs count:glyphCount inFont:font];
+	}
+	
+	CFRelease(line);
+}
+
++ (NSBezierPath *)bezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius {
+	NSBezierPath *path = [self bezierPath];
+	[path appendBezierPathWithRoundedRect:rect corners:corners radius:radius];
+	return path;
+}
+
+- (void)appendBezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius {
+	[self moveToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect))];
+	
+	radius = MIN(radius, MIN(NSWidth(rect), NSHeight(rect))/2.0);
+	
+	if (corners & AFLowerRightCorner)
+		[self appendBezierPathWithArcFromPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect)) toPoint:NSMakePoint(NSMaxX(rect), NSMidY(rect)) radius:radius];
+	else {
+		[self lineToPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))];
+		[self lineToPoint:NSMakePoint(NSMaxX(rect), NSMidY(rect))];
+	}
+	
+	if (corners & AFUpperRightCorner)
+		[self appendBezierPathWithArcFromPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect)) toPoint:NSMakePoint(NSMidX(rect), NSMaxY(rect)) radius:radius];
+	else {
+		[self lineToPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
+		[self lineToPoint:NSMakePoint(NSMidX(rect), NSMaxY(rect))];
+	}
+	
+	if (corners & AFUpperLeftCorner)
+		[self appendBezierPathWithArcFromPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect)) toPoint:NSMakePoint(NSMinX(rect), NSMidY(rect)) radius:radius];
+	else {
+		[self lineToPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))];
+		[self lineToPoint:NSMakePoint(NSMinX(rect), NSMidY(rect))];
+	}
+	
+	if (corners & AFLowerLeftCorner)
+		[self appendBezierPathWithArcFromPoint:NSMakePoint(NSMinX(rect), NSMinY(rect)) toPoint:NSMakePoint(NSMidX(rect), NSMinY(rect)) radius:radius];
+	else 
+		[self lineToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect))];
+	
+	//[self closePath];
+}
+
+@end
