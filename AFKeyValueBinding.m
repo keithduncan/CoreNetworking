@@ -12,30 +12,31 @@ NSString *const AFUnboundValueKey = @"AFUnboundValue";
 
 @implementation NSObject (AFKeyValueBindingAdditions)
 
-- (void *)contextForBinding:(NSString *)binding {
-	return nil;
-}
-
 - (id)valueForBinding:(NSString *)binding {
 	id controller = [self controllerForBinding:binding];
-	id value = (controller == nil ? [[self infoForBinding:binding] objectForKey:AFUnboundValueKey] : [controller valueForKeyPath:[self keyPathForBinding:binding]]);
+	if (controller == nil) return [[self infoForBinding:binding] objectForKey:AFUnboundValueKey];
+	
+	id value = [controller valueForKeyPath:[self keyPathForBinding:binding]];
 	
 	NSValueTransformer *transformer = [self valueTransformerForBinding:binding];
-	return (transformer == nil ? value : [transformer transformedValue:value]);
+	if (transformer != nil) value = [transformer transformedValue:value];
+	
+	return value;
 }
 
 - (void)setValue:(id)value forBinding:(NSString *)binding {
 	NSValueTransformer *transformer = [self valueTransformerForBinding:binding];
 	if (transformer != nil && [[transformer class] allowsReverseTransformation]) value = [transformer reverseTransformedValue:value];
 	
-	if ([value isEqual:[self valueForBinding:binding]]) return;
-	
 	id controller = [self controllerForBinding:binding];
 	
-	if (controller == nil) {
-		[[self bindingInfoContainer] setValue:(value != nil ? [NSDictionary dictionaryWithObject:value forKey:AFUnboundValueKey] : nil) forKey:binding];
-		[self observeValueForKeyPath:binding ofObject:nil change:nil context:[self contextForBinding:binding]];
-	} else [controller setValue:value forKeyPath:[self keyPathForBinding:binding]];
+	if (controller != nil) {
+		[[self controllerForBinding:binding] setValue:value forKeyPath:[self keyPathForBinding:binding]];
+		return;
+	}
+	
+	[(id <AFKeyValueBinding>)self setInfo:[NSDictionary dictionaryWithObject:value forKey:AFUnboundValueKey] forBinding:binding];
+	[self observeValueForKeyPath:nil ofObject:nil change:nil context:[(id <AFKeyValueBinding>)self contextForBinding:binding]];
 }
 
 - (id)controllerForBinding:(NSString *)binding {
