@@ -16,6 +16,10 @@
 
 @end
 
+@interface _NSControllerTreeProxy (AFPrivateAdditions)
+- (void)addChildrenToCollection:(id)collection;
+@end
+
 // This function doesn't handle recursive relationships
 void AddChildrenToCollection(id node, id collection) {	
 	for (NSTreeNode *currentNode in [node childNodes]) {
@@ -34,10 +38,6 @@ id CollectionFromNode(Class collectionClass, id node, BOOL inclusive) {
 	
 	return collection;
 }
-
-@interface _NSControllerTreeProxy (AFPrivateAdditions)
-- (void)addChildrenToCollection:(id)collection;
-@end
 
 @implementation _NSControllerTreeProxy (AFPrivateAdditions)
 

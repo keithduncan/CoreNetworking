@@ -22,6 +22,8 @@ typedef NSUInteger AFRoundedCornerOptions;
 
 + (NSBezierPath *)bezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius;
 - (void)appendBezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius;
+
+- (void)applyInnerShadow:(NSShadow *)shadow;
 @end
 
 extern void AFDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlignment alignment, NSRect frame);

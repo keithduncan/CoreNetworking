@@ -14,8 +14,10 @@
 
 extern NSString *const AFUnboundValueKey;
 
-@interface NSObject (AFKeyValueBinding) // These are to be implemented by adpoters
-- (NSMutableDictionary *)bindingInfoContainer;
+@protocol AFKeyValueBinding // This is to be implemented by adpoters
+- (id)infoForBinding:(NSString *)binding;
+- (void)setInfo:(id)info forBinding:(NSString *)binding;
+
 - (void *)contextForBinding:(NSString *)binding;
 @end
 
