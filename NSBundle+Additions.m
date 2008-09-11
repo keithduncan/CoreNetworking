@@ -8,29 +8,27 @@
 
 #import "NSBundle+Additions.h"
 
-#import <objc/runtime.h>
-
 @implementation NSBundle (AFAdditions)
 
-NSImage *AFCacheImageFromBundle(NSBundle *bundle, NSString *name) {
-	NSImage *bundleImage = nil;
-	NSString *imageName = [bundle objectForInfoDictionaryKey:name];
+static NSImage *AFCacheImageFromBundle(NSBundle *bundle, NSString *key) {
+	NSImage *image = nil;
+	NSString *name = [bundle objectForInfoDictionaryKey:key];
 	
-	bundleImage = [NSImage imageNamed:imageName];
-	if (bundleImage != nil) return bundleImage;
+	image = [NSImage imageNamed:name];
+	if (image != nil) return image;
 	
-	bundleImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:imageName]];
-	[bundleImage setName:imageName];
+	image = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:name]];
+	[image setName:name];
 	
-	return bundleImage;
+	return image;
 }
 
 - (NSImage *)icon {
 	return AFCacheImageFromBundle(self, @"CFBundleIconFile");
 }
 
-- (NSImage *)alertImage {
-	return AFCacheImageFromBundle(self, AFAlertImageNameKey);
+- (NSImage *)alertIcon {
+	return AFCacheImageFromBundle(self, AFAlertIconFileKey);
 }
 
 - (NSString *)version {
@@ -53,10 +51,6 @@ NSImage *AFCacheImageFromBundle(NSBundle *bundle, NSString *name) {
 	return [self objectForInfoDictionaryKey:AFCompanyNameKey];
 }
 
-- (NSString *)companySite {
-	return [self objectForInfoDictionaryKey:AFRootCompanySiteURLKey];
-}
-
 @end
 
 @implementation NSBundle (AFPathAdditions)
@@ -67,6 +61,5 @@ NSImage *AFCacheImageFromBundle(NSBundle *bundle, NSString *name) {
 
 @end
 
-NSString *const AFAlertImageNameKey = @"AFAlertImageName";
+NSString *const AFAlertIconFileKey = @"AFAlertIconFile";
 NSString *const AFCompanyNameKey = @"AFCompanyName";
-NSString *const AFRootCompanySiteURLKey = @"AFRootCompanySiteURL";
