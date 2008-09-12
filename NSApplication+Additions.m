@@ -21,11 +21,13 @@ static NSLock *errorsLock = nil;
 		[errorsLock lock];
 	}
 	
-	AFErrorsController *controller = [[AFErrorsController alloc] initWithWindowNibName:@"Errors"];
+	AFErrorsController *controller = [[AFErrorsController alloc] initWith];
 	controller.errors = errors;
 	controller.title = title;
-		
+	
+	[NSApp beginModalSessionForWindow:[controller window]];
 	[NSApp runModalForWindow:[controller window]];
+	
 	[NSApp requestUserAttention:NSCriticalRequest];
 }
 

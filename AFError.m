@@ -31,6 +31,13 @@
 	return self;
 }
 
+- (void)dealloc {
+	[name release];
+	[reason release];
+	
+	[super dealloc];
+}
+
 - (id)copyWithZone:(NSZone *)zone {
 	return [[AFError alloc] initWithType:type name:name reason:reason];
 }

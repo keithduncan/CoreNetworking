@@ -77,10 +77,13 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 	
 	self.identifier = identifier;
 	
-	CFArrayRef allKeys = CFPreferencesCopyKeyList((CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
-	CFDictionaryRef values = CFPreferencesCopyMultiple(allKeys, (CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+	CFArrayRef keys = CFPreferencesCopyKeyList((CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+	CFDictionaryRef values = CFPreferencesCopyMultiple(keys, (CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+	
 	[_defaults setObject:(id)values forKey:kAFBundleIdentifierDefaults];
+	
 	CFRelease(values);
+	CFRelease(keys);
 	
 	return self;
 }

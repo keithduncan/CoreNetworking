@@ -249,7 +249,9 @@ typedef NSUInteger Action;
 	}
 	
 	int bytesOffset = 0, charsOffset = 0;
-	int charDigitsLen = sizeof(charDigits), bytesLen = (charsLen * 5) >> 3;
+	int charDigitsLen = sizeof(charDigits);
+	
+	int bytesLen = ((charsLen * 5) >> 3);
 	Byte bytes[bytesLen];
 	
 	// Also the code below does test that other discarded bits
@@ -334,9 +336,11 @@ typedef NSUInteger Action;
 	};
 	
 	const Byte *bytes = [self bytes];
+	int bytesLen = [self length];
 	
-	int bytesOffset = 0, bytesLen = [self length];
-	int charsOffset = 0, charsLen = ((bytesLen << 3) + 4) / 5;
+	int bytesOffset = 0, charsOffset = 0;
+	
+	int charsLen = ((bytesLen << 3) + 4)/5;
 	char chars[charsLen];
 	
 	while (bytesLen != 0) {
