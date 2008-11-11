@@ -10,14 +10,14 @@
 
 @implementation NSString (AFAdditions)
 
-- (NSString *)trimWhiteSpace {
+- (NSString *)stringByTrimmgWhiteSpace {
 	NSMutableString *newString = [[self mutableCopy] autorelease];
 	CFStringTrimWhitespace((CFMutableStringRef)newString);
 	return newString;
 }
 
 - (BOOL)isEmpty {
-	return [[self trimWhiteSpace] isEqualToString:@""];
+	return [[self stringByTrimmgWhiteSpace] isEqualToString:@""];
 }
 
 - (NSString *)stringByAppendingElipsisAfterCharacters:(NSUInteger)count {

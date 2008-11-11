@@ -12,19 +12,20 @@
 
 - (NSSet *)setByAddingObjects:(id)currentObject, ... {
 	va_list objectList;
-	NSMutableSet *newSet = [[NSMutableSet setWithSet:self] retain];
+	NSMutableSet *newSet = [[self mutableCopy] autorelease];
 	
 	if (currentObject != nil) {
 		[newSet addObject:currentObject];
 		
 		va_start(objectList, currentObject);
+		
 		while (currentObject = va_arg(objectList, id))
 			[newSet addObject:currentObject];
 		
 		va_end(objectList);
 	}
 	
-	return newSet;
+	return [newSet copy];
 }
 
 @end

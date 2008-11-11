@@ -30,6 +30,8 @@
 
 @implementation NSObject (AFPrivateAdditions)
 
+// This is intentionally not a private method, it may be made public sometime
+
 - (id)threadProxy:(NSThread *)thread {
 	_AFObjectProxy *proxy = [[_AFObjectProxy alloc] autorelease];
 	proxy->_thread = [thread retain];

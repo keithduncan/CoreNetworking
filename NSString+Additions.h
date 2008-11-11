@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (AFAdditions)
-- (NSString *)trimWhiteSpace;
+- (NSString *)stringByTrimmgWhiteSpace;
 - (BOOL)isEmpty;
 
 - (NSString *)stringByAppendingElipsisAfterCharacters:(NSUInteger)count;

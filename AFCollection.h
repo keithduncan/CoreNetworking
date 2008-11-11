@@ -17,6 +17,7 @@ NS_INLINE id AFSafeObjectAtIndex(NSArray *array, NSUInteger index) {
 }
 
 @interface NSSet (AFAdditions)
+// This returns a copy of the original with the additional objects appended to the collection
 - (NSSet *)setByAddingObjects:(id)firstObject, ... NS_REQUIRES_NIL_TERMINATION;
 @end
 
