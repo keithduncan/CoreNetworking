@@ -8,10 +8,6 @@
 
 #import "NSObject+Additions.h"
 
-@interface NSObject (AFPrivateAdditions)
-- (id)threadProxy:(NSThread *)thread;
-@end
-
 @interface _AFObjectProxy : NSProxy {
 @public
 	NSThread *_thread;
@@ -25,12 +21,6 @@
 - (id)mainThreadProxy {
 	return [self threadProxy:[NSThread mainThread]];
 }
-
-@end
-
-@implementation NSObject (AFPrivateAdditions)
-
-// This is intentionally not a private method, it may be made public sometime
 
 - (id)threadProxy:(NSThread *)thread {
 	_AFObjectProxy *proxy = [[_AFObjectProxy alloc] autorelease];
@@ -52,7 +42,7 @@
 	[super dealloc];
 }
 
-- (void)forwardInvocation:(NSInvocation *)invocation {	
+- (void)forwardInvocation:(NSInvocation *)invocation {
 	[invocation performSelector:@selector(invokeWithTarget:) onThread:_thread withObject:_target waitUntilDone:(_thread == [NSThread mainThread])];
 }
 

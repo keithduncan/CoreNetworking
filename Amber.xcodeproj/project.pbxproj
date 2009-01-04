@@ -23,6 +23,32 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		532F73E30F0EB1D7004D6056 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532F73E20F0EB1D7004D6056 /* Foundation.framework */; };
+		532F74F10F0EB1F5004D6056 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532F73E20F0EB1D7004D6056 /* Foundation.framework */; };
+		532F74F40F0EB204004D6056 /* AFCollection.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DEF9E70C229F4D007DF0AD /* AFCollection.h */; };
+		532F74F50F0EB205004D6056 /* AFCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DEF9E80C229F4D007DF0AD /* AFCollection.m */; };
+		532F74F60F0EB205004D6056 /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 5343E7170C21FB6D00B63E6E /* AFGeometry.h */; };
+		532F74F70F0EB205004D6056 /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 536E8AFA0C8E1055009783A5 /* AFGeometry.m */; };
+		532F74F80F0EB206004D6056 /* AFPropertyListProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 539028F80C89CAB300DFC044 /* AFPropertyListProtocol.h */; };
+		532F74F90F0EB206004D6056 /* AFPropertyListProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 539028F90C89CAB300DFC044 /* AFPropertyListProtocol.m */; };
+		532F74FA0F0EB206004D6056 /* AFRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DC99BA0D48D2D500A7B8C3 /* AFRange.h */; };
+		532F74FB0F0EB207004D6056 /* AFRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DC99BB0D48D2D500A7B8C3 /* AFRange.m */; };
+		532F74FC0F0EB208004D6056 /* AFUserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 53E64C0F0DAAD06700954F49 /* AFUserDefaults.h */; };
+		532F74FD0F0EB209004D6056 /* AFUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 53E64C100DAAD06700954F49 /* AFUserDefaults.m */; };
+		532F74FE0F0EB209004D6056 /* AmberFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A60DA0D269932001CD14A /* AmberFoundation.h */; };
+		532F74FF0F0EB20A004D6056 /* AmberFoundation_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 539A612D0D269CFA001CD14A /* AmberFoundation_Prefix.pch */; };
+		532F75000F0EB20B004D6056 /* NSData+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B0E5430C8A37DE002BD6A6 /* NSData+Additions.h */; };
+		532F75010F0EB20C004D6056 /* NSDate+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DEF9E90C229F4D007DF0AD /* NSDate+Additions.h */; };
+		532F75020F0EB20C004D6056 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B0E5420C8A37DE002BD6A6 /* NSData+Additions.m */; };
+		532F75030F0EB20D004D6056 /* NSDate+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DEF9EA0C229F4D007DF0AD /* NSDate+Additions.m */; };
+		532F75040F0EB20D004D6056 /* NSObject+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C356140CC11E410098F021 /* NSObject+Additions.h */; };
+		532F75050F0EB20E004D6056 /* NSObject+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C356150CC11E410098F021 /* NSObject+Additions.m */; };
+		532F75060F0EB210004D6056 /* NSSortDescriptor+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539F52470C32EA3F00E65AD1 /* NSSortDescriptor+Additions.h */; };
+		532F75070F0EB210004D6056 /* NSSortDescriptor+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539F52480C32EA3F00E65AD1 /* NSSortDescriptor+Additions.m */; };
+		532F75080F0EB210004D6056 /* NSString+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5360202D0CD7E40B007EDF87 /* NSString+Additions.h */; };
+		532F75090F0EB211004D6056 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5360202E0CD7E40B007EDF87 /* NSString+Additions.m */; };
+		532F750A0F0EB211004D6056 /* NSXMLElement+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A64400D287DD8001CD14A /* NSXMLElement+Additions.h */; };
+		532F750B0F0EB213004D6056 /* NSXMLElement+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */; };
 		5343E7240C21FBEA00B63E6E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
 		537E53A10CFC8D400084F920 /* Amber.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53A00CFC8D400084F920 /* Amber.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A60D40D269919001CD14A /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 536E8AFA0C8E1055009783A5 /* AFGeometry.m */; };
@@ -44,9 +70,8 @@
 		539A61330D269D96001CD14A /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5360202E0CD7E40B007EDF87 /* NSString+Additions.m */; };
 		539A64430D287DD8001CD14A /* NSXMLElement+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A64400D287DD8001CD14A /* NSXMLElement+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A64440D287DD8001CD14A /* NSXMLElement+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */; };
-		539A67FA0D296CBD001CD14A /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
+		539A67FA0D296CBD001CD14A /* AmberFoundation in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation */; };
 		539A68070D296D06001CD14A /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		539A68460D296D51001CD14A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A68450D296D51001CD14A /* Foundation.framework */; };
 		539A684A0D296D74001CD14A /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
 		539A684D0D296D7E001CD14A /* AFBoolToColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313D3030C785C9F00252228 /* AFBoolToColor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A684E0D296D7E001CD14A /* AFBoolToColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5313D3040C785C9F00252228 /* AFBoolToColor.m */; };
@@ -79,8 +104,8 @@
 		539A686E0D296DAF001CD14A /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A686F0D296DCD001CD14A /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E536F0CFC8CB80084F920 /* md5.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A68700D296DCD001CD14A /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 537E53700CFC8CB80084F920 /* md5.c */; };
-		539B6E7E0D4BBB8E00C86E48 /* Amber.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5343E70E0C21FB4200B63E6E /* Amber.framework */; };
-		539B6E7F0D4BBB8E00C86E48 /* AmberFoundation.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
+		539B6E7E0D4BBB8E00C86E48 /* Amber in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5343E70E0C21FB4200B63E6E /* Amber */; };
+		539B6E7F0D4BBB8E00C86E48 /* AmberFoundation in CopyFiles */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation */; };
 		53DC99BC0D48D2D500A7B8C3 /* AFRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DC99BA0D48D2D500A7B8C3 /* AFRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53DC99BD0D48D2D500A7B8C3 /* AFRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DC99BB0D48D2D500A7B8C3 /* AFRange.m */; };
 		53E64C110DAAD06700954F49 /* AFUserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 53E64C0F0DAAD06700954F49 /* AFUserDefaults.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -118,8 +143,8 @@
 			dstPath = /Library/Frameworks;
 			dstSubfolderSpec = 0;
 			files = (
-				539B6E7E0D4BBB8E00C86E48 /* Amber.framework in CopyFiles */,
-				539B6E7F0D4BBB8E00C86E48 /* AmberFoundation.framework in CopyFiles */,
+				539B6E7E0D4BBB8E00C86E48 /* Amber in CopyFiles */,
+				539B6E7F0D4BBB8E00C86E48 /* AmberFoundation in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,9 +153,11 @@
 /* Begin PBXFileReference section */
 		5313D3030C785C9F00252228 /* AFBoolToColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFBoolToColor.h; sourceTree = "<group>"; };
 		5313D3040C785C9F00252228 /* AFBoolToColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFBoolToColor.m; sourceTree = "<group>"; };
+		532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAmberFoundation.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		532F73E20F0EB1D7004D6056 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		533F23930C3423A100A790A7 /* NSGradient+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSGradient+Additions.h"; sourceTree = "<group>"; };
 		533F23940C3423A100A790A7 /* NSGradient+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSGradient+Additions.m"; sourceTree = "<group>"; };
-		5343E70E0C21FB4200B63E6E /* Amber.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Amber.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5343E70E0C21FB4200B63E6E /* Amber */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.framework; path = Amber; sourceTree = BUILT_PRODUCTS_DIR; };
 		5343E7100C21FB4200B63E6E /* Amber-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Amber-Info.plist"; sourceTree = "<group>"; };
 		5343E7170C21FB6D00B63E6E /* AFGeometry.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AFGeometry.h; sourceTree = "<group>"; };
 		5343E71A0C21FB8C00B63E6E /* NSTreeController+Additions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSTreeController+Additions.h"; sourceTree = "<group>"; };
@@ -153,13 +180,12 @@
 		537E53A00CFC8D400084F920 /* Amber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Amber.h; sourceTree = "<group>"; };
 		539028F80C89CAB300DFC044 /* AFPropertyListProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPropertyListProtocol.h; sourceTree = "<group>"; };
 		539028F90C89CAB300DFC044 /* AFPropertyListProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListProtocol.m; sourceTree = "<group>"; };
-		539A60C30D2698B7001CD14A /* AmberFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmberFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		539A60C30D2698B7001CD14A /* AmberFoundation */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.framework; path = AmberFoundation; sourceTree = BUILT_PRODUCTS_DIR; };
 		539A60C40D2698B7001CD14A /* AmberFoundation-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AmberFoundation-Info.plist"; sourceTree = "<group>"; };
 		539A60DA0D269932001CD14A /* AmberFoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation.h; sourceTree = "<group>"; };
 		539A612D0D269CFA001CD14A /* AmberFoundation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation_Prefix.pch; sourceTree = "<group>"; };
 		539A64400D287DD8001CD14A /* NSXMLElement+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLElement+Additions.h"; sourceTree = "<group>"; };
 		539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSXMLElement+Additions.m"; sourceTree = "<group>"; };
-		539A68450D296D51001CD14A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		539F52470C32EA3F00E65AD1 /* NSSortDescriptor+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSortDescriptor+Additions.h"; sourceTree = "<group>"; };
 		539F52480C32EA3F00E65AD1 /* NSSortDescriptor+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSortDescriptor+Additions.m"; sourceTree = "<group>"; };
 		53B0E5420C8A37DE002BD6A6 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Additions.m"; sourceTree = "<group>"; };
@@ -197,11 +223,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		532F73DC0F0EB1AA004D6056 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				532F73E30F0EB1D7004D6056 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5343E70C0C21FB4200B63E6E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				539A67FA0D296CBD001CD14A /* AmberFoundation.framework in Frameworks */,
+				539A67FA0D296CBD001CD14A /* AmberFoundation in Frameworks */,
 				5343E7240C21FBEA00B63E6E /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -210,7 +244,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				539A68460D296D51001CD14A /* Foundation.framework in Frameworks */,
+				532F74F10F0EB1F5004D6056 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,8 +266,9 @@
 		5343E70F0C21FB4200B63E6E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5343E70E0C21FB4200B63E6E /* Amber.framework */,
-				539A60C30D2698B7001CD14A /* AmberFoundation.framework */,
+				5343E70E0C21FB4200B63E6E /* Amber */,
+				539A60C30D2698B7001CD14A /* AmberFoundation */,
+				532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -254,8 +289,8 @@
 		537E52F10CFC89760084F920 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				532F73E20F0EB1D7004D6056 /* Foundation.framework */,
 				5343E7230C21FBEA00B63E6E /* Cocoa.framework */,
-				539A68450D296D51001CD14A /* Foundation.framework */,
 				53B0E5770C8A3A2C002BD6A6 /* Security.framework */,
 			);
 			name = Frameworks;
@@ -462,6 +497,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		532F73DA0F0EB1AA004D6056 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				532F74F40F0EB204004D6056 /* AFCollection.h in Headers */,
+				532F74F60F0EB205004D6056 /* AFGeometry.h in Headers */,
+				532F74F80F0EB206004D6056 /* AFPropertyListProtocol.h in Headers */,
+				532F74FA0F0EB206004D6056 /* AFRange.h in Headers */,
+				532F74FC0F0EB208004D6056 /* AFUserDefaults.h in Headers */,
+				532F74FE0F0EB209004D6056 /* AmberFoundation.h in Headers */,
+				532F74FF0F0EB20A004D6056 /* AmberFoundation_Prefix.pch in Headers */,
+				532F75000F0EB20B004D6056 /* NSData+Additions.h in Headers */,
+				532F75010F0EB20C004D6056 /* NSDate+Additions.h in Headers */,
+				532F75040F0EB20D004D6056 /* NSObject+Additions.h in Headers */,
+				532F75060F0EB210004D6056 /* NSSortDescriptor+Additions.h in Headers */,
+				532F75080F0EB210004D6056 /* NSString+Additions.h in Headers */,
+				532F750A0F0EB211004D6056 /* NSXMLElement+Additions.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5343E7090C21FB4200B63E6E /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -508,6 +563,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		532F73DD0F0EB1AA004D6056 /* AmberFoundation Touch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 532F73E10F0EB1D7004D6056 /* Build configuration list for PBXNativeTarget "AmberFoundation Touch" */;
+			buildPhases = (
+				532F73DA0F0EB1AA004D6056 /* Headers */,
+				532F73DB0F0EB1AA004D6056 /* Sources */,
+				532F73DC0F0EB1AA004D6056 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "AmberFoundation Touch";
+			productName = AmberFoundationTouch;
+			productReference = 532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		5343E70D0C21FB4200B63E6E /* Amber */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5343E7120C21FB4300B63E6E /* Build configuration list for PBXNativeTarget "Amber" */;
@@ -525,7 +597,7 @@
 			);
 			name = Amber;
 			productName = KDKit;
-			productReference = 5343E70E0C21FB4200B63E6E /* Amber.framework */;
+			productReference = 5343E70E0C21FB4200B63E6E /* Amber */;
 			productType = "com.apple.product-type.framework";
 		};
 		539A60C20D2698B7001CD14A /* AmberFoundation */ = {
@@ -543,7 +615,7 @@
 			);
 			name = AmberFoundation;
 			productName = FoundationAmber;
-			productReference = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */;
+			productReference = 539A60C30D2698B7001CD14A /* AmberFoundation */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -565,6 +637,7 @@
 				5343E70D0C21FB4200B63E6E /* Amber */,
 				539A60C20D2698B7001CD14A /* AmberFoundation */,
 				539B6E590D4BBB7C00C86E48 /* Install Frameworks */,
+				532F73DD0F0EB1AA004D6056 /* AmberFoundation Touch */,
 			);
 		};
 /* End PBXProject section */
@@ -613,6 +686,24 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		532F73DB0F0EB1AA004D6056 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				532F74F50F0EB205004D6056 /* AFCollection.m in Sources */,
+				532F74F70F0EB205004D6056 /* AFGeometry.m in Sources */,
+				532F74F90F0EB206004D6056 /* AFPropertyListProtocol.m in Sources */,
+				532F74FB0F0EB207004D6056 /* AFRange.m in Sources */,
+				532F74FD0F0EB209004D6056 /* AFUserDefaults.m in Sources */,
+				532F75020F0EB20C004D6056 /* NSData+Additions.m in Sources */,
+				532F75030F0EB20D004D6056 /* NSDate+Additions.m in Sources */,
+				532F75050F0EB20E004D6056 /* NSObject+Additions.m in Sources */,
+				532F75070F0EB210004D6056 /* NSSortDescriptor+Additions.m in Sources */,
+				532F75090F0EB211004D6056 /* NSString+Additions.m in Sources */,
+				532F750B0F0EB213004D6056 /* NSXMLElement+Additions.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		539A60C00D2698B7001CD14A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -674,6 +765,35 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		532F73DF0F0EB1AC004D6056 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PREBINDING = NO;
+				PRODUCT_NAME = AmberFoundation;
+				SDKROOT = iphoneos2.2;
+			};
+			name = Debug;
+		};
+		532F73E00F0EB1AC004D6056 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PREBINDING = NO;
+				PRODUCT_NAME = AmberFoundationTouch;
+				SDKROOT = iphoneos2.2;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		5343E6FF0C21FB1000B63E6E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -840,6 +960,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		532F73E10F0EB1D7004D6056 /* Build configuration list for PBXNativeTarget "AmberFoundation Touch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				532F73DF0F0EB1AC004D6056 /* Debug */,
+				532F73E00F0EB1AC004D6056 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "Amber" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

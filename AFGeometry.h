@@ -6,7 +6,9 @@
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+
+#if (TARGET_OS_MAC && !(TARGET_OS_IPHONE))
 
 NS_INLINE NSRect SizeCenteredInRect(NSSize size, NSRect frame) {
 	return NSInsetRect(frame, (NSWidth(frame) - size.width)/2.0, (NSHeight(frame) - size.height)/2.0);
@@ -26,3 +28,5 @@ NS_INLINE NSRect RectFromCentrePoint(NSPoint point, NSSize size) {
 
 // This divides the given rect into count pieces and stores them in buffer, buffer must be able to hold count NSRects
 extern void AFDivideRect(NSRect rect, NSRectEdge edge, NSUInteger count, NSRectArray buffer);
+
+#endif

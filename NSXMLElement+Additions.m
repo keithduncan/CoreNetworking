@@ -11,6 +11,8 @@
 #import "AFCollection.h"
 #import "NSString+Additions.h"
 
+#ifndef TARGET_OS_IPHONE
+
 @implementation NSXMLElement (AFAdditions)
 
 NSXMLNode *NodeForKey(NSXMLElement *element, NSString *key) {
@@ -47,3 +49,5 @@ NSXMLNode *NodeForKey(NSXMLElement *element, NSString *key) {
 }
 
 @end
+
+#endif

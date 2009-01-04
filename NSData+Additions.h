@@ -8,23 +8,29 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSData (Encryption)
+#if (TARGET_OS_MAC && !(TARGET_OS_IPHONE))
+@interface NSData (AFEncryption)
+// Note: these probably need revising anyway...
 - (NSData *)encryptWithPrivateKey:(NSString *)privateKey;
 - (NSData *)decryptWithPublicKey:(NSString *)publicKey;
 
 - (NSData *)encryptWithSymmetricKey:(NSString *)key;
 - (NSData *)decryptWithSymmetricKey:(NSString *)key;
 @end
+#endif
 
-@interface NSData (Hashing)
+@interface NSData (AFHashing)
 - (NSData *)MD5Hash;
 - (NSData *)SHA1Hash;
 @end
 
-@interface NSData (BaseConversion)
+@interface NSData (AFBaseConversion)
 + (id)dataWithBase32String:(NSString *)string;
 - (NSString *)base32String;
 
 + (id)dataWithBase64String:(NSString *)string;
 - (NSString *)base64String;
+
++ (id)dataWithHexString:(NSString *)string;
+- (NSString *)hexString;
 @end

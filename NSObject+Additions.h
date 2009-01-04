@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSObject (AFAdditions)
-- (id)mainThreadProxy; // This returns a proxy to the main thread, any messages sent will be performed synchronously
+@interface NSObject (AFAdditions) // Note: experimental interface
+- (id)mainThreadProxy; // Any messages sent will be performed synchronously
+- (id)threadProxy:(NSThread *)object; // Note: performed synchronously if (thread == [NSThread mainThread])
 @end

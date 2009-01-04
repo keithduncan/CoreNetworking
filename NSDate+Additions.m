@@ -8,7 +8,7 @@
 
 #import "NSDate+Additions.h"
 
-NSString *KeyForWeekday(Weekday day) {
+NSString *AFKeyForWeekday(AFWeekday day) {
 	switch (day) {
 		case SUNDAY:
 			return @"sunday";
@@ -26,7 +26,7 @@ NSString *KeyForWeekday(Weekday day) {
 			return @"saturday";
 	}
 	
-	[NSException raise:NSInvalidArgumentException format:@"KeyForWeekday(), argument \'%d\' was out of range 1 -> 7", day];
+	[NSException raise:NSInvalidArgumentException format:@"%s, argument \'%d\' was out of range [1,7]", __PRETTY_FUNCTION__, day];
 	return nil;
 }
 
