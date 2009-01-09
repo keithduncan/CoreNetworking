@@ -32,22 +32,20 @@
 static NSString *const AFKeyPathComponentSeparator = @".";
 
 + (NSString *)keyPathForComponents:(NSString *)component, ... {
-	va_list keyList;
-	NSMutableString *returnString = [NSMutableString string];
+	NSMutableArray *components = [NSMutableArray array];
 	
 	if (component != nil) {
-		[returnString appendString:component];
-		
+		va_list keyList;
 		va_start(keyList, component);
 		
-		while (component = va_arg(keyList, NSString *)) {
-			[returnString appendFormat:@"%@%@", AFKeyPathComponentSeparator, component];
-		}
+		do {
+			[components addObject:component];
+		} while (component = va_arg(keyList, NSString *));
 		
 		va_end(keyList);
 	}
 	
-	return returnString;
+	return [components componentsJoinedByString:AFKeyPathComponentSeparator];
 }
 
 - (NSArray *)keyPathComponents {
