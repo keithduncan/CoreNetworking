@@ -8,7 +8,9 @@
 
 #import "NSBundle+Additions.h"
 
-@implementation NSBundle (AFAdditions)
+NSString *const AFAlertIconFileKey = @"AFAlertIconFile";
+
+@implementation NSBundle (AKAdditions)
 
 static NSImage *AFCacheImageFromBundle(NSBundle *bundle, NSString *key) {
 	NSImage *image = nil;
@@ -31,35 +33,4 @@ static NSImage *AFCacheImageFromBundle(NSBundle *bundle, NSString *key) {
 	return AFCacheImageFromBundle(self, AFAlertIconFileKey);
 }
 
-- (NSString *)version {
-	return [self objectForInfoDictionaryKey:@"CFBundleVersion"];
-}
-
-- (NSString *)displayVersion {
-	return [self objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-}
-
-- (NSString *)name {
-	return [self objectForInfoDictionaryKey:@"CFBundleName"];
-}
-
-- (NSString *)displayName {
-	return [self objectForInfoDictionaryKey:@"CFBundleDisplayName"];
-}
-
-- (NSString *)companyName {
-	return [self objectForInfoDictionaryKey:AFCompanyNameKey];
-}
-
 @end
-
-@implementation NSBundle (AFPathAdditions)
-
-- (NSString *)applicationSupportPath:(NSUInteger)domain {
-	return [AFSafeObjectAtIndex(NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, domain, YES), 0) stringByAppendingPathComponent:[self name]];
-}
-
-@end
-
-NSString *const AFAlertIconFileKey = @"AFAlertIconFile";
-NSString *const AFCompanyNameKey = @"AFCompanyName";

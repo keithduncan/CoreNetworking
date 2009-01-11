@@ -8,27 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@protocol AFBundleDiscoveryProtocol <NSObject>
-- (NSBundle *)bundle;
-@end
+extern NSString *const AFAlertIconFileKey;
 
-@interface NSBundle (AFAdditions)
+@interface NSBundle (AKAdditions)
 - (NSImage *)icon;
 - (NSImage *)alertIcon;
-
-- (NSString *)version;
-- (NSString *)displayVersion;
-
-- (NSString *)name;
-- (NSString *)displayName;
-
-// These return the Info.plist object for the respective AF* key
-- (NSString *)companyName;
 @end
-
-@interface NSBundle (AFPathAdditions)
-- (NSString *)applicationSupportPath:(NSUInteger)domain;
-@end
-
-extern NSString *const AFAlertIconFileKey;
-extern NSString *const AFCompanyNameKey;
