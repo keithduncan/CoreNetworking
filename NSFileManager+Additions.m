@@ -12,7 +12,8 @@
 #import <openssl/evp.h>
 #import <openssl/pem.h>
 
-#import "md5.h"
+#import <CommonCrypto/CommonDigest.h>
+
 #import "NSData+Additions.h"
 
 @implementation NSFileManager (AFVerificationAdditions)
@@ -21,16 +22,20 @@
 	NSData *data = [NSData dataWithContentsOfFile:path];
 	if (data == nil) return NO;
 	
-	md5_state_t md5_state;
-	md5_init(&md5_state);
-	md5_append(&md5_state, [data bytes], [data length]);
-	unsigned char digest[16];
-	md5_finish(&md5_state, digest);
+	int error = 0;
 	
-	char hexDigest[32];
-	for (int di = 0; di < 16; di++) sprintf(hexDigest + di*2, "%02x", digest[di]);
+	CC_MD5_CTX state;
+	error = CC_MD5_Init(&state);
 	
-	return [hash isEqualToString:[NSString stringWithCString:hexDigest]];
+	error = CC_MD5_Update(&state, [data bytes], [data length]);
+	
+	unsigned char cDigest[CC_MD5_DIGEST_LENGTH];
+	error = CC_MD5_Final(cDigest, &state);
+	
+	NSMutableString *digest = [NSMutableString string];
+	for (NSUInteger index = 0; index < CC_MD5_DIGEST_LENGTH; index++) [digest appendFormat:@"%02x", cDigest[index], nil];
+	
+	return [hash isEqualToString:digest];
 }
 
 - (BOOL)validatePath:(NSString *)path withDSASignature:(NSString *)encodedSignature publicDSAKey:(NSString *)publicKey {	
