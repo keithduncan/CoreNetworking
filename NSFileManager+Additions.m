@@ -22,20 +22,7 @@
 	NSData *data = [NSData dataWithContentsOfFile:path];
 	if (data == nil) return NO;
 	
-	int error = 0;
-	
-	CC_MD5_CTX state;
-	error = CC_MD5_Init(&state);
-	
-	error = CC_MD5_Update(&state, [data bytes], [data length]);
-	
-	unsigned char cDigest[CC_MD5_DIGEST_LENGTH];
-	error = CC_MD5_Final(cDigest, &state);
-	
-	NSMutableString *digest = [NSMutableString string];
-	for (NSUInteger index = 0; index < CC_MD5_DIGEST_LENGTH; index++) [digest appendFormat:@"%02x", cDigest[index], nil];
-	
-	return [hash isEqualToString:digest];
+	return [hash isEqualToString:[[data MD5Hash] hexString]];
 }
 
 - (BOOL)validatePath:(NSString *)path withDSASignature:(NSString *)encodedSignature publicDSAKey:(NSString *)publicKey {	

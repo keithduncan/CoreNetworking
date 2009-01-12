@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 NS_INLINE BOOL AFArrayContainsIndex(NSArray *array, NSUInteger index) {
-	return NSLocationInRange(index, (NSRange){0, [array count]});
+	return NSLocationInRange(index, (NSRange){0, [array count]-1});
 }
 
 NS_INLINE id AFSafeObjectAtIndex(NSArray *array, NSUInteger index) {
