@@ -25,6 +25,6 @@ extern NSString *const AFCompanyNameKey;
 - (NSString *)applicationSupportPath:(NSUInteger)domain;
 @end
 
-@protocol AFBundleDiscoveryProtocol <NSObject>
+@protocol AFBundleDiscovery <NSObject>
 - (NSBundle *)bundle;
 @end

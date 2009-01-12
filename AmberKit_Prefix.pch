@@ -3,5 +3,8 @@
 //
 
 #ifdef __OBJC__
-	#import <AppKit/AppKit.h>
+	#import <Cocoa/Cocoa.h>
+
+	#import "AmberKit/AmberKit.h"
+	#import "AmberFoundation/AmberFoundation.h"
 #endif

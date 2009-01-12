@@ -35,7 +35,6 @@
 		532F74FC0F0EB208004D6056 /* AFUserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 53E64C0F0DAAD06700954F49 /* AFUserDefaults.h */; };
 		532F74FD0F0EB209004D6056 /* AFUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 53E64C100DAAD06700954F49 /* AFUserDefaults.m */; };
 		532F74FE0F0EB209004D6056 /* AmberFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A60DA0D269932001CD14A /* AmberFoundation.h */; };
-		532F74FF0F0EB20A004D6056 /* AmberFoundation_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 539A612D0D269CFA001CD14A /* AmberFoundation_Prefix.pch */; };
 		532F75000F0EB20B004D6056 /* NSData+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B0E5430C8A37DE002BD6A6 /* NSData+Additions.h */; };
 		532F75010F0EB20C004D6056 /* NSDate+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DEF9E90C229F4D007DF0AD /* NSDate+Additions.h */; };
 		532F75020F0EB20C004D6056 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B0E5420C8A37DE002BD6A6 /* NSData+Additions.m */; };
@@ -52,6 +51,86 @@
 		53692A610F1B7EC80051C367 /* AmberFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692A620F1B7EC80051C367 /* AmberKit.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 53EE97470F190070008AD8C0 /* AmberKit.framework */; };
 		53692A630F1B7EC80051C367 /* Core Networking.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 53EE97550F190089008AD8C0 /* Core Networking.framework */; };
+		53692A870F1B82900051C367 /* ActivationCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692A830F1B82900051C367 /* ActivationCell.h */; };
+		53692A880F1B82900051C367 /* ActivationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692A840F1B82900051C367 /* ActivationCell.m */; };
+		53692A890F1B82900051C367 /* ActivationControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692A850F1B82900051C367 /* ActivationControl.h */; };
+		53692A8A0F1B82900051C367 /* ActivationControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692A860F1B82900051C367 /* ActivationControl.m */; };
+		53692A8B0F1B82920051C367 /* ActivationControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692A860F1B82900051C367 /* ActivationControl.m */; };
+		53692A8C0F1B82920051C367 /* ActivationControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692A850F1B82900051C367 /* ActivationControl.h */; };
+		53692A8D0F1B82930051C367 /* ActivationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692A840F1B82900051C367 /* ActivationCell.m */; };
+		53692A8E0F1B82930051C367 /* ActivationCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692A830F1B82900051C367 /* ActivationCell.h */; };
+		53692AAD0F1B82A10051C367 /* CalendarButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA30F1B82A10051C367 /* CalendarButton.h */; };
+		53692AAE0F1B82A10051C367 /* CalendarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AA40F1B82A10051C367 /* CalendarButton.m */; };
+		53692AAF0F1B82A10051C367 /* KDCalendarControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA50F1B82A10051C367 /* KDCalendarControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692AB00F1B82A10051C367 /* KDCalendarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AA60F1B82A10051C367 /* KDCalendarControl.m */; };
+		53692AB10F1B82A10051C367 /* KDCalendarControlCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA70F1B82A10051C367 /* KDCalendarControlCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692AB20F1B82A10051C367 /* KDCalendarControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AA80F1B82A10051C367 /* KDCalendarControlCell.m */; };
+		53692AB30F1B82A10051C367 /* KDWeekCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA90F1B82A10051C367 /* KDWeekCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692AB40F1B82A10051C367 /* KDWeekCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AAA0F1B82A10051C367 /* KDWeekCell.m */; };
+		53692AB50F1B82A10051C367 /* KDWeekControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AAB0F1B82A10051C367 /* KDWeekControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692AB60F1B82A10051C367 /* KDWeekControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AAC0F1B82A10051C367 /* KDWeekControl.m */; };
+		53692AB70F1B82A30051C367 /* CalendarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AA40F1B82A10051C367 /* CalendarButton.m */; };
+		53692AB80F1B82A40051C367 /* CalendarButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA30F1B82A10051C367 /* CalendarButton.h */; };
+		53692AB90F1B82A40051C367 /* KDCalendarControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA50F1B82A10051C367 /* KDCalendarControl.h */; };
+		53692ABA0F1B82A50051C367 /* KDCalendarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AA60F1B82A10051C367 /* KDCalendarControl.m */; };
+		53692ABB0F1B82A50051C367 /* KDCalendarControlCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA70F1B82A10051C367 /* KDCalendarControlCell.h */; };
+		53692ABC0F1B82A50051C367 /* KDCalendarControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AA80F1B82A10051C367 /* KDCalendarControlCell.m */; };
+		53692ABD0F1B82A60051C367 /* KDWeekCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA90F1B82A10051C367 /* KDWeekCell.h */; };
+		53692ABE0F1B82A60051C367 /* KDWeekCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AAA0F1B82A10051C367 /* KDWeekCell.m */; };
+		53692ABF0F1B82A80051C367 /* KDWeekControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AAB0F1B82A10051C367 /* KDWeekControl.h */; };
+		53692AC00F1B82A80051C367 /* KDWeekControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AAC0F1B82A10051C367 /* KDWeekControl.m */; };
+		53692AD50F1B82B60051C367 /* DisclosureButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AC30F1B82B60051C367 /* DisclosureButton.h */; };
+		53692AD60F1B82B60051C367 /* DisclosureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AC40F1B82B60051C367 /* DisclosureButton.m */; };
+		53692AD70F1B82B60051C367 /* ImageTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AC50F1B82B60051C367 /* ImageTextCell.h */; };
+		53692AD80F1B82B60051C367 /* ImageTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AC60F1B82B60051C367 /* ImageTextCell.m */; };
+		53692AD90F1B82B60051C367 /* iTunesNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AC70F1B82B60051C367 /* iTunesNode.h */; };
+		53692ADA0F1B82B60051C367 /* iTunesNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AC80F1B82B60051C367 /* iTunesNode.m */; };
+		53692ADB0F1B82B60051C367 /* KDiTunesLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AC90F1B82B60051C367 /* KDiTunesLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692ADC0F1B82B60051C367 /* KDiTunesLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692ACA0F1B82B60051C367 /* KDiTunesLibrary.m */; };
+		53692ADD0F1B82B60051C367 /* KDLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692ACB0F1B82B60051C367 /* KDLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692ADE0F1B82B60051C367 /* KDLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692ACC0F1B82B60051C367 /* KDLibrary.m */; };
+		53692ADF0F1B82B60051C367 /* KDLibraryWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692ACD0F1B82B60051C367 /* KDLibraryWindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692AE00F1B82B60051C367 /* KDLibraryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692ACE0F1B82B60051C367 /* KDLibraryWindowController.m */; };
+		53692AE10F1B82B60051C367 /* ShadowTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692ACF0F1B82B60051C367 /* ShadowTextCell.h */; settings = {ATTRIBUTES = (); }; };
+		53692AE20F1B82B60051C367 /* ShadowTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD00F1B82B60051C367 /* ShadowTextCell.m */; };
+		53692AE30F1B82B60051C367 /* SourceList.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AD10F1B82B60051C367 /* SourceList.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692AE40F1B82B60051C367 /* SourceList.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD20F1B82B60051C367 /* SourceList.m */; };
+		53692AE50F1B82B60051C367 /* SourceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AD30F1B82B60051C367 /* SourceNode.h */; };
+		53692AE60F1B82B60051C367 /* SourceNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD40F1B82B60051C367 /* SourceNode.m */; };
+		53692AE70F1B82B80051C367 /* DisclosureButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AC30F1B82B60051C367 /* DisclosureButton.h */; };
+		53692AE80F1B82B90051C367 /* DisclosureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AC40F1B82B60051C367 /* DisclosureButton.m */; };
+		53692AE90F1B82BA0051C367 /* ImageTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AC60F1B82B60051C367 /* ImageTextCell.m */; };
+		53692AEA0F1B82BA0051C367 /* ImageTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AC50F1B82B60051C367 /* ImageTextCell.h */; };
+		53692AEB0F1B82BB0051C367 /* iTunesNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AC80F1B82B60051C367 /* iTunesNode.m */; };
+		53692AEC0F1B82BB0051C367 /* iTunesNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AC70F1B82B60051C367 /* iTunesNode.h */; };
+		53692AED0F1B82BC0051C367 /* KDiTunesLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AC90F1B82B60051C367 /* KDiTunesLibrary.h */; };
+		53692AEE0F1B82BC0051C367 /* KDiTunesLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692ACA0F1B82B60051C367 /* KDiTunesLibrary.m */; };
+		53692AEF0F1B82BD0051C367 /* KDLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692ACB0F1B82B60051C367 /* KDLibrary.h */; };
+		53692AF00F1B82BE0051C367 /* KDLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692ACC0F1B82B60051C367 /* KDLibrary.m */; };
+		53692AF10F1B82BE0051C367 /* KDLibraryWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692ACD0F1B82B60051C367 /* KDLibraryWindowController.h */; };
+		53692AF20F1B82BE0051C367 /* KDLibraryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692ACE0F1B82B60051C367 /* KDLibraryWindowController.m */; };
+		53692AF30F1B82BF0051C367 /* ShadowTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692ACF0F1B82B60051C367 /* ShadowTextCell.h */; };
+		53692AF40F1B82C00051C367 /* ShadowTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD00F1B82B60051C367 /* ShadowTextCell.m */; };
+		53692AF50F1B82C00051C367 /* SourceList.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AD10F1B82B60051C367 /* SourceList.h */; };
+		53692AF60F1B82C00051C367 /* SourceList.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD20F1B82B60051C367 /* SourceList.m */; };
+		53692AF70F1B82C10051C367 /* SourceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AD30F1B82B60051C367 /* SourceNode.h */; };
+		53692AF80F1B82C20051C367 /* SourceNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD40F1B82B60051C367 /* SourceNode.m */; };
+		53692B010F1B82C90051C367 /* KDGradientButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AFB0F1B82C90051C367 /* KDGradientButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692B020F1B82C90051C367 /* KDGradientButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AFC0F1B82C90051C367 /* KDGradientButton.m */; };
+		53692B030F1B82C90051C367 /* KDGradientCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AFD0F1B82C90051C367 /* KDGradientCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692B040F1B82C90051C367 /* KDGradientCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AFE0F1B82C90051C367 /* KDGradientCell.m */; };
+		53692B050F1B82C90051C367 /* KDSwitchControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AFF0F1B82C90051C367 /* KDSwitchControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692B060F1B82C90051C367 /* KDSwitchControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692B000F1B82C90051C367 /* KDSwitchControl.m */; };
+		53692B070F1B82CB0051C367 /* KDGradientCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AFD0F1B82C90051C367 /* KDGradientCell.h */; };
+		53692B080F1B82CC0051C367 /* KDSwitchControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AFF0F1B82C90051C367 /* KDSwitchControl.h */; };
+		53692B090F1B82CC0051C367 /* KDSwitchControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692B000F1B82C90051C367 /* KDSwitchControl.m */; };
+		53692B0A0F1B82CD0051C367 /* KDGradientCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AFE0F1B82C90051C367 /* KDGradientCell.m */; };
+		53692B0B0F1B82CD0051C367 /* KDGradientButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AFC0F1B82C90051C367 /* KDGradientButton.m */; };
+		53692B0C0F1B82CD0051C367 /* KDGradientButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AFB0F1B82C90051C367 /* KDGradientButton.h */; };
+		53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
+		53692B8F0F1B85360051C367 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
+		53692B900F1B85360051C367 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		537E53A10CFC8D400084F920 /* Amber.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53A00CFC8D400084F920 /* Amber.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A60D40D269919001CD14A /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 536E8AFA0C8E1055009783A5 /* AFGeometry.m */; };
 		539A60D50D269919001CD14A /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 5343E7170C21FB6D00B63E6E /* AFGeometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -77,43 +156,41 @@
 		53DC99BD0D48D2D500A7B8C3 /* AFRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DC99BB0D48D2D500A7B8C3 /* AFRange.m */; };
 		53E64C110DAAD06700954F49 /* AFUserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 53E64C0F0DAAD06700954F49 /* AFUserDefaults.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53E64C120DAAD06700954F49 /* AFUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 53E64C100DAAD06700954F49 /* AFUserDefaults.m */; };
-		53EE97650F1900D7008AD8C0 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 53EE97630F1900D7008AD8C0 /* AmberKit.h */; };
-		53EE977A0F190182008AD8C0 /* AFBoolToColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313D3030C785C9F00252228 /* AFBoolToColor.h */; };
+		53EE97650F1900D7008AD8C0 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 53EE97630F1900D7008AD8C0 /* AmberKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53EE977A0F190182008AD8C0 /* AFBoolToColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313D3030C785C9F00252228 /* AFBoolToColor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53EE977B0F190182008AD8C0 /* AFBoolToColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5313D3040C785C9F00252228 /* AFBoolToColor.m */; };
-		53EE977C0F190182008AD8C0 /* AFDateToString.h in Headers */ = {isa = PBXBuildFile; fileRef = 5376ACC20C2564820034854C /* AFDateToString.h */; };
+		53EE977C0F190182008AD8C0 /* AFDateToString.h in Headers */ = {isa = PBXBuildFile; fileRef = 5376ACC20C2564820034854C /* AFDateToString.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53EE977D0F190183008AD8C0 /* AFDateToString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5376ACC10C2564820034854C /* AFDateToString.m */; };
 		53EE977E0F190183008AD8C0 /* AFError.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D6636A0CA073A40070E943 /* AFError.h */; };
 		53EE977F0F190183008AD8C0 /* AFError.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D6636B0CA073A40070E943 /* AFError.m */; };
 		53EE97800F190184008AD8C0 /* AFErrorCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D6636C0CA073A40070E943 /* AFErrorCell.h */; };
 		53EE97810F190184008AD8C0 /* AFErrorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D6636D0CA073A40070E943 /* AFErrorCell.m */; };
 		53EE97820F190188008AD8C0 /* AFPluralTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D664220CA076030070E943 /* AFPluralTransformer.m */; };
-		53EE97830F190188008AD8C0 /* AFPluralTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D664210CA076030070E943 /* AFPluralTransformer.h */; };
-		53EE97840F19018A008AD8C0 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
-		53EE97850F19018A008AD8C0 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; };
+		53EE97830F190188008AD8C0 /* AFPluralTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D664210CA076030070E943 /* AFPluralTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53EE97860F19018A008AD8C0 /* AFErrorsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D663D80CA075110070E943 /* AFErrorsController.m */; };
 		53EE97870F19018C008AD8C0 /* AFErrorsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D663D70CA075110070E943 /* AFErrorsController.h */; };
 		53EE97880F190191008AD8C0 /* ErrorPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D664020CA0757E0070E943 /* ErrorPresentation.h */; };
 		53EE97890F190191008AD8C0 /* Errors.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53D663700CA073A40070E943 /* Errors.xib */; };
-		53EE978A0F190191008AD8C0 /* NSApplication+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D663680CA073A40070E943 /* NSApplication+Additions.h */; };
+		53EE978A0F190191008AD8C0 /* NSApplication+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D663680CA073A40070E943 /* NSApplication+Additions.h */; settings = {ATTRIBUTES = (); }; };
 		53EE978B0F190192008AD8C0 /* NSApplication+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D663690CA073A40070E943 /* NSApplication+Additions.m */; };
-		53EE978C0F190193008AD8C0 /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */; };
+		53EE978C0F190193008AD8C0 /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53EE978D0F190193008AD8C0 /* NSBezierPath+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D46FE50C2EB83D00BF18ED /* NSBezierPath+Additions.m */; };
-		53EE978E0F190194008AD8C0 /* NSBundle+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370C9590CCC107D0040D602 /* NSBundle+Additions.h */; };
-		53EE978F0F190194008AD8C0 /* NSBundle+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370C95A0CCC107D0040D602 /* NSBundle+Additions.m */; };
-		53EE97920F190196008AD8C0 /* NSGradient+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F23930C3423A100A790A7 /* NSGradient+Additions.h */; };
+		53EE978E0F190194008AD8C0 /* NSBundle+AKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370C9590CCC107D0040D602 /* NSBundle+AKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53EE978F0F190194008AD8C0 /* NSBundle+AKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370C95A0CCC107D0040D602 /* NSBundle+AKAdditions.m */; };
+		53EE97920F190196008AD8C0 /* NSGradient+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F23930C3423A100A790A7 /* NSGradient+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53EE97930F190197008AD8C0 /* NSGradient+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F23940C3423A100A790A7 /* NSGradient+Additions.m */; };
-		53EE97940F190197008AD8C0 /* NSTreeController+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5343E71A0C21FB8C00B63E6E /* NSTreeController+Additions.h */; };
+		53EE97940F190197008AD8C0 /* NSTreeController+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5343E71A0C21FB8C00B63E6E /* NSTreeController+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53EE97950F190197008AD8C0 /* NSTreeController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5343E71B0C21FB8C00B63E6E /* NSTreeController+Additions.m */; };
-		53EE97960F190199008AD8C0 /* NSTreeNode+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 536B80CA0C7C475C004167C5 /* NSTreeNode+Additions.h */; };
+		53EE97960F190199008AD8C0 /* NSTreeNode+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 536B80CA0C7C475C004167C5 /* NSTreeNode+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53EE97970F190199008AD8C0 /* NSTreeNode+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 536B80CB0C7C475C004167C5 /* NSTreeNode+Additions.m */; };
 		53EE97980F190199008AD8C0 /* Orange Ball.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 53D6636F0CA073A40070E943 /* Orange Ball.tiff */; };
 		53EE97990F19019A008AD8C0 /* Stop.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 53D6636E0CA073A40070E943 /* Stop.tiff */; };
-		53EE979C0F19024F008AD8C0 /* NSBundle+AFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53EE979A0F19024F008AD8C0 /* NSBundle+AFAdditions.h */; };
+		53EE979C0F19024F008AD8C0 /* NSBundle+AFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53EE979A0F19024F008AD8C0 /* NSBundle+AFAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53EE979D0F19024F008AD8C0 /* NSBundle+AFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53EE979B0F19024F008AD8C0 /* NSBundle+AFAdditions.m */; };
 		53EE979E0F19024F008AD8C0 /* NSBundle+AFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53EE979A0F19024F008AD8C0 /* NSBundle+AFAdditions.h */; };
 		53EE979F0F19024F008AD8C0 /* NSBundle+AFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53EE979B0F19024F008AD8C0 /* NSBundle+AFAdditions.m */; };
 		53EE97A20F1902CB008AD8C0 /* NSFileManager+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E533B0CFC8BA80084F920 /* NSFileManager+Additions.m */; };
-		53EE97A30F1902CB008AD8C0 /* NSFileManager+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53390CFC8BA70084F920 /* NSFileManager+Additions.h */; };
+		53EE97A30F1902CB008AD8C0 /* NSFileManager+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53390CFC8BA70084F920 /* NSFileManager+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +207,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 53EE97540F190089008AD8C0 /* Core Networking */;
 			remoteInfo = "Core Networking";
+		};
+		53692B130F1B834E0051C367 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			remoteInfo = AmberFoundation;
 		};
 		539A60E90D269A7C001CD14A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -188,11 +272,52 @@
 		5343E7230C21FBEA00B63E6E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		5360202D0CD7E40B007EDF87 /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
 		5360202E0CD7E40B007EDF87 /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
+		53692A830F1B82900051C367 /* ActivationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivationCell.h; sourceTree = "<group>"; };
+		53692A840F1B82900051C367 /* ActivationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivationCell.m; sourceTree = "<group>"; };
+		53692A850F1B82900051C367 /* ActivationControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivationControl.h; sourceTree = "<group>"; };
+		53692A860F1B82900051C367 /* ActivationControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivationControl.m; sourceTree = "<group>"; };
+		53692AA30F1B82A10051C367 /* CalendarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarButton.h; sourceTree = "<group>"; };
+		53692AA40F1B82A10051C367 /* CalendarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarButton.m; sourceTree = "<group>"; };
+		53692AA50F1B82A10051C367 /* KDCalendarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDCalendarControl.h; sourceTree = "<group>"; };
+		53692AA60F1B82A10051C367 /* KDCalendarControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDCalendarControl.m; sourceTree = "<group>"; };
+		53692AA70F1B82A10051C367 /* KDCalendarControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDCalendarControlCell.h; sourceTree = "<group>"; };
+		53692AA80F1B82A10051C367 /* KDCalendarControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDCalendarControlCell.m; sourceTree = "<group>"; };
+		53692AA90F1B82A10051C367 /* KDWeekCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDWeekCell.h; sourceTree = "<group>"; };
+		53692AAA0F1B82A10051C367 /* KDWeekCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDWeekCell.m; sourceTree = "<group>"; };
+		53692AAB0F1B82A10051C367 /* KDWeekControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDWeekControl.h; sourceTree = "<group>"; };
+		53692AAC0F1B82A10051C367 /* KDWeekControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDWeekControl.m; sourceTree = "<group>"; };
+		53692AC30F1B82B60051C367 /* DisclosureButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisclosureButton.h; sourceTree = "<group>"; };
+		53692AC40F1B82B60051C367 /* DisclosureButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisclosureButton.m; sourceTree = "<group>"; };
+		53692AC50F1B82B60051C367 /* ImageTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageTextCell.h; sourceTree = "<group>"; };
+		53692AC60F1B82B60051C367 /* ImageTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageTextCell.m; sourceTree = "<group>"; };
+		53692AC70F1B82B60051C367 /* iTunesNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iTunesNode.h; sourceTree = "<group>"; };
+		53692AC80F1B82B60051C367 /* iTunesNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iTunesNode.m; sourceTree = "<group>"; };
+		53692AC90F1B82B60051C367 /* KDiTunesLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDiTunesLibrary.h; sourceTree = "<group>"; };
+		53692ACA0F1B82B60051C367 /* KDiTunesLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDiTunesLibrary.m; sourceTree = "<group>"; };
+		53692ACB0F1B82B60051C367 /* KDLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDLibrary.h; sourceTree = "<group>"; };
+		53692ACC0F1B82B60051C367 /* KDLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDLibrary.m; sourceTree = "<group>"; };
+		53692ACD0F1B82B60051C367 /* KDLibraryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDLibraryWindowController.h; sourceTree = "<group>"; };
+		53692ACE0F1B82B60051C367 /* KDLibraryWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDLibraryWindowController.m; sourceTree = "<group>"; };
+		53692ACF0F1B82B60051C367 /* ShadowTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShadowTextCell.h; sourceTree = "<group>"; };
+		53692AD00F1B82B60051C367 /* ShadowTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShadowTextCell.m; sourceTree = "<group>"; };
+		53692AD10F1B82B60051C367 /* SourceList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceList.h; sourceTree = "<group>"; };
+		53692AD20F1B82B60051C367 /* SourceList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceList.m; sourceTree = "<group>"; };
+		53692AD30F1B82B60051C367 /* SourceNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceNode.h; sourceTree = "<group>"; };
+		53692AD40F1B82B60051C367 /* SourceNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceNode.m; sourceTree = "<group>"; };
+		53692AFB0F1B82C90051C367 /* KDGradientButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDGradientButton.h; sourceTree = "<group>"; };
+		53692AFC0F1B82C90051C367 /* KDGradientButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDGradientButton.m; sourceTree = "<group>"; };
+		53692AFD0F1B82C90051C367 /* KDGradientCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDGradientCell.h; sourceTree = "<group>"; };
+		53692AFE0F1B82C90051C367 /* KDGradientCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDGradientCell.m; sourceTree = "<group>"; };
+		53692AFF0F1B82C90051C367 /* KDSwitchControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDSwitchControl.h; sourceTree = "<group>"; };
+		53692B000F1B82C90051C367 /* KDSwitchControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDSwitchControl.m; sourceTree = "<group>"; };
+		53692BA50F1B85A90051C367 /* AmberFoundation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation_Prefix.pch; sourceTree = "<group>"; };
+		53692BA60F1B85B10051C367 /* AmberKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberKit_Prefix.pch; sourceTree = "<group>"; };
+		53692C180F1B87CA0051C367 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		536B80CA0C7C475C004167C5 /* NSTreeNode+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTreeNode+Additions.h"; sourceTree = "<group>"; };
 		536B80CB0C7C475C004167C5 /* NSTreeNode+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTreeNode+Additions.m"; sourceTree = "<group>"; };
 		536E8AFA0C8E1055009783A5 /* AFGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFGeometry.m; sourceTree = "<group>"; };
-		5370C9590CCC107D0040D602 /* NSBundle+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+Additions.h"; sourceTree = "<group>"; };
-		5370C95A0CCC107D0040D602 /* NSBundle+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Additions.m"; sourceTree = "<group>"; };
+		5370C9590CCC107D0040D602 /* NSBundle+AKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+AKAdditions.h"; sourceTree = "<group>"; };
+		5370C95A0CCC107D0040D602 /* NSBundle+AKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+AKAdditions.m"; sourceTree = "<group>"; };
 		5376ACC10C2564820034854C /* AFDateToString.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AFDateToString.m; sourceTree = "<group>"; };
 		5376ACC20C2564820034854C /* AFDateToString.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AFDateToString.h; sourceTree = "<group>"; };
 		537E532E0CFC89930084F920 /* Amber_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Amber_Prefix.pch; sourceTree = "<group>"; };
@@ -204,7 +329,6 @@
 		539A60C30D2698B7001CD14A /* AmberFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmberFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		539A60C40D2698B7001CD14A /* AmberFoundation-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AmberFoundation-Info.plist"; sourceTree = "<group>"; };
 		539A60DA0D269932001CD14A /* AmberFoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation.h; sourceTree = "<group>"; };
-		539A612D0D269CFA001CD14A /* AmberFoundation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation_Prefix.pch; sourceTree = "<group>"; };
 		539A64400D287DD8001CD14A /* NSXMLElement+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLElement+Additions.h"; sourceTree = "<group>"; };
 		539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSXMLElement+Additions.m"; sourceTree = "<group>"; };
 		539F52470C32EA3F00E65AD1 /* NSSortDescriptor+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSortDescriptor+Additions.h"; sourceTree = "<group>"; };
@@ -279,6 +403,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */,
+				53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,8 +456,95 @@
 		53692A7A0F1B7EF90051C367 /* Externals */ = {
 			isa = PBXGroup;
 			children = (
+				53692AFA0F1B82C90051C367 /* switchcontrol */,
+				53692A820F1B82900051C367 /* activationcontrol */,
+				53692AA20F1B82A10051C367 /* calendarcontrol */,
+				53692AC20F1B82B60051C367 /* sourcelist */,
 			);
 			name = Externals;
+			sourceTree = "<group>";
+		};
+		53692A820F1B82900051C367 /* activationcontrol */ = {
+			isa = PBXGroup;
+			children = (
+				53692A830F1B82900051C367 /* ActivationCell.h */,
+				53692A840F1B82900051C367 /* ActivationCell.m */,
+				53692A850F1B82900051C367 /* ActivationControl.h */,
+				53692A860F1B82900051C367 /* ActivationControl.m */,
+			);
+			path = activationcontrol;
+			sourceTree = "<group>";
+		};
+		53692AA20F1B82A10051C367 /* calendarcontrol */ = {
+			isa = PBXGroup;
+			children = (
+				53692AA30F1B82A10051C367 /* CalendarButton.h */,
+				53692AA40F1B82A10051C367 /* CalendarButton.m */,
+				53692AA50F1B82A10051C367 /* KDCalendarControl.h */,
+				53692AA60F1B82A10051C367 /* KDCalendarControl.m */,
+				53692AA70F1B82A10051C367 /* KDCalendarControlCell.h */,
+				53692AA80F1B82A10051C367 /* KDCalendarControlCell.m */,
+				53692AA90F1B82A10051C367 /* KDWeekCell.h */,
+				53692AAA0F1B82A10051C367 /* KDWeekCell.m */,
+				53692AAB0F1B82A10051C367 /* KDWeekControl.h */,
+				53692AAC0F1B82A10051C367 /* KDWeekControl.m */,
+			);
+			path = calendarcontrol;
+			sourceTree = "<group>";
+		};
+		53692AC20F1B82B60051C367 /* sourcelist */ = {
+			isa = PBXGroup;
+			children = (
+				53692AC30F1B82B60051C367 /* DisclosureButton.h */,
+				53692AC40F1B82B60051C367 /* DisclosureButton.m */,
+				53692AC50F1B82B60051C367 /* ImageTextCell.h */,
+				53692AC60F1B82B60051C367 /* ImageTextCell.m */,
+				53692AC70F1B82B60051C367 /* iTunesNode.h */,
+				53692AC80F1B82B60051C367 /* iTunesNode.m */,
+				53692AC90F1B82B60051C367 /* KDiTunesLibrary.h */,
+				53692ACA0F1B82B60051C367 /* KDiTunesLibrary.m */,
+				53692ACB0F1B82B60051C367 /* KDLibrary.h */,
+				53692ACC0F1B82B60051C367 /* KDLibrary.m */,
+				53692ACD0F1B82B60051C367 /* KDLibraryWindowController.h */,
+				53692ACE0F1B82B60051C367 /* KDLibraryWindowController.m */,
+				53692ACF0F1B82B60051C367 /* ShadowTextCell.h */,
+				53692AD00F1B82B60051C367 /* ShadowTextCell.m */,
+				53692AD10F1B82B60051C367 /* SourceList.h */,
+				53692AD20F1B82B60051C367 /* SourceList.m */,
+				53692AD30F1B82B60051C367 /* SourceNode.h */,
+				53692AD40F1B82B60051C367 /* SourceNode.m */,
+			);
+			path = sourcelist;
+			sourceTree = "<group>";
+		};
+		53692AFA0F1B82C90051C367 /* switchcontrol */ = {
+			isa = PBXGroup;
+			children = (
+				53692AFB0F1B82C90051C367 /* KDGradientButton.h */,
+				53692AFC0F1B82C90051C367 /* KDGradientButton.m */,
+				53692AFD0F1B82C90051C367 /* KDGradientCell.h */,
+				53692AFE0F1B82C90051C367 /* KDGradientCell.m */,
+				53692AFF0F1B82C90051C367 /* KDSwitchControl.h */,
+				53692B000F1B82C90051C367 /* KDSwitchControl.m */,
+			);
+			path = switchcontrol;
+			sourceTree = "<group>";
+		};
+		53692B8E0F1B852C0051C367 /* General */ = {
+			isa = PBXGroup;
+			children = (
+				53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */,
+				53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */,
+			);
+			name = General;
+			sourceTree = "<group>";
+		};
+		53692B960F1B85640051C367 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				53692BA60F1B85B10051C367 /* AmberKit_Prefix.pch */,
+			);
+			name = "Other Sources";
 			sourceTree = "<group>";
 		};
 		5376ACBF0C25645E0034854C /* Value Transformers */ = {
@@ -350,6 +563,7 @@
 		537E52F10CFC89760084F920 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				53692C180F1B87CA0051C367 /* QuartzCore.framework */,
 				532F73E20F0EB1D7004D6056 /* Foundation.framework */,
 				5343E7230C21FBEA00B63E6E /* Cocoa.framework */,
 				53B0E5770C8A3A2C002BD6A6 /* Security.framework */,
@@ -413,7 +627,7 @@
 		539A610E0D269C7C001CD14A /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				539A612D0D269CFA001CD14A /* AmberFoundation_Prefix.pch */,
+				53692BA50F1B85A90051C367 /* AmberFoundation_Prefix.pch */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -423,8 +637,8 @@
 			children = (
 				536B80CA0C7C475C004167C5 /* NSTreeNode+Additions.h */,
 				536B80CB0C7C475C004167C5 /* NSTreeNode+Additions.m */,
-				5370C9590CCC107D0040D602 /* NSBundle+Additions.h */,
-				5370C95A0CCC107D0040D602 /* NSBundle+Additions.m */,
+				5370C9590CCC107D0040D602 /* NSBundle+AKAdditions.h */,
+				5370C95A0CCC107D0040D602 /* NSBundle+AKAdditions.m */,
 				53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */,
 				53D46FE50C2EB83D00BF18ED /* NSBezierPath+Additions.m */,
 				533F23930C3423A100A790A7 /* NSGradient+Additions.h */,
@@ -446,15 +660,6 @@
 				53DC99BB0D48D2D500A7B8C3 /* AFRange.m */,
 				53E64C0F0DAAD06700954F49 /* AFUserDefaults.h */,
 				53E64C100DAAD06700954F49 /* AFUserDefaults.m */,
-			);
-			name = General;
-			sourceTree = "<group>";
-		};
-		539A613E0D269EA8001CD14A /* General */ = {
-			isa = PBXGroup;
-			children = (
-				53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */,
-				53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */,
 			);
 			name = General;
 			sourceTree = "<group>";
@@ -546,11 +751,12 @@
 			isa = PBXGroup;
 			children = (
 				53EE97630F1900D7008AD8C0 /* AmberKit.h */,
-				539A613E0D269EA8001CD14A /* General */,
+				53692B8E0F1B852C0051C367 /* General */,
 				5376ACBF0C25645E0034854C /* Value Transformers */,
 				539A610F0D269C8F001CD14A /* Categories */,
 				53DC9A840D48F73C00A7B8C3 /* Components */,
 				53692A7A0F1B7EF90051C367 /* Externals */,
+				53692B960F1B85640051C367 /* Other Sources */,
 				53EE97480F190070008AD8C0 /* AmberKit-Info.plist */,
 			);
 			name = AmberKit;
@@ -577,7 +783,6 @@
 				532F74FA0F0EB206004D6056 /* AFRange.h in Headers */,
 				532F74FC0F0EB208004D6056 /* AFUserDefaults.h in Headers */,
 				532F74FE0F0EB209004D6056 /* AmberFoundation.h in Headers */,
-				532F74FF0F0EB20A004D6056 /* AmberFoundation_Prefix.pch in Headers */,
 				532F75000F0EB20B004D6056 /* NSData+Additions.h in Headers */,
 				532F75010F0EB20C004D6056 /* NSDate+Additions.h in Headers */,
 				532F75040F0EB20D004D6056 /* NSObject+Additions.h in Headers */,
@@ -593,6 +798,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				537E53A10CFC8D400084F920 /* Amber.h in Headers */,
+				53692A8C0F1B82920051C367 /* ActivationControl.h in Headers */,
+				53692A8E0F1B82930051C367 /* ActivationCell.h in Headers */,
+				53692AB80F1B82A40051C367 /* CalendarButton.h in Headers */,
+				53692AB90F1B82A40051C367 /* KDCalendarControl.h in Headers */,
+				53692ABB0F1B82A50051C367 /* KDCalendarControlCell.h in Headers */,
+				53692ABD0F1B82A60051C367 /* KDWeekCell.h in Headers */,
+				53692ABF0F1B82A80051C367 /* KDWeekControl.h in Headers */,
+				53692AE70F1B82B80051C367 /* DisclosureButton.h in Headers */,
+				53692AEA0F1B82BA0051C367 /* ImageTextCell.h in Headers */,
+				53692AEC0F1B82BB0051C367 /* iTunesNode.h in Headers */,
+				53692AED0F1B82BC0051C367 /* KDiTunesLibrary.h in Headers */,
+				53692AEF0F1B82BD0051C367 /* KDLibrary.h in Headers */,
+				53692AF10F1B82BE0051C367 /* KDLibraryWindowController.h in Headers */,
+				53692AF30F1B82BF0051C367 /* ShadowTextCell.h in Headers */,
+				53692AF50F1B82C00051C367 /* SourceList.h in Headers */,
+				53692AF70F1B82C10051C367 /* SourceNode.h in Headers */,
+				53692B070F1B82CB0051C367 /* KDGradientCell.h in Headers */,
+				53692B080F1B82CC0051C367 /* KDSwitchControl.h in Headers */,
+				53692B0C0F1B82CD0051C367 /* KDGradientButton.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -627,15 +851,34 @@
 				53EE977E0F190183008AD8C0 /* AFError.h in Headers */,
 				53EE97800F190184008AD8C0 /* AFErrorCell.h in Headers */,
 				53EE97830F190188008AD8C0 /* AFPluralTransformer.h in Headers */,
-				53EE97850F19018A008AD8C0 /* AFKeyValueBinding.h in Headers */,
 				53EE97870F19018C008AD8C0 /* AFErrorsController.h in Headers */,
 				53EE97880F190191008AD8C0 /* ErrorPresentation.h in Headers */,
 				53EE978A0F190191008AD8C0 /* NSApplication+Additions.h in Headers */,
 				53EE978C0F190193008AD8C0 /* NSBezierPath+Additions.h in Headers */,
-				53EE978E0F190194008AD8C0 /* NSBundle+Additions.h in Headers */,
+				53EE978E0F190194008AD8C0 /* NSBundle+AKAdditions.h in Headers */,
 				53EE97920F190196008AD8C0 /* NSGradient+Additions.h in Headers */,
 				53EE97940F190197008AD8C0 /* NSTreeController+Additions.h in Headers */,
 				53EE97960F190199008AD8C0 /* NSTreeNode+Additions.h in Headers */,
+				53692A870F1B82900051C367 /* ActivationCell.h in Headers */,
+				53692A890F1B82900051C367 /* ActivationControl.h in Headers */,
+				53692AAD0F1B82A10051C367 /* CalendarButton.h in Headers */,
+				53692AAF0F1B82A10051C367 /* KDCalendarControl.h in Headers */,
+				53692AB10F1B82A10051C367 /* KDCalendarControlCell.h in Headers */,
+				53692AB30F1B82A10051C367 /* KDWeekCell.h in Headers */,
+				53692AB50F1B82A10051C367 /* KDWeekControl.h in Headers */,
+				53692AD50F1B82B60051C367 /* DisclosureButton.h in Headers */,
+				53692AD70F1B82B60051C367 /* ImageTextCell.h in Headers */,
+				53692AD90F1B82B60051C367 /* iTunesNode.h in Headers */,
+				53692ADB0F1B82B60051C367 /* KDiTunesLibrary.h in Headers */,
+				53692ADD0F1B82B60051C367 /* KDLibrary.h in Headers */,
+				53692ADF0F1B82B60051C367 /* KDLibraryWindowController.h in Headers */,
+				53692AE10F1B82B60051C367 /* ShadowTextCell.h in Headers */,
+				53692AE30F1B82B60051C367 /* SourceList.h in Headers */,
+				53692AE50F1B82B60051C367 /* SourceNode.h in Headers */,
+				53692B010F1B82C90051C367 /* KDGradientButton.h in Headers */,
+				53692B030F1B82C90051C367 /* KDGradientCell.h in Headers */,
+				53692B050F1B82C90051C367 /* KDSwitchControl.h in Headers */,
+				53692B900F1B85360051C367 /* AFKeyValueBinding.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -718,6 +961,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				53692B140F1B834E0051C367 /* PBXTargetDependency */,
 			);
 			name = AmberKit;
 			productName = AmberKit;
@@ -863,6 +1107,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53692A8B0F1B82920051C367 /* ActivationControl.m in Sources */,
+				53692A8D0F1B82930051C367 /* ActivationCell.m in Sources */,
+				53692AB70F1B82A30051C367 /* CalendarButton.m in Sources */,
+				53692ABA0F1B82A50051C367 /* KDCalendarControl.m in Sources */,
+				53692ABC0F1B82A50051C367 /* KDCalendarControlCell.m in Sources */,
+				53692ABE0F1B82A60051C367 /* KDWeekCell.m in Sources */,
+				53692AC00F1B82A80051C367 /* KDWeekControl.m in Sources */,
+				53692AE80F1B82B90051C367 /* DisclosureButton.m in Sources */,
+				53692AE90F1B82BA0051C367 /* ImageTextCell.m in Sources */,
+				53692AEB0F1B82BB0051C367 /* iTunesNode.m in Sources */,
+				53692AEE0F1B82BC0051C367 /* KDiTunesLibrary.m in Sources */,
+				53692AF00F1B82BE0051C367 /* KDLibrary.m in Sources */,
+				53692AF20F1B82BE0051C367 /* KDLibraryWindowController.m in Sources */,
+				53692AF40F1B82C00051C367 /* ShadowTextCell.m in Sources */,
+				53692AF60F1B82C00051C367 /* SourceList.m in Sources */,
+				53692AF80F1B82C20051C367 /* SourceNode.m in Sources */,
+				53692B090F1B82CC0051C367 /* KDSwitchControl.m in Sources */,
+				53692B0A0F1B82CD0051C367 /* KDGradientCell.m in Sources */,
+				53692B0B0F1B82CD0051C367 /* KDGradientButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -875,14 +1138,33 @@
 				53EE977F0F190183008AD8C0 /* AFError.m in Sources */,
 				53EE97810F190184008AD8C0 /* AFErrorCell.m in Sources */,
 				53EE97820F190188008AD8C0 /* AFPluralTransformer.m in Sources */,
-				53EE97840F19018A008AD8C0 /* AFKeyValueBinding.m in Sources */,
 				53EE97860F19018A008AD8C0 /* AFErrorsController.m in Sources */,
 				53EE978B0F190192008AD8C0 /* NSApplication+Additions.m in Sources */,
 				53EE978D0F190193008AD8C0 /* NSBezierPath+Additions.m in Sources */,
-				53EE978F0F190194008AD8C0 /* NSBundle+Additions.m in Sources */,
+				53EE978F0F190194008AD8C0 /* NSBundle+AKAdditions.m in Sources */,
 				53EE97930F190197008AD8C0 /* NSGradient+Additions.m in Sources */,
 				53EE97950F190197008AD8C0 /* NSTreeController+Additions.m in Sources */,
 				53EE97970F190199008AD8C0 /* NSTreeNode+Additions.m in Sources */,
+				53692A880F1B82900051C367 /* ActivationCell.m in Sources */,
+				53692A8A0F1B82900051C367 /* ActivationControl.m in Sources */,
+				53692AAE0F1B82A10051C367 /* CalendarButton.m in Sources */,
+				53692AB00F1B82A10051C367 /* KDCalendarControl.m in Sources */,
+				53692AB20F1B82A10051C367 /* KDCalendarControlCell.m in Sources */,
+				53692AB40F1B82A10051C367 /* KDWeekCell.m in Sources */,
+				53692AB60F1B82A10051C367 /* KDWeekControl.m in Sources */,
+				53692AD60F1B82B60051C367 /* DisclosureButton.m in Sources */,
+				53692AD80F1B82B60051C367 /* ImageTextCell.m in Sources */,
+				53692ADA0F1B82B60051C367 /* iTunesNode.m in Sources */,
+				53692ADC0F1B82B60051C367 /* KDiTunesLibrary.m in Sources */,
+				53692ADE0F1B82B60051C367 /* KDLibrary.m in Sources */,
+				53692AE00F1B82B60051C367 /* KDLibraryWindowController.m in Sources */,
+				53692AE20F1B82B60051C367 /* ShadowTextCell.m in Sources */,
+				53692AE40F1B82B60051C367 /* SourceList.m in Sources */,
+				53692AE60F1B82B60051C367 /* SourceNode.m in Sources */,
+				53692B020F1B82C90051C367 /* KDGradientButton.m in Sources */,
+				53692B040F1B82C90051C367 /* KDGradientCell.m in Sources */,
+				53692B060F1B82C90051C367 /* KDSwitchControl.m in Sources */,
+				53692B8F0F1B85360051C367 /* AFKeyValueBinding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -905,6 +1187,11 @@
 			isa = PBXTargetDependency;
 			target = 53EE97540F190089008AD8C0 /* Core Networking */;
 			targetProxy = 53692A4A0F1B7E970051C367 /* PBXContainerItemProxy */;
+		};
+		53692B140F1B834E0051C367 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			targetProxy = 53692B130F1B834E0051C367 /* PBXContainerItemProxy */;
 		};
 		539A60EA0D269A7C001CD14A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1124,7 +1411,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_PREFIX_HEADER = AmberKit_Prefix.pch;
 				INFOPLIST_FILE = "AmberKit-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				OTHER_LDFLAGS = (
@@ -1150,7 +1437,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_PREFIX_HEADER = AmberKit_Prefix.pch;
 				INFOPLIST_FILE = "AmberKit-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				OTHER_LDFLAGS = (

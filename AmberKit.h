@@ -15,8 +15,7 @@
 #import "AmberKit/ErrorPresentation.h"
 
 #import "AmberKit/NSTreeNode+Additions.h"
-#import "AmberKit/NSFileManager+Additions.h"
-#import "AmberKit/NSBundle+Additions.h"
+#import "AmberKit/NSBundle+AKAdditions.h"
 #import "AmberKit/NSBezierPath+Additions.h"
 #import "AmberKit/NSGradient+Additions.h"
 #import "AmberKit/NSTreeController+Additions.h"

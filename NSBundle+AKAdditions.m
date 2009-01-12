@@ -6,7 +6,7 @@
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import "NSBundle+Additions.h"
+#import "NSBundle+AKAdditions.h"
 
 NSString *const AFAlertIconFileKey = @"AFAlertIconFile";
 

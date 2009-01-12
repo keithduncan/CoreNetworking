@@ -22,3 +22,4 @@
 #import "AmberFoundation/NSSortDescriptor+Additions.h"
 #import "AmberFoundation/NSString+Additions.h"
 #import "AmberFoundation/NSXMLElement+Additions.h"
+#import "AmberFoundation/NSBundle+AFAdditions.h"
