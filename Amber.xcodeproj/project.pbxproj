@@ -22,6 +22,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		5302AC830F2121D200867A4A /* Amber.m in Sources */ = {isa = PBXBuildFile; fileRef = 5302AC820F2121D200867A4A /* Amber.m */; };
 		532F73E30F0EB1D7004D6056 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532F73E20F0EB1D7004D6056 /* Foundation.framework */; };
 		532F74F10F0EB1F5004D6056 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532F73E20F0EB1D7004D6056 /* Foundation.framework */; };
 		532F74F40F0EB204004D6056 /* AFCollection.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DEF9E70C229F4D007DF0AD /* AFCollection.h */; };
@@ -76,11 +77,11 @@
 		53692ADE0F1B82B60051C367 /* KDLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692ACC0F1B82B60051C367 /* KDLibrary.m */; };
 		53692ADF0F1B82B60051C367 /* KDLibraryWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692ACD0F1B82B60051C367 /* KDLibraryWindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692AE00F1B82B60051C367 /* KDLibraryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692ACE0F1B82B60051C367 /* KDLibraryWindowController.m */; };
-		53692AE10F1B82B60051C367 /* ShadowTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692ACF0F1B82B60051C367 /* ShadowTextCell.h */; settings = {ATTRIBUTES = (); }; };
+		53692AE10F1B82B60051C367 /* ShadowTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692ACF0F1B82B60051C367 /* ShadowTextCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692AE20F1B82B60051C367 /* ShadowTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD00F1B82B60051C367 /* ShadowTextCell.m */; };
-		53692AE30F1B82B60051C367 /* SourceList.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AD10F1B82B60051C367 /* SourceList.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53692AE30F1B82B60051C367 /* SourceList.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AD10F1B82B60051C367 /* SourceList.h */; settings = {ATTRIBUTES = (); }; };
 		53692AE40F1B82B60051C367 /* SourceList.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD20F1B82B60051C367 /* SourceList.m */; };
-		53692AE50F1B82B60051C367 /* SourceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AD30F1B82B60051C367 /* SourceNode.h */; };
+		53692AE50F1B82B60051C367 /* SourceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AD30F1B82B60051C367 /* SourceNode.h */; settings = {ATTRIBUTES = (); }; };
 		53692AE60F1B82B60051C367 /* SourceNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD40F1B82B60051C367 /* SourceNode.m */; };
 		53692B010F1B82C90051C367 /* KDGradientButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AFB0F1B82C90051C367 /* KDGradientButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692B020F1B82C90051C367 /* KDGradientButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AFC0F1B82C90051C367 /* KDGradientButton.m */; };
@@ -92,9 +93,9 @@
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
 		53692C960F1B8AF90051C367 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532F73E20F0EB1D7004D6056 /* Foundation.framework */; };
-		53692D5C0F1B90DB0051C367 /* AFBoolToColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313D3030C785C9F00252228 /* AFBoolToColor.h */; };
+		53692D5C0F1B90DB0051C367 /* AFBoolToColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313D3030C785C9F00252228 /* AFBoolToColor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D5D0F1B90DB0051C367 /* AFBoolToColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5313D3040C785C9F00252228 /* AFBoolToColor.m */; };
-		53692D5E0F1B90DC0051C367 /* AFDateToString.h in Headers */ = {isa = PBXBuildFile; fileRef = 5376ACC20C2564820034854C /* AFDateToString.h */; };
+		53692D5E0F1B90DC0051C367 /* AFDateToString.h in Headers */ = {isa = PBXBuildFile; fileRef = 5376ACC20C2564820034854C /* AFDateToString.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D600F1B90DD0051C367 /* AFError.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D6636B0CA073A40070E943 /* AFError.m */; };
 		53692D610F1B90DD0051C367 /* AFDateToString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5376ACC10C2564820034854C /* AFDateToString.m */; };
 		53692D620F1B90DD0051C367 /* AFError.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D6636A0CA073A40070E943 /* AFError.h */; };
@@ -102,24 +103,24 @@
 		53692D640F1B90DE0051C367 /* AFErrorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D6636D0CA073A40070E943 /* AFErrorCell.m */; };
 		53692D650F1B90DF0051C367 /* AFErrorsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D663D70CA075110070E943 /* AFErrorsController.h */; };
 		53692D660F1B90E00051C367 /* AFErrorsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D663D80CA075110070E943 /* AFErrorsController.m */; };
-		53692D670F1B90E10051C367 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; };
+		53692D670F1B90E10051C367 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D680F1B90E10051C367 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
-		53692D690F1B90E10051C367 /* AFPluralTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D664210CA076030070E943 /* AFPluralTransformer.h */; };
+		53692D690F1B90E10051C367 /* AFPluralTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D664210CA076030070E943 /* AFPluralTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D6A0F1B90E20051C367 /* AFPluralTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D664220CA076030070E943 /* AFPluralTransformer.m */; };
 		53692D6B0F1B90E30051C367 /* AmberKit Additions-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53692D0A0F1B90120051C367 /* AmberKit Additions-Info.plist */; };
 		53692D6C0F1B90E40051C367 /* ErrorPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D664020CA0757E0070E943 /* ErrorPresentation.h */; };
 		53692D6D0F1B90E40051C367 /* Errors.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53D663700CA073A40070E943 /* Errors.xib */; };
 		53692D6E0F1B90E40051C367 /* NSApplication+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D663680CA073A40070E943 /* NSApplication+Additions.h */; };
 		53692D6F0F1B90E50051C367 /* NSApplication+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D663690CA073A40070E943 /* NSApplication+Additions.m */; };
-		53692D700F1B90E70051C367 /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */; };
+		53692D700F1B90E70051C367 /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D710F1B90E70051C367 /* NSBezierPath+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D46FE50C2EB83D00BF18ED /* NSBezierPath+Additions.m */; };
-		53692D720F1B90E70051C367 /* NSBundle+AKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370C9590CCC107D0040D602 /* NSBundle+AKAdditions.h */; };
+		53692D720F1B90E70051C367 /* NSBundle+AKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370C9590CCC107D0040D602 /* NSBundle+AKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D730F1B90E80051C367 /* NSBundle+AKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370C95A0CCC107D0040D602 /* NSBundle+AKAdditions.m */; };
-		53692D740F1B90E80051C367 /* NSGradient+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F23930C3423A100A790A7 /* NSGradient+Additions.h */; };
+		53692D740F1B90E80051C367 /* NSGradient+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F23930C3423A100A790A7 /* NSGradient+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D750F1B90E80051C367 /* NSGradient+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F23940C3423A100A790A7 /* NSGradient+Additions.m */; };
-		53692D760F1B90E90051C367 /* NSTreeController+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5343E71A0C21FB8C00B63E6E /* NSTreeController+Additions.h */; };
+		53692D760F1B90E90051C367 /* NSTreeController+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5343E71A0C21FB8C00B63E6E /* NSTreeController+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D780F1B90EB0051C367 /* NSTreeNode+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 536B80CB0C7C475C004167C5 /* NSTreeNode+Additions.m */; };
-		53692D790F1B90EC0051C367 /* NSTreeNode+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 536B80CA0C7C475C004167C5 /* NSTreeNode+Additions.h */; };
+		53692D790F1B90EC0051C367 /* NSTreeNode+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 536B80CA0C7C475C004167C5 /* NSTreeNode+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D7A0F1B90EC0051C367 /* NSTreeController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5343E71B0C21FB8C00B63E6E /* NSTreeController+Additions.m */; };
 		53692D7B0F1B90ED0051C367 /* Orange Ball.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 53D6636F0CA073A40070E943 /* Orange Ball.tiff */; };
 		53692D7C0F1B90ED0051C367 /* Stop.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 53D6636E0CA073A40070E943 /* Stop.tiff */; };
@@ -254,6 +255,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5302AC820F2121D200867A4A /* Amber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Amber.m; sourceTree = "<group>"; };
 		5313D3030C785C9F00252228 /* AFBoolToColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFBoolToColor.h; sourceTree = "<group>"; };
 		5313D3040C785C9F00252228 /* AFBoolToColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFBoolToColor.m; sourceTree = "<group>"; };
 		532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAmberFoundation.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -607,6 +609,7 @@
 			isa = PBXGroup;
 			children = (
 				537E53A00CFC8D400084F920 /* Amber.h */,
+				5302AC820F2121D200867A4A /* Amber.m */,
 			);
 			name = Amber;
 			sourceTree = "<group>";
@@ -1179,6 +1182,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5302AC830F2121D200867A4A /* Amber.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
