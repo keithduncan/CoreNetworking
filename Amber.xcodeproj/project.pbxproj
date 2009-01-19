@@ -99,10 +99,6 @@
 		53692D600F1B90DD0051C367 /* AFError.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D6636B0CA073A40070E943 /* AFError.m */; };
 		53692D610F1B90DD0051C367 /* AFDateToString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5376ACC10C2564820034854C /* AFDateToString.m */; };
 		53692D620F1B90DD0051C367 /* AFError.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D6636A0CA073A40070E943 /* AFError.h */; };
-		53692D630F1B90DE0051C367 /* AFErrorCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D6636C0CA073A40070E943 /* AFErrorCell.h */; };
-		53692D640F1B90DE0051C367 /* AFErrorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D6636D0CA073A40070E943 /* AFErrorCell.m */; };
-		53692D650F1B90DF0051C367 /* AFErrorsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D663D70CA075110070E943 /* AFErrorsController.h */; };
-		53692D660F1B90E00051C367 /* AFErrorsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D663D80CA075110070E943 /* AFErrorsController.m */; };
 		53692D670F1B90E10051C367 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D680F1B90E10051C367 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
 		53692D690F1B90E10051C367 /* AFPluralTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D664210CA076030070E943 /* AFPluralTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -110,8 +106,6 @@
 		53692D6B0F1B90E30051C367 /* AmberKit Additions-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53692D0A0F1B90120051C367 /* AmberKit Additions-Info.plist */; };
 		53692D6C0F1B90E40051C367 /* ErrorPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D664020CA0757E0070E943 /* ErrorPresentation.h */; };
 		53692D6D0F1B90E40051C367 /* Errors.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53D663700CA073A40070E943 /* Errors.xib */; };
-		53692D6E0F1B90E40051C367 /* NSApplication+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D663680CA073A40070E943 /* NSApplication+Additions.h */; };
-		53692D6F0F1B90E50051C367 /* NSApplication+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D663690CA073A40070E943 /* NSApplication+Additions.m */; };
 		53692D700F1B90E70051C367 /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D710F1B90E70051C367 /* NSBezierPath+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D46FE50C2EB83D00BF18ED /* NSBezierPath+Additions.m */; };
 		53692D720F1B90E70051C367 /* NSBundle+AKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370C9590CCC107D0040D602 /* NSBundle+AKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -130,19 +124,12 @@
 		53692DE10F1B91550051C367 /* AFDateToString.h in Headers */ = {isa = PBXBuildFile; fileRef = 5376ACC20C2564820034854C /* AFDateToString.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692DE20F1B91560051C367 /* AFError.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D6636A0CA073A40070E943 /* AFError.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692DE30F1B91560051C367 /* AFDateToString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5376ACC10C2564820034854C /* AFDateToString.m */; };
-		53692DE40F1B91570051C367 /* AFErrorCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D6636C0CA073A40070E943 /* AFErrorCell.h */; };
 		53692DE50F1B91570051C367 /* AFError.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D6636B0CA073A40070E943 /* AFError.m */; };
-		53692DE60F1B91580051C367 /* AFErrorsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D663D70CA075110070E943 /* AFErrorsController.h */; };
-		53692DE70F1B91580051C367 /* AFErrorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D6636D0CA073A40070E943 /* AFErrorCell.m */; };
 		53692DE80F1B915A0051C367 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53692DE90F1B915A0051C367 /* AFErrorsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D663D80CA075110070E943 /* AFErrorsController.m */; };
 		53692DEA0F1B915A0051C367 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
 		53692DEB0F1B915B0051C367 /* AFPluralTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D664210CA076030070E943 /* AFPluralTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692DEC0F1B915C0051C367 /* AFPluralTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D664220CA076030070E943 /* AFPluralTransformer.m */; };
-		53692DEE0F1B915D0051C367 /* ErrorPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D664020CA0757E0070E943 /* ErrorPresentation.h */; };
 		53692DEF0F1B915E0051C367 /* Errors.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53D663700CA073A40070E943 /* Errors.xib */; };
-		53692DF10F1B91610051C367 /* NSApplication+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D663680CA073A40070E943 /* NSApplication+Additions.h */; };
-		53692DF20F1B91610051C367 /* NSApplication+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D663690CA073A40070E943 /* NSApplication+Additions.m */; };
 		53692DF30F1B91610051C367 /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D46FE40C2EB83D00BF18ED /* NSBezierPath+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692DF40F1B91620051C367 /* NSBezierPath+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D46FE50C2EB83D00BF18ED /* NSBezierPath+Additions.m */; };
 		53692DF50F1B91630051C367 /* NSBundle+AKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370C9590CCC107D0040D602 /* NSBundle+AKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -830,12 +817,8 @@
 				53692DDF0F1B91550051C367 /* AFBoolToColor.h in Headers */,
 				53692DE10F1B91550051C367 /* AFDateToString.h in Headers */,
 				53692DE20F1B91560051C367 /* AFError.h in Headers */,
-				53692DE40F1B91570051C367 /* AFErrorCell.h in Headers */,
-				53692DE60F1B91580051C367 /* AFErrorsController.h in Headers */,
 				53692DE80F1B915A0051C367 /* AFKeyValueBinding.h in Headers */,
 				53692DEB0F1B915B0051C367 /* AFPluralTransformer.h in Headers */,
-				53692DEE0F1B915D0051C367 /* ErrorPresentation.h in Headers */,
-				53692DF10F1B91610051C367 /* NSApplication+Additions.h in Headers */,
 				53692DF30F1B91610051C367 /* NSBezierPath+Additions.h in Headers */,
 				53692DF50F1B91630051C367 /* NSBundle+AKAdditions.h in Headers */,
 				53692DF70F1B91640051C367 /* NSGradient+Additions.h in Headers */,
@@ -892,12 +875,9 @@
 				53692D5C0F1B90DB0051C367 /* AFBoolToColor.h in Headers */,
 				53692D5E0F1B90DC0051C367 /* AFDateToString.h in Headers */,
 				53692D620F1B90DD0051C367 /* AFError.h in Headers */,
-				53692D630F1B90DE0051C367 /* AFErrorCell.h in Headers */,
-				53692D650F1B90DF0051C367 /* AFErrorsController.h in Headers */,
 				53692D670F1B90E10051C367 /* AFKeyValueBinding.h in Headers */,
 				53692D690F1B90E10051C367 /* AFPluralTransformer.h in Headers */,
 				53692D6C0F1B90E40051C367 /* ErrorPresentation.h in Headers */,
-				53692D6E0F1B90E40051C367 /* NSApplication+Additions.h in Headers */,
 				53692D700F1B90E70051C367 /* NSBezierPath+Additions.h in Headers */,
 				53692D720F1B90E70051C367 /* NSBundle+AKAdditions.h in Headers */,
 				53692D740F1B90E80051C367 /* NSGradient+Additions.h in Headers */,
@@ -1145,11 +1125,8 @@
 				53692DE00F1B91550051C367 /* AFBoolToColor.m in Sources */,
 				53692DE30F1B91560051C367 /* AFDateToString.m in Sources */,
 				53692DE50F1B91570051C367 /* AFError.m in Sources */,
-				53692DE70F1B91580051C367 /* AFErrorCell.m in Sources */,
-				53692DE90F1B915A0051C367 /* AFErrorsController.m in Sources */,
 				53692DEA0F1B915A0051C367 /* AFKeyValueBinding.m in Sources */,
 				53692DEC0F1B915C0051C367 /* AFPluralTransformer.m in Sources */,
-				53692DF20F1B91610051C367 /* NSApplication+Additions.m in Sources */,
 				53692DF40F1B91620051C367 /* NSBezierPath+Additions.m in Sources */,
 				53692DF60F1B91630051C367 /* NSBundle+AKAdditions.m in Sources */,
 				53692DF90F1B91650051C367 /* NSGradient+Additions.m in Sources */,
@@ -1212,11 +1189,8 @@
 				53692D5D0F1B90DB0051C367 /* AFBoolToColor.m in Sources */,
 				53692D600F1B90DD0051C367 /* AFError.m in Sources */,
 				53692D610F1B90DD0051C367 /* AFDateToString.m in Sources */,
-				53692D640F1B90DE0051C367 /* AFErrorCell.m in Sources */,
-				53692D660F1B90E00051C367 /* AFErrorsController.m in Sources */,
 				53692D680F1B90E10051C367 /* AFKeyValueBinding.m in Sources */,
 				53692D6A0F1B90E20051C367 /* AFPluralTransformer.m in Sources */,
-				53692D6F0F1B90E50051C367 /* NSApplication+Additions.m in Sources */,
 				53692D710F1B90E70051C367 /* NSBezierPath+Additions.m in Sources */,
 				53692D730F1B90E80051C367 /* NSBundle+AKAdditions.m in Sources */,
 				53692D750F1B90E80051C367 /* NSGradient+Additions.m in Sources */,
