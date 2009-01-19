@@ -26,4 +26,4 @@ typedef NSUInteger AFRoundedCornerOptions;
 - (void)applyInnerShadow:(NSShadow *)shadow;
 @end
 
-extern void AFDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlignment alignment, NSRect frame);
+extern void AKDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlignment alignment, NSRect frame);
