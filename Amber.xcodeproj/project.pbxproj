@@ -50,7 +50,6 @@
 		532F750B0F0EB213004D6056 /* NSXMLElement+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */; };
 		53692A610F1B7EC80051C367 /* AmberFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692A620F1B7EC80051C367 /* AmberKit.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 53EE97470F190070008AD8C0 /* AmberKit.framework */; };
-		53692A630F1B7EC80051C367 /* Core Networking.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 53EE97550F190089008AD8C0 /* Core Networking.framework */; };
 		53692A870F1B82900051C367 /* ActivationCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692A830F1B82900051C367 /* ActivationCell.h */; };
 		53692A880F1B82900051C367 /* ActivationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692A840F1B82900051C367 /* ActivationCell.m */; };
 		53692A890F1B82900051C367 /* ActivationControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692A850F1B82900051C367 /* ActivationControl.h */; };
@@ -142,6 +141,9 @@
 		53692DFC0F1B91670051C367 /* Stop.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 53D6636E0CA073A40070E943 /* Stop.tiff */; };
 		53692DFD0F1B91680051C367 /* Orange Ball.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 53D6636F0CA073A40070E943 /* Orange Ball.tiff */; };
 		53692DFE0F1B91680051C367 /* NSTreeNode+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 536B80CB0C7C475C004167C5 /* NSTreeNode+Additions.m */; };
+		5375FA580F25414E00CEC661 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
+		5375FA590F25414E00CEC661 /* AmberKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53EE97470F190070008AD8C0 /* AmberKit.framework */; };
+		5375FA6A0F2543D400CEC661 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
 		537E53A10CFC8D400084F920 /* Amber.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53A00CFC8D400084F920 /* Amber.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A60D40D269919001CD14A /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 536E8AFA0C8E1055009783A5 /* AFGeometry.m */; };
 		539A60D50D269919001CD14A /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 5343E7170C21FB6D00B63E6E /* AFGeometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -185,13 +187,6 @@
 			remoteGlobalIDString = 53EE97460F190070008AD8C0;
 			remoteInfo = AmberKit;
 		};
-		53692A4A0F1B7E970051C367 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 53EE97540F190089008AD8C0;
-			remoteInfo = "Core Networking";
-		};
 		53692B130F1B834E0051C367 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
@@ -224,7 +219,6 @@
 			files = (
 				53692A610F1B7EC80051C367 /* AmberFoundation.framework in Copy Frameworks */,
 				53692A620F1B7EC80051C367 /* AmberKit.framework in Copy Frameworks */,
-				53692A630F1B7EC80051C367 /* Core Networking.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,7 +350,6 @@
 		53E64C100DAAD06700954F49 /* AFUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFUserDefaults.m; sourceTree = "<group>"; };
 		53EE97470F190070008AD8C0 /* AmberKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmberKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53EE97480F190070008AD8C0 /* AmberKit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AmberKit-Info.plist"; sourceTree = "<group>"; };
-		53EE97550F190089008AD8C0 /* Core Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Core Networking.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		53EE97560F190089008AD8C0 /* Core Networking-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Core Networking-Info.plist"; sourceTree = "<group>"; };
 		53EE979A0F19024F008AD8C0 /* NSBundle+AFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+AFAdditions.h"; sourceTree = "<group>"; };
 		53EE979B0F19024F008AD8C0 /* NSBundle+AFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+AFAdditions.m"; sourceTree = "<group>"; };
@@ -375,6 +368,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5375FA580F25414E00CEC661 /* AmberFoundation.framework in Frameworks */,
+				5375FA590F25414E00CEC661 /* AmberKit.framework in Frameworks */,
 				53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */,
 				53692C960F1B8AF90051C367 /* Foundation.framework in Frameworks */,
 			);
@@ -400,15 +395,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5375FA6A0F2543D400CEC661 /* Cocoa.framework in Frameworks */,
 				53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */,
 				53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		53EE97530F190089008AD8C0 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,7 +426,6 @@
 				539A60C30D2698B7001CD14A /* AmberFoundation.framework */,
 				532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */,
 				53EE97470F190070008AD8C0 /* AmberKit.framework */,
-				53EE97550F190089008AD8C0 /* Core Networking.framework */,
 				53692D070F1B90120051C367 /* AmberKitAdditions.framework */,
 			);
 			name = Products;
@@ -887,13 +875,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		53EE97500F190089008AD8C0 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -929,7 +910,6 @@
 			dependencies = (
 				539A60EA0D269A7C001CD14A /* PBXTargetDependency */,
 				53692A490F1B7E970051C367 /* PBXTargetDependency */,
-				53692A4B0F1B7E970051C367 /* PBXTargetDependency */,
 			);
 			name = Amber;
 			productName = KDKit;
@@ -991,24 +971,6 @@
 			productReference = 53EE97470F190070008AD8C0 /* AmberKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		53EE97540F190089008AD8C0 /* Core Networking */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 53EE97590F19008A008AD8C0 /* Build configuration list for PBXNativeTarget "Core Networking" */;
-			buildPhases = (
-				53EE97500F190089008AD8C0 /* Headers */,
-				53EE97510F190089008AD8C0 /* Resources */,
-				53EE97520F190089008AD8C0 /* Sources */,
-				53EE97530F190089008AD8C0 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Core Networking";
-			productName = "Core Networking";
-			productReference = 53EE97550F190089008AD8C0 /* Core Networking.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1030,7 +992,6 @@
 				53692D060F1B90120051C367 /* AmberKit Additions */,
 				539A60C20D2698B7001CD14A /* AmberFoundation */,
 				532F73DD0F0EB1AA004D6056 /* AmberFoundation Touch */,
-				53EE97540F190089008AD8C0 /* Core Networking */,
 				539B6E590D4BBB7C00C86E48 /* Install Frameworks */,
 			);
 		};
@@ -1055,13 +1016,6 @@
 				53692D6D0F1B90E40051C367 /* Errors.xib in Resources */,
 				53692D7B0F1B90ED0051C367 /* Orange Ball.tiff in Resources */,
 				53692D7C0F1B90ED0051C367 /* Stop.tiff in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		53EE97510F190089008AD8C0 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1199,13 +1153,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		53EE97520F190089008AD8C0 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1213,11 +1160,6 @@
 			isa = PBXTargetDependency;
 			target = 53EE97460F190070008AD8C0 /* AmberKit */;
 			targetProxy = 53692A480F1B7E970051C367 /* PBXContainerItemProxy */;
-		};
-		53692A4B0F1B7E970051C367 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 53EE97540F190089008AD8C0 /* Core Networking */;
-			targetProxy = 53692A4A0F1B7E970051C367 /* PBXContainerItemProxy */;
 		};
 		53692B140F1B834E0051C367 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1241,13 +1183,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
-				SDKROOT = iphoneos2.2;
 			};
 			name = Debug;
 		};
@@ -1255,13 +1196,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_GC = supported;
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundationTouch;
-				SDKROOT = iphoneos2.2;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -1275,12 +1215,6 @@
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"-sectcreate",
-					__OBJC,
-					__class_metadata,
-					metadata.plist,
-				);
 				SDKROOT = macosx10.5;
 			};
 			name = Debug;
@@ -1310,16 +1244,19 @@
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_PASCAL_STRINGS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Amber_Prefix.pch;
 				INFOPLIST_FILE = "Amber-Info.plist";
 				INSTALL_PATH = "@rpath/";
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks /Library/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
+					"-sub_umbrella",
+					AmberKit,
 					"-sub_umbrella",
 					AmberFoundation,
 					"-lcrypto",
@@ -1338,16 +1275,18 @@
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_PASCAL_STRINGS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
-				GCC_MODEL_TUNING = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Amber_Prefix.pch;
 				INFOPLIST_FILE = "Amber-Info.plist";
 				INSTALL_PATH = "@rpath/";
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks /Library/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = (
+					"-sub_umbrella",
+					AmberKit,
 					"-sub_umbrella",
 					AmberFoundation,
 					"-lcrypto",
@@ -1428,11 +1367,7 @@
 				GCC_PREFIX_HEADER = AmberFoundation_Prefix.pch;
 				INFOPLIST_FILE = "AmberFoundation-Info.plist";
 				INSTALL_PATH = "@rpath/";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-lcrypto",
-				);
+				OTHER_LDFLAGS = "-lcrypto";
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
 			};
@@ -1451,11 +1386,7 @@
 				GCC_PREFIX_HEADER = AmberFoundation_Prefix.pch;
 				INFOPLIST_FILE = "AmberFoundation-Info.plist";
 				INSTALL_PATH = "@rpath/";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-lcrypto",
-				);
+				OTHER_LDFLAGS = "-lcrypto";
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -1501,10 +1432,8 @@
 				INSTALL_PATH = "@rpath/";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
+					"-umbrella",
+					Amber,
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberKit;
@@ -1528,67 +1457,11 @@
 				INSTALL_PATH = "@rpath/";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
+					"-umbrella",
+					Amber,
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberKit;
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		53EE97570F19008A008AD8C0 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "Core Networking-Info.plist";
-				INSTALL_PATH = "$(HOME)/Library/Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = "Core Networking";
-			};
-			name = Debug;
-		};
-		53EE97580F19008A008AD8C0 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "Core Networking-Info.plist";
-				INSTALL_PATH = "$(HOME)/Library/Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = "Core Networking";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -1655,15 +1528,6 @@
 			buildConfigurations = (
 				53EE97490F190073008AD8C0 /* Debug */,
 				53EE974A0F190073008AD8C0 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		53EE97590F19008A008AD8C0 /* Build configuration list for PBXNativeTarget "Core Networking" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				53EE97570F19008A008AD8C0 /* Debug */,
-				53EE97580F19008A008AD8C0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
