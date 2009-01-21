@@ -1246,6 +1246,7 @@
 				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
+				"GCC_MODEL_TUNING[arch=*]" = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Amber_Prefix.pch;
 				INFOPLIST_FILE = "Amber-Info.plist";
@@ -1263,6 +1264,8 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = Amber;
+				newSetting = "";
+				"newSetting[arch=*]" = "";
 			};
 			name = Debug;
 		};
@@ -1277,6 +1280,7 @@
 				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
+				"GCC_MODEL_TUNING[arch=*]" = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Amber_Prefix.pch;
 				INFOPLIST_FILE = "Amber-Info.plist";
@@ -1294,6 +1298,8 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = Amber;
 				STRIP_INSTALLED_PRODUCT = YES;
+				newSetting = "";
+				"newSetting[arch=*]" = "";
 			};
 			name = Release;
 		};
