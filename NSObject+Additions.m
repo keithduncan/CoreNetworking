@@ -8,8 +8,10 @@
 
 #import "NSObject+Additions.h"
 
+#import <objc/runtime.h>
+
 @interface _AFObjectProxy : NSProxy {
-@public
+ @public
 	NSObject *_target;
 }
 
@@ -28,7 +30,7 @@
 #pragma mark -
 
 @interface _AFThreadProxy : _AFObjectProxy {
-@public
+ @public
 	NSThread *_thread;
 }
 
@@ -53,9 +55,10 @@
 @end
 
 @interface _AFOptionalProxy : _AFObjectProxy {
-@public
-	
+ @public
+	Protocol *_protocol;
 }
+
 @end
 
 @implementation _AFOptionalProxy
@@ -66,7 +69,13 @@
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
-	return ([_target respondsToSelector:selector]) ? [_target methodSignatureForSelector:selector] : [NSMethodSignature signatureWithObjCTypes:"v@:"];
+	if ([_target respondsToSelector:selector]) return [_target methodSignatureForSelector:selector];
+	
+	// Note: isRequiredMethod can be no, because if it's required and not implemented the compiler will issue a warning
+	struct objc_method_description method = protocol_getMethodDescription(_protocol, selector, /* isRequiredMethod */ NO, /* isInstanceMethod */ YES);
+#warning isInstanceMethod should be dynamic
+	
+	return [NSMethodSignature signatureWithObjCTypes:method.types];
 }
 
 @end
@@ -86,11 +95,11 @@
 	return proxy;
 }
 
-- (id)optionalProxy {
+- (id)protocolProxy:(Protocol *)protocol {
 	_AFOptionalProxy *proxy = [[_AFOptionalProxy alloc] autorelease];
 	proxy->_target = [self retain];
+	proxy->_protocol = protocol;
 	return proxy;
 }
 
 @end
-

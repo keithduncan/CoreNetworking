@@ -12,5 +12,5 @@
 - (id)mainThreadProxy; // Any messages sent will be performed synchronously
 - (id)threadProxy:(NSThread *)object; // Note: performed synchronously if (thread == [NSThread mainThread])
 
-- (id)optionalProxy; // any messages sent will be tested for respondsToSelector:
+- (id)protocolProxy:(Protocol *)protocol; // Note: only selectors that return true for respondsToSelector: will be forwarded
 @end
