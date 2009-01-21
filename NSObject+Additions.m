@@ -10,34 +10,34 @@
 
 @interface _AFObjectProxy : NSProxy {
 @public
-	NSThread *_thread;
 	NSObject *_target;
 }
 
 @end
 
-@implementation NSObject (AFAdditions)
+@implementation _AFObjectProxy
 
-- (id)mainThreadProxy {
-	return [self threadProxy:[NSThread mainThread]];
-}
-
-- (id)threadProxy:(NSThread *)thread {
-	_AFObjectProxy *proxy = [[_AFObjectProxy alloc] autorelease];
-	proxy->_thread = [thread retain];
-	proxy->_target = [self retain];
-	return proxy;
+- (void)dealloc {
+	[_target release];
+	
+	[super dealloc];
 }
 
 @end
 
 #pragma mark -
 
-@implementation _AFObjectProxy
+@interface _AFThreadProxy : _AFObjectProxy {
+@public
+	NSThread *_thread;
+}
+
+@end
+
+@implementation _AFThreadProxy
 
 - (void)dealloc {
 	[_thread release];
-	[_target release];
 	
 	[super dealloc];
 }
@@ -51,3 +51,42 @@
 }
 
 @end
+
+@interface _AFOptionalProxy : _AFObjectProxy {
+@public
+	
+}
+@end
+
+@implementation _AFOptionalProxy
+
+- (id)forwardingTargetForSelector:(SEL)selector {
+	return ([_target respondsToSelector:selector]) ? _target : nil;
+}
+
+@end
+
+
+#pragma mark -
+
+@implementation NSObject (AFAdditions)
+
+- (id)mainThreadProxy {
+	return [self threadProxy:[NSThread mainThread]];
+}
+
+- (id)threadProxy:(NSThread *)thread {
+	_AFThreadProxy *proxy = [[_AFThreadProxy alloc] autorelease];
+	proxy->_thread = [thread retain];
+	proxy->_target = [self retain];
+	return proxy;
+}
+
+- (id)optionalProxy {
+	_AFOptionalProxy *proxy = [[_AFOptionalProxy alloc] autorelease];
+	proxy->_target = [self retain];
+	return proxy;
+}
+
+@end
+
