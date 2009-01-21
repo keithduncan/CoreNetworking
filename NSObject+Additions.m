@@ -60,12 +60,16 @@
 
 @implementation _AFOptionalProxy
 
-- (id)forwardingTargetForSelector:(SEL)selector {
-	return ([_target respondsToSelector:selector]) ? _target : nil;
+- (void)forwardInvocation:(NSInvocation *)invocation {
+	if (![_target respondsToSelector:[invocation selector]]) return;
+	[invocation invokeWithTarget:_target];
+}
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
+	return ([_target respondsToSelector:selector]) ? [_target methodSignatureForSelector:selector] : [NSMethodSignature signatureWithObjCTypes:"v@:"];
 }
 
 @end
-
 
 #pragma mark -
 
