@@ -1201,7 +1201,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_GC = supported;
 				PREBINDING = NO;
-				PRODUCT_NAME = AmberFoundationTouch;
+				PRODUCT_NAME = AmberFoundation;
 				ZERO_LINK = NO;
 			};
 			name = Release;
