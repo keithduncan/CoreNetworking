@@ -7,12 +7,13 @@
  *
  */
 
-// This framework reserves the (Additions) category namespace, don't use it!
+// This framework reserves the (AFAdditions) category namespace, don't use it!
 
 #import "AmberFoundation/AFRange.h"
 #import "AmberFoundation/AFGeometry.h"
 #import "AmberFoundation/AFPropertyListProtocol.h"
 #import "AmberFoundation/AFUserDefaults.h"
+#import "AmberFoundation/AFKeyValueBinding.h"
 
 #import "AmberFoundation/AFCollection.h"
 
