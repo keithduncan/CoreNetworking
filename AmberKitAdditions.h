@@ -9,6 +9,7 @@
 #import "AmberKitAdditions/AFBoolToColor.h"
 #import "AmberKitAdditions/AFPluralTransformer.h"
 #import "AmberKitAdditions/AFDateToString.h"
+#import "AmberKitAdditions/AFKeyValueBinding.h"
 
 #import "AmberKitAdditions/NSTreeNode+Additions.h"
 #import "AmberKitAdditions/NSBundle+AKAdditions.h"

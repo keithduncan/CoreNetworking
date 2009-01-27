@@ -163,10 +163,6 @@
 		539B6E7E0D4BBB8E00C86E48 /* Amber.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5343E70E0C21FB4200B63E6E /* Amber.framework */; };
 		539BFE040F1FE2AE003C1148 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE030F1FE2AE003C1148 /* AmberKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539BFE060F1FE2E7003C1148 /* AmberKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE050F1FE2E7003C1148 /* AmberKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53ABADAA0F2E309C009D2E52 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
-		53ABADAB0F2E309D009D2E52 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53ABADAC0F2E30A0009D2E52 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
-		53ABADAD0F2E30A0009D2E52 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; };
 		53ABADB30F2E3294009D2E52 /* NSFileManager+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53390CFC8BA70084F920 /* NSFileManager+Additions.h */; };
 		53ABADB40F2E3295009D2E52 /* NSFileManager+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E533B0CFC8BA80084F920 /* NSFileManager+Additions.m */; };
 		53DC99BC0D48D2D500A7B8C3 /* AFRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DC99BA0D48D2D500A7B8C3 /* AFRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -179,6 +175,10 @@
 		53EE979F0F19024F008AD8C0 /* NSBundle+AFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53EE979B0F19024F008AD8C0 /* NSBundle+AFAdditions.m */; };
 		53EE97A20F1902CB008AD8C0 /* NSFileManager+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E533B0CFC8BA80084F920 /* NSFileManager+Additions.m */; };
 		53EE97A30F1902CB008AD8C0 /* NSFileManager+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53390CFC8BA70084F920 /* NSFileManager+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53F90C550F2FA028000BFC77 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
+		53F90C560F2FA029000BFC77 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53F90C570F2FA02C000BFC77 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
+		53F90C580F2FA02D000BFC77 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -521,6 +521,8 @@
 		53692B8E0F1B852C0051C367 /* General */ = {
 			isa = PBXGroup;
 			children = (
+				53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */,
+				53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */,
 			);
 			name = General;
 			sourceTree = "<group>";
@@ -659,8 +661,6 @@
 				53DC99BB0D48D2D500A7B8C3 /* AFRange.m */,
 				53E64C0F0DAAD06700954F49 /* AFUserDefaults.h */,
 				53E64C100DAAD06700954F49 /* AFUserDefaults.m */,
-				53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */,
-				53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */,
 			);
 			name = General;
 			sourceTree = "<group>";
@@ -789,7 +789,6 @@
 				532F75080F0EB210004D6056 /* NSString+Additions.h in Headers */,
 				532F750A0F0EB211004D6056 /* NSXMLElement+Additions.h in Headers */,
 				53EE979E0F19024F008AD8C0 /* NSBundle+AFAdditions.h in Headers */,
-				53ABADAD0F2E30A0009D2E52 /* AFKeyValueBinding.h in Headers */,
 				53ABADB30F2E3294009D2E52 /* NSFileManager+Additions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -816,6 +815,7 @@
 				53692DF80F1B91650051C367 /* NSTreeController+Additions.h in Headers */,
 				53692DFB0F1B91660051C367 /* NSTreeNode+Additions.h in Headers */,
 				539BFE060F1FE2E7003C1148 /* AmberKitAdditions.h in Headers */,
+				53F90C560F2FA029000BFC77 /* AFKeyValueBinding.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -837,7 +837,6 @@
 				53E64C110DAAD06700954F49 /* AFUserDefaults.h in Headers */,
 				53EE979C0F19024F008AD8C0 /* NSBundle+AFAdditions.h in Headers */,
 				53EE97A30F1902CB008AD8C0 /* NSFileManager+Additions.h in Headers */,
-				53ABADAB0F2E309D009D2E52 /* AFKeyValueBinding.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -875,6 +874,7 @@
 				53692D760F1B90E90051C367 /* NSTreeController+Additions.h in Headers */,
 				53692D790F1B90EC0051C367 /* NSTreeNode+Additions.h in Headers */,
 				539BFE040F1FE2AE003C1148 /* AmberKit.h in Headers */,
+				53F90C580F2FA02D000BFC77 /* AFKeyValueBinding.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1072,7 +1072,6 @@
 				532F75090F0EB211004D6056 /* NSString+Additions.m in Sources */,
 				532F750B0F0EB213004D6056 /* NSXMLElement+Additions.m in Sources */,
 				53EE979F0F19024F008AD8C0 /* NSBundle+AFAdditions.m in Sources */,
-				53ABADAC0F2E30A0009D2E52 /* AFKeyValueBinding.m in Sources */,
 				53ABADB40F2E3295009D2E52 /* NSFileManager+Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1090,6 +1089,7 @@
 				53692DF90F1B91650051C367 /* NSGradient+Additions.m in Sources */,
 				53692DFA0F1B91660051C367 /* NSTreeController+Additions.m in Sources */,
 				53692DFE0F1B91680051C367 /* NSTreeNode+Additions.m in Sources */,
+				53F90C550F2FA028000BFC77 /* AFKeyValueBinding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1110,7 +1110,6 @@
 				53E64C120DAAD06700954F49 /* AFUserDefaults.m in Sources */,
 				53EE979D0F19024F008AD8C0 /* NSBundle+AFAdditions.m in Sources */,
 				53EE97A20F1902CB008AD8C0 /* NSFileManager+Additions.m in Sources */,
-				53ABADAA0F2E309C009D2E52 /* AFKeyValueBinding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1154,6 +1153,7 @@
 				53692D750F1B90E80051C367 /* NSGradient+Additions.m in Sources */,
 				53692D780F1B90EB0051C367 /* NSTreeNode+Additions.m in Sources */,
 				53692D7A0F1B90EC0051C367 /* NSTreeController+Additions.m in Sources */,
+				53F90C570F2FA02C000BFC77 /* AFKeyValueBinding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

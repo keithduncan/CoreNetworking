@@ -13,7 +13,6 @@
 #import "AmberFoundation/AFGeometry.h"
 #import "AmberFoundation/AFPropertyListProtocol.h"
 #import "AmberFoundation/AFUserDefaults.h"
-#import "AmberFoundation/AFKeyValueBinding.h"
 
 #import "AmberFoundation/AFCollection.h"
 
