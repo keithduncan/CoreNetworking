@@ -164,7 +164,7 @@
 		539BFE040F1FE2AE003C1148 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE030F1FE2AE003C1148 /* AmberKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539BFE060F1FE2E7003C1148 /* AmberKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE050F1FE2E7003C1148 /* AmberKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53ABADAA0F2E309C009D2E52 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
-		53ABADAB0F2E309D009D2E52 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; };
+		53ABADAB0F2E309D009D2E52 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53ABADAC0F2E30A0009D2E52 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
 		53ABADAD0F2E30A0009D2E52 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; };
 		53ABADB30F2E3294009D2E52 /* NSFileManager+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53390CFC8BA70084F920 /* NSFileManager+Additions.h */; };
