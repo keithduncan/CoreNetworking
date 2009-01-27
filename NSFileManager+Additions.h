@@ -10,5 +10,9 @@
 
 @interface NSFileManager (AFAdditions)
 - (BOOL)validatePath:(NSString *)path withMD5Hash:(NSString *)hash;
+
+#if TARGET_OS_MAC && !(TARGET_OS_IPHONE)
 - (BOOL)validatePath:(NSString *)path withDSASignature:(NSString *)signature publicDSAKey:(NSString *)publicKey;
+#endif
+
 @end

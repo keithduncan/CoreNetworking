@@ -6,7 +6,12 @@
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+
+#if TARGET_OS_IPHONE
+extern NSString *const AFObservedKeyPathKey;
+extern NSString *const AFObservedObjectKey;
+#endif
 
 /*
  This is an extention of the NSKeyValueBinding protocol
@@ -30,7 +35,11 @@ extern NSString *const AFUnboundValueKey;
 
 - (id)controllerForBinding:(NSString *)binding;
 - (NSString *)keyPathForBinding:(NSString *)binding;
+
+#if TARGET_OS_MAC && !(TARGET_OS_IPHONE)
 - (NSValueTransformer *)valueTransformerForBinding:(NSString *)binding;
+#endif
+
 @end
 
 /*
