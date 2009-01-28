@@ -6,11 +6,10 @@
 //  Copyright 2009 thirty-three software. All rights reserved.
 //
 
-#import "AmberKit/AFKeyValueBinding.h"
-
 #import "AmberKit/AFBoolToColor.h"
 #import "AmberKit/AFPluralTransformer.h"
 #import "AmberKit/AFDateToString.h"
+#import "AmberKit/AFKeyValueBinding.h"
 
 #import "AmberKit/NSTreeNode+Additions.h"
 #import "AmberKit/NSBundle+AKAdditions.h"
