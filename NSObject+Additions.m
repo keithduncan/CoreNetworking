@@ -45,7 +45,7 @@
 }
 
 - (void)forwardInvocation:(NSInvocation *)invocation {
-	[invocation performSelector:@selector(invokeWithTarget:) onThread:_thread withObject:_target waitUntilDone:(_thread == [NSThread mainThread])];
+	[invocation performSelector:@selector(invokeWithTarget:) onThread:_thread withObject:_target waitUntilDone:([_thread isEqual:[NSThread mainThread]])];
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
@@ -90,8 +90,8 @@
 
 - (id)threadProxy:(NSThread *)thread {
 	_AFThreadProxy *proxy = [[_AFThreadProxy alloc] autorelease];
-	proxy->_thread = [thread retain];
 	proxy->_target = [self retain];
+	proxy->_thread = [thread retain];
 	return proxy;
 }
 
