@@ -3,7 +3,7 @@
 //  Encrypter
 //
 //  Created by Keith Duncan on 04/01/2007.
-//  Copyright 2007 dAX development. All rights reserved.
+//  Copyright 2007 thirty-three. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

@@ -1440,6 +1440,10 @@
 				INFOPLIST_FILE = "AmberKit-Info.plist";
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"-umbrella",
+					Amber,
+				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberKit;
 			};
