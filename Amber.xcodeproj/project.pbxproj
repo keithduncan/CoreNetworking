@@ -91,7 +91,6 @@
 		53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
-		53692C960F1B8AF90051C367 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532F73E20F0EB1D7004D6056 /* Foundation.framework */; };
 		53692D5C0F1B90DB0051C367 /* AFBoolToColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313D3030C785C9F00252228 /* AFBoolToColor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692D5D0F1B90DB0051C367 /* AFBoolToColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5313D3040C785C9F00252228 /* AFBoolToColor.m */; };
 		53692D5E0F1B90DC0051C367 /* AFDateToString.h in Headers */ = {isa = PBXBuildFile; fileRef = 5376ACC20C2564820034854C /* AFDateToString.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -137,8 +136,6 @@
 		53692DFC0F1B91670051C367 /* Stop.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 53D6636E0CA073A40070E943 /* Stop.tiff */; };
 		53692DFD0F1B91680051C367 /* Orange Ball.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 53D6636F0CA073A40070E943 /* Orange Ball.tiff */; };
 		53692DFE0F1B91680051C367 /* NSTreeNode+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 536B80CB0C7C475C004167C5 /* NSTreeNode+Additions.m */; };
-		5375FA580F25414E00CEC661 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
-		5375FA590F25414E00CEC661 /* AmberKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53EE97470F190070008AD8C0 /* AmberKit.framework */; };
 		5375FA6A0F2543D400CEC661 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
 		537E53A10CFC8D400084F920 /* Amber.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53A00CFC8D400084F920 /* Amber.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A60D40D269919001CD14A /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 536E8AFA0C8E1055009783A5 /* AFGeometry.m */; };
@@ -167,6 +164,7 @@
 		53ABADB40F2E3295009D2E52 /* NSFileManager+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E533B0CFC8BA80084F920 /* NSFileManager+Additions.m */; };
 		53DC99BC0D48D2D500A7B8C3 /* AFRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DC99BA0D48D2D500A7B8C3 /* AFRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53DC99BD0D48D2D500A7B8C3 /* AFRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DC99BB0D48D2D500A7B8C3 /* AFRange.m */; };
+		53DDED930F39E21C00D76032 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53E64C110DAAD06700954F49 /* AFUserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 53E64C0F0DAAD06700954F49 /* AFUserDefaults.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53E64C120DAAD06700954F49 /* AFUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 53E64C100DAAD06700954F49 /* AFUserDefaults.m */; };
 		53EE979C0F19024F008AD8C0 /* NSBundle+AFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53EE979A0F19024F008AD8C0 /* NSBundle+AFAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -370,10 +368,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5375FA580F25414E00CEC661 /* AmberFoundation.framework in Frameworks */,
-				5375FA590F25414E00CEC661 /* AmberKit.framework in Frameworks */,
 				53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */,
-				53692C960F1B8AF90051C367 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +376,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53DDED930F39E21C00D76032 /* AmberFoundation.framework in Frameworks */,
 				53692DDC0F1B91470051C367 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1254,16 +1250,16 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Amber_Prefix.pch;
 				INFOPLIST_FILE = "Amber-Info.plist";
-				INSTALL_PATH = "@rpath/";
+				INSTALL_PATH = "@rpath";
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
-					"-sub_umbrella",
-					AmberKit,
-					"-sub_umbrella",
-					AmberFoundation,
+					"-reexport_framework",
+					"\"$(CONFIGURATION_BUILD_DIR)\"/AmberKit.framework/AmberKit",
+					"-reexport_framework",
+					"\"$(CONFIGURATION_BUILD_DIR)\"/AmberFoundation.framework/AmberFoundation",
 					"-lcrypto",
 				);
 				PREBINDING = NO;
@@ -1288,15 +1284,15 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Amber_Prefix.pch;
 				INFOPLIST_FILE = "Amber-Info.plist";
-				INSTALL_PATH = "@rpath/";
+				INSTALL_PATH = "@rpath";
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = (
-					"-sub_umbrella",
-					AmberKit,
-					"-sub_umbrella",
-					AmberFoundation,
+					"-reexport_framework",
+					"\"$(SYMROOT)\"/AmberKit",
+					"-reexport_framework",
+					"\"$(BUILD_PRODUCTS_DIR)\"/AmberFoundation",
 					"-lcrypto",
 				);
 				PREBINDING = NO;
@@ -1444,10 +1440,6 @@
 				INFOPLIST_FILE = "AmberKit-Info.plist";
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-umbrella",
-					Amber,
-				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberKit;
 			};
