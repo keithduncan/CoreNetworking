@@ -6,6 +6,10 @@
 //  Copyright 2009 thirty-three software. All rights reserved.
 //
 
+//
+// AppKit Additions
+//
+
 #import "AmberKit/AFBoolToColor.h"
 #import "AmberKit/AFPluralTransformer.h"
 #import "AmberKit/AFDateToString.h"
@@ -16,3 +20,9 @@
 #import "AmberKit/NSBezierPath+Additions.h"
 #import "AmberKit/NSGradient+Additions.h"
 #import "AmberKit/NSTreeController+Additions.h"
+
+//
+// Custom Controls
+//
+
+#import "AmberKit/SourceList.h"
