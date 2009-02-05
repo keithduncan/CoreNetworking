@@ -9,10 +9,10 @@
 #import <Cocoa/Cocoa.h>
 
 enum {
-	AFLowerLeftCorner = 0x01,
-	AFLowerRightCorner = 0x02,
-	AFUpperLeftCorner = 0x04,
-	AFUpperRightCorner = 0x08
+	AFLowerLeftCorner	= 1 << 0,
+	AFLowerRightCorner	= 1 << 1,
+	AFUpperLeftCorner	= 1 << 2,
+	AFUpperRightCorner	= 1 << 3,
 };
 typedef NSUInteger AFRoundedCornerOptions;
 

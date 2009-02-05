@@ -56,6 +56,17 @@
 }
 
 - (void)appendBezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius {
+	BOOL flipped = [[NSGraphicsContext currentContext] isFlipped];
+	
+	if (flipped) {
+		NSUInteger upperCorners = (corners & (AFUpperLeftCorner | AFUpperRightCorner));
+		
+		corners = corners << 2;
+		corners |= (upperCorners >> 2);
+		
+		corners &= (AFUpperLeftCorner | AFUpperRightCorner | AFLowerLeftCorner | AFLowerRightCorner);
+	}
+	
 	[self moveToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect))];
 	
 	radius = MIN(radius, MIN(NSWidth(rect), NSHeight(rect))/2.0);
