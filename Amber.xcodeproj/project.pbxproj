@@ -208,6 +208,13 @@
 			remoteGlobalIDString = 5343E70D0C21FB4200B63E6E;
 			remoteInfo = Amber;
 		};
+		53DDF0340F3A425C00D76032 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			remoteInfo = AmberFoundation;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -927,6 +934,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				53DDF0350F3A425C00D76032 /* PBXTargetDependency */,
 			);
 			name = "AmberKit Additions";
 			productName = "AmberKit Additions";
@@ -1175,6 +1183,11 @@
 			isa = PBXTargetDependency;
 			target = 5343E70D0C21FB4200B63E6E /* Amber */;
 			targetProxy = 539B6E5C0D4BBB8000C86E48 /* PBXContainerItemProxy */;
+		};
+		53DDF0350F3A425C00D76032 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			targetProxy = 53DDF0340F3A425C00D76032 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
