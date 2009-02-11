@@ -6,6 +6,14 @@
 //  Copyright 2009 thirty-three software. All rights reserved.
 //
 
+#import <Cocoa/Cocoa.h>
+
+#import "AmberFoundation/AmberFoundation.h"
+
+//
+// AppKit Additions
+//
+
 #import "AmberKitAdditions/AFBoolToColor.h"
 #import "AmberKitAdditions/AFPluralTransformer.h"
 #import "AmberKitAdditions/AFDateToString.h"

@@ -323,6 +323,8 @@
 		539BFE050F1FE2E7003C1148 /* AmberKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberKitAdditions.h; sourceTree = "<group>"; };
 		539F52470C32EA3F00E65AD1 /* NSSortDescriptor+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSortDescriptor+Additions.h"; sourceTree = "<group>"; };
 		539F52480C32EA3F00E65AD1 /* NSSortDescriptor+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSortDescriptor+Additions.m"; sourceTree = "<group>"; };
+		53AD6F030F41105200861601 /* NSProxy+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSProxy+Additions.h"; sourceTree = "<group>"; };
+		53AD6F040F41105200861601 /* NSProxy+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSProxy+Additions.m"; sourceTree = "<group>"; };
 		53B0E5420C8A37DE002BD6A6 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Additions.m"; sourceTree = "<group>"; };
 		53B0E5430C8A37DE002BD6A6 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Additions.h"; sourceTree = "<group>"; };
 		53B0E5770C8A3A2C002BD6A6 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
@@ -606,14 +608,16 @@
 		539A610D0D269C02001CD14A /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				53DEF9E70C229F4D007DF0AD /* AFCollection.h */,
+				53DEF9E80C229F4D007DF0AD /* AFCollection.m */,
 				537E53390CFC8BA70084F920 /* NSFileManager+Additions.h */,
 				537E533B0CFC8BA80084F920 /* NSFileManager+Additions.m */,
 				539A64400D287DD8001CD14A /* NSXMLElement+Additions.h */,
 				539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */,
 				53C356140CC11E410098F021 /* NSObject+Additions.h */,
 				53C356150CC11E410098F021 /* NSObject+Additions.m */,
-				53DEF9E70C229F4D007DF0AD /* AFCollection.h */,
-				53DEF9E80C229F4D007DF0AD /* AFCollection.m */,
+				53AD6F030F41105200861601 /* NSProxy+Additions.h */,
+				53AD6F040F41105200861601 /* NSProxy+Additions.m */,
 				53B0E5430C8A37DE002BD6A6 /* NSData+Additions.h */,
 				53B0E5420C8A37DE002BD6A6 /* NSData+Additions.m */,
 				53DEF9E90C229F4D007DF0AD /* NSDate+Additions.h */,

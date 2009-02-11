@@ -3,7 +3,7 @@
 //  dawn
 //
 //  Created by Keith Duncan on 05/07/2007.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
+//  Copyright 2007 thirty-three. All rights reserved.
 //
 
 #import "AFBoolToColor.h"

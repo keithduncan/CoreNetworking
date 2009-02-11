@@ -3,7 +3,7 @@
 //  AFCalendarView
 //
 //  Created by Keith Duncan on 11/03/2007.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
+//  Copyright 2007 thirty-three. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -16,10 +16,6 @@ extern NSString *const AFObjectDataKey;
 - (id)propertyListRepresentation;
 @end
 
-@interface NSArray (AFPropertyList) <AFPropertyListProtocol>
+@interface NSArray (AFPropertyList)
 + (id)arrayWithPropertyListRepresentation:(id)propertyListRepresentation;
-@end
-
-@interface NSSet (AFPropertyList) <AFPropertyListProtocol>
-+ (id)setWithPropertyListRepresentation:(id)propertyListRepresentation;
 @end

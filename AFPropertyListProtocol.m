@@ -3,7 +3,7 @@
 //  dawn
 //
 //  Created by Keith Duncan on 14/03/2007.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
+//  Copyright 2007 thirty-three. All rights reserved.
 //
 
 #import "AFPropertyListProtocol.h"
@@ -43,67 +43,32 @@ static BOOL isPlistRepresentation(id object) {
 }
 
 - (id)initWithPropertyListRepresentation:(id)propertyListRepresentation {
-	@try {
-		NSMutableArray *newArray = [[NSMutableArray alloc] init];
-		for (id currentObject in propertyListRepresentation) {			
-			if (isPlistRepresentation(currentObject)) {				
-				id newObject = [[NSClassFromString([currentObject objectForKey:AFClassNameKey]) alloc] initWithPropertyListRepresentation:[currentObject valueForKey:AFObjectDataKey]];
-				[newArray addObject:newObject];
-				[newObject release];
-			} else [newArray addObject:currentObject];
-		}
-		
-		return newArray;
-	}
-	@catch (NSException *exception) {
-		@throw;
-	}
-	@finally {
-		[self release];
+	NSMutableArray *newArray = [NSMutableArray arrayWithCapacity:[propertyListRepresentation count]];
+	
+	for (id currentObject in propertyListRepresentation) {
+		if (isPlistRepresentation(currentObject)) {
+			id newObject = [[NSClassFromString([currentObject objectForKey:AFClassNameKey]) alloc] initWithPropertyListRepresentation:[currentObject valueForKey:AFObjectDataKey]];
+			[newArray addObject:newObject];
+			[newObject release];
+		} else [newArray addObject:currentObject];
 	}
 	
-	return nil;
+	return [self initWithArray:newArray];
 }
 
 - (id)propertyListRepresentation {
-	//if (!isPlistObject(self)) [NSException raise:NSInternalInconsistencyException format:[NSString stringWithFormat:@"-[NSArray(AFPropertyList) %s], tried to archive object \"%@\", which doesn't conform to the AFPropertyListProtocol", _cmd, self]];
-	
 	NSMutableArray *propertyListRepresentation = [NSMutableArray array];
-	for (NSObject <AFPropertyListProtocol> *currentObject in self) {		
+	
+	for (NSObject <AFPropertyListProtocol> *currentObject in self) {	
 		NSDictionary *objectDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-											[currentObject propertyListRepresentation], AFObjectDataKey, 
-											NSStringFromClass([currentObject class]), AFClassNameKey, nil];
+										  [currentObject propertyListRepresentation], AFObjectDataKey, 
+										  NSStringFromClass([currentObject class]), AFClassNameKey,
+										  nil];
 		
 		[propertyListRepresentation addObject:objectDictionary];
 	}
 	
 	return propertyListRepresentation;
-}
-
-@end
-
-@implementation NSSet (AFPropertyList)
-
-+ (id)setWithPropertyListRepresentation:(id)propertyListRepresentation {
-	return [[[self alloc] initWithPropertyListRepresentation:propertyListRepresentation] autorelease];
-}
-
-- (id)initWithPropertyListRepresentation:(id)propertyListRepresentation {
-	@try {
-		return [[NSSet alloc] initWithArray:[NSArray arrayWithPropertyListRepresentation:propertyListRepresentation]];
-	}
-	@catch (NSException *exception) {
-		@throw;
-	}
-	@finally {
-		[self release];
-	}
-	
-	return nil;
-}
-
-- (id)propertyListRepresentation {
-	return [[self allObjects] propertyListRepresentation];
 }
 
 @end

@@ -3,7 +3,7 @@
 //  TimelineUpdates
 //
 //  Created by Keith Duncan on 22/11/2007.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
+//  Copyright 2007 thirty-three. All rights reserved.
 //
 
 #import "NSXMLElement+Additions.h"

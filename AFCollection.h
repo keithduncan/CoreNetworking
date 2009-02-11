@@ -3,7 +3,7 @@
 //  AFCalendarView
 //
 //  Created by Keith Duncan on 27/03/2007.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
+//  Copyright 2007 thirty-three. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

@@ -6,6 +6,10 @@
 //  Copyright 2009 thirty-three software. All rights reserved.
 //
 
+#import <Cocoa/Cocoa.h>
+
+#import "AmberFoundation/AmberFoundation.h"
+
 //
 // AppKit Additions
 //
