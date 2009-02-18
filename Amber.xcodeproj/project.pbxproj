@@ -1307,9 +1307,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = (
 					"-reexport_framework",
-					"\"$(SYMROOT)\"/AmberKit",
+					"\"$(CONFIGURATION_BUILD_DIR)\"/AmberKit.framework/AmberKit",
 					"-reexport_framework",
-					"\"$(BUILD_PRODUCTS_DIR)\"/AmberFoundation",
+					"\"$(CONFIGURATION_BUILD_DIR)\"/AmberFoundation.framework/AmberFoundation",
 					"-lcrypto",
 				);
 				PREBINDING = NO;
