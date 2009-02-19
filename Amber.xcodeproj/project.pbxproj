@@ -177,6 +177,10 @@
 		53F90C560F2FA029000BFC77 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53F90C570F2FA02C000BFC77 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D527C40C6E8F5A00BCF98C /* AFKeyValueBinding.m */; };
 		53F90C580F2FA02D000BFC77 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D527C00C6E8F2200BCF98C /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53FD894B0F4E25B800536B83 /* NSObject+Metadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FD89490F4E25B800536B83 /* NSObject+Metadata.h */; };
+		53FD894C0F4E25B800536B83 /* NSObject+Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD894A0F4E25B800536B83 /* NSObject+Metadata.m */; };
+		53FD894D0F4E25B800536B83 /* NSObject+Metadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FD89490F4E25B800536B83 /* NSObject+Metadata.h */; };
+		53FD894E0F4E25B800536B83 /* NSObject+Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD894A0F4E25B800536B83 /* NSObject+Metadata.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -362,6 +366,8 @@
 		53EE97560F190089008AD8C0 /* Core Networking-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Core Networking-Info.plist"; sourceTree = "<group>"; };
 		53EE979A0F19024F008AD8C0 /* NSBundle+AFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+AFAdditions.h"; sourceTree = "<group>"; };
 		53EE979B0F19024F008AD8C0 /* NSBundle+AFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+AFAdditions.m"; sourceTree = "<group>"; };
+		53FD89490F4E25B800536B83 /* NSObject+Metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Metadata.h"; sourceTree = "<group>"; };
+		53FD894A0F4E25B800536B83 /* NSObject+Metadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Metadata.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -616,6 +622,8 @@
 				539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */,
 				53C356140CC11E410098F021 /* NSObject+Additions.h */,
 				53C356150CC11E410098F021 /* NSObject+Additions.m */,
+				53FD89490F4E25B800536B83 /* NSObject+Metadata.h */,
+				53FD894A0F4E25B800536B83 /* NSObject+Metadata.m */,
 				53AD6F030F41105200861601 /* NSProxy+Additions.h */,
 				53AD6F040F41105200861601 /* NSProxy+Additions.m */,
 				53B0E5430C8A37DE002BD6A6 /* NSData+Additions.h */,
@@ -797,6 +805,7 @@
 				532F750A0F0EB211004D6056 /* NSXMLElement+Additions.h in Headers */,
 				53EE979E0F19024F008AD8C0 /* NSBundle+AFAdditions.h in Headers */,
 				53ABADB30F2E3294009D2E52 /* NSFileManager+Additions.h in Headers */,
+				53FD894D0F4E25B800536B83 /* NSObject+Metadata.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -844,6 +853,7 @@
 				53E64C110DAAD06700954F49 /* AFUserDefaults.h in Headers */,
 				53EE979C0F19024F008AD8C0 /* NSBundle+AFAdditions.h in Headers */,
 				53EE97A30F1902CB008AD8C0 /* NSFileManager+Additions.h in Headers */,
+				53FD894B0F4E25B800536B83 /* NSObject+Metadata.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1081,6 +1091,7 @@
 				532F750B0F0EB213004D6056 /* NSXMLElement+Additions.m in Sources */,
 				53EE979F0F19024F008AD8C0 /* NSBundle+AFAdditions.m in Sources */,
 				53ABADB40F2E3295009D2E52 /* NSFileManager+Additions.m in Sources */,
+				53FD894E0F4E25B800536B83 /* NSObject+Metadata.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1118,6 +1129,7 @@
 				53E64C120DAAD06700954F49 /* AFUserDefaults.m in Sources */,
 				53EE979D0F19024F008AD8C0 /* NSBundle+AFAdditions.m in Sources */,
 				53EE97A20F1902CB008AD8C0 /* NSFileManager+Additions.m in Sources */,
+				53FD894C0F4E25B800536B83 /* NSObject+Metadata.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
