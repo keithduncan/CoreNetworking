@@ -62,8 +62,7 @@ id af_class_getMetadataObjectForKey(Class class, NSString *key) {
 	if (metadata == nil) {
 		uint32_t size = 0;
 		void *data = AFDataFromBundleExecutable(classBundle, SEG_OBJC, "__class_metadata", &size);
-		
-#warning Perhaps use mprotect to add another layer of protection around this data, though not storing it in XML would be a much greater step forward.
+#warning perhaps use mprotect to add another layer of protection around this data, though not storing it in XML would be a much greater step forward
 		
 		if (data == NULL) {
 			[NSException raise:NSInvalidArgumentException format:@"%s, the bundle containing class %@ doesn't contain metadata.", __FUNCTION__, NSStringFromClass(class), nil];

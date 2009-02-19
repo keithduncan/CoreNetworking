@@ -4,7 +4,8 @@
 
 #ifdef __OBJC__
 	#import <Cocoa/Cocoa.h>
+	#import <Quartz/Quartz.h>
 
-	#import "AmberKit/AmberKit.h"
-	#import "AmberFoundation/AmberFoundation.h"
+	#import "AmberFoundation.h"
+	#import "AmberKitAdditions.h"
 #endif

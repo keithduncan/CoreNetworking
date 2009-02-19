@@ -30,3 +30,4 @@
 //
 
 #import "AmberKit/SourceList.h"
+#import "AmberKit/AFSwitchControl.h"

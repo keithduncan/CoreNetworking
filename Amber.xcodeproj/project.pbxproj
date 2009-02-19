@@ -82,12 +82,6 @@
 		53692AE40F1B82B60051C367 /* SourceList.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD20F1B82B60051C367 /* SourceList.m */; };
 		53692AE50F1B82B60051C367 /* SourceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AD30F1B82B60051C367 /* SourceNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53692AE60F1B82B60051C367 /* SourceNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AD40F1B82B60051C367 /* SourceNode.m */; };
-		53692B010F1B82C90051C367 /* KDGradientButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AFB0F1B82C90051C367 /* KDGradientButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53692B020F1B82C90051C367 /* KDGradientButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AFC0F1B82C90051C367 /* KDGradientButton.m */; };
-		53692B030F1B82C90051C367 /* KDGradientCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AFD0F1B82C90051C367 /* KDGradientCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53692B040F1B82C90051C367 /* KDGradientCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AFE0F1B82C90051C367 /* KDGradientCell.m */; };
-		53692B050F1B82C90051C367 /* KDSwitchControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AFF0F1B82C90051C367 /* KDSwitchControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53692B060F1B82C90051C367 /* KDSwitchControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692B000F1B82C90051C367 /* KDSwitchControl.m */; };
 		53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
@@ -181,6 +175,12 @@
 		53FD894C0F4E25B800536B83 /* NSObject+Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD894A0F4E25B800536B83 /* NSObject+Metadata.m */; };
 		53FD894D0F4E25B800536B83 /* NSObject+Metadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FD89490F4E25B800536B83 /* NSObject+Metadata.h */; };
 		53FD894E0F4E25B800536B83 /* NSObject+Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD894A0F4E25B800536B83 /* NSObject+Metadata.m */; };
+		53FD89550F4E281400536B83 /* AFSwitchControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FD894F0F4E281400536B83 /* AFSwitchControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53FD89560F4E281400536B83 /* AFSwitchControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD89500F4E281400536B83 /* AFSwitchControl.m */; };
+		53FD89570F4E281400536B83 /* AFGradientCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD89510F4E281400536B83 /* AFGradientCell.m */; };
+		53FD89580F4E281400536B83 /* AFGradientButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FD89520F4E281400536B83 /* AFGradientButton.h */; };
+		53FD89590F4E281400536B83 /* AFGradientButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD89530F4E281400536B83 /* AFGradientButton.m */; };
+		53FD895A0F4E281400536B83 /* AFGradientCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FD89540F4E281400536B83 /* AFGradientCell.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -294,12 +294,6 @@
 		53692AD20F1B82B60051C367 /* SourceList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceList.m; sourceTree = "<group>"; };
 		53692AD30F1B82B60051C367 /* SourceNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceNode.h; sourceTree = "<group>"; };
 		53692AD40F1B82B60051C367 /* SourceNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceNode.m; sourceTree = "<group>"; };
-		53692AFB0F1B82C90051C367 /* KDGradientButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDGradientButton.h; sourceTree = "<group>"; };
-		53692AFC0F1B82C90051C367 /* KDGradientButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDGradientButton.m; sourceTree = "<group>"; };
-		53692AFD0F1B82C90051C367 /* KDGradientCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDGradientCell.h; sourceTree = "<group>"; };
-		53692AFE0F1B82C90051C367 /* KDGradientCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDGradientCell.m; sourceTree = "<group>"; };
-		53692AFF0F1B82C90051C367 /* KDSwitchControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDSwitchControl.h; sourceTree = "<group>"; };
-		53692B000F1B82C90051C367 /* KDSwitchControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDSwitchControl.m; sourceTree = "<group>"; };
 		53692BA50F1B85A90051C367 /* AmberFoundation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation_Prefix.pch; sourceTree = "<group>"; };
 		53692BA60F1B85B10051C367 /* AmberKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberKit_Prefix.pch; sourceTree = "<group>"; };
 		53692C180F1B87CA0051C367 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
@@ -368,6 +362,12 @@
 		53EE979B0F19024F008AD8C0 /* NSBundle+AFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+AFAdditions.m"; sourceTree = "<group>"; };
 		53FD89490F4E25B800536B83 /* NSObject+Metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Metadata.h"; sourceTree = "<group>"; };
 		53FD894A0F4E25B800536B83 /* NSObject+Metadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Metadata.m"; sourceTree = "<group>"; };
+		53FD894F0F4E281400536B83 /* AFSwitchControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSwitchControl.h; sourceTree = "<group>"; };
+		53FD89500F4E281400536B83 /* AFSwitchControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSwitchControl.m; sourceTree = "<group>"; };
+		53FD89510F4E281400536B83 /* AFGradientCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFGradientCell.m; sourceTree = "<group>"; };
+		53FD89520F4E281400536B83 /* AFGradientButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFGradientButton.h; sourceTree = "<group>"; };
+		53FD89530F4E281400536B83 /* AFGradientButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFGradientButton.m; sourceTree = "<group>"; };
+		53FD89540F4E281400536B83 /* AFGradientCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFGradientCell.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -519,12 +519,12 @@
 		53692AFA0F1B82C90051C367 /* switchcontrol */ = {
 			isa = PBXGroup;
 			children = (
-				53692AFB0F1B82C90051C367 /* KDGradientButton.h */,
-				53692AFC0F1B82C90051C367 /* KDGradientButton.m */,
-				53692AFD0F1B82C90051C367 /* KDGradientCell.h */,
-				53692AFE0F1B82C90051C367 /* KDGradientCell.m */,
-				53692AFF0F1B82C90051C367 /* KDSwitchControl.h */,
-				53692B000F1B82C90051C367 /* KDSwitchControl.m */,
+				53FD894F0F4E281400536B83 /* AFSwitchControl.h */,
+				53FD89500F4E281400536B83 /* AFSwitchControl.m */,
+				53FD89540F4E281400536B83 /* AFGradientCell.h */,
+				53FD89510F4E281400536B83 /* AFGradientCell.m */,
+				53FD89520F4E281400536B83 /* AFGradientButton.h */,
+				53FD89530F4E281400536B83 /* AFGradientButton.m */,
 			);
 			path = switchcontrol;
 			sourceTree = "<group>";
@@ -877,9 +877,6 @@
 				53692AE10F1B82B60051C367 /* ShadowTextCell.h in Headers */,
 				53692AE30F1B82B60051C367 /* SourceList.h in Headers */,
 				53692AE50F1B82B60051C367 /* SourceNode.h in Headers */,
-				53692B010F1B82C90051C367 /* KDGradientButton.h in Headers */,
-				53692B030F1B82C90051C367 /* KDGradientCell.h in Headers */,
-				53692B050F1B82C90051C367 /* KDSwitchControl.h in Headers */,
 				53692D5C0F1B90DB0051C367 /* AFBoolToColor.h in Headers */,
 				53692D5E0F1B90DC0051C367 /* AFDateToString.h in Headers */,
 				53692D620F1B90DD0051C367 /* AFError.h in Headers */,
@@ -892,6 +889,9 @@
 				53692D790F1B90EC0051C367 /* NSTreeNode+Additions.h in Headers */,
 				539BFE040F1FE2AE003C1148 /* AmberKit.h in Headers */,
 				53F90C580F2FA02D000BFC77 /* AFKeyValueBinding.h in Headers */,
+				53FD89550F4E281400536B83 /* AFSwitchControl.h in Headers */,
+				53FD89580F4E281400536B83 /* AFGradientButton.h in Headers */,
+				53FD895A0F4E281400536B83 /* AFGradientCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1161,9 +1161,6 @@
 				53692AE20F1B82B60051C367 /* ShadowTextCell.m in Sources */,
 				53692AE40F1B82B60051C367 /* SourceList.m in Sources */,
 				53692AE60F1B82B60051C367 /* SourceNode.m in Sources */,
-				53692B020F1B82C90051C367 /* KDGradientButton.m in Sources */,
-				53692B040F1B82C90051C367 /* KDGradientCell.m in Sources */,
-				53692B060F1B82C90051C367 /* KDSwitchControl.m in Sources */,
 				53692D5D0F1B90DB0051C367 /* AFBoolToColor.m in Sources */,
 				53692D600F1B90DD0051C367 /* AFError.m in Sources */,
 				53692D610F1B90DD0051C367 /* AFDateToString.m in Sources */,
@@ -1174,6 +1171,9 @@
 				53692D780F1B90EB0051C367 /* NSTreeNode+Additions.m in Sources */,
 				53692D7A0F1B90EC0051C367 /* NSTreeController+Additions.m in Sources */,
 				53F90C570F2FA02C000BFC77 /* AFKeyValueBinding.m in Sources */,
+				53FD89560F4E281400536B83 /* AFSwitchControl.m in Sources */,
+				53FD89570F4E281400536B83 /* AFGradientCell.m in Sources */,
+				53FD89590F4E281400536B83 /* AFGradientButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
