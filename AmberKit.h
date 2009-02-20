@@ -29,5 +29,5 @@
 // Custom Controls
 //
 
-#import "AmberKit/SourceList.h"
+#import "AmberKit/AFSourceList.h"
 #import "AmberKit/AFSwitchControl.h"
