@@ -6,7 +6,7 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 // Note: This function does NOT consider inheritance when looking up a value
 //	It assumes the bundle containing the class implementation contains the required __OBJC,__class_metadata segment in the main executable
