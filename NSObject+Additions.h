@@ -17,6 +17,7 @@
 //	Execution doesn't yield to the main thread so be careful what you do with return values from -threadProxy
 
 - (id)mainThreadProxy; // Note: messages will be performed synchronously
+- (id)backgroundThreadProxy;
 - (id)threadProxy:(NSThread *)object; // Note: messages performed synchronously iff (thread == [NSThread mainThread])
 
 - (id)protocolProxy:(Protocol *)protocol; // Note: only selectors that return true for respondsToSelector: will be forwarded

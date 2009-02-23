@@ -88,6 +88,10 @@
 	return [self threadProxy:[NSThread mainThread]];
 }
 
+- (id)backgroundThreadProxy {
+	return [self threadProxy:[[[NSThread alloc] init] autorelease]];
+}
+
 - (id)threadProxy:(NSThread *)thread {
 	_AFThreadProxy *proxy = [[_AFThreadProxy alloc] autorelease];
 	proxy->_target = [self retain];
