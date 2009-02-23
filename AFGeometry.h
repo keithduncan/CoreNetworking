@@ -10,19 +10,19 @@
 
 #if (TARGET_OS_MAC && !(TARGET_OS_IPHONE))
 
-NS_INLINE NSRect SizeCenteredInRect(NSSize size, NSRect frame) {
+NS_INLINE NSRect AFSizeCenteredInRect(NSSize size, NSRect frame) {
 	return NSInsetRect(frame, (NSWidth(frame) - size.width)/2.0, (NSHeight(frame) - size.height)/2.0);
 }
 
-NS_INLINE NSRect SquareCenteredInRect(CGFloat squareSize, NSRect frame) {
+NS_INLINE NSRect AFSquareCenteredInRect(CGFloat squareSize, NSRect frame) {
 	return NSInsetRect(frame, (NSWidth(frame) - squareSize)/2.0, (NSHeight(frame) - squareSize)/2.0);
 }
 
-NS_INLINE NSPoint CentrePointFromRect(NSRect rect) {
+NS_INLINE NSPoint AFCentrePointFromRect(NSRect rect) {
 	return NSMakePoint(NSMidX(rect), NSMidY(rect));
 }
 
-NS_INLINE NSRect RectFromCentrePoint(NSPoint point, NSSize size) {
+NS_INLINE NSRect AFRectFromCentrePoint(NSPoint point, NSSize size) {
 	return (NSRect){(NSPoint){point.x - (size.width/2.0), point.y - (size.height/2.0)}, (NSSize)size};
 }
 
