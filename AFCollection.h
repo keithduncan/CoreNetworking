@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 NS_INLINE BOOL AFArrayContainsIndex(NSArray *array, NSUInteger index) {
-	return NSLocationInRange(index, (NSRange){0, [array count]-1});
+	return NSLocationInRange(index, (NSRange){0, [array count]});
 }
 
 NS_INLINE id AFSafeObjectAtIndex(NSArray *array, NSUInteger index) {
@@ -25,6 +25,8 @@ NS_INLINE id AFSafeObjectAtIndex(NSArray *array, NSUInteger index) {
 - (NSArray *)arrayByAddingObjectsFromSet:(NSSet *)set;
 
 - (NSArray *)subarrayFromIndex:(NSUInteger)index;
+
+- (id)onlyObject; // Note: this returns the only object in the array, or nil if the receiver contains more than one object
 @end
 
 @interface NSDictionary (AFAdditions)

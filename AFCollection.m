@@ -48,6 +48,10 @@
 	return [NSArray arrayWithObjects:&objects[index] count:([self count] - index)];
 }
 
+- (id)onlyObject {
+	return ([self count] == 1) ? AFSafeObjectAtIndex(self, 0) : nil;
+}
+
 @end
 
 @implementation NSDictionary (AFAdditions)
