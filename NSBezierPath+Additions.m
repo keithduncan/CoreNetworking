@@ -147,7 +147,7 @@ extern void AKDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlign
 	textPathBounds.size = [scale transformSize:textPathBounds.size];
 	
 	NSAffineTransform *originCorrection = [NSAffineTransform transform];
-	NSPoint centeredOrigin = SizeCenteredInRect(textPathBounds.size, frame).origin;
+	NSPoint centeredOrigin = AFSizeCenteredInRect(textPathBounds.size, frame).origin;
 	[originCorrection translateXBy:(centeredOrigin.x - NSMinX(textPathBounds)) yBy:(centeredOrigin.y - NSMinY(textPathBounds))];
 	[textPath transformUsingAffineTransform:originCorrection];
 	
