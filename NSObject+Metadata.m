@@ -12,7 +12,7 @@
 #import <mach-o/loader.h>
 #import <mach-o/getsect.h>
 
-#if TARGET_OS_MAC
+#if TARGET_OS_MAC && !(TARGET_OS_IPHONE)
 static NSMapTable *_kBundleMetadataMap = nil;
 #elif TARGET_OS_IPHONE
 static NSMutableDictionary *_kBundleMetadataMap = nil;
@@ -44,7 +44,7 @@ static inline void *AFDataFromBundleExecutable(NSBundle *bundle, const char *seg
 
 id af_class_getMetadataObjectForKey(Class class, NSString *key) {
 	if (_kBundleMetadataMap == nil) {
-#if TARGET_OS_MAC
+#if TARGET_OS_MAC && !(TARGET_OS_IPHONE)
 		_kBundleMetadataMap = [[NSMapTable alloc] initWithKeyOptions:(NSPointerFunctionsObjectPersonality) valueOptions:(NSPointerFunctionsObjectPersonality) capacity:_dyld_image_count()];
 #elif TARGET_OS_IPHONE
 		_kBundleMetadataMap = [[NSMutableDictionary alloc] initWithCapacity:_dyld_image_count()];

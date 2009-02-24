@@ -112,6 +112,7 @@
 		537E78260F545E9700C8E3D4 /* AFWeekControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E781C0F545E9700C8E3D4 /* AFWeekControl.m */; };
 		537E782A0F545EC600C8E3D4 /* AFTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78280F545EC600C8E3D4 /* AFTextFieldCell.m */; };
 		537E782B0F545EC600C8E3D4 /* AFTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78290F545EC600C8E3D4 /* AFTextFieldCell.h */; };
+		537E7A570F5477B100C8E3D4 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 537E7A560F5477B100C8E3D4 /* ApplicationServices.framework */; };
 		539A60D40D269919001CD14A /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 536E8AFA0C8E1055009783A5 /* AFGeometry.m */; };
 		539A60D50D269919001CD14A /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 5343E7170C21FB6D00B63E6E /* AFGeometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A60EE0D269B21001CD14A /* AmberFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A60DA0D269932001CD14A /* AmberFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -282,6 +283,8 @@
 		537E781C0F545E9700C8E3D4 /* AFWeekControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFWeekControl.m; sourceTree = "<group>"; };
 		537E78280F545EC600C8E3D4 /* AFTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTextFieldCell.m; sourceTree = "<group>"; };
 		537E78290F545EC600C8E3D4 /* AFTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTextFieldCell.h; sourceTree = "<group>"; };
+		537E79710F54765000C8E3D4 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		537E7A560F5477B100C8E3D4 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		539028F80C89CAB300DFC044 /* AFPropertyListProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPropertyListProtocol.h; sourceTree = "<group>"; };
 		539028F90C89CAB300DFC044 /* AFPropertyListProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListProtocol.m; sourceTree = "<group>"; };
 		539A60C30D2698B7001CD14A /* AmberFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmberFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -385,6 +388,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				532F74F10F0EB1F5004D6056 /* Foundation.framework in Frameworks */,
+				537E7A570F5477B100C8E3D4 /* ApplicationServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +417,8 @@
 				539A60FD0D269B6C001CD14A /* Resources */,
 				537E52F10CFC89760084F920 /* Frameworks */,
 				5343E70F0C21FB4200B63E6E /* Products */,
+				537E79710F54765000C8E3D4 /* Quartz.framework */,
+				537E7A560F5477B100C8E3D4 /* ApplicationServices.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1174,8 +1180,16 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_GC = supported;
+				"GCC_ENABLE_OBJC_GC[sdk=macosx*][arch=*]" = supported;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
+					"-framework",
+					CoreGraphics,
+				);
+				"OTHER_LDFLAGS[sdk=macosx*][arch=*]" = (
+					"-framework",
+					ApplicationSupport,
+				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
 			};
@@ -1188,7 +1202,15 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_ENABLE_OBJC_GC = supported;
+				"GCC_ENABLE_OBJC_GC[sdk=macosx*][arch=*]" = supported;
+				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
+					"-framework",
+					CoreGraphics,
+				);
+				"OTHER_LDFLAGS[sdk=macosx*][arch=*]" = (
+					"-framework",
+					ApplicationSupport,
+				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
 				ZERO_LINK = NO;
@@ -1203,6 +1225,7 @@
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx10.5;
 			};
@@ -1219,6 +1242,7 @@
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
 				OTHER_CODE_SIGN_FLAGS = "-i com.thirty-three.amber";
 				SDKROOT = macosx10.5;
 			};

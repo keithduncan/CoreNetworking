@@ -8,25 +8,25 @@
 
 #import <Foundation/Foundation.h>
 
-#if (TARGET_OS_MAC && !(TARGET_OS_IPHONE))
+#ifdef TARGET_OS_IPHONE
+#import <CoreGraphics/CoreGraphics.h>
+#endif
 
-NS_INLINE NSRect AFSizeCenteredInRect(NSSize size, NSRect frame) {
-	return NSInsetRect(frame, (NSWidth(frame) - size.width)/2.0, (NSHeight(frame) - size.height)/2.0);
+NS_INLINE CGRect AFRectCenteredSize(CGRect frame, CGSize size) {
+	return CGRectInset(frame, (frame.size.width - size.width)/2.0, (frame.size.height - size.height)/2.0);
 }
 
-NS_INLINE NSRect AFSquareCenteredInRect(CGFloat squareSize, NSRect frame) {
-	return NSInsetRect(frame, (NSWidth(frame) - squareSize)/2.0, (NSHeight(frame) - squareSize)/2.0);
+NS_INLINE CGRect AFRectCenteredSquare(CGRect frame, CGFloat squareSize) {
+	return CGRectInset(frame, (frame.size.width - squareSize)/2.0, (frame.size.height - squareSize)/2.0);
 }
 
-NS_INLINE NSPoint AFCentrePointFromRect(NSRect rect) {
-	return NSMakePoint(NSMidX(rect), NSMidY(rect));
+NS_INLINE CGRect AFPointCentredSize(CGPoint point, CGSize size) {
+	return (CGRect){(CGPoint){point.x - (size.width/2.0), point.y - (size.height/2.0)}, (CGSize)size};
 }
 
-NS_INLINE NSRect AFRectFromCentrePoint(NSPoint point, NSSize size) {
-	return (NSRect){(NSPoint){point.x - (size.width/2.0), point.y - (size.height/2.0)}, (NSSize)size};
+NS_INLINE CGPoint AFRectCentrePoint(CGRect rect) {
+	return CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
 }
 
 // This divides the given rect into count pieces and stores them in buffer, buffer must be able to hold count NSRects
-extern void AFDivideRect(NSRect rect, NSRectEdge edge, NSUInteger count, NSRectArray buffer);
-
-#endif
+extern void AFRectDivideEqually(CGRect rect, CGRectEdge edge, NSUInteger count, CGRect *buffer);
