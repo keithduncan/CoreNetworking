@@ -50,20 +50,6 @@
 		532F750B0F0EB213004D6056 /* NSXMLElement+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */; };
 		53692A610F1B7EC80051C367 /* AmberFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692A620F1B7EC80051C367 /* AmberKit.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 53EE97470F190070008AD8C0 /* AmberKit.framework */; };
-		53692A870F1B82900051C367 /* ActivationCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692A830F1B82900051C367 /* ActivationCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53692A880F1B82900051C367 /* ActivationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692A840F1B82900051C367 /* ActivationCell.m */; };
-		53692A890F1B82900051C367 /* ActivationControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692A850F1B82900051C367 /* ActivationControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53692A8A0F1B82900051C367 /* ActivationControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692A860F1B82900051C367 /* ActivationControl.m */; };
-		53692AAD0F1B82A10051C367 /* CalendarButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA30F1B82A10051C367 /* CalendarButton.h */; };
-		53692AAE0F1B82A10051C367 /* CalendarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AA40F1B82A10051C367 /* CalendarButton.m */; };
-		53692AAF0F1B82A10051C367 /* KDCalendarControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA50F1B82A10051C367 /* KDCalendarControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53692AB00F1B82A10051C367 /* KDCalendarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AA60F1B82A10051C367 /* KDCalendarControl.m */; };
-		53692AB10F1B82A10051C367 /* KDCalendarControlCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA70F1B82A10051C367 /* KDCalendarControlCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53692AB20F1B82A10051C367 /* KDCalendarControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AA80F1B82A10051C367 /* KDCalendarControlCell.m */; };
-		53692AB30F1B82A10051C367 /* KDWeekCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AA90F1B82A10051C367 /* KDWeekCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53692AB40F1B82A10051C367 /* KDWeekCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AAA0F1B82A10051C367 /* KDWeekCell.m */; };
-		53692AB50F1B82A10051C367 /* KDWeekControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53692AAB0F1B82A10051C367 /* KDWeekControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53692AB60F1B82A10051C367 /* KDWeekControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53692AAC0F1B82A10051C367 /* KDWeekControl.m */; };
 		53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
@@ -114,6 +100,18 @@
 		53692DFE0F1B91680051C367 /* NSTreeNode+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 536B80CB0C7C475C004167C5 /* NSTreeNode+Additions.m */; };
 		5375FA6A0F2543D400CEC661 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
 		537E53A10CFC8D400084F920 /* Amber.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53A00CFC8D400084F920 /* Amber.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		537E781D0F545E9700C8E3D4 /* AFCalendarButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78130F545E9700C8E3D4 /* AFCalendarButton.h */; };
+		537E781E0F545E9700C8E3D4 /* AFCalendarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78140F545E9700C8E3D4 /* AFCalendarButton.m */; };
+		537E781F0F545E9700C8E3D4 /* AFCalendarControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78150F545E9700C8E3D4 /* AFCalendarControl.h */; };
+		537E78200F545E9700C8E3D4 /* AFCalendarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78160F545E9700C8E3D4 /* AFCalendarControl.m */; };
+		537E78210F545E9700C8E3D4 /* AFCalendarControlCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78170F545E9700C8E3D4 /* AFCalendarControlCell.h */; };
+		537E78220F545E9700C8E3D4 /* AFCalendarControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78180F545E9700C8E3D4 /* AFCalendarControlCell.m */; };
+		537E78230F545E9700C8E3D4 /* AFWeekCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78190F545E9700C8E3D4 /* AFWeekCell.h */; };
+		537E78240F545E9700C8E3D4 /* AFWeekCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E781A0F545E9700C8E3D4 /* AFWeekCell.m */; };
+		537E78250F545E9700C8E3D4 /* AFWeekControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E781B0F545E9700C8E3D4 /* AFWeekControl.h */; };
+		537E78260F545E9700C8E3D4 /* AFWeekControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E781C0F545E9700C8E3D4 /* AFWeekControl.m */; };
+		537E782A0F545EC600C8E3D4 /* AFTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78280F545EC600C8E3D4 /* AFTextFieldCell.m */; };
+		537E782B0F545EC600C8E3D4 /* AFTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78290F545EC600C8E3D4 /* AFTextFieldCell.h */; };
 		539A60D40D269919001CD14A /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 536E8AFA0C8E1055009783A5 /* AFGeometry.m */; };
 		539A60D50D269919001CD14A /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 5343E7170C21FB6D00B63E6E /* AFGeometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A60EE0D269B21001CD14A /* AmberFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A60DA0D269932001CD14A /* AmberFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -171,8 +169,6 @@
 		53FD89A30F4E2A4F00536B83 /* AFLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD89910F4E2A4F00536B83 /* AFLibrary.m */; };
 		53FD89A40F4E2A4F00536B83 /* AFLocateLibraryWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FD89920F4E2A4F00536B83 /* AFLocateLibraryWindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53FD89A50F4E2A4F00536B83 /* AFLocateLibraryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD89930F4E2A4F00536B83 /* AFLocateLibraryWindowController.m */; };
-		53FD89A60F4E2A4F00536B83 /* AFShadowTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FD89940F4E2A4F00536B83 /* AFShadowTextCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53FD89A70F4E2A4F00536B83 /* AFShadowTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD89950F4E2A4F00536B83 /* AFShadowTextCell.m */; };
 		53FD89A80F4E2A4F00536B83 /* AFSourceList.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FD89960F4E2A4F00536B83 /* AFSourceList.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53FD89A90F4E2A4F00536B83 /* AFSourceList.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FD89970F4E2A4F00536B83 /* AFSourceList.m */; };
 		53FD89AA0F4E2A4F00536B83 /* AFSourceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FD89980F4E2A4F00536B83 /* AFSourceNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -258,20 +254,6 @@
 		5343E7230C21FBEA00B63E6E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		5360202D0CD7E40B007EDF87 /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
 		5360202E0CD7E40B007EDF87 /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
-		53692A830F1B82900051C367 /* ActivationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivationCell.h; sourceTree = "<group>"; };
-		53692A840F1B82900051C367 /* ActivationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivationCell.m; sourceTree = "<group>"; };
-		53692A850F1B82900051C367 /* ActivationControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivationControl.h; sourceTree = "<group>"; };
-		53692A860F1B82900051C367 /* ActivationControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivationControl.m; sourceTree = "<group>"; };
-		53692AA30F1B82A10051C367 /* CalendarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarButton.h; sourceTree = "<group>"; };
-		53692AA40F1B82A10051C367 /* CalendarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarButton.m; sourceTree = "<group>"; };
-		53692AA50F1B82A10051C367 /* KDCalendarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDCalendarControl.h; sourceTree = "<group>"; };
-		53692AA60F1B82A10051C367 /* KDCalendarControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDCalendarControl.m; sourceTree = "<group>"; };
-		53692AA70F1B82A10051C367 /* KDCalendarControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDCalendarControlCell.h; sourceTree = "<group>"; };
-		53692AA80F1B82A10051C367 /* KDCalendarControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDCalendarControlCell.m; sourceTree = "<group>"; };
-		53692AA90F1B82A10051C367 /* KDWeekCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDWeekCell.h; sourceTree = "<group>"; };
-		53692AAA0F1B82A10051C367 /* KDWeekCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDWeekCell.m; sourceTree = "<group>"; };
-		53692AAB0F1B82A10051C367 /* KDWeekControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KDWeekControl.h; sourceTree = "<group>"; };
-		53692AAC0F1B82A10051C367 /* KDWeekControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KDWeekControl.m; sourceTree = "<group>"; };
 		53692BA50F1B85A90051C367 /* AmberFoundation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation_Prefix.pch; sourceTree = "<group>"; };
 		53692BA60F1B85B10051C367 /* AmberKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberKit_Prefix.pch; sourceTree = "<group>"; };
 		53692C180F1B87CA0051C367 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
@@ -288,6 +270,18 @@
 		537E53390CFC8BA70084F920 /* NSFileManager+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+Additions.h"; sourceTree = "<group>"; };
 		537E533B0CFC8BA80084F920 /* NSFileManager+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+Additions.m"; sourceTree = "<group>"; };
 		537E53A00CFC8D400084F920 /* Amber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Amber.h; sourceTree = "<group>"; };
+		537E78130F545E9700C8E3D4 /* AFCalendarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFCalendarButton.h; sourceTree = "<group>"; };
+		537E78140F545E9700C8E3D4 /* AFCalendarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCalendarButton.m; sourceTree = "<group>"; };
+		537E78150F545E9700C8E3D4 /* AFCalendarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFCalendarControl.h; sourceTree = "<group>"; };
+		537E78160F545E9700C8E3D4 /* AFCalendarControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCalendarControl.m; sourceTree = "<group>"; };
+		537E78170F545E9700C8E3D4 /* AFCalendarControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFCalendarControlCell.h; sourceTree = "<group>"; };
+		537E78180F545E9700C8E3D4 /* AFCalendarControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCalendarControlCell.m; sourceTree = "<group>"; };
+		537E78190F545E9700C8E3D4 /* AFWeekCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFWeekCell.h; sourceTree = "<group>"; };
+		537E781A0F545E9700C8E3D4 /* AFWeekCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFWeekCell.m; sourceTree = "<group>"; };
+		537E781B0F545E9700C8E3D4 /* AFWeekControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFWeekControl.h; sourceTree = "<group>"; };
+		537E781C0F545E9700C8E3D4 /* AFWeekControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFWeekControl.m; sourceTree = "<group>"; };
+		537E78280F545EC600C8E3D4 /* AFTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTextFieldCell.m; sourceTree = "<group>"; };
+		537E78290F545EC600C8E3D4 /* AFTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTextFieldCell.h; sourceTree = "<group>"; };
 		539028F80C89CAB300DFC044 /* AFPropertyListProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPropertyListProtocol.h; sourceTree = "<group>"; };
 		539028F90C89CAB300DFC044 /* AFPropertyListProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListProtocol.m; sourceTree = "<group>"; };
 		539A60C30D2698B7001CD14A /* AmberFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmberFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -354,8 +348,6 @@
 		53FD89910F4E2A4F00536B83 /* AFLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFLibrary.m; sourceTree = "<group>"; };
 		53FD89920F4E2A4F00536B83 /* AFLocateLibraryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFLocateLibraryWindowController.h; sourceTree = "<group>"; };
 		53FD89930F4E2A4F00536B83 /* AFLocateLibraryWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFLocateLibraryWindowController.m; sourceTree = "<group>"; };
-		53FD89940F4E2A4F00536B83 /* AFShadowTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFShadowTextCell.h; sourceTree = "<group>"; };
-		53FD89950F4E2A4F00536B83 /* AFShadowTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFShadowTextCell.m; sourceTree = "<group>"; };
 		53FD89960F4E2A4F00536B83 /* AFSourceList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSourceList.h; sourceTree = "<group>"; };
 		53FD89970F4E2A4F00536B83 /* AFSourceList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSourceList.m; sourceTree = "<group>"; };
 		53FD89980F4E2A4F00536B83 /* AFSourceNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSourceNode.h; sourceTree = "<group>"; };
@@ -448,37 +440,25 @@
 			isa = PBXGroup;
 			children = (
 				53692AFA0F1B82C90051C367 /* switchcontrol */,
-				53692A820F1B82900051C367 /* activationcontrol */,
 				53692AA20F1B82A10051C367 /* calendarcontrol */,
 				53692AC20F1B82B60051C367 /* sourcelist */,
 			);
 			name = Externals;
 			sourceTree = "<group>";
 		};
-		53692A820F1B82900051C367 /* activationcontrol */ = {
-			isa = PBXGroup;
-			children = (
-				53692A830F1B82900051C367 /* ActivationCell.h */,
-				53692A840F1B82900051C367 /* ActivationCell.m */,
-				53692A850F1B82900051C367 /* ActivationControl.h */,
-				53692A860F1B82900051C367 /* ActivationControl.m */,
-			);
-			path = activationcontrol;
-			sourceTree = "<group>";
-		};
 		53692AA20F1B82A10051C367 /* calendarcontrol */ = {
 			isa = PBXGroup;
 			children = (
-				53692AA30F1B82A10051C367 /* CalendarButton.h */,
-				53692AA40F1B82A10051C367 /* CalendarButton.m */,
-				53692AA50F1B82A10051C367 /* KDCalendarControl.h */,
-				53692AA60F1B82A10051C367 /* KDCalendarControl.m */,
-				53692AA70F1B82A10051C367 /* KDCalendarControlCell.h */,
-				53692AA80F1B82A10051C367 /* KDCalendarControlCell.m */,
-				53692AA90F1B82A10051C367 /* KDWeekCell.h */,
-				53692AAA0F1B82A10051C367 /* KDWeekCell.m */,
-				53692AAB0F1B82A10051C367 /* KDWeekControl.h */,
-				53692AAC0F1B82A10051C367 /* KDWeekControl.m */,
+				537E78130F545E9700C8E3D4 /* AFCalendarButton.h */,
+				537E78140F545E9700C8E3D4 /* AFCalendarButton.m */,
+				537E78150F545E9700C8E3D4 /* AFCalendarControl.h */,
+				537E78160F545E9700C8E3D4 /* AFCalendarControl.m */,
+				537E78170F545E9700C8E3D4 /* AFCalendarControlCell.h */,
+				537E78180F545E9700C8E3D4 /* AFCalendarControlCell.m */,
+				537E78190F545E9700C8E3D4 /* AFWeekCell.h */,
+				537E781A0F545E9700C8E3D4 /* AFWeekCell.m */,
+				537E781B0F545E9700C8E3D4 /* AFWeekControl.h */,
+				537E781C0F545E9700C8E3D4 /* AFWeekControl.m */,
 			);
 			path = calendarcontrol;
 			sourceTree = "<group>";
@@ -488,14 +468,14 @@
 			children = (
 				53FD898C0F4E2A4F00536B83 /* AFDisclosureButton.h */,
 				53FD898D0F4E2A4F00536B83 /* AFDisclosureButton.m */,
+				537E78290F545EC600C8E3D4 /* AFTextFieldCell.h */,
+				537E78280F545EC600C8E3D4 /* AFTextFieldCell.m */,
 				53FD898E0F4E2A4F00536B83 /* AFImageTextCell.h */,
 				53FD898F0F4E2A4F00536B83 /* AFImageTextCell.m */,
 				53FD89900F4E2A4F00536B83 /* AFLibrary.h */,
 				53FD89910F4E2A4F00536B83 /* AFLibrary.m */,
 				53FD89920F4E2A4F00536B83 /* AFLocateLibraryWindowController.h */,
 				53FD89930F4E2A4F00536B83 /* AFLocateLibraryWindowController.m */,
-				53FD89940F4E2A4F00536B83 /* AFShadowTextCell.h */,
-				53FD89950F4E2A4F00536B83 /* AFShadowTextCell.m */,
 				53FD89960F4E2A4F00536B83 /* AFSourceList.h */,
 				53FD89970F4E2A4F00536B83 /* AFSourceList.m */,
 				53FD89980F4E2A4F00536B83 /* AFSourceNode.h */,
@@ -849,13 +829,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53692A870F1B82900051C367 /* ActivationCell.h in Headers */,
-				53692A890F1B82900051C367 /* ActivationControl.h in Headers */,
-				53692AAD0F1B82A10051C367 /* CalendarButton.h in Headers */,
-				53692AAF0F1B82A10051C367 /* KDCalendarControl.h in Headers */,
-				53692AB10F1B82A10051C367 /* KDCalendarControlCell.h in Headers */,
-				53692AB30F1B82A10051C367 /* KDWeekCell.h in Headers */,
-				53692AB50F1B82A10051C367 /* KDWeekControl.h in Headers */,
 				53692D5C0F1B90DB0051C367 /* AFBoolToColor.h in Headers */,
 				53692D5E0F1B90DC0051C367 /* AFDateToString.h in Headers */,
 				53692D620F1B90DD0051C367 /* AFError.h in Headers */,
@@ -875,9 +848,14 @@
 				53FD89A00F4E2A4F00536B83 /* AFImageTextCell.h in Headers */,
 				53FD89A20F4E2A4F00536B83 /* AFLibrary.h in Headers */,
 				53FD89A40F4E2A4F00536B83 /* AFLocateLibraryWindowController.h in Headers */,
-				53FD89A60F4E2A4F00536B83 /* AFShadowTextCell.h in Headers */,
 				53FD89A80F4E2A4F00536B83 /* AFSourceList.h in Headers */,
 				53FD89AA0F4E2A4F00536B83 /* AFSourceNode.h in Headers */,
+				537E781D0F545E9700C8E3D4 /* AFCalendarButton.h in Headers */,
+				537E781F0F545E9700C8E3D4 /* AFCalendarControl.h in Headers */,
+				537E78210F545E9700C8E3D4 /* AFCalendarControlCell.h in Headers */,
+				537E78230F545E9700C8E3D4 /* AFWeekCell.h in Headers */,
+				537E78250F545E9700C8E3D4 /* AFWeekControl.h in Headers */,
+				537E782B0F545EC600C8E3D4 /* AFTextFieldCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1131,13 +1109,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53692A880F1B82900051C367 /* ActivationCell.m in Sources */,
-				53692A8A0F1B82900051C367 /* ActivationControl.m in Sources */,
-				53692AAE0F1B82A10051C367 /* CalendarButton.m in Sources */,
-				53692AB00F1B82A10051C367 /* KDCalendarControl.m in Sources */,
-				53692AB20F1B82A10051C367 /* KDCalendarControlCell.m in Sources */,
-				53692AB40F1B82A10051C367 /* KDWeekCell.m in Sources */,
-				53692AB60F1B82A10051C367 /* KDWeekControl.m in Sources */,
 				53692D5D0F1B90DB0051C367 /* AFBoolToColor.m in Sources */,
 				53692D600F1B90DD0051C367 /* AFError.m in Sources */,
 				53692D610F1B90DD0051C367 /* AFDateToString.m in Sources */,
@@ -1155,9 +1126,14 @@
 				53FD89A10F4E2A4F00536B83 /* AFImageTextCell.m in Sources */,
 				53FD89A30F4E2A4F00536B83 /* AFLibrary.m in Sources */,
 				53FD89A50F4E2A4F00536B83 /* AFLocateLibraryWindowController.m in Sources */,
-				53FD89A70F4E2A4F00536B83 /* AFShadowTextCell.m in Sources */,
 				53FD89A90F4E2A4F00536B83 /* AFSourceList.m in Sources */,
 				53FD89AB0F4E2A4F00536B83 /* AFSourceNode.m in Sources */,
+				537E781E0F545E9700C8E3D4 /* AFCalendarButton.m in Sources */,
+				537E78200F545E9700C8E3D4 /* AFCalendarControl.m in Sources */,
+				537E78220F545E9700C8E3D4 /* AFCalendarControlCell.m in Sources */,
+				537E78240F545E9700C8E3D4 /* AFWeekCell.m in Sources */,
+				537E78260F545E9700C8E3D4 /* AFWeekControl.m in Sources */,
+				537E782A0F545EC600C8E3D4 /* AFTextFieldCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
