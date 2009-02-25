@@ -20,11 +20,11 @@ NS_INLINE CGRect AFRectCenteredSquare(CGRect frame, CGFloat squareSize) {
 	return CGRectInset(frame, (frame.size.width - squareSize)/2.0, (frame.size.height - squareSize)/2.0);
 }
 
-NS_INLINE CGRect AFPointCentredSize(CGPoint point, CGSize size) {
+NS_INLINE CGRect AFPointCenteredSize(CGPoint point, CGSize size) {
 	return (CGRect){(CGPoint){point.x - (size.width/2.0), point.y - (size.height/2.0)}, (CGSize)size};
 }
 
-NS_INLINE CGPoint AFRectCentrePoint(CGRect rect) {
+NS_INLINE CGPoint AFRectCenterPoint(CGRect rect) {
 	return CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
 }
 
