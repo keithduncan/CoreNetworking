@@ -48,8 +48,6 @@
 		532F75090F0EB211004D6056 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5360202E0CD7E40B007EDF87 /* NSString+Additions.m */; };
 		532F750A0F0EB211004D6056 /* NSXMLElement+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A64400D287DD8001CD14A /* NSXMLElement+Additions.h */; };
 		532F750B0F0EB213004D6056 /* NSXMLElement+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A64410D287DD8001CD14A /* NSXMLElement+Additions.m */; };
-		53692A610F1B7EC80051C367 /* AmberFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
-		53692A620F1B7EC80051C367 /* AmberKit.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 53EE97470F190070008AD8C0 /* AmberKit.framework */; };
 		53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
@@ -98,17 +96,21 @@
 		53692DFC0F1B91670051C367 /* Stop.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 53D6636E0CA073A40070E943 /* Stop.tiff */; };
 		53692DFD0F1B91680051C367 /* Orange Ball.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 53D6636F0CA073A40070E943 /* Orange Ball.tiff */; };
 		53692DFE0F1B91680051C367 /* NSTreeNode+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 536B80CB0C7C475C004167C5 /* NSTreeNode+Additions.m */; };
+		5370DB630F59C385008F5991 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
+		5370DB7A0F59C388008F5991 /* AmberKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53EE97470F190070008AD8C0 /* AmberKit.framework */; };
+		5370DD8C0F5A0366008F5991 /* AmberFoundation.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
+		5370DD8D0F5A0366008F5991 /* AmberKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 53EE97470F190070008AD8C0 /* AmberKit.framework */; };
 		5375FA6A0F2543D400CEC661 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
 		537E53A10CFC8D400084F920 /* Amber.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53A00CFC8D400084F920 /* Amber.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537E781D0F545E9700C8E3D4 /* AFCalendarButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78130F545E9700C8E3D4 /* AFCalendarButton.h */; };
 		537E781E0F545E9700C8E3D4 /* AFCalendarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78140F545E9700C8E3D4 /* AFCalendarButton.m */; };
-		537E781F0F545E9700C8E3D4 /* AFCalendarControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78150F545E9700C8E3D4 /* AFCalendarControl.h */; };
+		537E781F0F545E9700C8E3D4 /* AFCalendarControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78150F545E9700C8E3D4 /* AFCalendarControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537E78200F545E9700C8E3D4 /* AFCalendarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78160F545E9700C8E3D4 /* AFCalendarControl.m */; };
 		537E78210F545E9700C8E3D4 /* AFCalendarControlCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78170F545E9700C8E3D4 /* AFCalendarControlCell.h */; };
 		537E78220F545E9700C8E3D4 /* AFCalendarControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78180F545E9700C8E3D4 /* AFCalendarControlCell.m */; };
 		537E78230F545E9700C8E3D4 /* AFWeekCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78190F545E9700C8E3D4 /* AFWeekCell.h */; };
 		537E78240F545E9700C8E3D4 /* AFWeekCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E781A0F545E9700C8E3D4 /* AFWeekCell.m */; };
-		537E78250F545E9700C8E3D4 /* AFWeekControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E781B0F545E9700C8E3D4 /* AFWeekControl.h */; };
+		537E78250F545E9700C8E3D4 /* AFWeekControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E781B0F545E9700C8E3D4 /* AFWeekControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537E78260F545E9700C8E3D4 /* AFWeekControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E781C0F545E9700C8E3D4 /* AFWeekControl.m */; };
 		537E782A0F545EC600C8E3D4 /* AFTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78280F545EC600C8E3D4 /* AFTextFieldCell.m */; };
 		537E782B0F545EC600C8E3D4 /* AFTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78290F545EC600C8E3D4 /* AFTextFieldCell.h */; };
@@ -215,16 +217,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		53692A790F1B7EE70051C367 /* Copy Frameworks */ = {
+		5370DD990F5A037E008F5991 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				53692A610F1B7EC80051C367 /* AmberFoundation.framework in Copy Frameworks */,
-				53692A620F1B7EC80051C367 /* AmberKit.framework in Copy Frameworks */,
+				5370DD8C0F5A0366008F5991 /* AmberFoundation.framework in CopyFiles */,
+				5370DD8D0F5A0366008F5991 /* AmberKit.framework in CopyFiles */,
 			);
-			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		539B6E580D4BBB7C00C86E48 /* CopyFiles */ = {
@@ -370,6 +371,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5370DB7A0F59C388008F5991 /* AmberKit.framework in Frameworks */,
+				5370DB630F59C385008F5991 /* AmberFoundation.framework in Frameworks */,
 				53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -893,7 +896,7 @@
 				539A68470D296D51001CD14A /* Sources */,
 				5343E70C0C21FB4200B63E6E /* Frameworks */,
 				531C3A480D44B2E80070DEBB /* Generate Bridge Metadata */,
-				53692A790F1B7EE70051C367 /* Copy Frameworks */,
+				5370DD990F5A037E008F5991 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1453,10 +1456,6 @@
 				INFOPLIST_FILE = "AmberKit-Info.plist";
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-umbrella",
-					Amber,
-				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberKit;
 			};
@@ -1479,10 +1478,6 @@
 				INFOPLIST_FILE = "AmberKit-Info.plist";
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-umbrella",
-					Amber,
-				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberKit;
 				ZERO_LINK = NO;

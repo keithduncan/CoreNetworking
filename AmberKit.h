@@ -31,3 +31,5 @@
 
 #import "AmberKit/AFSourceList.h"
 #import "AmberKit/AFSwitchControl.h"
+#import "AmberKit/AFWeekControl.h"
+#import "AmberKit/AFCalendarControl.h"

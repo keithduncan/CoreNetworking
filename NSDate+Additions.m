@@ -26,7 +26,7 @@ NSString *AFKeyForWeekday(AFWeekday day) {
 			return @"saturday";
 	}
 	
-	[NSException raise:NSInvalidArgumentException format:@"%s, argument \'%d\' was out of range [1,7]", __PRETTY_FUNCTION__, day];
+	[NSException raise:NSInvalidArgumentException format:@"%s, argument \'%d\' was out of range [1,7]", __PRETTY_FUNCTION__, day, nil];
 	return nil;
 }
 
