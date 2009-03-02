@@ -31,8 +31,6 @@
 		53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
 		53692D6B0F1B90E30051C367 /* AmberKit Additions-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53692D0A0F1B90120051C367 /* AmberKit Additions-Info.plist */; };
 		53692DDC0F1B91470051C367 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
-		5370DB630F59C385008F5991 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
-		5370DB7A0F59C388008F5991 /* AmberKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53EE97470F190070008AD8C0 /* AmberKit.framework */; };
 		5370DE6E0F5AED26008F5991 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */; };
 		5370DE6F0F5AED26008F5991 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE6D0F5AED26008F5991 /* AFKeyValueBinding.m */; };
 		5370DE700F5AED26008F5991 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */; };
@@ -145,7 +143,7 @@
 		5370E0B50F5B061D008F5991 /* AFNetServiceListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0910F5B061D008F5991 /* AFNetServiceListener.m */; };
 		5370E0B60F5B061D008F5991 /* AFNetworkFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0920F5B061D008F5991 /* AFNetworkFunctions.h */; };
 		5370E0B70F5B061D008F5991 /* AFNetworkFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0930F5B061D008F5991 /* AFNetworkFunctions.m */; };
-		5370E0B80F5B061D008F5991 /* AFProtocols.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0940F5B061D008F5991 /* AFProtocols.h */; };
+		5370E0B80F5B061D008F5991 /* AFNetworkProtocols.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0940F5B061D008F5991 /* AFNetworkProtocols.h */; };
 		5370E0B90F5B061D008F5991 /* AFSocketStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0950F5B061D008F5991 /* AFSocketStream.h */; };
 		5370E0BA0F5B061D008F5991 /* AFSocketStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0960F5B061D008F5991 /* AFSocketStream.m */; };
 		5370E0BB0F5B061D008F5991 /* CoreNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0970F5B061D008F5991 /* CoreNetworking.h */; };
@@ -318,7 +316,7 @@
 		5370E0910F5B061D008F5991 /* AFNetServiceListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetServiceListener.m; path = CoreNetworking/AFNetServiceListener.m; sourceTree = "<group>"; };
 		5370E0920F5B061D008F5991 /* AFNetworkFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkFunctions.h; path = CoreNetworking/AFNetworkFunctions.h; sourceTree = "<group>"; };
 		5370E0930F5B061D008F5991 /* AFNetworkFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkFunctions.m; path = CoreNetworking/AFNetworkFunctions.m; sourceTree = "<group>"; };
-		5370E0940F5B061D008F5991 /* AFProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFProtocols.h; path = CoreNetworking/AFProtocols.h; sourceTree = "<group>"; };
+		5370E0940F5B061D008F5991 /* AFNetworkProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkProtocols.h; path = CoreNetworking/AFNetworkProtocols.h; sourceTree = "<group>"; };
 		5370E0950F5B061D008F5991 /* AFSocketStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFSocketStream.h; path = CoreNetworking/AFSocketStream.h; sourceTree = "<group>"; };
 		5370E0960F5B061D008F5991 /* AFSocketStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFSocketStream.m; path = CoreNetworking/AFSocketStream.m; sourceTree = "<group>"; };
 		5370E0970F5B061D008F5991 /* CoreNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreNetworking.h; path = CoreNetworking/CoreNetworking.h; sourceTree = "<group>"; };
@@ -383,8 +381,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5370DB7A0F59C388008F5991 /* AmberKit.framework in Frameworks */,
-				5370DB630F59C385008F5991 /* AmberFoundation.framework in Frameworks */,
 				53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -479,7 +475,7 @@
 				5370E0910F5B061D008F5991 /* AFNetServiceListener.m */,
 				5370E0920F5B061D008F5991 /* AFNetworkFunctions.h */,
 				5370E0930F5B061D008F5991 /* AFNetworkFunctions.m */,
-				5370E0940F5B061D008F5991 /* AFProtocols.h */,
+				5370E0940F5B061D008F5991 /* AFNetworkProtocols.h */,
 				5370E0950F5B061D008F5991 /* AFSocketStream.h */,
 				5370E0960F5B061D008F5991 /* AFSocketStream.m */,
 				5370E0980F5B061D008F5991 /* NSNetService+Additions.h */,
@@ -787,7 +783,7 @@
 				5370E0B20F5B061D008F5991 /* AFNetService.h in Headers */,
 				5370E0B40F5B061D008F5991 /* AFNetServiceListener.h in Headers */,
 				5370E0B60F5B061D008F5991 /* AFNetworkFunctions.h in Headers */,
-				5370E0B80F5B061D008F5991 /* AFProtocols.h in Headers */,
+				5370E0B80F5B061D008F5991 /* AFNetworkProtocols.h in Headers */,
 				5370E0B90F5B061D008F5991 /* AFSocketStream.h in Headers */,
 				5370E0BB0F5B061D008F5991 /* CoreNetworking.h in Headers */,
 				5370E0BC0F5B061D008F5991 /* NSNetService+Additions.h in Headers */,
@@ -1318,14 +1314,14 @@
 				INFOPLIST_FILE = "Amber-Info.plist";
 				INSTALL_PATH = "@rpath";
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../../";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-reexport_framework",
-					"\"$(CONFIGURATION_BUILD_DIR)\"/AmberKit.framework/AmberKit",
+					AmberKit,
 					"-reexport_framework",
-					"\"$(CONFIGURATION_BUILD_DIR)\"/AmberFoundation.framework/AmberFoundation",
+					AmberFoundation,
 					"-lcrypto",
 				);
 				PREBINDING = NO;
@@ -1352,13 +1348,13 @@
 				INFOPLIST_FILE = "Amber-Info.plist";
 				INSTALL_PATH = "@rpath";
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../../";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = (
 					"-reexport_framework",
-					"\"$(CONFIGURATION_BUILD_DIR)\"/AmberKit.framework/AmberKit",
+					AmberKit,
 					"-reexport_framework",
-					"\"$(CONFIGURATION_BUILD_DIR)\"/AmberFoundation.framework/AmberFoundation",
+					AmberFoundation,
 					"-lcrypto",
 				);
 				PREBINDING = NO;
