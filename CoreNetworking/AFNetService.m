@@ -10,6 +10,10 @@
 
 #import <dns_sd.h>
 
+#if TARGET_OS_MAC && TARGET_OS_IPHONE
+#import <CFNetwork/CFNetwork.h>
+#endif
+
 NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData) {
 	NSMutableDictionary *TXTDictionary = [[[NSNetService dictionaryFromTXTRecordData:TXTRecordData] mutableCopy] autorelease];
 	
@@ -31,14 +35,12 @@ NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData) {
 @synthesize presence;
 
 + (id)serviceWithNetService:(NSNetService *)service {
-	return [[[AFNetService alloc] initWithDomain:[service domain] type:[service type] name:[service name]] autorelease];
+	return [[[AFNetService alloc] initWithDomain:[service valueForKey:@"domain"] type:[service valueForKey:@"type"] name:[service valueForKey:@"name"]] autorelease];
 }
 
 - (id)init {
 	[super init];
-	
-	addresses = [[NSMutableArray alloc] init];
-	
+		
 	presence = [[NSMutableDictionary alloc] init];
 	
 	return self;
@@ -56,6 +58,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	AFNetService *self = info;
 	
 	CFArrayRef resolvedAddresses = CFNetServiceGetAddressing(service);
+	
 	if (resolvedAddresses == NULL) {
 		if ([self->delegate respondsToSelector:@selector(netService:didNotResolveAddress:)]) {
 			[self->delegate netService:self didNotResolveAddress:NSLocalizedString(@"Couldn't resolve the remote player's address.", @"AFNetService ")];
@@ -63,8 +66,6 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 		
 		return;
 	}
-	
-	[self->addresses setArray:(NSArray *)resolvedAddresses];
 	
 	if ([self->delegate respondsToSelector:@selector(netServiceDidResolveAddress:)]) {
 		[self->delegate netServiceDidResolveAddress:self];
@@ -77,7 +78,6 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	context.info = self;
 	
 	service =  CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)domain, (CFStringRef)type, (CFStringRef)name, 0);
-	
 	monitor = CFNetServiceMonitorCreate(kCFAllocatorDefault, service, AFNetServiceMonitorClientCallBack, &context);
 	
 	return self;
@@ -85,9 +85,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 
 - (void)dealloc {
 	[self stop];
-	
-	[addresses release];
-	
+		
 	[presence release];
 	
 	[super dealloc];
@@ -152,8 +150,8 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	[self stopResolve];	
 }
 
-- (NSArray *)addresses {
-	return [[addresses copy] autorelease];
+- (NSArray *)addresses {	
+	return CFNetServiceGetAddressing(service);
 }
 
 - (NSString *)fullName {

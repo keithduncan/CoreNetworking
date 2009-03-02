@@ -6,27 +6,20 @@
 //  Copyright 2009 thirty-three software. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-#import <CFNetwork/CFNetwork.h>
+#import "CoreNetworking/CoreNetworking.h"
 
 /*!
     @protocol
     @abstract    The defines the minimum required to create any service for resolution
-    @discussion  NSNetService doesn't need to support copying because once discovered the name, type and service are sufficient for other classes to work with
+    @discussion  NSNetService doesn't need to support copying because once discovered, the name, type and service are sufficient to create other classes
 					For example the AFNetService class below provides a KVO compliant presence dictionary that maps to the TXT record
-					Another class might listen for changes to the phsh TXT entry of a Bonjour peer and update the avatar (NULL record)
+					Another class might listen for changes to the phsh TXT entry of a Bonjour peer and update the avatar (found in the NULL record)
 */
 
 @protocol AFNetServiceCommon <NSObject>
-@property (readonly) NSString *name;
-@property (readonly) NSString *type;
-@property (readonly) NSString *domain;
-
-@property (readonly) NSString *fullName;
+@property (readonly) NSString *name, *type, *domain;
+- (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name;
 @end
-
-@protocol AFNetServiceDelegate;
 
 /*!
     @function
@@ -38,27 +31,31 @@
 
 extern NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData);
 
+@protocol AFNetServiceDelegate;
+
 /*!
     @class
-    @abstract    A replacement for NSNetService with a KVO compliant 'presence' dictionary corresponding to the TXT record data
+    @abstract	A replacement for a resolvable NSNetService with a KVO compliant 'presence' dictionary corresponding to the TXT record data
+	@discussion	This cannot currently be used for publishing a service, the NSNetService API is generally sufficient for that
 */
 
 @interface AFNetService : NSObject <AFNetServiceCommon> {
-	CFNetServiceRef service;
-	
+	CFNetServiceRef service;	
 	CFNetServiceMonitorRef monitor;
-	CFNetServiceClientContext context;
 	
-	NSMutableArray *addresses;
+	CFNetServiceClientContext context;
 	
 	id <AFNetServiceDelegate> delegate;
 	NSMutableDictionary *presence;
 }
 
-+ (id)serviceWithNetService:(NSNetService *)service;
-- (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name;
+/*!
+    @method     
+    @abstract   This uses -valueForKey: to access the properties in AFNetServiceCommon and passes them to the initialiser
+	@discussion	Because this uses -valueForKey: you can pass in an NSNetService, or a model object containing previously saved properties for example
+*/
 
-@property (readonly) NSString *domain, *type, *name;
++ (id)serviceWith:(id <AFNetServiceCommon>)service;
 
 @property (assign) id <AFNetServiceDelegate> delegate;
 
@@ -74,7 +71,11 @@ extern NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData);
 
 - (NSArray *)addresses;
 
-// Note: this will stop both the monitor operation and resolve
+/*!
+    @method     
+    @abstract   This will stop both a monitor and resolve operation
+*/
+
 - (void)stop;
 
 @end

@@ -6,13 +6,12 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "CoreNetworking/CoreNetworking.h"
 
 @class AFConnectionPool;
 
 @protocol AFConnectionLayer;
-@protocol AFConnectionServerDelegate;
-@protocol AFConnectionLayerHostDelegate;
+@protocol AFConnectionServerDelegate, AFConnectionLayerHostDelegate;
 
 @interface AFConnectionServer : NSObject <AFConnectionLayerHostDelegate> {
 	id <AFConnectionServerDelegate> _delegate;
@@ -27,13 +26,13 @@
 //	the +networkServer: is accessable on all assigned IP addresses (it opens the equivalent of 0.0.0.0)
 //	the +localhostServer: is only accessable on the loopback IPs and will be inaccessable to other hosts
 
-+ (id)networkServer:(u_int16_t)port;
-+ (id)localhostServer:(u_int16_t)port;
++ (id)networkServer:(SInt32)port;
++ (id)localhostServer:(SInt32)port;
 
 // Note: this is sent [[connectionClass alloc] init] to create a new application layer. It MUST be overridden in a subclass, calling the superclass implementation will throw an exception
 + (Class)connectionClass;
 
-// Note: the server sets the socket delegate to self, expects sockets to implement <AFNetworkLayer, AFConnectionLayer>
+// Note: the server sets the socket delegate to self, expects sockets to implement <AFConnectionLayer>
 - (id)initWithSockets:(NSSet *)sockets;
 
 - (void)addServerSocketsObject:(id <AFConnectionLayer>)layer;

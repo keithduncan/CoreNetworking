@@ -6,7 +6,7 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "CoreNetworking/CoreNetworking.h"
 
 #import <dns_sd.h>
 

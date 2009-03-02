@@ -10,9 +10,7 @@
 // These functions operate on data in the Transport and Internet layers, as defined in RFC 1122
 //
 
-#import <Foundation/Foundation.h>
-
-#import "AmberNetworking.h"
+#import "CoreNetworking/CoreNetworking.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>

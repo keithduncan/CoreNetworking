@@ -1,75 +1,100 @@
 //
-//  AsyncSocket.h
-//  
-//  This class is in the public domain.
-//  Originally created by Dustin Voss on Wed Jan 29 2003.
-//  Updated and maintained by Deusty Designs and the Mac development community.
+//  AFSocketStream
 //
-//  Renamed to AFSocketStreams, API changed, and included in Core Networking by Keith Duncan
-//
+//	Based on AsyncSocket
+//  Renamed to AFSocketStream, API changed, and included in Core Networking by Keith Duncan
 //  Original host http://code.google.com/p/cocoaasyncsocket/
 //
 
-#import <Foundation/Foundation.h>
-
-#import "AmberNetworking.h"
-
-@class AsyncReadPacket, AsyncWritePacket;
+#import "CoreNetworking/CoreNetworking.h"
 
 @protocol AFSocketStreamDataDelegate;
 @protocol AFSocketStreamControlDelegate;
 
-extern NSString *const AsyncSocketException;
-extern NSString *const AsyncSocketErrorDomain;
-
-enum AsyncSocketError {
-	AsyncSocketCFSocketError = kCFSocketError,	// From CFSocketError enum.
-	AsyncSocketNoError = 0,						// Never used.
-	AsyncSocketCanceledError,					// onSocketWillConnect: returned NO.
-	AsyncSocketReadMaxedOutError,               // Reached set maxLength without completing
-	AsyncSocketReadTimeoutError,
-	AsyncSocketWriteTimeoutError
+enum {
+	AFSocketStreamNoError = 0,
+	AFSocketStreamCanceledError,		// onSocketWillConnect: returned NO.
+	AFSocketStreamReadMaxedOutError,    // Reached set maxLength without completing
+	AFSocketStreamReadTimeoutError,
+	AFSocketStreamWriteTimeoutError
 };
-typedef NSInteger AFSocketStreamsError;
+typedef NSUInteger AFSocketStreamsError;
+
+extern NSString *const AFSocketStreamErrorDomain;
+
+/*!
+    @class
+    @abstract    An extention of the CFSocketStream API
+    @discussion  This class is a mix of two primary patterns. Internally, it acts an adaptor and a bridge between the CFSocket and CFStream API. Externally, it bridges CFHost and CFSocket.
+*/
 
 @interface AFSocketStream : NSObject <AFConnectionLayer> {
 	id _delegate;
-	void *_context;
-	NSUInteger flags;
+	NSUInteger _flags;
 	
-	CFRunLoopRef runLoop;
-	CFRunLoopSourceRef runLoopSource;
+	__strong CFHostRef _host;
+	SInt32 _port;
 	
-	CFReadStreamRef readStream;
+#if 1
+	/*
+		These are only needed for a host socket
+	 */
+	
+	__strong CFSocketRef socket;
+	
+	__strong CFRunLoopRef _runLoop;
+	__strong CFRunLoopSourceRef socketRunLoopSource;
+#endif
+	
+#if 1
+	/*
+		These are only needed for a connect socket
+	 */
+	__strong CFReadStreamRef readStream;
 	NSMutableArray *readQueue;
-	AsyncReadPacket *currentRead;
+	id _currentReadPacket;
 	NSTimer *readTimer;
+	
 	NSMutableData *partialReadBuffer;
 	
-	CFWriteStreamRef writeStream;
+	__strong CFWriteStreamRef writeStream;
 	NSMutableArray *writeQueue;
-	AsyncWritePacket *currentWrite;
+	id _currentWritePacket;
 	NSTimer *writeTimer;
+#endif
 }
 
-- (id)initWithLocalHost:(CFDataRef)addr port:(SInt32)port error:(NSError **)errorRef;
-- (id)initWithRemoteHost:(CFHostRef)host port:(SInt32)port error:(NSError **)errorRef;
+/*!
+    @method
+    @abstract    This is the designated initialiser and returns an object of class AFSocketStream
+*/
 
-/**
+- (id)initWithAddress:(CFDataRef)addr port:(SInt32)port;
+
+/*
+ * Host Initialisers
+ */
+
+- (id)hostWithAddress:(CFDataRef)addr port:(SInt32)port;
+
+/*
+ * Connection Initialisers
+ */
+
+- (id)connectionWithNetService:(CFNetServiceRef)service;
+- (id)connectionWithHost:(CFHostRef)host port:(SInt32)port
+
+/*
  * Use "canSafelySetDelegate" to see if there is any pending business (reads and writes) with the current delegate
- * before changing it.  It is, of course, safe to change the delegate before connecting or accepting connections.
-**/
+ */
 - (BOOL)canSafelySetDelegate;
 
 @property (assign) id <AFSocketStreamControlDelegate, AFSocketStreamDataDelegate> delegate;
 
-// Note: this isn't retained, if it's an object then you need to manage the memory
-@property (assign) void *context;
-
 /*
- * Note: this _probably_ shouldn't be used and will likely be removed
+ * Note: this is deprecated and will be removed
  */
-- (CFSocketRef)lowerLayer;
+- (CFSocketRef)lowerLayer __attribute__((deprecated));
 
 /**
  * Disconnects after all pending writes have completed.
@@ -146,7 +171,7 @@ typedef NSInteger AFSocketStreamsError;
  * Called when a new socket is spawned to handle a connection.  This method should return the run-loop of the
  * thread on which the new socket and its delegate should operate. If omitted, [NSRunLoop currentRunLoop] is used.
  **/
-- (NSRunLoop *)layer:(AFSocketStream *)sock runLoopForNewLayer:(AFSocketStream *)newSocket;
+- (CFRunLoopRef)layer:(AFSocketStream *)sock runLoopForNewLayer:(AFSocketStream *)newSocket;
 
  @required
 
@@ -167,7 +192,6 @@ typedef NSInteger AFSocketStreamsError;
  * Called when a socket connects and is ready for reading and writing.
  * The host parameter will be an IP address, not a DNS name.
  **/
-- (void)layer:(AFSocketStream *)sock didConnectToHost:(const struct sockaddr *)remoteAddr;
-#warning this callback should use CFHost
+- (void)layer:(AFSocketStream *)sock didConnectToHost:(CFHostRef)remoteAddr;
 
 @end

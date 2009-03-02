@@ -6,10 +6,10 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-#import "AFNetService.h"
+#import "CoreNetworking/CoreNetworking.h"
 
 @interface NSNetService (AFAdditions) <AFNetServiceCommon>
+
+- (NSString *)fullName;
 
 @end

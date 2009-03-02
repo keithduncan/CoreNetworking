@@ -6,12 +6,12 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "AmberNetworking.h"
+#import "CoreNetworking/CoreNetworking.h"
 
 /*!
     @class
-    @abstract	Should encapsulate Application Layer data, as defined in RFC 1122 and pass it to the |lowerLayer| for further processing
+    @abstract	Will pass data to the |lowerLayer| for further processing
+	@discussion	Your subclass should encapsulate Application Layer data (as defined in RFC 1122) and pass it to the super class for further processing
 */
 
 @interface AFConnection : NSObject <AFConnectionLayer, AFConnectionLayerControlDelegate> {	

@@ -6,21 +6,28 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "CoreNetworking/CoreNetworking.h"
 
 @protocol AFNetworkLayerDataDelegate;
+@protocol AFNetworkLayerControlDelegate;
 
 /*!
     @protocol
-    @abstract    An AFNetworkLayer object should encapsulate data in the Transport and Internet layers, as defined in RFC 1122
+    @abstract	An AFNetworkLayer object should encapsulate data (as defined in RFC 1122)
+	@discussion	This implementation mandates that a layer pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a cluster-chain allowing for maximum flexiblity.
 */
 
 @protocol AFNetworkLayer <NSObject>
- @required
 
 @property (assign) id <AFNetworkLayerDataDelegate> delegate;
 - (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
 - (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
+
+- (void)open:(NSError **)errorRef;
+- (BOOL)isOpen;
+
+- (void)close;
+- (BOOL)isClosed;
 
  @optional
 
@@ -35,47 +42,29 @@
 - (void)layer:(id <AFNetworkLayer>)object didWrite:(id)data forTag:(NSUInteger)tag;
 @end
 
+@protocol AFNetworkLayerControlDelegate <NSObject>
+- (void)layerDidOpen:(id <AFConnectionLayer>)layer;
+- (void)layerDidClose:(id <AFConnectionLayer>)layer;
+@end
+
 
 @protocol AFConnectionLayerHostDelegate;
-@protocol AFConnectionLayerControlDelegate;
 
 /*!
 	@protocol
-	@abstract    An AFConnectionLayer should maintain a stateful connection between endpoints, it can be applied to either AFNetworkLayer or AFConnection
+	@abstract    An AFConnectionLayer should maintain a stateful connection between endpoints
  */
 
 @protocol AFConnectionLayer <AFNetworkLayer> // Note: TCP => connection, UDP => connectionless, if an Application Layer implements this protocol, so should it's Network Layer
-// Note: these MUST share the same storage, a connection layer cannot have both a host and control delegate
 @property (assign) id <AFConnectionLayerHostDelegate> hostDelegate;
-@property (assign) id <AFConnectionLayerControlDelegate> controlDelegate;
-
-- (void)connect;
-- (BOOL)isConnected;
-
-- (void)disconnect;
-- (BOOL)isDisconnected;
-@end
-
-@protocol AFConnectionLayerHostDelegate <NSObject>
-- (void)layer:(id <AFNetworkLayer, AFConnectionLayer>)object didAcceptConnection:(id <AFNetworkLayer, AFConnectionLayer>)layer;
-- (void)layer:(id <AFNetworkLayer>)object didConnectToHost:(const struct sockaddr *)host;
-@end
-
-@protocol AFConnectionLayerControlDelegate <NSObject>
-- (void)layerDidConnect:(id <AFConnectionLayer>)layer;
-- (void)layerDidDisconnect:(id <AFConnectionLayer>)layer;
 @end
 
 /*!
 	@protocol
-	@abstract    An AFConnectionlessLayer should not maintain a stateful connection between endpoints, it can be applied to either AFNetworkLayer or AFConnection
-	@discussion  There are no control callbacks because there is no handshaking/negotiation
+	@abstract	
  */
 
-@protocol AFConnectionlessLayer <AFNetworkLayer> // Note: TCP => connection, UDP => connectionless, if an Application Layer implements this protocol, so should it's Network Layer
-- (void)prepare;
-- (BOOL)isPrepared;
-
-- (void)shutdown;
-- (BOOL)isShutdown;
+@protocol AFConnectionLayerHostDelegate <NSObject>
+- (void)layer:(id <AFConnectionLayer>)object didAcceptConnection:(id <AFConnectionLayer>)layer;
+- (void)layer:(id <AFConnectionLayer>)object didConnectToHost:(CFHostRef)host;
 @end

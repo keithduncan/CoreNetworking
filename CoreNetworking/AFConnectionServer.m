@@ -8,7 +8,7 @@
 
 #import "AFConnectionServer.h"
 
-#import "AFSocketStreams.h"
+#import "AFSocketStream.h"
 
 #import "AFConnectionPool.h"
 
