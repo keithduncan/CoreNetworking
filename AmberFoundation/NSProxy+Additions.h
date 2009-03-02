@@ -16,6 +16,6 @@
  @discussion  For cases where -makeObjectsPerformSelector:withObject: isn't flexible enough
  */
 
-+ (id)collectionProxy:(id <NSFastEnumeration>)collection; // Note: subsequent return values are undefined
++ (id)collectionProxy:(id <NSObject, NSFastEnumeration>)collection; // Note: subsequent return values are undefined
 
 @end

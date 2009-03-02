@@ -980,8 +980,8 @@ Failed:
 	
 	if (packet->bytesDone == 0) return;
 	// We're not done with the readToLength or readToData yet, but we have read in some bytes
-	if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)]) {
-		[self.delegate socket:self didReadPartialDataOfLength:totalBytesRead tag:(packet->tag)];
+	if ([self.delegate respondsToSelector:@selector(layer:didReadPartialDataOfLength:tag:)]) {
+		[self.delegate layer:self didReadPartialDataOfLength:totalBytesRead tag:(packet->tag)];
 	}
 	
 	if (socketError) {

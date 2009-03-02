@@ -10,7 +10,7 @@
 
 @interface _AFCollectionProxy : NSProxy {
  @public
-	id <NSFastEnumeration> _private;
+	id <NSObject, NSFastEnumeration> _private;
 }
 
 @end
@@ -24,12 +24,12 @@
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
-	if object = nil;
+	id object = nil;
 	
 	NSFastEnumerationState state;
 	NSUInteger count = [_private countByEnumeratingWithState:&state objects:&object count:1];
 	
-	NSAssert(count == 1, @"the collection must contain at least one object for forwarding to succeed")
+	NSAssert(count == 1, @"the collection must contain at least one object for forwarding to succeed");
 	return [object methodSignatureForSelector:selector];
 }
 
@@ -44,9 +44,9 @@
 
 @implementation NSProxy (Additions)
 
-+ (id)collectionProxy:(id <NSFastEnumeration>)collection {
++ (id)collectionProxy:(id <NSObject, NSFastEnumeration>)collection {
 	_AFCollectionProxy *proxy = [[self alloc] autorelease];
-	_private->[collection retain];
+	proxy->_private = [collection retain];
 	return proxy;
 }
 

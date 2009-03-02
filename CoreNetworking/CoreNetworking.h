@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AFNetworkLayerProtocols.h"
-#import "AFNetworkLayerFunctions.h"
+#import "AFNetworkProtocols.h"
+#import "AFNetworkFunctions.h"
 
 #import "AFConnectionServer.h"
 

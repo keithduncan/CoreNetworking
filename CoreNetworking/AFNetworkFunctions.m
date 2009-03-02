@@ -6,7 +6,7 @@
 //  Copyright 2009 thirty-three software. All rights reserved.
 //
 
-#import "AFNetworkLayerFunctions.h"
+#import "AFNetworkFunctions.h"
 
 bool sockaddr_compare(const struct sockaddr *a, const struct sockaddr *b) {
 	if (a->sa_family != b->sa_family) return false;

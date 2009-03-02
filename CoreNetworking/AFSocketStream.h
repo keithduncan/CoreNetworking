@@ -32,21 +32,21 @@ extern NSString *const AFSocketStreamErrorDomain;
 	id _delegate;
 	NSUInteger _flags;
 	
-	__strong CFHostRef _host;
-	SInt32 _port;
-	
 #if 1
 	/*
 		These are only needed for a host socket
 	 */
 	
-	__strong CFSocketRef socket;
+	__strong CFSocketRef _socket;
 	
 	__strong CFRunLoopRef _runLoop;
-	__strong CFRunLoopSourceRef socketRunLoopSource;
+	__strong CFRunLoopSourceRef _socketRunLoopSource;
 #endif
 	
 #if 1
+	SInt32 _port;
+	__strong CFHostRef _host;
+	
 	/*
 		These are only needed for a connect socket
 	 */
@@ -64,30 +64,30 @@ extern NSString *const AFSocketStreamErrorDomain;
 #endif
 }
 
-/*!
-    @method
-    @abstract    This is the designated initialiser and returns an object of class AFSocketStream
-*/
-
-- (id)initWithAddress:(CFDataRef)addr port:(SInt32)port;
-
 /*
  * Host Initialisers
  */
 
-- (id)hostWithAddress:(CFDataRef)addr port:(SInt32)port;
+// Note: the lower-layer is provided
+- (id)initHostWithSocket:(CFSocketRef)socket;
+
+// Note: the lower-layer is created from the signature, the signature address is copied out
+- (id)initHostWithSignature:(const CFSocketSignature *)signature;
 
 /*
  * Connection Initialisers
+ *	These create an implicitly full-duplex bidirectional stream
  */
 
-- (id)connectionWithNetService:(CFNetServiceRef)service;
-- (id)connectionWithHost:(CFHostRef)host port:(SInt32)port
+- (id)initConnectionWithNetService:(CFNetServiceRef)service;
+- (id)initConnectionWithHost:(CFHostRef)host port:(SInt32)port;
 
 /*
  * Use "canSafelySetDelegate" to see if there is any pending business (reads and writes) with the current delegate
  */
 - (BOOL)canSafelySetDelegate;
+
+
 
 @property (assign) id <AFSocketStreamControlDelegate, AFSocketStreamDataDelegate> delegate;
 
@@ -136,62 +136,27 @@ extern NSString *const AFSocketStreamErrorDomain;
 
 @end
 
-@protocol AFSocketStreamDataDelegate <AFNetworkLayerDataDelegate>
+@protocol AFSocketStreamControlDelegate <AFConnectionLayerHostDelegate>
 
  @optional
+
+/*!
+	@method
+	@abstract	This will allow callbacks to execute in the given run loop's thread, defaults to CFRunLoopMain() is none given
+ */
+- (CFRunLoopRef)layerShouldScheduleWithRunLoop:(id <AFConnectionLayer>)layer;
+
+@end
+
+@protocol AFSocketStreamDataDelegate <AFNetworkLayerDataDelegate>
+
+@optional
 
 /**
  * Called when a socket has read in data, but has not yet completed the read.
  * This would occur if using readToData: or readToLength: methods.
  * It may be used to for things such as updating progress bars.
  **/
-- (void)socket:(AFSocketStream *)sock didReadPartialDataOfLength:(CFIndex)partialLength tag:(long)tag;
-
-@end
-
-@protocol AFSocketStreamControlDelegate <AFConnectionLayerControlDelegate>
-
-/**
- * In the event of an error, the socket is closed.
- * You may call "unreadData" during this call-back to get the last bit of data off the socket.
- * When connecting, this delegate method may be called
- * before"onSocket:didAcceptNewSocket:" or "socket:didConnectToHost:".
- **/
-- (void)layer:(AFSocketStream *)sock willDisconnectWithError:(NSError *)err;
-
-/**
- * Called when a socket accepts a connection.  Another socket is spawned to handle it. The new socket will have
- * the same delegate and will call "socket:didConnectToHost:port:".
- **/
-- (void)layer:(id <AFNetworkLayer>)sock didAcceptConnection:(id <AFNetworkLayer>)newSocket;
-
- @optional
-
-/**
- * Called when a new socket is spawned to handle a connection.  This method should return the run-loop of the
- * thread on which the new socket and its delegate should operate. If omitted, [NSRunLoop currentRunLoop] is used.
- **/
-- (CFRunLoopRef)layer:(AFSocketStream *)sock runLoopForNewLayer:(AFSocketStream *)newSocket;
-
- @required
-
-/**
- * Called when a socket is about to connect. This method should return YES to continue, or NO to abort.
- * If aborted, will result in AsyncSocketCanceledError.
- * 
- * If the connectToHost:onPort:error: method was called, the delegate will be able to access and configure the
- * CFReadStream and CFWriteStream as desired prior to connection.
- *
- * If the connectToAddress:error: method was called, the delegate will be able to access and configure the
- * CFSocket and CFSocketNativeHandle (BSD socket) as desired prior to connection. You will be able to access and
- * configure the CFReadStream and CFWriteStream in the socket:didConnectToHost:port: method.
- **/
-- (BOOL)layerWillConnect:(AFSocketStream *)sock;
-
-/**
- * Called when a socket connects and is ready for reading and writing.
- * The host parameter will be an IP address, not a DNS name.
- **/
-- (void)layer:(AFSocketStream *)sock didConnectToHost:(CFHostRef)remoteAddr;
+- (void)layer:(AFSocketStream *)stream didReadPartialDataOfLength:(CFIndex)partialLength tag:(long)tag;
 
 @end
