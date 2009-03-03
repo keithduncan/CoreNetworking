@@ -8,13 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AFNetworkProtocols.h"
 #import "AFNetworkFunctions.h"
-
-#import "AFConnectionServer.h"
+#import "AFNetworkProtocols.h"
 
 #import "AFConnection.h"
 #import "AFConnectionPool.h"
+#import "AFConnectionServer.h"
 
 #import "AFSocketStream.h"
 

@@ -37,10 +37,14 @@
 
 @end
 
+
 @protocol AFNetworkLayerControlDelegate <NSObject>
-- (void)layerDidOpen:(id <AFConnectionLayer>)layer;
-- (void)layerDidClose:(id <AFConnectionLayer>)layer;
+
+- (void)layerDidOpen:(id <AFNetworkLayer>)layer;
+- (void)layerDidClose:(id <AFNetworkLayer>)layer;
+
 @end
+
 
 @protocol AFNetworkLayerDataDelegate <NSObject>
 
@@ -66,15 +70,19 @@
  */
 
 @protocol AFConnectionLayer <AFNetworkLayer>
+
 @property (assign) id <AFConnectionLayerControlDelegate, AFConnectionLayerDataDelegate> delegate;
 @property (assign) id <AFConnectionLayerHostDelegate> hostDelegate;
+
 @end
 
-@protocol AFConnectionControlDelegate <AFNetworkLayerControlDelegate>
+@protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>
+
 - (BOOL)layerWillConnect:(id <AFConnectionLayer>)stream;
 - (void)layerDidConnect:(id <AFConnectionLayer>)stream host:(CFHostRef)remoteAddr;
 
 - (void)layerWillDisconnect:(id <AFConnectionLayer>)stream error:(NSError *)error;
+
 @end
 
 @protocol AFConnectionLayerDataDelegate <AFNetworkLayerDataDelegate>
@@ -82,6 +90,8 @@
 @end
 
 @protocol AFConnectionLayerHostDelegate
+
 - (BOOL)layer:(id <AFConnectionLayer>)stream willAcceptConnection:(id <AFConnectionLayer>)newStream;
 - (void)layer:(id <AFConnectionLayer>)stream didAcceptConnection:(id <AFConnectionLayer>)newStream;
+
 @end

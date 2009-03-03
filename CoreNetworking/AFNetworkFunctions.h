@@ -15,4 +15,5 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 
-bool sockaddr_compare(const struct sockaddr *a, const struct sockaddr *b);
+bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b);
+char *sockaddr_atop(const struct sockaddr *addr, char *dst, size_t maxlen);

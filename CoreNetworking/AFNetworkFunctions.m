@@ -8,7 +8,7 @@
 
 #import "AFNetworkFunctions.h"
 
-bool sockaddr_compare(const struct sockaddr *a, const struct sockaddr *b) {
+bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b) {
 	if (a->sa_family != b->sa_family) return false;
 	
 	if (a->sa_family == AF_INET) {
@@ -23,6 +23,7 @@ bool sockaddr_compare(const struct sockaddr *a, const struct sockaddr *b) {
 			return false;
 		}
 		
+		// Compare ports
 		if ((a_in->sin_port == 0) || (b_in->sin_port == 0) ||
 			(a_in->sin_port == b_in->sin_port))
 		{
@@ -38,4 +39,20 @@ bool sockaddr_compare(const struct sockaddr *a, const struct sockaddr *b) {
 	}
 	
 	return false;
+}
+
+char *sockaddr_atop(const struct sockaddr *addr, char *dst, size_t maxlen) {
+    switch(sa->sa_family) {
+        case AF_INET: 
+            inet_ntop(AF_INET, &(((struct sockaddr_in *)addr)->sin_addr), dst, maxlen); 
+            break; 
+        case AF_INET6: 
+            inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)addr)->sin6_addr), dst, maxlen); 
+            break; 
+        default: 
+            strncpy(dst, "Unknown AF", maxlen);
+            return NULL; 
+    } 
+	
+    return s; 
 }

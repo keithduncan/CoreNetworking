@@ -245,7 +245,6 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 @synthesize flags=_flags;
 
 @synthesize hostDelegate=_delegate;
-@synthesize controlDelegate=_delegate;
 
 - (id)initWithDelegate:(id <AFSocketStreamControlDelegate, AFSocketStreamDataDelegate>)delegate {
 	[self init];
@@ -688,36 +687,23 @@ Failed:
 }
 
 - (NSString *)description {
-	static const char *statstr[] = { "not open", "opening", "open", "reading", "writing", "at end", "closed", "has error" };
-	CFStreamStatus rs = (readStream != NULL) ? CFReadStreamGetStatus (readStream) : 0;
-	CFStreamStatus ws = (writeStream != NULL) ? CFWriteStreamGetStatus (writeStream) : 0;
+	NSMutableString *description = [[[super description] mutableCopy] autorelease];
+	[description appendString:@" "];
 	
-	NSString *peerstr, *selfstr;
-	CFDataRef peeraddr = NULL, peeraddr6 = NULL, selfaddr = NULL, selfaddr6 = NULL;
+	if (socket != NULL) {
+		CFDataRef peerAddr = CFSocketCopyPeerAddress(theSocket);
 
-	if (theSocket || theSocket6) {
-		if (theSocket != NULL) peeraddr  = CFSocketCopyPeerAddress(theSocket);
-		if (theSocket6 != NULL) peeraddr6 = CFSocketCopyPeerAddress(theSocket6);
-	
-		if (theSocket6 && theSocket) {
-			peerstr = [NSString stringWithFormat: @"%@/%@ %u", [self addressHost:peeraddr], [self addressHost:peeraddr6], [self addressPort:peeraddr]];
-		} else if (theSocket6) {
-			peerstr = [NSString stringWithFormat: @"%@ %u", [self addressHost:peeraddr6], [self addressPort:peeraddr6]];
-		} else {
-			peerstr = [NSString stringWithFormat: @"%@ %u", [self addressHost:peeraddr], [self addressPort:peeraddr]];
-		}
 		
-		if (peeraddr) CFRelease(peeraddr);
-		peeraddr = NULL;
 		
-		if(peeraddr6) CFRelease(peeraddr6);
-		peeraddr6 = NULL;
+		[description appendFormat:@"%@ %u", [self addressHost:peeraddr], [self addressPort:peeraddr], nil];
+		
+		CFRelease(peerAddr);
 	} else peerstr = @"nowhere";
-
-	if (theSocket || theSocket6) {
+	
+	if (socket != NULL) {
 		if (theSocket) selfaddr  = CFSocketCopyAddress(theSocket);
 		if (theSocket6) selfaddr6 = CFSocketCopyAddress(theSocket6);
-	
+		
 		if (theSocket6 && theSocket) {
 			selfstr = [NSString stringWithFormat: @"%@/%@ %u", [self addressHost:selfaddr], [self addressHost:selfaddr6], [self addressPort:selfaddr]];
 		} else if (theSocket6) {
@@ -725,7 +711,7 @@ Failed:
 		} else {
 			selfstr = [NSString stringWithFormat: @"%@ %u", [self addressHost:selfaddr], [self addressPort:selfaddr]];
 		}
-
+		
 		if (selfaddr) CFRelease(selfaddr);
 		selfaddr = NULL;
 		
@@ -733,11 +719,14 @@ Failed:
 		selfaddr6 = NULL;
 	} else selfstr = @"nowhere";
 	
-	NSMutableString *ms = [NSMutableString string];
-	[ms appendString: [NSString stringWithFormat:@"<AsyncSocket %p", self]];
-	[ms appendString: [NSString stringWithFormat:@" local %@ remote %@ ", selfstr, peerstr]];
-	[ms appendString: [NSString stringWithFormat:@"has queued %d reads %d writes, ", [readQueue count], [writeQueue count] ]];
+	
+	[description appendFormat:@"has queued %d reads %d writes, ", [readQueue count], [writeQueue count], nil];
+	
+	static const char *statstr[] = { "not open", "opening", "open", "reading", "writing", "at end", "closed", "has error" };
+	CFStreamStatus rs = (readStream != NULL) ? CFReadStreamGetStatus(readStream) : 0;
+	CFStreamStatus ws = (writeStream != NULL) ? CFWriteStreamGetStatus(writeStream) : 0;
 
+#if 0
 	if ([self _currentReadPacket] == nil) [ms appendString: @"no current read, "];
 	else {
 		int percentDone;
@@ -766,8 +755,9 @@ Failed:
 	if (![self isConnected]) [ms appendString: @", not connected"];
 
 	[ms appendString: @">"];
+#endif
 
-	return ms;
+	return description;
 }
 
 #pragma mark Reading
