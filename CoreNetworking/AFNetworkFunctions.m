@@ -30,8 +30,8 @@ bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr
 			return true;
 		}
 	} else if (a->sa_family == AF_INET6) {
-		//const struct sockaddr_in6 *a_in6 = (struct sockaddr_in6 *)a;
-		//const struct sockaddr_in6 *b_in6 = (struct sockaddr_in6 *)b;
+		const struct sockaddr_in6 *a_in6 = (struct sockaddr_in6 *)a;
+		const struct sockaddr_in6 *b_in6 = (struct sockaddr_in6 *)b;
 		
 		assert(0); // Note: IPv6 comparison not yet implemented
 	} else {

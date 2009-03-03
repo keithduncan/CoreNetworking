@@ -6,7 +6,7 @@
 //  Original host http://code.google.com/p/cocoaasyncsocket/
 //
 
-#import "AFSocketStream.h"
+#import "AFSocket.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -36,11 +36,11 @@ enum {
 };
 typedef NSUInteger AFSocketStreamFlags;
 
-@interface AFSocketStream ()
+@interface AFSocket ()
 @property (assign) NSUInteger flags;
 @end
 
-@interface AFSocketStream (Private)
+@interface AFSocket (Private)
 - (id)_currentReadPacket;
 - (void)_setCurrentReadPacket:(id)packet;
 - (id)_currentWritePacket;
@@ -239,7 +239,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 
 #pragma mark -
 
-@implementation AFSocketStream
+@implementation AFSocket
 
 @synthesize delegate=_delegate;
 @synthesize flags=_flags;
@@ -404,7 +404,7 @@ Failed:
 	
 	BOOL pass = YES;
 	
-	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, host, <#SInt32 port#>, &readStream, &writeStream);
+	CFStreamCreatePairWithPeerSocketSignature
 	
 	if (pass) self.flags = (self.flags | kDidPassConnectMethod);
 	else [self close];
@@ -1100,7 +1100,7 @@ Failed:
 
 static void AFSocketStreamSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *pData, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	AFSocketStream *self = [[(AFSocketStream *)pInfo retain] autorelease];
+	AFSocket *self = [[(AFSocket *)pInfo retain] autorelease];
 	
 	NSCAssert((socket == self->socket), @"socket callback for a socket that doesn't belong to this object");
 	
@@ -1122,7 +1122,7 @@ static void AFSocketStreamSocketCallback(CFSocketRef socket, CFSocketCallBackTyp
 
 static void AFSocketStreamReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	AFSocketStream *self = [[(AFSocketStream *)pInfo retain] autorelease];
+	AFSocket *self = [[(AFSocket *)pInfo retain] autorelease];
 	
 	NSCAssert((self->readStream != NULL), @"readStream is NULL");
 	
@@ -1154,7 +1154,7 @@ static void AFSocketStreamReadStreamCallback(CFReadStreamRef stream, CFStreamEve
 
 static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	AFSocketStream *self = [[(AFSocketStream *)pInfo retain] autorelease];
+	AFSocket *self = [[(AFSocket *)pInfo retain] autorelease];
 	
 	NSCAssert((self->writeStream != NULL), @"writeStream is NULL");
 	
@@ -1182,7 +1182,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 
 @end
 
-@implementation AFSocketStream (Private)
+@implementation AFSocket (Private)
 
 - (id)_currentReadPacket {
 	return _currentReadPacket;

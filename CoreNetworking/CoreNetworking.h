@@ -15,7 +15,7 @@
 #import "AFConnectionPool.h"
 #import "AFConnectionServer.h"
 
-#import "AFSocketStream.h"
+#import "AFSocket.h"
 
 #import "AFNetService.h"
 #import "AFNetServiceListener.h"
