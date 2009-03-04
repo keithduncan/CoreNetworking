@@ -13,7 +13,6 @@
     @abstract    This class is a thin layer over the CFPreferences functions, it allows access to the preferences in a single application domain
     @discussion  It doesn't register for termination notifications nor does it save the values occasionally, this must be handled externally.
 */
-
 @interface AFUserDefaults : NSObject {
 	id _defaults;
 	NSString *_identifier;

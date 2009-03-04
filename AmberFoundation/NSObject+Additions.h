@@ -10,7 +10,7 @@
 
 @interface NSObject (AFAdditions)
 
-// Note: experimental interface
+// Note: experimental interface, be prepared for it to break
 
 // Caution: don't become overly confident with the thread proxy methods
 //	If you intend to execute a method on the main thread using the proxy, that method will be enqued in the main thread's run loop and WILL execute on the main thread - the calling thread WILL block until the method returns - but once it does the execution will continue in the calling thread

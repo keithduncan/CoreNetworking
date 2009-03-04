@@ -8,12 +8,14 @@
 
 #import "AFNetworkFunctions.h"
 
+#import <arpa/inet.h>
+
 bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b) {
-	if (a->sa_family != b->sa_family) return false;
+	if (addr_a->sa_family != addr_b->sa_family) return false;
 	
-	if (a->sa_family == AF_INET) {
-		const struct sockaddr_in *a_in = (struct sockaddr_in *)a;
-		const struct sockaddr_in *b_in = (struct sockaddr_in *)b;
+	if (addr_a->sa_family == AF_INET) {
+		const struct sockaddr_in *a_in = (struct sockaddr_in *)addr_a;
+		const struct sockaddr_in *b_in = (struct sockaddr_in *)addr_b;
 		
 		// Compare addresses
 		if ((a_in->sin_addr.s_addr != INADDR_ANY) &&
@@ -29,9 +31,9 @@ bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr
 		{
 			return true;
 		}
-	} else if (a->sa_family == AF_INET6) {
-		const struct sockaddr_in6 *a_in6 = (struct sockaddr_in6 *)a;
-		const struct sockaddr_in6 *b_in6 = (struct sockaddr_in6 *)b;
+	} else if (addr_a->sa_family == AF_INET6) {
+		const struct sockaddr_in6 *a_in6 = (struct sockaddr_in6 *)addr_a;
+		const struct sockaddr_in6 *b_in6 = (struct sockaddr_in6 *)addr_b;
 		
 		assert(0); // Note: IPv6 comparison not yet implemented
 	} else {
@@ -41,8 +43,8 @@ bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr
 	return false;
 }
 
-char *sockaddr_atop(const struct sockaddr *addr, char *dst, size_t maxlen) {
-    switch(sa->sa_family) {
+char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen) {
+    switch(addr->sa_family) {
         case AF_INET: 
             inet_ntop(AF_INET, &(((struct sockaddr_in *)addr)->sin_addr), dst, maxlen); 
             break; 
@@ -54,5 +56,5 @@ char *sockaddr_atop(const struct sockaddr *addr, char *dst, size_t maxlen) {
             return NULL; 
     } 
 	
-    return s; 
+    return dst;
 }

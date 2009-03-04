@@ -41,6 +41,8 @@
 @protocol AFNetworkLayerControlDelegate <NSObject>
 
 - (void)layerDidOpen:(id <AFNetworkLayer>)layer;
+- (void)layerDidNotOpen:(id <AFNetworkLayer>)layer;
+
 - (void)layerDidClose:(id <AFNetworkLayer>)layer;
 
 @end
@@ -78,9 +80,7 @@
 
 @protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>
 
-- (BOOL)layerWillConnect:(id <AFConnectionLayer>)stream;
-- (void)layerDidConnect:(id <AFConnectionLayer>)stream host:(CFHostRef)remoteAddr;
-
+- (void)layerDidConnect:(id <AFConnectionLayer>)stream host:(CFHostRef)peer;
 - (void)layerWillDisconnect:(id <AFConnectionLayer>)stream error:(NSError *)error;
 
 @end

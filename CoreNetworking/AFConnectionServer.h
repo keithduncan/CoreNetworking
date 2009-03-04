@@ -16,30 +16,45 @@
 @interface AFConnectionServer : NSObject <AFConnectionLayerHostDelegate> {
 	id <AFConnectionServerDelegate> _delegate;
 	
-	AFConnectionPool *serverSockets;
+	AFConnectionPool *hostSockets;
 	
 	AFConnectionPool *clientSockets;
 	AFConnectionPool *clientApplications;
 }
 
-// Note:
-//	the +networkServer: is accessable on all assigned IP addresses (it opens the equivalent of 0.0.0.0)
-//	the +localhostServer: is only accessable on the loopback IPs and will be inaccessable to other hosts
-
+/*!
+	@method
+	@abstract	Create a server with ports open on all IP addresses (it equivalent of 0.0.0.0)
+ */
 + (id)networkServer:(SInt32)port;
+
+/*!
+	@method
+	@abstract	Create a server with ports open on all loopback IP addresses (the equivalent of 127.0.0.1)
+ */
 + (id)localhostServer:(SInt32)port;
 
-// Note: this is sent [[connectionClass alloc] init] to create a new application layer. It MUST be overridden in a subclass, calling the superclass implementation will throw an exception
+/*!
+	@method
+	@abstract	The returned object is sent [[connectionClass alloc] init] to create a new application layer.
+					It MUST be overridden in a subclass, calling the superclass implementation will throw an exception
+ */
 + (Class)connectionClass;
 
-// Note: the server sets the socket delegate to self, expects sockets to implement <AFConnectionLayer>
-- (id)initWithSockets:(NSSet *)sockets;
+/*!
+    @method     
+    @abstract   the server sets the socket delegate to self, expects sockets to implement <AFConnectionLayer>
+*/
+- (id)initWithHostSockets:(NSSet *)sockets;
 
-- (void)addServerSocketsObject:(id <AFConnectionLayer>)layer;
-- (void)removeServerSocketsObject:(id <AFConnectionLayer>)layer;
-
-// Note: not required, the server should operate without a delegate
+/*!
+	@method
+	@abstract	The delegate is optional in this class, most servers should function without one
+ */
 @property (assign) id <AFConnectionServerDelegate> delegate;
+
+- (void)addHostSocketsObject:(id <AFConnectionLayer>)layer;
+- (void)removeHostSocketsObject:(id <AFConnectionLayer>)layer;
 
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)socket; // Note: override point, if you need to customize your application layer before it is added to the connection pool, call super for basic setup first
 
@@ -52,5 +67,5 @@
 
 @protocol AFConnectionServerDelegate <NSObject>
  @optional
-- (BOOL)server:(AFConnectionServer *)server shouldConnect:(id <AFConnectionLayer>)connection toHost:(const struct sockaddr *)addr;
+- (BOOL)server:(AFConnectionServer *)server shouldConnect:(id <AFConnectionLayer>)connection toHost:(const CFHostRef)addr;
 @end

@@ -28,5 +28,5 @@ NS_INLINE CGPoint AFRectCenterPoint(CGRect rect) {
 	return CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
 }
 
-// This divides the given rect into count pieces and stores them in buffer, buffer must be able to hold count NSRects
+// This divides the given rect into count pieces and stores them in buffer, buffer must be able to hold count CGRect structs
 extern void AFRectDivideEqually(CGRect rect, CGRectEdge edge, NSUInteger count, CGRect *buffer);

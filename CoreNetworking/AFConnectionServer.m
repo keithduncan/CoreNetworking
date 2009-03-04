@@ -34,7 +34,7 @@
 - (id)init {
 	[super init];
 	
-	serverSockets = [[AFConnectionPool alloc] init];
+	hostSockets = [[AFConnectionPool alloc] init];
 	
 	clientSockets = [[AFConnectionPool alloc] init];
 	clientApplications = [[AFConnectionPool alloc] init];
@@ -42,10 +42,10 @@
 	return self;
 }
 
-- (id)initWithSockets:(NSSet *)sockets {
+- (id)initWithHostSockets:(NSSet *)sockets {
 	[self init];
 	
-	[[self mutableSetValueForKeyPath:@"serverSockets"] unionSet:sockets];
+	[[self mutableSetValueForKeyPath:@"hostSockets"] unionSet:sockets];
 	
 	return self;
 }
@@ -59,20 +59,20 @@
 	[clientApplications release];
 	[clientSockets release];
 	
-	[serverSockets disconnect];
-	[serverSockets release];
+	[hostSockets disconnect];
+	[hostSockets release];
 	
 	[super dealloc];
 }
 
-- (void)addServerSocketsObject:(id <AFConnectionLayer>)layer; {
+- (void)addHostSocketsObject:(id <AFConnectionLayer>)layer; {
 	layer.hostDelegate = self;
 	
-	[serverSockets addConnectionsObject:layer];
+	[hostSockets addConnectionsObject:layer];
 }
 
-- (void)removeServerSocketsObject:(id <AFConnectionLayer>)layer; {
-	[serverSockets removeConnectionsObject:layer];
+- (void)removeHostSocketsObject:(id <AFConnectionLayer>)layer; {
+	[hostSockets removeConnectionsObject:layer];
 }
 
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)socket {
@@ -92,28 +92,25 @@
 #warning check the flow control to make sure that it isn't kept around despite error, it is removed in the callback below
 }
 
-- (void)layer:(id <AFConnectionLayer>)socket didConnectToHost:(const struct sockaddr *)host {
+- (void)layerDidConnect:(id <AFConnectionLayer>)socket host:(const CFHostRef)host {
 #warning this callback should use CFHost
 	
 	@try {
 		id <AFConnectionLayer> applicationLayer = [self newApplicationLayerForNetworkLayer:socket];
 		
 		if ([self.delegate respondsToSelector:@selector(server:shouldConnect:toHost:)]) {
-#warning this callback should use CFHost
 			BOOL continueConnecting = [self.delegate server:self shouldConnect:applicationLayer toHost:host];
 			
 			if (!continueConnecting) {
 				if ([socket conformsToProtocol:@protocol(AFConnectionLayer)]) {
-					[(id <AFConnectionLayer>)socket disconnect];
+					[(id <AFConnectionLayer>)socket close];
 				}
 				
 				return;
 			}
 		}
 		
-		if ([applicationLayer conformsToProtocol:@protocol(AFConnectionLayer)]) {
-			[applicationLayer connect];
-		}
+		[applicationLayer open];
 		
 		[self.clientApplications addConnectionsObject:applicationLayer];
 	}
@@ -122,11 +119,11 @@
 	}
 }
 
-- (void)layerDidConnect:(id <AFConnectionLayer>)layer {
+- (void)layerDidOpen:(id <AFConnectionLayer>)layer {
 	
 }
 
-- (void)layerDidDisconnect:(id <AFConnectionLayer>)layer {
+- (void)layerDidClose:(id <AFConnectionLayer>)layer {
 	if ([self.clientApplications.connections containsObject:layer]) {
 		[self.clientApplications removeConnectionsObject:layer];
 	}

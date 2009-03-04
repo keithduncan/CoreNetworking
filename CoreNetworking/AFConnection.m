@@ -34,27 +34,27 @@
 	[super dealloc];
 }
 
-- (void)connect {
-	
+- (void)open {
+	[self.lowerLayer open];
 }
 
-- (BOOL)isConnected {
-	return [self.lowerLayer isConnected];
+- (BOOL)isOpen {
+	return [self.lowerLayer isOpen];
 }
 
-- (void)disconnect {
-	[self.lowerLayer disconnectAfterWriting];
+- (void)close {
+	[self.lowerLayer close];
 }
 
-- (BOOL)isDisconnected {
-	return [self.lowerLayer isDisconnected];
+- (BOOL)isClosed {
+	return [self.lowerLayer isClosed];
 }
 
-- (void)layerDidConnect:(id <AFConnectionLayer>)layer {
+- (void)layerDidOpen:(id <AFConnectionLayer>)layer {
 	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidConnect:layer];
 }
 
-- (void)layerDidDisconnect:(id <AFConnectionLayer>)layer; {
+- (void)layerDidClose:(id <AFConnectionLayer>)layer; {
 	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidDisconnect:self];
 }
 

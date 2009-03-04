@@ -19,6 +19,9 @@ enum {
 };
 typedef NSUInteger AFWeekday;
 
+extern NSString *AFKeyForWeekday(AFWeekday day);
+
+
 enum {
 	JANUARY = 1,
 	FEBRUARY,
@@ -35,7 +38,6 @@ enum {
 };
 typedef NSUInteger AFMonth;
 
-extern NSString *AFKeyForWeekday(AFWeekday day);
 
 @interface NSDate (AFAdditions)
 - (NSUInteger)day;
