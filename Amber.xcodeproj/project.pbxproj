@@ -144,8 +144,8 @@
 		5370E0B60F5B061D008F5991 /* AFNetworkFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0920F5B061D008F5991 /* AFNetworkFunctions.h */; };
 		5370E0B70F5B061D008F5991 /* AFNetworkFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0930F5B061D008F5991 /* AFNetworkFunctions.m */; };
 		5370E0B80F5B061D008F5991 /* AFNetworkProtocols.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0940F5B061D008F5991 /* AFNetworkProtocols.h */; };
-		5370E0B90F5B061D008F5991 /* AFSocketStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0950F5B061D008F5991 /* AFSocketStream.h */; };
-		5370E0BA0F5B061D008F5991 /* AFSocketStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0960F5B061D008F5991 /* AFSocketStream.m */; };
+		5370E0B90F5B061D008F5991 /* AFSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0950F5B061D008F5991 /* AFSocket.h */; };
+		5370E0BA0F5B061D008F5991 /* AFSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0960F5B061D008F5991 /* AFSocket.m */; };
 		5370E0BB0F5B061D008F5991 /* CoreNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0970F5B061D008F5991 /* CoreNetworking.h */; };
 		5370E0BC0F5B061D008F5991 /* NSNetService+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0980F5B061D008F5991 /* NSNetService+Additions.h */; };
 		5370E0BD0F5B061D008F5991 /* NSNetService+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0990F5B061D008F5991 /* NSNetService+Additions.m */; };
@@ -317,8 +317,8 @@
 		5370E0920F5B061D008F5991 /* AFNetworkFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkFunctions.h; path = CoreNetworking/AFNetworkFunctions.h; sourceTree = "<group>"; };
 		5370E0930F5B061D008F5991 /* AFNetworkFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkFunctions.m; path = CoreNetworking/AFNetworkFunctions.m; sourceTree = "<group>"; };
 		5370E0940F5B061D008F5991 /* AFNetworkProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkProtocols.h; path = CoreNetworking/AFNetworkProtocols.h; sourceTree = "<group>"; };
-		5370E0950F5B061D008F5991 /* AFSocketStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFSocketStream.h; path = CoreNetworking/AFSocketStream.h; sourceTree = "<group>"; };
-		5370E0960F5B061D008F5991 /* AFSocketStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFSocketStream.m; path = CoreNetworking/AFSocketStream.m; sourceTree = "<group>"; };
+		5370E0950F5B061D008F5991 /* AFSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFSocket.h; path = CoreNetworking/AFSocket.h; sourceTree = "<group>"; };
+		5370E0960F5B061D008F5991 /* AFSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFSocket.m; path = CoreNetworking/AFSocket.m; sourceTree = "<group>"; };
 		5370E0970F5B061D008F5991 /* CoreNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreNetworking.h; path = CoreNetworking/CoreNetworking.h; sourceTree = "<group>"; };
 		5370E0980F5B061D008F5991 /* NSNetService+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSNetService+Additions.h"; path = "CoreNetworking/NSNetService+Additions.h"; sourceTree = "<group>"; };
 		5370E0990F5B061D008F5991 /* NSNetService+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSNetService+Additions.m"; path = "CoreNetworking/NSNetService+Additions.m"; sourceTree = "<group>"; };
@@ -476,8 +476,8 @@
 				5370E0920F5B061D008F5991 /* AFNetworkFunctions.h */,
 				5370E0930F5B061D008F5991 /* AFNetworkFunctions.m */,
 				5370E0940F5B061D008F5991 /* AFNetworkProtocols.h */,
-				5370E0950F5B061D008F5991 /* AFSocketStream.h */,
-				5370E0960F5B061D008F5991 /* AFSocketStream.m */,
+				5370E0950F5B061D008F5991 /* AFSocket.h */,
+				5370E0960F5B061D008F5991 /* AFSocket.m */,
 				5370E0980F5B061D008F5991 /* NSNetService+Additions.h */,
 				5370E0990F5B061D008F5991 /* NSNetService+Additions.m */,
 				5370E0720F5B0571008F5991 /* CoreNetworking-Info.plist */,
@@ -784,7 +784,7 @@
 				5370E0B40F5B061D008F5991 /* AFNetServiceListener.h in Headers */,
 				5370E0B60F5B061D008F5991 /* AFNetworkFunctions.h in Headers */,
 				5370E0B80F5B061D008F5991 /* AFNetworkProtocols.h in Headers */,
-				5370E0B90F5B061D008F5991 /* AFSocketStream.h in Headers */,
+				5370E0B90F5B061D008F5991 /* AFSocket.h in Headers */,
 				5370E0BB0F5B061D008F5991 /* CoreNetworking.h in Headers */,
 				5370E0BC0F5B061D008F5991 /* NSNetService+Additions.h in Headers */,
 			);
@@ -1118,7 +1118,7 @@
 				5370E0B30F5B061D008F5991 /* AFNetService.m in Sources */,
 				5370E0B50F5B061D008F5991 /* AFNetServiceListener.m in Sources */,
 				5370E0B70F5B061D008F5991 /* AFNetworkFunctions.m in Sources */,
-				5370E0BA0F5B061D008F5991 /* AFSocketStream.m in Sources */,
+				5370E0BA0F5B061D008F5991 /* AFSocket.m in Sources */,
 				5370E0BD0F5B061D008F5991 /* NSNetService+Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

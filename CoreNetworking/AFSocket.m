@@ -1,5 +1,5 @@
 //
-//  AFSocketStream.m
+//  AFSocket.m
 //
 //	Originally based on AsyncSocket http://code.google.com/p/cocoaasyncsocket/
 //
@@ -7,7 +7,7 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "AFSocketStream.h"
+#import "AFSocket.h"
 
 #import <sys/socket.h>
 
@@ -18,7 +18,7 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-NSString *const AFSocketStreamErrorDomain = @"AFSocketStreamErrorDomain";
+NSString *const AFSocketErrorDomain = @"AFSocketErrorDomain";
 
 struct _AFSocketType AFSocketTypeTCP = {.socketType = SOCK_STREAM, .protocol = IPPROTO_TCP};
 struct _AFSocketType AFSocketTypeUDP = {.socketType = SOCK_DGRAM, .protocol = IPPROTO_UDP};
@@ -38,7 +38,7 @@ enum {
 };
 typedef NSUInteger AFSocketStreamFlags;
 
-@interface AFSocketStream ()
+@interface AFSocket ()
 
 @property (assign) NSUInteger flags;
 
@@ -53,7 +53,7 @@ typedef NSUInteger AFSocketStreamFlags;
 
 @end
 
-@interface AFSocketStream (PacketQueue)
+@interface AFSocket (PacketQueue)
 - (void)_emptyQueues;
 
 - (void)_readBytes;
@@ -249,7 +249,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 
 #pragma mark -
 
-@implementation AFSocketStream
+@implementation AFSocket
 
 @synthesize delegate=_delegate;
 @synthesize flags=_flags;
@@ -258,7 +258,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 
 @synthesize currentReadPacket=_currentReadPacket, currentWritePacket=_currentWritePacket;
 
-- (id)initWithDelegate:(id <AFSocketStreamControlDelegate, AFSocketStreamDataDelegate>)delegate {
+- (id)initWithDelegate:(id <AFSocketControlDelegate, AFSocketDataDelegate>)delegate {
 	[self init];
 	
 	self.delegate = delegate;
@@ -354,8 +354,8 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 }
 
 - (void)close {
-	if ((self.flags & _kCloseSoon) != _kCloseSoon && [self.delegate respondsToSelector:@selector(streamShouldRemainOpenPendingWrites:)]) {
-		BOOL shouldRemainOpen = [self.delegate streamShouldRemainOpenPendingWrites:self];
+	if ((self.flags & _kCloseSoon) != _kCloseSoon && [self.delegate respondsToSelector:@selector(socketShouldRemainOpenPendingWrites:)]) {
+		BOOL shouldRemainOpen = [self.delegate socketShouldRemainOpenPendingWrites:self];
 		
 		if (shouldRemainOpen) {
 			self.flags = (self.flags | (_kForbidStreamReadWrite | _kCloseSoon));
@@ -482,7 +482,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 - (NSError *)getSocketError {
 	NSString *errMsg = NSLocalizedStringWithDefaultValue(@"AsyncSocketCFSocketError", @"AsyncSocket", [NSBundle mainBundle], @"General CFSocket error", nil);
 	NSDictionary *info = [NSDictionary dictionaryWithObject:errMsg forKey:NSLocalizedDescriptionKey];
-	return [NSError errorWithDomain:AFSocketStreamErrorDomain code:kCFSocketError userInfo:info];
+	return [NSError errorWithDomain:AFSocketErrorDomain code:kCFSocketError userInfo:info];
 }
 
 - (NSError *)getStreamError {
@@ -503,13 +503,13 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 - (NSError *)getAbortError {
 	NSString *errMsg = NSLocalizedStringWithDefaultValue(@"AsyncSocketCanceledError", @"AsyncSocket", [NSBundle mainBundle], @"Connection canceled", nil);
 	NSDictionary *info = [NSDictionary dictionaryWithObject:errMsg forKey:NSLocalizedDescriptionKey];
-	return [NSError errorWithDomain:AFSocketStreamErrorDomain code:AFSocketStreamCancelledError userInfo:info];
+	return [NSError errorWithDomain:AFSocketErrorDomain code:AFSocketAbortError userInfo:info];
 }
 
 - (NSError *)getReadMaxedOutError {
 	NSString *errMsg = NSLocalizedStringWithDefaultValue(@"AsyncSocketReadMaxedOutError", @"AsyncSocket", [NSBundle mainBundle], @"Read operation reached set maximum length", nil);
 	NSDictionary *info = [NSDictionary dictionaryWithObject:errMsg forKey:NSLocalizedDescriptionKey];
-	return [NSError errorWithDomain:AFSocketStreamErrorDomain code:AFSocketStreamReadMaxedOutError userInfo:info];
+	return [NSError errorWithDomain:AFSocketErrorDomain code:AFSocketReadMaxedOutError userInfo:info];
 }
 
 - (NSError *)errorFromCFStreamError:(CFStreamError)err {
@@ -781,7 +781,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 	if (packet->bytesDone == 0) return;
 	
 	if ([self.delegate respondsToSelector:@selector(stream:didReadPartialDataOfLength:tag:)]) {
-		[self.delegate stream:self didReadPartialDataOfLength:totalBytesRead tag:(packet->tag)];
+		[self.delegate socket:self didReadPartialDataOfLength:totalBytesRead tag:(packet->tag)];
 	}
 	
 	if (socketError) {
@@ -809,7 +809,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 	
 	NSString *errMsg = NSLocalizedStringWithDefaultValue(@"AFSocketStreamReadTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Read operation timeout", nil);
 	NSDictionary *info = [NSDictionary dictionaryWithObject:errMsg forKey:NSLocalizedDescriptionKey];
-	NSError *timeoutError = [NSError errorWithDomain:AFSocketStreamErrorDomain code:AFSocketStreamReadTimeoutError userInfo:info];
+	NSError *timeoutError = [NSError errorWithDomain:AFSocketErrorDomain code:AFSocketReadTimeoutError userInfo:info];
 	
 	[self closeWithError:timeoutError];
 }
@@ -887,7 +887,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 	
 	NSString *description = NSLocalizedStringWithDefaultValue(@"AFSocketStreamWriteTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Write operation timeout", nil);
 	NSDictionary *info = [NSDictionary dictionaryWithObject:description forKey:NSLocalizedDescriptionKey];
-	NSError *timeoutError = [NSError errorWithDomain:AFSocketStreamErrorDomain code:AFSocketStreamWriteTimeoutError userInfo:info];
+	NSError *timeoutError = [NSError errorWithDomain:AFSocketErrorDomain code:AFSocketWriteTimeoutError userInfo:info];
 	
 	[self closeWithError:timeoutError];
 }
@@ -897,7 +897,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 static void AFSocketStreamSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *pData, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	AFSocketStream *self = [[(AFSocketStream *)pInfo retain] autorelease];
+	AFSocket *self = [[(AFSocket *)pInfo retain] autorelease];
 	NSCParameterAssert(socket == self->_socket);
 	
 	switch (type) {
@@ -919,7 +919,7 @@ static void AFSocketStreamSocketCallback(CFSocketRef socket, CFSocketCallBackTyp
 static void AFSocketStreamReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	AFSocketStream *self = [[(AFSocketStream *)pInfo retain] autorelease];
+	AFSocket *self = [[(AFSocket *)pInfo retain] autorelease];
 	NSCParameterAssert(self->readStream != NULL && stream == self->readStream);
 	
 	switch (type) {
@@ -953,7 +953,7 @@ static void AFSocketStreamReadStreamCallback(CFReadStreamRef stream, CFStreamEve
 static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	AFSocketStream *self = [[(AFSocketStream *)pInfo retain] autorelease];
+	AFSocket *self = [[(AFSocket *)pInfo retain] autorelease];
 	NSCParameterAssert(self->writeStream != NULL && stream == self->writeStream);
 	
 	switch (type) {
@@ -982,7 +982,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 
 #pragma mark -
 
-@implementation AFSocketStream (Private)
+@implementation AFSocket (Private)
 
 - (void)_emptyQueues {
 	if ([self currentWritePacket] != nil) [self _endCurrentWritePacket];
@@ -1040,7 +1040,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 	if (packet == nil) return;
 	
 	if (packet->timeout >= 0.0) {
-		writeTimer = [NSTimer scheduledTimerWithTimeInterval:packet->timeout target:self selector:@selector(_writeTimeout:) userInfo:nil repeats:NO];
+		writeTimer = [NSTimer scheduledTimerWithTimeInterval:(packet->timeout) target:self selector:@selector(_writeTimeout:) userInfo:nil repeats:NO];
 	}
 	
 	[self _sendBytes];

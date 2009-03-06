@@ -1,5 +1,5 @@
 //
-//  AFSocketStream.h
+//  AFSocket.h
 //
 //  Created by Keith Duncan
 //  Copyright 2008 thirty-three software. All rights reserved.
@@ -10,19 +10,19 @@
 
 #import "CoreNetworking/CoreNetworking.h"
 
-@protocol AFSocketStreamDataDelegate;
-@protocol AFSocketStreamControlDelegate;
+@protocol AFSocketDataDelegate;
+@protocol AFSocketControlDelegate;
 
 enum {
-	AFSocketStreamNoError = 0,
-	AFSocketStreamCancelledError,
-	AFSocketStreamReadMaxedOutError,
-	AFSocketStreamReadTimeoutError,
-	AFSocketStreamWriteTimeoutError,
+	AFSocketNoError				= 0,
+	AFSocketAbortError			= 1,
+	AFSocketReadMaxedOutError	= 2,
+	AFSocketReadTimeoutError	= 3,
+	AFSocketWriteTimeoutError	= 4,
 };
-typedef NSUInteger AFSocketStreamsError;
+typedef NSUInteger AFSocketError;
 
-extern NSString *const AFSocketStreamErrorDomain;
+extern NSString *const AFSocketErrorDomain;
 
 /*!
     @struct 
@@ -58,7 +58,7 @@ extern struct _AFSocketType AFSocketTypeUDP;
     @abstract    An extention of the CFSocketStream API
     @discussion  This class is a mix of two primary patterns. Internally, it acts an adaptor and a bridge between the CFSocket and CFStream API. Externally, it bridges CFHost and CFSocket.
 */
-@interface AFSocketStream : NSObject <AFConnectionLayer> {
+@interface AFSocket : NSObject <AFConnectionLayer> {
 	id _delegate;
 	NSUInteger _flags;
 	
@@ -103,13 +103,13 @@ extern struct _AFSocketType AFSocketTypeUDP;
 	@abstract	The socket is provided, this object takes ownership of the socket and listens for incoming connections
 	@discussion	Only connections are listened for, no data is expected from the provided socket
  */
-+ (id)hostSocket:(CFSocketRef)socket;
++ (id)hostWithSocket:(CFSocketRef)socket;
 
 /*!
 	@method
 	@abstract	A socket is created with the given characteristics and the address is set
  */
-+ (id)hostSocketWithSignature:(const CFSocketSignature *)signature;
++ (id)hostWithSignature:(const CFSocketSignature *)signature;
 
 /*
  * Connection Initialisers
@@ -122,17 +122,17 @@ extern struct _AFSocketType AFSocketTypeUDP;
 	@abstract	A resolved net service encapsulates all the data from the socket signature above
 	@param		|netService| is copied using CFNetServiceCreateCopy()
  */
-+ (id <AFNetworkLayer>)peerStreamWithNetService:(const CFNetServiceRef *)netService;
++ (id <AFNetworkLayer>)peerWithNetService:(const CFNetServiceRef *)netService;
 
 /*!
 	@method
 	@abstract	This doesn't use CFSocketSignature because the protocol family is determined by the CFHostRef address values
  */
-+ (id <AFNetworkLayer>)peerStreamWithSignature:(const AFSocketSignature *)signature;
++ (id <AFNetworkLayer>)peerWithSignature:(const AFSocketSignature *)signature;
 
 
 - (BOOL)canSafelySetDelegate;
-@property (assign) id <AFSocketStreamControlDelegate, AFSocketStreamDataDelegate> delegate;
+@property (assign) id <AFSocketControlDelegate, AFSocketDataDelegate> delegate;
 
 - (void)currentReadProgress:(float *)value tag:(NSUInteger *)tag bytesDone:(CFIndex *)done total:(CFIndex *)total;
 - (void)currentWriteProgress:(float *)value tag:(NSUInteger *)tag bytesDone:(CFIndex *)done total:(CFIndex *)total;
@@ -143,7 +143,7 @@ extern struct _AFSocketType AFSocketTypeUDP;
 
 @end
 
-@protocol AFSocketStreamControlDelegate <AFConnectionLayerControlDelegate>
+@protocol AFSocketControlDelegate <AFConnectionLayerControlDelegate>
 
  @optional
 
@@ -151,20 +151,20 @@ extern struct _AFSocketType AFSocketTypeUDP;
 	@method
 	@abstract	When the socket is closing you can keep it open until the writes are complete, you'll have to ensure the object remains live
  */
-- (BOOL)streamShouldRemainOpenPendingWrites:(AFSocketStream *)stream;
+- (BOOL)socketShouldRemainOpenPendingWrites:(AFSocket *)socket;
 
 /*!
 	@method
 	@abstract	Asynchronous callbacks can be scheduled in another run loop, defaults to CFRunLoopMain() if unimplemented
  */
-- (CFRunLoopRef)streamShouldScheduleWithRunLoop:(AFSocketStream *)stream;
+- (CFRunLoopRef)socketShouldScheduleWithRunLoop:(AFSocket *)socket;
 
 @end
 
-@protocol AFSocketStreamDataDelegate <AFConnectionLayerDataDelegate>
+@protocol AFSocketDataDelegate <AFConnectionLayerDataDelegate>
 
  @optional
 
-- (void)stream:(AFSocketStream *)stream didReadPartialDataOfLength:(CFIndex)partialLength tag:(long)tag;
+- (void)socket:(AFSocket *)socket didReadPartialDataOfLength:(CFIndex)partialLength tag:(long)tag;
 
 @end
