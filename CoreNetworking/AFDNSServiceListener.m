@@ -9,14 +9,14 @@
 /* ServiceController was taken from Apple's DNSServiceBrowser.m */
 /* Adapted from Adium implementation, improved and simplified by Keith Duncan */
 
-#import "AFNetServiceListener.h"
+#import "AFDNSServiceListener.h"
 
-@interface AFNetServiceListener (Private)
+@interface AFDNSServiceListener (Private)
 - (void)_setupCallback;
 - (void)_teardownCallback;
 @end
 
-@implementation AFNetServiceListener
+@implementation AFDNSServiceListener
 
 @synthesize delegate;
 @synthesize serviceRef=service;
@@ -51,10 +51,10 @@
 
 @end
 
-@implementation AFNetServiceListener (Private)
+@implementation AFDNSServiceListener (Private)
 
 static void	ProcessSockData(CFSocketRef s, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
-	AFNetServiceListener *self = info;
+	AFDNSServiceListener *self = info;
 	
 	DNSServiceErrorType error = kDNSServiceErr_NoError;
 	error = DNSServiceProcessResult(self->service);

@@ -45,10 +45,8 @@ struct _AFSocketSignature {
 /*
  *	These define _where_ to communicate
  */
-	struct _AFSocketHostDestination {
-		__strong CFHostRef _host;
-		SInt32 _port;
-	} _destination;
+	__strong CFHostRef _host;
+	SInt32 _port;
 };
 typedef struct _AFSocketSignature AFSocketSignature;
 
@@ -79,12 +77,12 @@ extern struct _AFSocketType AFSocketTypeUDP;
 	 These are only needed for a connect socket
 	 */
 	union {
-		struct _AFSocketHostDestination _hostDestination;
-		
 		struct {
 			__strong CFNetServiceRef netService;
 		} _netServiceDestination;
-	} _destination;
+		
+		struct AFSocketSignature _hostDestination;
+	} _peer;
 	
 	__strong CFReadStreamRef readStream;
 	NSMutableArray *readQueue;
@@ -120,7 +118,7 @@ extern struct _AFSocketType AFSocketTypeUDP;
 
 /*
  * Connection Initialisers
- *	Perhaps the connection initialiser should be a class method as a facade to a class cluster and return TCP/UDP/SCTP internal subclasses?
+ *	Perhaps the connection initialiser should be a class method a facade to a class cluster and return SOCK_STREAM/SOCK_DGRAM etc internal subclasses?
  *	These connections will need to be sent -open before they can be used, just like a stream
  */
 

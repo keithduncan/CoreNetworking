@@ -38,25 +38,18 @@
 
 
 @protocol AFNetworkLayerControlDelegate <NSObject>
-
 - (void)layerDidOpen:(id <AFNetworkLayer>)layer;
 - (void)layerDidNotOpen:(id <AFNetworkLayer>)layer;
-
 - (void)layerDidClose:(id <AFNetworkLayer>)layer;
-
 @end
 
 
 @protocol AFNetworkLayerDataDelegate <NSObject>
-
 @property (retain) id <AFNetworkLayer> lowerLayer;
 - (void)layer:(id <AFNetworkLayer>)layer didRead:(id)data forTag:(NSUInteger)tag;
 - (void)layer:(id <AFNetworkLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag;
-
  @optional
-
 - (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
-
 @end
 
 
@@ -68,30 +61,21 @@
 	@protocol
 	@abstract    An AFConnectionLayer should maintain a stateful connection between endpoints
  */
-
 @protocol AFConnectionLayer <AFNetworkLayer>
-
 @property (assign) id <AFConnectionLayerControlDelegate, AFConnectionLayerDataDelegate> delegate;
 @property (assign) id <AFConnectionLayerHostDelegate> hostDelegate;
-
 @end
 
 @protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>
-
  @optional
-
 - (void)layerDidConnect:(id <AFConnectionLayer>)layer toPeer:(CFHostRef)peer;
 - (void)layerWillDisconnect:(id <AFConnectionLayer>)layer withError:(NSError *)error;
-
 @end
 
 @protocol AFConnectionLayerDataDelegate <AFNetworkLayerDataDelegate>
-
 @end
 
 @protocol AFConnectionLayerHostDelegate
-
 - (BOOL)layer:(id <AFConnectionLayer>)layer willAcceptConnection:(id <AFConnectionLayer>)newLayer;
 - (void)layer:(id <AFConnectionLayer>)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer;
-
 @end
