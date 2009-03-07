@@ -9,14 +9,14 @@
 /* ServiceController was taken from Apple's DNSServiceBrowser.m */
 /* Adapted from Adium implementation, improved and simplified by Keith Duncan */
 
-#import "AFDNSServiceListener.h"
+#import "AFServiceDiscoveryListener.h"
 
-@interface AFDNSServiceListener (Private)
+@interface AFServiceDiscoveryListener (Private)
 - (void)_setupCallback;
 - (void)_teardownCallback;
 @end
 
-@implementation AFDNSServiceListener
+@implementation AFServiceDiscoveryListener
 
 @synthesize delegate;
 @synthesize serviceRef=service;
@@ -51,15 +51,15 @@
 
 @end
 
-@implementation AFDNSServiceListener (Private)
+@implementation AFServiceDiscoveryListener (Private)
 
 static void	ProcessSockData(CFSocketRef s, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
-	AFDNSServiceListener *self = info;
+	AFServiceDiscoveryListener *self = info;
 	
 	DNSServiceErrorType error = kDNSServiceErr_NoError;
 	error = DNSServiceProcessResult(self->service);
 	
-	[self->delegate listener:self didProcessWithCode:error];
+	[self->delegate serviceListener:self didProcessWithCode:error];
 }
 
 - (void)_setupCallback {
@@ -71,15 +71,15 @@ static void	ProcessSockData(CFSocketRef s, CFSocketCallBackType type, CFDataRef 
 	CFRunLoopAddSource(runLoop, runLoopSource, kCFRunLoopDefaultMode);
 }
 
-- (void)_teardownCallback {	
-	if (socket != NULL) {
-		CFSocketInvalidate(socket);
-		CFRelease(socket);
-	}
-	
+- (void)_teardownCallback {
 	if (runLoopSource != NULL) {
 		CFRunLoopRemoveSource(runLoop, runLoopSource, kCFRunLoopDefaultMode);
 		CFRelease(runLoopSource);
+	}
+	
+	if (socket != NULL) {
+		CFSocketInvalidate(socket);
+		CFRelease(socket);
 	}
 }
 

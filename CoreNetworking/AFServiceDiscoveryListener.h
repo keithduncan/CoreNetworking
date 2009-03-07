@@ -17,7 +17,7 @@
 	@abstract    Allows for Asynchronous DNSService API callbacks
 	@discussion  This class doesn't take ownership of the DNSServiceRef it is instantiated with, it is still the client's responsibility to deallocate the DNSServiceRef once it is no longer needed
 */
-@interface AFDNSServiceListener : NSObject {
+@interface AFServiceDiscoveryListener : NSObject {
 	id <AFDNSServiceListenerDelegate> delegate;
 	
 	DNSServiceRef service;
@@ -37,5 +37,5 @@
 @end
 
 @protocol AFServiceDiscoveryListenerDelegate <NSObject>
-- (void)serviceListener:(AFDNSServiceListener *)object didProcessWithCode:(DNSServiceErrorType)code;
+- (void)serviceListener:(AFServiceDiscoveryListener *)object didProcessWithCode:(DNSServiceErrorType)code;
 @end

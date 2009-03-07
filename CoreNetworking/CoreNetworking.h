@@ -12,7 +12,7 @@
 #import "AFNetworkProtocols.h"
 
 #import "AFNetService.h"
-#import "AFDNSServiceListener.h"
+#import "AFServiceDiscoveryListener.h"
 
 #import "AFConnection.h"
 #import "AFConnectionPool.h"
