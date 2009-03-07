@@ -11,11 +11,11 @@
 #import "AFNetworkFunctions.h"
 #import "AFNetworkProtocols.h"
 
+#import "AFNetService.h"
+#import "AFNetServiceListener.h"
+
 #import "AFConnection.h"
 #import "AFConnectionPool.h"
 #import "AFConnectionServer.h"
 
 #import "AFSocket.h"
-
-#import "AFNetService.h"
-#import "AFNetServiceListener.h"

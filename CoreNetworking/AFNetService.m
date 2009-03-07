@@ -91,9 +91,9 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	[super dealloc];
 }
 
-- (BOOL)isEqual:(AFNetService *)service {
+- (BOOL)isEqual:(id)object {
 	NSArray *equalKeys = [NSArray arrayWithObjects:@"name", @"type", @"domain", nil];
-	return [[self dictionaryWithValuesForKeys:equalKeys] isEqual:[service dictionaryWithValuesForKeys:equalKeys]];
+	return [[self dictionaryWithValuesForKeys:equalKeys] isEqual:[object dictionaryWithValuesForKeys:equalKeys]];
 }
 
 - (NSUInteger)hash {

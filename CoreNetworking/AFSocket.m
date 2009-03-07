@@ -33,7 +33,7 @@ enum {
 	_kDidCallConnectDelegate	= 1UL << 1,   // connect delegate has been called.
 	_kDidPassConnectMethod		= 1UL << 2,   // disconnection results in delegate call.
 	_kForbidStreamReadWrite		= 1UL << 3,   // no new reads or writes are allowed.
-	_kCloseSoon			= 1UL << 4,   // disconnect as soon as nothing is queued.
+	_kCloseSoon					= 1UL << 4,   // disconnect as soon as nothing is queued.
 	_kClosingWithError			= 1UL << 5,   // the socket is being closed due to an error.
 };
 typedef NSUInteger AFSocketStreamFlags;
@@ -41,7 +41,6 @@ typedef NSUInteger AFSocketStreamFlags;
 @interface AFSocket ()
 
 @property (assign) NSUInteger flags;
-
 @property (retain) id currentReadPacket, currentWritePacket;
 
 #if 1
@@ -78,15 +77,15 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 	CFIndex bytesDone;
 	NSTimeInterval timeout;
 	CFIndex maxLength;
-	long tag;
+	NSInteger tag;
 	NSData *term;
 	BOOL readAllAvailableData;
 }
 
-- (id)initWithTimeout:(NSTimeInterval)t tag:(long)i readAllAvailable:(BOOL)a terminator:(NSData *)e maxLength:(CFIndex)m;
+- (id)initWithTimeout:(NSTimeInterval)t tag:(NSInteger)i readAllAvailable:(BOOL)a terminator:(NSData *)e maxLength:(CFIndex)m;
 
-- (unsigned)readLengthForTerm;
-- (unsigned)prebufferReadLengthForTerm;
+- (NSUInteger)readLengthForTerm;
+- (NSUInteger)prebufferReadLengthForTerm;
 
 - (CFIndex)searchForTermAfterPreBuffering:(CFIndex)numBytes;
 
@@ -102,7 +101,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 	return self;
 }
 
-- (id)initWithTimeout:(NSTimeInterval)t tag:(long)i readAllAvailable:(BOOL)a terminator:(NSData *)e maxLength:(CFIndex)m {
+- (id)initWithTimeout:(NSTimeInterval)t tag:(NSInteger)i readAllAvailable:(BOOL)a terminator:(NSData *)e maxLength:(CFIndex)m {
 	[self init];
 	
 	timeout = t;
@@ -127,7 +126,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
  * 
  * It is assumed the terminator has not already been read.
 **/
-- (unsigned)readLengthForTerm {
+- (NSUInteger)readLengthForTerm {
 	NSAssert(term != nil, @"Searching for term in data when there is no term.");
 	
 	// What we're going to do is look for a partial sequence of the terminator at the end of the buffer.
@@ -170,7 +169,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
  * Assuming pre-buffering is enabled, returns the amount of data that can be read
  * without going over the maxLength.
 **/
-- (unsigned)prebufferReadLengthForTerm
+- (NSUInteger)prebufferReadLengthForTerm
 {
 	if (maxLength > 0) return MIN(READALL_CHUNKSIZE, (maxLength - bytesDone));
 	else return READALL_CHUNKSIZE;
@@ -220,23 +219,23 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
  @public
 	NSData *buffer;
 	CFIndex bytesDone;
-	long tag;
+	NSInteger tag;
 	NSTimeInterval timeout;
 }
 
-- (id)initWithData:(NSData *)d timeout:(NSTimeInterval)t tag:(long)i;
+- (id)initWithData:(NSData *)d timeout:(NSTimeInterval)t tag:(NSInteger)i;
 
 @end
 
 @implementation AsyncWritePacket
 
-- (id)initWithData:(NSData *)d timeout:(NSTimeInterval)t tag:(long)i {
+- (id)initWithData:(NSData *)d timeout:(NSTimeInterval)t tag:(NSInteger)i {
 	[self init];
 	
 	buffer = [d retain];
 	timeout = t;
 	tag = i;
-	bytesDone = 0;
+	
 	return self;
 }
 
@@ -271,9 +270,7 @@ static void AFSocketStreamWriteStreamCallback(CFWriteStreamRef stream, CFStreamE
 	return self;
 }
 
-- (void)dealloc {
-#error complete this
-	
+- (void)dealloc {	
 	[_currentReadPacket release];
 	[readQueue release];
 	

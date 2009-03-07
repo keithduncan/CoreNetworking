@@ -16,7 +16,6 @@
     @abstract	An AFNetworkLayer object should encapsulate data (as defined in RFC 1122)
 	@discussion	This implementation mandates that a layer pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a cluster-chain allowing for maximum flexiblity.
 */
-
 @protocol AFNetworkLayer <NSObject>
 
 @property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
@@ -51,9 +50,8 @@
 @protocol AFNetworkLayerDataDelegate <NSObject>
 
 @property (retain) id <AFNetworkLayer> lowerLayer;
-
-- (void)layer:(id <AFNetworkLayer>)object didRead:(id)data forTag:(NSUInteger)tag;
-- (void)layer:(id <AFNetworkLayer>)object didWrite:(id)data forTag:(NSUInteger)tag;
+- (void)layer:(id <AFNetworkLayer>)layer didRead:(id)data forTag:(NSUInteger)tag;
+- (void)layer:(id <AFNetworkLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag;
 
  @optional
 
@@ -80,8 +78,10 @@
 
 @protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>
 
-- (void)layerDidConnect:(id <AFConnectionLayer>)stream host:(CFHostRef)peer;
-- (void)layerWillDisconnect:(id <AFConnectionLayer>)stream error:(NSError *)error;
+ @optional
+
+- (void)layerDidConnect:(id <AFConnectionLayer>)layer toPeer:(CFHostRef)peer;
+- (void)layerWillDisconnect:(id <AFConnectionLayer>)layer withError:(NSError *)error;
 
 @end
 
@@ -91,7 +91,7 @@
 
 @protocol AFConnectionLayerHostDelegate
 
-- (BOOL)layer:(id <AFConnectionLayer>)stream willAcceptConnection:(id <AFConnectionLayer>)newStream;
-- (void)layer:(id <AFConnectionLayer>)stream didAcceptConnection:(id <AFConnectionLayer>)newStream;
+- (BOOL)layer:(id <AFConnectionLayer>)layer willAcceptConnection:(id <AFConnectionLayer>)newLayer;
+- (void)layer:(id <AFConnectionLayer>)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer;
 
 @end

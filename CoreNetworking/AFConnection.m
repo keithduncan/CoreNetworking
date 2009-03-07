@@ -51,11 +51,11 @@
 }
 
 - (void)layerDidOpen:(id <AFConnectionLayer>)layer {
-	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidConnect:layer];
+	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidOpen:self];
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer; {
-	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidDisconnect:self];
+	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidClose:self];
 }
 
 - (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {

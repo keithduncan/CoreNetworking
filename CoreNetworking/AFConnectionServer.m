@@ -18,7 +18,10 @@
 @synthesize clientApplications;
 
 + (id)networkServer {
+#warning these pair of methods should also setup the server to listen for IP address changes
+	
 	[self doesNotRecognizeSelector:_cmd];
+	return nil;
 }
 
 + (id)localhostServer {
@@ -56,6 +59,7 @@
 #endif
 	
 	[self disconnectClients]; // Note: this isn't GC compatible, investigate further. Just do it in -finalize?
+	
 	[clientApplications release];
 	[clientSockets release];
 	

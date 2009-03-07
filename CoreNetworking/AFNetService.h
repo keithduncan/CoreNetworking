@@ -6,7 +6,7 @@
 //  Copyright 2009 thirty-three software. All rights reserved.
 //
 
-#import "CoreNetworking/CoreNetworking.h"
+#import <Foundation/Foundation.h>
 
 /*!
     @protocol
@@ -15,7 +15,6 @@
 					For example the AFNetService class below provides a KVO compliant presence dictionary that maps to the TXT record
 					Another class might listen for changes to the phsh TXT entry of a Bonjour peer and update the avatar (found in the NULL record)
 */
-
 @protocol AFNetServiceCommon <NSObject>
 @property (readonly) NSString *name, *type, *domain;
 - (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name;
@@ -28,7 +27,6 @@
     @param      |TXTRecordData| should be the raw NSData object as returned by -[NSNetService TXTRecordData]
     @result     A dictionary of NSString values and keys 
 */
-
 extern NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData);
 
 @protocol AFNetServiceDelegate;
@@ -38,7 +36,6 @@ extern NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData);
     @abstract	A replacement for a resolvable NSNetService with a KVO compliant 'presence' dictionary corresponding to the TXT record data
 	@discussion	This cannot currently be used for publishing a service, the NSNetService API is generally sufficient for that
 */
-
 @interface AFNetService : NSObject <AFNetServiceCommon> {
 	CFNetServiceRef service;	
 	CFNetServiceMonitorRef monitor;

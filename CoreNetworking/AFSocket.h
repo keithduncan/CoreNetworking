@@ -25,14 +25,14 @@ typedef NSUInteger AFSocketError;
 extern NSString *const AFSocketErrorDomain;
 
 /*!
-    @struct 
-    @abstract   Based on CFSocketSignature allowing for higher-level functionality
-    @discussion This struct is missing the |protocolFamily| member from CFSocketSignature because the host is provided, it could resolve to a number of addresses of varying protocol family
- 
-	@field		|socketType| this should be one of SOCK_STREAM or SOCK_DGRAM, and places restrictions on the appropriate protocol
-	@field		|protocol| this should be one of IPPROTO_TCP, IPPROTO_UDP, (future IPPROTO_SCTP) etc, it is important that an appropriate |socketType| is also provided
-	@field      |host| this member is copied using CFHostCreateCopy() the addresses property is resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap it won't be reclaimed
-	@field		|port| this identifies the Transport layer address to communicate using (see RFC 1122)
+	@struct 
+	@abstract   Based on CFSocketSignature allowing for higher-level functionality
+	@discussion Doesn't include a |protocolFamily| field as CFSocketSignature because a |host| is provided, which could resolve to a number of different protocol family addresses
+	
+	@field		|socketType| should be one of the socket types defined in <socket.h>
+	@field		|protocol| should be one of the IP protocols defined in RFC 1700 ( see http://www.faqs.org/rfcs/rfc1700.html ). It is important that an appropriate |socketType| is also provided.
+	@field      |host| is copied using CFHostCreateCopy() the addresses property is resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap it won't be reclaimed.
+	@field		|port| identifies the Transport layer address to communicate using (see RFC 1122)
  */
 struct _AFSocketSignature {
 /*
@@ -45,8 +45,10 @@ struct _AFSocketSignature {
 /*
  *	These define _where_ to communicate
  */
-	__strong CFHostRef host;
-	SInt32 port;
+	struct _AFSocketHostDestination {
+		__strong CFHostRef _host;
+		SInt32 _port;
+	} _destination;
 };
 typedef struct _AFSocketSignature AFSocketSignature;
 
@@ -55,8 +57,8 @@ extern struct _AFSocketType AFSocketTypeUDP;
 
 /*!
     @class
-    @abstract    An extention of the CFSocketStream API
-    @discussion  This class is a mix of two primary patterns. Internally, it acts an adaptor and a bridge between the CFSocket and CFStream API. Externally, it bridges CFHost and CFSocket.
+    @abstract    Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the 'stream' suffix was dropped so not to imply the exclusive use of SOCK_STREAM
+    @discussion  This class is a mix of two primary patterns. Internally, it acts an adaptor and a bridge between the CFSocket and CFStream API. Externally, it bridges CFHost, CFNetService and CFSocket with a CFStream like API.
 */
 @interface AFSocket : NSObject <AFConnectionLayer> {
 	id _delegate;
@@ -76,8 +78,13 @@ extern struct _AFSocketType AFSocketTypeUDP;
 	/*
 	 These are only needed for a connect socket
 	 */
-	__strong CFHostRef _host;
-	SInt32 _port;	
+	union {
+		struct _AFSocketHostDestination _hostDestination;
+		
+		struct {
+			__strong CFNetServiceRef netService;
+		} _netServiceDestination;
+	} _destination;
 	
 	__strong CFReadStreamRef readStream;
 	NSMutableArray *readQueue;
@@ -120,9 +127,9 @@ extern struct _AFSocketType AFSocketTypeUDP;
 /*!
 	@method
 	@abstract	A resolved net service encapsulates all the data from the socket signature above
-	@param		|netService| is copied using CFNetServiceCreateCopy()
+	@param		|netService| will be used to create a CFNetService internally for resolving
  */
-+ (id <AFNetworkLayer>)peerWithNetService:(const CFNetServiceRef *)netService;
++ (id <AFNetworkLayer>)peerWithNetService:(id <AFNetServiceCommon>)netService;
 
 /*!
 	@method
@@ -149,7 +156,7 @@ extern struct _AFSocketType AFSocketTypeUDP;
 
 /*!
 	@method
-	@abstract	When the socket is closing you can keep it open until the writes are complete, you'll have to ensure the object remains live
+	@abstract	When the socket is closing you can keep it open until the writes are complete, but you'll have to ensure the object remains live
  */
 - (BOOL)socketShouldRemainOpenPendingWrites:(AFSocket *)socket;
 
