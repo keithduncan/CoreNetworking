@@ -14,6 +14,8 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
+#import "AFNetworkConstants.h"
+
 NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData) {
 	NSMutableDictionary *TXTDictionary = [[[NSNetService dictionaryFromTXTRecordData:TXTRecordData] mutableCopy] autorelease];
 	
@@ -35,7 +37,7 @@ NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData) {
 @synthesize presence;
 
 + (id)serviceWithNetService:(NSNetService *)service {
-	return [[[AFNetService alloc] initWithDomain:[service valueForKey:@"domain"] type:[service valueForKey:@"type"] name:[service valueForKey:@"name"]] autorelease];
+	return [[[self alloc] initWithDomain:[service valueForKey:@"domain"] type:[service valueForKey:@"type"] name:[service valueForKey:@"name"]] autorelease];
 }
 
 - (id)init {
@@ -56,12 +58,17 @@ static void AFNetServiceMonitorClientCallBack(CFNetServiceMonitorRef monitor, CF
 
 static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *error, void *info) {
 	AFNetService *self = info;
+	NSArray *resolvedAddresses = [self addresses];
 	
-	CFArrayRef resolvedAddresses = CFNetServiceGetAddressing(service);
-	
-	if (resolvedAddresses == NULL) {
+	if (resolvedAddresses == nil) {
 		if ([self->delegate respondsToSelector:@selector(netService:didNotResolveAddress:)]) {
-			[self->delegate netService:self didNotResolveAddress:NSLocalizedString(@"Couldn't resolve the remote player's address.", @"AFNetService ")];
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+									  NSLocalizedString(@"Couldn't resolve the remote client's address.", @"AFNetService resolve failure"), NSLocalizedDescriptionKey,
+									  nil];
+			
+			NSError *error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:-1 userInfo:userInfo] autorelease];
+			
+			[self->delegate netService:self didNotResolveAddress:error];
 		}
 		
 		return;
@@ -75,9 +82,21 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 - (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name {
 	[self init];
 	
+	CFNetServiceClientContext context;
+	memset(&context, 0, sizeof(CFNetServiceClientContext));
+				
 	context.info = self;
 	
 	service =  CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)domain, (CFStringRef)type, (CFStringRef)name, 0);
+	Boolean client = CFNetServiceSetClient(service, AFNetServiceClientCallBack, &context);
+	
+	if (!client) {
+		[NSException raise:NSInternalInconsistencyException format:@"%s, couldn't set service client", __PRETTY_FUNCTION__, nil];
+		
+		[self release];
+		return nil;
+	}
+	
 	monitor = CFNetServiceMonitorCreate(kCFAllocatorDefault, service, AFNetServiceMonitorClientCallBack, &context);
 	
 	return self;
@@ -85,7 +104,12 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 
 - (void)dealloc {
 	[self stop];
-		
+	
+	CFNetServiceMonitorInvalidate(monitor);
+	CFRelease(monitor);
+	
+	CFRelease(service);
+	
 	[presence release];
 	
 	[super dealloc];
@@ -127,22 +151,13 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 }
 
 - (void)resolveWithTimeout:(NSTimeInterval)delta {
-	Boolean client = CFNetServiceSetClient(service, AFNetServiceClientCallBack, &context);
-	
-	if (!client) {
-		[NSException raise:NSInternalInconsistencyException format:@"%s, couldn't set service client", __PRETTY_FUNCTION__, nil];
-		return;
-	}
-	
 	CFNetServiceScheduleWithRunLoop(service, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 	CFNetServiceResolveWithTimeout(service, delta, NULL);
 }
 
 - (void)stopResolve {
-	CFNetServiceUnscheduleFromRunLoop(service, CFRunLoopGetMain(), kCFRunLoopCommonModes);
-	CFNetServiceSetClient(service, NULL, NULL);
-	
 	CFNetServiceCancel(service);
+	CFNetServiceUnscheduleFromRunLoop(service, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 }
 
 - (void)stop {
@@ -151,28 +166,30 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 }
 
 - (NSArray *)addresses {	
-	return CFNetServiceGetAddressing(service);
+	return (id)CFNetServiceGetAddressing(service);
 }
 
 - (NSString *)fullName {
-	char *fullNameStr = (char *)malloc(kDNSServiceMaxDomainName); // Note: this size includes the NULL byte at the end
+	NSMutableString *fullName = [NSMutableString string];
 	
-	DNSServiceErrorType error = kDNSServiceErr_NoError;
-	error = DNSServiceConstructFullName(fullNameStr, [[self name] UTF8String], [[self type] UTF8String], [[self domain] UTF8String]);
+	[fullName appendString:[self name]];
+	if (![fullName hasSuffix:@"."]) [fullName appendString:@"."];
 	
-	if (error != kDNSServiceErr_NoError) {
-		[NSException raise:NSInternalInconsistencyException format:@"%s, could not form a full DNS name.", __PRETTY_FUNCTION__, NSStringFromClass([self class]), _cmd, nil];
-		return nil;
-	}
+	[fullName appendString:[self type]];
+	if (![fullName hasSuffix:@"."]) [fullName appendString:@"."];
 	
-	NSString *fullName = [NSString stringWithUTF8String:fullNameStr];
-	
-	fullName = [fullName stringByReplacingOccurrencesOfString:@"\032" withString:@" "];
-#warning this is a mild hack
-	
-	free(fullNameStr);
+	[fullName appendString:[self domain]];
+	if (![fullName hasSuffix:@"."]) [fullName appendString:@"."];
 	
 	return fullName;
+}
+
+@end
+
+@implementation NSNetService (_AFAdditions)
+
+- (NSString *)fullName {
+	return (id)(*[AFNetService instanceMethodForSelector:_cmd])(self, _cmd);
 }
 
 @end

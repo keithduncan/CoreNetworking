@@ -9,15 +9,17 @@
 #import <Foundation/Foundation.h>
 
 /*!
-    @protocol
-    @abstract    The defines the minimum required to create any service for resolution
-    @discussion  NSNetService doesn't need to support copying because once discovered, the name, type and service are sufficient to create other classes
+	@protocol
+	@abstract    The defines the minimum required to create any service for resolution
+	@discussion  NSNetService doesn't need to support copying because once discovered, the name, type and service are sufficient to create other classes
 					For example the AFNetService class below provides a KVO compliant presence dictionary that maps to the TXT record
 					Another class might listen for changes to the phsh TXT entry of a Bonjour peer and update the avatar (found in the NULL record)
-*/
+ */
 @protocol AFNetServiceCommon <NSObject>
 @property (readonly) NSString *name, *type, *domain;
 - (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name;
+
+- (NSString *)fullName;
 @end
 
 /*!
@@ -40,8 +42,6 @@ extern NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData);
 	CFNetServiceRef service;	
 	CFNetServiceMonitorRef monitor;
 	
-	CFNetServiceClientContext context;
-	
 	id <AFNetServiceDelegate> delegate;
 	NSMutableDictionary *presence;
 }
@@ -52,7 +52,7 @@ extern NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData);
 	@discussion	Because this uses -valueForKey: you can pass in an NSNetService, or a model object containing previously saved properties for example
 */
 
-+ (id)serviceWith:(id <AFNetServiceCommon>)service;
++ (id)serviceWithNetService:(id <AFNetServiceCommon>)service;
 
 @property (assign) id <AFNetServiceDelegate> delegate;
 
@@ -79,5 +79,9 @@ extern NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData);
 
 @protocol AFNetServiceDelegate <NSObject>
 - (void)netServiceDidResolveAddress:(AFNetService *)service;
-- (void)netService:(AFNetService *)service didNotResolveAddress:(NSString *)localizedErrorDescription;
+- (void)netService:(AFNetService *)service didNotResolveAddress:(NSError *)error;
+@end
+
+@interface NSNetService (AFAdditions) <AFNetServiceCommon>
+
 @end

@@ -10,9 +10,10 @@
 
 #import "AFNetworkFunctions.h"
 #import "AFNetworkProtocols.h"
+#import "AFNetworkConstants.h"
 
 #import "AFNetService.h"
-#import "AFServiceDiscoveryListener.h"
+#import "AFServiceDiscoveryRunLoopSource.h"
 
 #import "AFConnection.h"
 #import "AFConnectionPool.h"

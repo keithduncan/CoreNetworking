@@ -4,9 +4,6 @@
 //  Created by Keith Duncan
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
-//	Adapted from AsyncSocket
-//	http://code.google.com/p/cocoaasyncsocket/
-//
 
 #import "CoreNetworking/CoreNetworking.h"
 
@@ -81,15 +78,13 @@ extern struct _AFSocketType AFSocketTypeUDP;
 			__strong CFNetServiceRef netService;
 		} _netServiceDestination;
 		
-		struct AFSocketSignature _hostDestination;
+		struct _AFSocketSignature _hostDestination;
 	} _peer;
 	
 	__strong CFReadStreamRef readStream;
 	NSMutableArray *readQueue;
 	id _currentReadPacket;
 	NSTimer *readTimer;
-	
-	NSMutableData *partialReadBuffer;
 	
 	__strong CFWriteStreamRef writeStream;
 	NSMutableArray *writeQueue;
@@ -142,10 +137,6 @@ extern struct _AFSocketType AFSocketTypeUDP;
 - (void)currentReadProgress:(float *)value tag:(NSUInteger *)tag bytesDone:(CFIndex *)done total:(CFIndex *)total;
 - (void)currentWriteProgress:(float *)value tag:(NSUInteger *)tag bytesDone:(CFIndex *)done total:(CFIndex *)total;
 
-- (void)enablePreBuffering;
-
-- (NSData *)unreadData;
-
 @end
 
 @protocol AFSocketControlDelegate <AFConnectionLayerControlDelegate>
@@ -161,6 +152,7 @@ extern struct _AFSocketType AFSocketTypeUDP;
 /*!
 	@method
 	@abstract	Asynchronous callbacks can be scheduled in another run loop, defaults to CFRunLoopMain() if unimplemented
+	@discussion	This is done in a delegate callback to remove the burden of scheduling newly spawned accept() sockets
  */
 - (CFRunLoopRef)socketShouldScheduleWithRunLoop:(AFSocket *)socket;
 
@@ -170,6 +162,6 @@ extern struct _AFSocketType AFSocketTypeUDP;
 
  @optional
 
-- (void)socket:(AFSocket *)socket didReadPartialDataOfLength:(CFIndex)partialLength tag:(long)tag;
+- (void)socket:(AFSocket *)socket didReadPartialDataOfLength:(CFIndex)partialLength tag:(NSInteger)tag;
 
 @end
