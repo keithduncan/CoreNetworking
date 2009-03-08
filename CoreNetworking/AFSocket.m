@@ -59,11 +59,13 @@ typedef NSUInteger AFSocketStreamFlags;
 - (void)_endCurrentWritePacket;
 @end
 
-static void AFSocketSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *pData, void *pInfo);
+static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *pData, void *pInfo);
 static void AFSocketReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *pInfo);
 static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *pInfo);
 
 #pragma mark -
+
+#error rewrite the internal packet architecture
 
 @interface AsyncReadPacket : NSObject {
  @public
@@ -252,7 +254,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 
 @synthesize currentReadPacket=_currentReadPacket, currentWritePacket=_currentWritePacket;
 
-- (id)initWithDelegate:(id <AFSocketControlDelegate, AFSocketDataDelegate>)delegate {
+- (id)initWithDelegate:(id)delegate {
 	[self init];
 	
 	self.delegate = delegate;
@@ -263,7 +265,12 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	return self;
 }
 
-- (void)dealloc {	
+- (void)dealloc {
+	CFSocketInvalidate(_socket);
+	
+	CFRelease(_socketRunLoopSource);
+	CFRelease(_socket);
+	
 	[_currentReadPacket release];
 	[readQueue release];
 		
@@ -276,20 +283,42 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	[super dealloc];
 }
 
-+ (id)hostWithSocket:(CFSocketRef)socket {
++ (id)hostWithSignature:(const CFSocketSignature *)signature delegate:(id <AFConnectionLayerHostDelegate>)delegate {
+	AFSocket *socket = [[self alloc] initWithDelegate:delegate];
 	
-}
-
-+ (id)hostWithSignature:(const CFSocketSignature *)signature {
+	CFSocketContext context;
+	memset(&context, 0, sizeof(CFSocketContext));
+	context.info = socket;
 	
+	socket->_socket = CFSocketCreateWithSocketSignature(kCFAllocatorDefault, signature, kCFSocketAcceptCallBack, AFSocketCallback, &context);
+	
+	if (socket->_socket == NULL) {
+		[socket release];
+		return nil;
+	}
+	
+	socket->_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket->_socket, 0);
+	
+	CFRunLoopRef *loop = &socket->_runLoop;
+	if ([socket->_delegate respondsToSelector:@selector(socketShouldScheduleWithRunLoop:)]) {
+		*loop = [socket->_delegate socketShouldScheduleWithRunLoop:socket];
+	} if (*loop == NULL) *loop = CFRunLoopGetMain();
+	
+	CFRunLoopAddSource(*loop, socket->_socketRunLoopSource, kCFRunLoopDefaultMode);
+	
+	return socket;
 }
 
 + (id <AFNetworkLayer>)peerWithNetService:(id <AFNetServiceCommon>)netService {
+	AFSocket *socket = [[self alloc] init];
 	
+	return socket;
 }
 
 + (id <AFNetworkLayer>)peerWithSignature:(const AFSocketSignature *)signature {
+	AFSocket *socket = [[self alloc] init];
 	
+	return socket;
 }
 
 - (BOOL)canSafelySetDelegate {
@@ -569,7 +598,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 
 #pragma mark Callbacks
 
-static void AFSocketSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *pData, void *pInfo) {
+static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *pData, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	AFSocket *self = [[(AFSocket *)pInfo retain] autorelease];
@@ -595,7 +624,7 @@ static void AFSocketReadStreamCallback(CFReadStreamRef stream, CFStreamEventType
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	AFSocket *self = [[(AFSocket *)pInfo retain] autorelease];
-	NSCParameterAssert(self->readStream != NULL && stream == self->readStream);
+	NSCParameterAssert(stream == self->readStream);
 	
 	switch (type) {
 		case kCFStreamEventOpenCompleted:
@@ -611,13 +640,12 @@ static void AFSocketReadStreamCallback(CFReadStreamRef stream, CFStreamEventType
 		case kCFStreamEventErrorOccurred:
 		case kCFStreamEventEndEncountered:
 		{
-			CFStreamError err = CFReadStreamGetError(self->readStream);
-			[self closeWithError:[self errorFromCFStreamError:err]];
+			[self disconnectWithError:[self errorFromCFStreamError:CFReadStreamGetError(self->readStream)]];
 			break;
 		}
 		default:
 		{
-			NSLog(@"%s, %p received unexpected CFReadStream callback, CFStreamEventType %d.", __PRETTY_FUNCTION__, self, type);
+			NSLog(@"%s, %p received unexpected CFReadStream callback, CFStreamEventType %d.", __PRETTY_FUNCTION__, self, type, nil);
 			break;
 		}
 	}
@@ -629,7 +657,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	AFSocket *self = [[(AFSocket *)pInfo retain] autorelease];
-	NSCParameterAssert(self->writeStream != NULL && stream == self->writeStream);
+	NSCParameterAssert(stream == self->writeStream);
 	
 	switch (type) {
 		case kCFStreamEventOpenCompleted:
@@ -641,12 +669,11 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 		case kCFStreamEventErrorOccurred:
 		case kCFStreamEventEndEncountered:
 		{
-			CFStreamError err = CFWriteStreamGetError(self->writeStream);
-			[self closeWithError:[self errorFromCFStreamError:err]];
+			[self disconnectWithError:[self errorFromCFStreamError:CFWriteStreamGetError(self->writeStream)]];
 			break;
 		}
 		default:
-			NSLog(@"%s, %p, received unexpected CFWriteStream callback, CFStreamEventType %d.", __PRETTY_FUNCTION__, self, type);
+			NSLog(@"%s, %p, received unexpected CFWriteStream callback, CFStreamEventType %d.", __PRETTY_FUNCTION__, self, type, nil);
 			break;
 	}
 	
@@ -704,11 +731,12 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 		[self _endCurrentReadPacket];
 	}
 	
-	NSString *errMsg = NSLocalizedStringWithDefaultValue(@"AFSocketStreamReadTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Read operation timeout", nil);
-	NSDictionary *info = [NSDictionary dictionaryWithObject:errMsg forKey:NSLocalizedDescriptionKey];
-	NSError *timeoutError = [NSError errorWithDomain:AFSocketErrorDomain code:AFSocketReadTimeoutError userInfo:info];
+	NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
+						  NSLocalizedStringWithDefaultValue(@"AFSocketStreamReadTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Read operation timeout", nil), NSLocalizedDescriptionKey,
+						  nil];
 	
-	[self closeWithError:timeoutError];
+	NSError *timeoutError = [NSError errorWithDomain:AFSocketErrorDomain code:AFSocketReadTimeoutError userInfo:info];
+	[self disconnectWithError:timeoutError];
 }
 
 - (void)_readBytes {
@@ -717,138 +745,84 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	
 	CFIndex totalBytesRead = 0;
 	
-	BOOL done = NO;
-	BOOL socketError = NO, maxoutError = NO;
+	BOOL packetComplete = NO;
+	BOOL readStreamError = NO, maxoutError = NO;
 	
-	while (!done && !socketError && !maxoutError && [self _hasBytesAvailable]) {
-		BOOL didPreBuffer = NO;
-		
+	while (!packetComplete && !readStreamError && !maxoutError && CFReadStreamHasBytesAvailable(readStream)) {
 		// If reading all available data, make sure there's room in the packet buffer.
 		if (packet->readAllAvailableData == YES) {
 			// Make sure there is at least READALL_CHUNKSIZE bytes available.
 			// We don't want to increase the buffer any more than this or we'll waste space.
 			// With prebuffering it's possible to read in a small chunk on the first read.
-			unsigned buffInc = (READALL_CHUNKSIZE - ([packet->buffer length] - packet->bytesDone));
-			[packet->buffer increaseLengthBy:buffInc];
+			unsigned bufferIncrement = (READALL_CHUNKSIZE - ([packet->buffer length] - packet->bytesDone));
+			[packet->buffer increaseLengthBy:bufferIncrement];
 		}
 		
-		// If reading until data, we may only want to read a few bytes.
-		// Just enough to ensure we don't go past our term or over our max limit.
-		// Unless pre-buffering is enabled, in which case we may want to read in a larger chunk.
-		if (packet->term != nil) {
-			// If we already have data pre-buffered, we obviously don't want to pre-buffer it again.
-			// So in this case we'll just read as usual.
-			
-			if (([partialReadBuffer length] > 0) || ((self.flags & _kEnablePreBuffering) != _kEnablePreBuffering)) {
-				unsigned maxToRead = [packet readLengthForTerm];
-				
-				unsigned bufInc = maxToRead - ([packet->buffer length] - packet->bytesDone);
-				[packet->buffer increaseLengthBy:bufInc];
-			} else {
-				didPreBuffer = YES;
-				unsigned maxToRead = [packet prebufferReadLengthForTerm];
-				
-				unsigned buffInc = maxToRead - ([packet->buffer length] - packet->bytesDone);
-				[packet->buffer increaseLengthBy:buffInc];
-				
-			}
-		}
-		
-		// Number of bytes to read is space left in packet buffer.
-		CFIndex bytesToRead = [packet->buffer length] - packet->bytesDone;
+		// Number of bytes to read is space left in packet buffer
+		CFIndex bytesToRead = ([packet->buffer length] - packet->bytesDone);
 		
 		// Read data into packet buffer
-		UInt8 *subBuffer = (UInt8 *)([packet->buffer mutableBytes] + packet->bytesDone);
-		CFIndex bytesRead = [self _readIntoBuffer:subBuffer maxLength:bytesToRead];
+		UInt8 *buffer = (UInt8 *)([packet->buffer mutableBytes] + packet->bytesDone);
+		CFIndex bytesRead = CFReadStreamRead(readStream, buffer, bytesToRead);
 		
-		// Check results
 		if (bytesRead < 0) {
-			socketError = YES;
+			readStreamError = YES;
 		} else {
-			// Update total amound read for the current read
 			packet->bytesDone += bytesRead;
-			
-			// Update total amount read in this method invocation
 			totalBytesRead += bytesRead;
 		}
 		
 		// Is packet done?
-		if (packet->readAllAvailableData != YES) {
+		if (!packet->readAllAvailableData) {
 			if (packet->term != nil) {
-				if (didPreBuffer) {
-					// Search for the terminating sequence within the big chunk we just read.
-					CFIndex overflow = [packet searchForTermAfterPreBuffering:bytesRead];
+				int termlen = [packet->term length];
+				
+				if (packet->bytesDone >= termlen) {
+					const void *buf = [packet->buffer bytes] + (packet->bytesDone - termlen);
+					const void *seq = [packet->term bytes];
 					
-					if (overflow > 0) {
-						// Copy excess data into partialReadBuffer
-						NSMutableData *buffer = packet->buffer;
-						const void *overflowBuffer = [buffer bytes] + packet->bytesDone - overflow;
-						
-						[partialReadBuffer appendBytes:overflowBuffer length:overflow];
-						
-						// Update the bytesDone variable.
-						// Note: The complete[self _currentReadPacket] method will trim the buffer for us.
-						packet->bytesDone -= overflow;
-					}
-					
-					done = (overflow >= 0);
-				} else {
-					// Search for the terminating sequence at the end of the buffer
-					int termlen = [packet->term length];
-					if(packet->bytesDone >= termlen) {
-						const void *buf = [packet->buffer bytes] + (packet->bytesDone - termlen);
-						const void *seq = [packet->term bytes];
-						done = (memcmp(buf, seq, termlen) == 0);
-					}
+					packetComplete = (memcmp(buf, seq, termlen) == 0);
 				}
 				
-				if (!done && packet->maxLength >= 0 && packet->bytesDone >= packet->maxLength) {
+				if (!packetComplete && packet->maxLength >= 0 && packet->bytesDone >= packet->maxLength) {
 					// There's a set maxLength, and we've reached that maxLength without completing the read
 					maxoutError = YES;
 				}
 			} else {
 				// Done when (sized) buffer is full.
-				done = ([packet->buffer length] == packet->bytesDone);
+				packetComplete = ([packet->buffer length] == packet->bytesDone);
 			}
-		}
-		// else readAllAvailable doesn't end until all readable is read.
+		} // else readAllAvailable doesn't end until all readable is read.
+	}
+	if (packet->readAllAvailableData && packet->bytesDone > 0) packetComplete = YES;
+	
+#warning errors should be non-fatal and shouldn't close the stream
+	if (readStreamError) {
+		[self disconnectWithError:[self errorFromCFStreamError:CFReadStreamGetError(readStream)]];
 	}
 	
-	// Ran out of bytes, so the "read-all-data" type packet is done
-	if (packet->readAllAvailableData && packet->bytesDone > 0) done = YES;
-	
-	if (done) {		
-		[packet->buffer setLength:packet->bytesDone];
-		
-		if ([self.delegate respondsToSelector:@selector(layer:didRead:forTag:)]) {
-			[self.delegate layer:self didRead:(packet->buffer) forTag:(packet->tag)];
-		}
-		
-		[self _endCurrentReadPacket];
-		
-		if (!socketError) {
-			[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
-			return;
-		}
-	}
-	
-	if (packet->bytesDone == 0) return;
-	
-	if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)]) {
-		[self.delegate socket:self didReadPartialDataOfLength:totalBytesRead tag:(packet->tag)];
-	}
-	
-	if (socketError) {
-		CFStreamError err = CFReadStreamGetError(readStream);
-		[self closeWithError:[self errorFromCFStreamError:err]];
-	} else if (maxoutError) {
+	if (maxoutError) {
 		NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
 							  NSLocalizedStringWithDefaultValue(@"AFSocketReadMaxedOutError", @"AFSocket", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Read operation reached set maximum length", nil), NSLocalizedDescriptionKey,
 							  nil];
 		
 		NSError *error = [NSError errorWithDomain:AFSocketErrorDomain code:AFSocketReadMaxedOutError userInfo:info];
 		
-		[self closeWithError:error];
+		[self disconnectWithError:error];
+	}
+	
+	if (packetComplete) {
+		[packet->buffer setLength:packet->bytesDone];
+		
+		if ([self.delegate respondsToSelector:@selector(layer:didRead:forTag:)])
+			[self.delegate layer:self didRead:(packet->buffer) forTag:(packet->tag)];
+		
+		[self _endCurrentReadPacket];
+		
+		[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
+	} else if (packet->bytesDone != 0) {
+		if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)])
+			[self.delegate socket:self didReadPartialDataOfLength:totalBytesRead tag:(packet->tag)];
 	}
 }
 
@@ -896,19 +870,20 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 		[self _endCurrentWritePacket];
 	}
 	
-	NSString *description = NSLocalizedStringWithDefaultValue(@"AFSocketStreamWriteTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Write operation timeout", nil);
-	NSDictionary *info = [NSDictionary dictionaryWithObject:description forKey:NSLocalizedDescriptionKey];
-	NSError *timeoutError = [NSError errorWithDomain:AFSocketErrorDomain code:AFSocketWriteTimeoutError userInfo:info];
+	NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
+						  NSLocalizedStringWithDefaultValue(@"AFSocketStreamWriteTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Write operation timeout", nil), NSLocalizedDescriptionKey,
+						  nil];
 	
-	[self closeWithError:timeoutError];
+	NSError *timeoutError = [NSError errorWithDomain:AFSocketErrorDomain code:AFSocketWriteTimeoutError userInfo:info];
+	[self disconnectWithError:timeoutError];
 }
 
 - (void)_sendBytes {
 	AsyncWritePacket *packet = [self currentWritePacket];
 	if (packet == nil || writeStream == NULL) return;
 	
-	BOOL done = NO, error = NO;
-	while (!done && !error && CFWriteStreamCanAcceptBytes(writeStream)) {
+	BOOL packetComplete = NO, error = NO;
+	while (!packetComplete && !error && CFWriteStreamCanAcceptBytes(writeStream)) {
 		// Figure out what to write.
 		CFIndex bytesRemaining = [packet->buffer length] - packet->bytesDone;
 		CFIndex bytesToWrite = (bytesRemaining < WRITE_CHUNKSIZE) ? bytesRemaining : WRITE_CHUNKSIZE;
@@ -922,24 +897,22 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 		}
 		
 		packet->bytesDone += bytesWritten;
-		done = ([packet->buffer length] == packet->bytesDone);
+		packetComplete = ([packet->buffer length] == packet->bytesDone);
 	}
 	
-	if (done) {		
+#warning steam errors should be non-fatal
+	if (error) {
+		[self disconnectWithError:[self errorFromCFStreamError:CFWriteStreamGetError(writeStream)]];
+	}
+	
+	if (packetComplete) {		
 		if ([self.delegate respondsToSelector:@selector(layer:didWrite:forTag:)]) {
 			[self.delegate layer:self didWrite:packet->buffer forTag:packet->tag];
 		}
 		
 		[self _endCurrentWritePacket];
 		
-		if (!error) {
-			[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
-		}
-	}
-	
-	if (error) {
-		CFStreamError error = CFWriteStreamGetError(writeStream);
-		[self closeWithError:[self errorFromCFStreamError:error]];
+		[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
 	}
 }
 

@@ -100,16 +100,9 @@ extern struct _AFSocketType AFSocketTypeUDP;
 
 /*!
 	@method
-	@abstract	The socket is provided, this object takes ownership of the socket and listens for incoming connections
-	@discussion	Only connections are listened for, no data is expected from the provided socket
- */
-+ (id)hostWithSocket:(CFSocketRef)socket;
-
-/*!
-	@method
 	@abstract	A socket is created with the given characteristics and the address is set
  */
-+ (id)hostWithSignature:(const CFSocketSignature *)signature;
++ (id)hostWithSignature:(const CFSocketSignature *)signature delegate:(id <AFConnectionLayerHostDelegate>)delegate;
 
 /*
  * Connection Initialisers

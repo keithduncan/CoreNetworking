@@ -36,13 +36,11 @@
 
 @end
 
-
 @protocol AFNetworkLayerControlDelegate <NSObject>
 - (void)layerDidOpen:(id <AFNetworkLayer>)layer;
 - (void)layerDidNotOpen:(id <AFNetworkLayer>)layer;
 - (void)layerDidClose:(id <AFNetworkLayer>)layer;
 @end
-
 
 @protocol AFNetworkLayerDataDelegate <NSObject>
 @property (retain) id <AFNetworkLayer> lowerLayer;
@@ -51,7 +49,6 @@
  @optional
 - (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
 @end
-
 
 @protocol AFConnectionLayerControlDelegate;
 @protocol AFConnectionLayerDataDelegate;
