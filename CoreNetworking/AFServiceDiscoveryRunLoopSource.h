@@ -28,4 +28,6 @@
 - (void)scheduleWithRunLoop:(CFRunLoopRef)loop;
 - (void)unscheduleFromRunLoop:(CFRunLoopRef)loop;
 
+- (void)invalidate;
+
 @end

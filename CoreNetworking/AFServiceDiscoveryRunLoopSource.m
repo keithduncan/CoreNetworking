@@ -57,4 +57,8 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 	CFRunLoopRemoveSource(loop, _source, kCFRunLoopDefaultMode);
 }
 
+- (void)invalidate {
+	CFSocketInvalidate(_socket);
+}
+
 @end

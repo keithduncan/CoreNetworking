@@ -65,7 +65,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 
 #pragma mark -
 
-#error rewrite the internal packet architecture
+#warning rewrite the internal packet architecture
 
 @interface AsyncReadPacket : NSObject {
  @public
@@ -796,7 +796,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	}
 	if (packet->readAllAvailableData && packet->bytesDone > 0) packetComplete = YES;
 	
-#warning errors should be non-fatal and shouldn't close the stream
+#warning stream errors should be non-fatal
 	if (readStreamError) {
 		[self disconnectWithError:[self errorFromCFStreamError:CFReadStreamGetError(readStream)]];
 	}

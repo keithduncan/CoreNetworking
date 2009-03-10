@@ -53,12 +53,14 @@
 	return self;
 }
 
-- (void)dealloc {
-#ifdef __OBJC_GC__
-#error this class isn't GC compatible
-#endif
+- (void)finalize {
+	[self disconnectClients];
 	
-	[self disconnectClients]; // Note: this isn't GC compatible, investigate further. Just do it in -finalize?
+	[super finalize];
+}
+
+- (void)dealloc {
+	[self finalize];
 	
 	[clientApplications release];
 	[clientSockets release];
