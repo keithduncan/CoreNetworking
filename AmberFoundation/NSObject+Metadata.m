@@ -14,7 +14,7 @@
 
 static NSMutableDictionary *_kBundleMetadataMap = nil;
 
-NS_INLINE NSData *AFDataFromBundleExecutable(NSBundle *bundle, const char *segmentName, const char *sectionName) {
+NSData *AFBundleSectionData(NSBundle *bundle, const char *segmentName, const char *sectionName) {
 	if (![bundle isLoaded]) {
 		// Note: the bundle must be loaded to map the object files into memory
 		BOOL didLoad = [bundle load];
@@ -47,7 +47,7 @@ NS_INLINE NSData *AFDataFromBundleExecutable(NSBundle *bundle, const char *segme
 	return nil;
 }
 
-id af_class_getMetadataObjectForKey(Class class, NSString *key) {
+id af_class_getMetadataObjectForKey(Class class, const char *key) {
 	if (_kBundleMetadataMap == nil) {
 		_kBundleMetadataMap = [[NSMutableDictionary alloc] initWithCapacity:_dyld_image_count()];
 	}
@@ -56,7 +56,7 @@ id af_class_getMetadataObjectForKey(Class class, NSString *key) {
 	NSDictionary *metadata = [_kBundleMetadataMap objectForKey:[classBundle bundlePath]];
 	
 	if (metadata == nil) {
-		NSData *rawMetadata = AFDataFromBundleExecutable(classBundle, SEG_OBJC, AF_SECT_METADATA);
+		NSData *rawMetadata = AFBundleSectionData(classBundle, SEG_OBJC, AF_SECT_METADATA);
 		
 		if (rawMetadata == nil) {
 			[NSException raise:NSInvalidArgumentException format:@"%s, the bundle <%p> containing class %@ doesn't contain metadata.", __PRETTY_FUNCTION__, classBundle, NSStringFromClass(class), nil];
@@ -69,7 +69,7 @@ id af_class_getMetadataObjectForKey(Class class, NSString *key) {
 	}
 	
 	id classMetadata = [metadata objectForKey:NSStringFromClass(class)];
-	return (key != nil) ? [classMetadata objectForKey:key] : classMetadata;
+	return (key != NULL) ? [classMetadata objectForKey:[NSString stringWithUTF8String:key]] : classMetadata;
 }
 
 @implementation NSObject (AFMetadata)
@@ -79,7 +79,7 @@ id af_class_getMetadataObjectForKey(Class class, NSString *key) {
 }
 
 + (id)metadataObjectForKey:(NSString *)key {
-	return af_class_getMetadataObjectForKey(self, key);
+	return af_class_getMetadataObjectForKey(self, [key UTF8String]);
 }
 
 @end

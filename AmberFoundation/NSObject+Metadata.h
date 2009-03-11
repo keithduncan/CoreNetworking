@@ -10,12 +10,14 @@
 
 #define AF_SECT_METADATA "__class_metadata"
 
+extern NSData *AFBundleSectionData(NSBundle *bundle, const char *segmentName, const char *sectionName);
+
 // Note: This function does NOT consider inheritance when looking up a value
 //	It assumes the bundle containing the class implementation contains the required __OBJC,__class_metadata segment in the main executable
 //	It will throw an exception of the [NSBundle bundleForClass:class] doesn't include the prerequsite metadata
 //	If you pass nil for the key this returns the root metadata object
 
-extern id af_class_getMetadataObjectForKey(Class class, NSString *key);
+extern id af_class_getMetadataObjectForKey(Class class, const char *key);
 
 @interface NSObject (AFMetadata)
 + (id)metadata;
