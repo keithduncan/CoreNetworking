@@ -49,6 +49,13 @@
 
 /*!
 	@method
+	@abstract	open the host sockets
+	@discussion	if the opening of one fails, negotiation will begin with the delegate for the correct course of action
+ */
+//- (void)open;
+
+/*!
+	@method
 	@abstract	The delegate is optional in this class, most servers should function without one
  */
 @property (assign) id <AFConnectionServerDelegate> delegate;

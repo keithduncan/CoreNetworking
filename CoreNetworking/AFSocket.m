@@ -20,8 +20,8 @@
 
 NSString *const AFSocketErrorDomain = @"AFSocketErrorDomain";
 
-struct _AFSocketType AFSocketTypeTCP = {.socketType = SOCK_STREAM, .protocol = IPPROTO_TCP};
-struct _AFSocketType AFSocketTypeUDP = {.socketType = SOCK_DGRAM, .protocol = IPPROTO_UDP};
+struct AFSocketType AFSocketTypeTCP = {.socketType = SOCK_STREAM, .protocol = IPPROTO_TCP};
+struct AFSocketType AFSocketTypeUDP = {.socketType = SOCK_DGRAM, .protocol = IPPROTO_UDP};
 
 #define READQUEUE_CAPACITY	5           // Initial capacity
 #define WRITEQUEUE_CAPACITY 5           // Initial capacity
@@ -254,10 +254,8 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 
 @synthesize currentReadPacket=_currentReadPacket, currentWritePacket=_currentWritePacket;
 
-- (id)initWithDelegate:(id)delegate {
-	[self init];
-	
-	self.delegate = delegate;
+- (id)init {
+	[super init];
 	
 	readQueue = [[NSMutableArray alloc] initWithCapacity:READQUEUE_CAPACITY];	
 	writeQueue = [[NSMutableArray alloc] initWithCapacity:WRITEQUEUE_CAPACITY];
@@ -283,8 +281,8 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	[super dealloc];
 }
 
-+ (id)hostWithSignature:(const CFSocketSignature *)signature delegate:(id <AFConnectionLayerHostDelegate>)delegate {
-	AFSocket *socket = [[self alloc] initWithDelegate:delegate];
++ (id)hostWithSignature:(const CFSocketSignature *)signature {
+	AFSocket *socket = [[self alloc] init];
 	
 	CFSocketContext context;
 	memset(&context, 0, sizeof(CFSocketContext));
@@ -297,14 +295,17 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 		return nil;
 	}
 	
-	socket->_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket->_socket, 0);
+	{
+		#warning shift this to the -open method
+		socket->_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket->_socket, 0);
 	
-	CFRunLoopRef *loop = &socket->_runLoop;
-	if ([socket->_delegate respondsToSelector:@selector(socketShouldScheduleWithRunLoop:)]) {
-		*loop = [socket->_delegate socketShouldScheduleWithRunLoop:socket];
-	} if (*loop == NULL) *loop = CFRunLoopGetMain();
+		CFRunLoopRef *loop = &socket->_runLoop;
+		if ([socket->_delegate respondsToSelector:@selector(socketShouldScheduleWithRunLoop:)]) {
+			*loop = [socket->_delegate socketShouldScheduleWithRunLoop:socket];
+		} if (*loop == NULL) *loop = CFRunLoopGetMain();
 	
-	CFRunLoopAddSource(*loop, socket->_socketRunLoopSource, kCFRunLoopDefaultMode);
+		CFRunLoopAddSource(*loop, socket->_socketRunLoopSource, kCFRunLoopDefaultMode);
+	}
 	
 	return socket;
 }
@@ -495,7 +496,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 
 #pragma mark Diagnostics
 
-- (BOOL)streamsConnected {
+- (BOOL)_streamsConnected {
 	if (readStream != NULL) {
 		CFStreamStatus status = CFReadStreamGetStatus(readStream);
 		if (!(status == kCFStreamStatusOpen || status == kCFStreamStatusReading || status == kCFStreamStatusError)) return NO;
@@ -528,6 +529,8 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 
 	AsyncReadPacket *readPacket = [self currentReadPacket];
 	[description appendFormat:@"Current Read: %@, ", (readPacket != nil ? @"(null)" : [readPacket description])];
+	
+#warning complete the description
 	
 #if 0
 	else {
@@ -606,15 +609,21 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	
 	switch (type) {
 		case kCFSocketConnectCallBack:
+		{
 			// The data argument is either NULL or a pointer to an SInt32 error code, if the connect failed.			
 			[self doSocketOpen:socket withCFSocketError:(pData != NULL ? kCFSocketError : kCFSocketSuccess)];
 			break;
+		}
 		case kCFSocketAcceptCallBack:
+		{
 			[self doAcceptWithSocket:*((CFSocketNativeHandle *)pData)];
 			break;
+		}
 		default:
+		{
 			NSLog(@"%s, socket %p, received unexpected CFSocketCallBackType %d.", __PRETTY_FUNCTION__, self, type);
 			break;
+		}
 	}
 	
 	[pool drain];
@@ -640,6 +649,7 @@ static void AFSocketReadStreamCallback(CFReadStreamRef stream, CFStreamEventType
 		case kCFStreamEventErrorOccurred:
 		case kCFStreamEventEndEncountered:
 		{
+#warning these should be non-fatal
 			[self disconnectWithError:[self errorFromCFStreamError:CFReadStreamGetError(self->readStream)]];
 			break;
 		}
@@ -661,20 +671,27 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	
 	switch (type) {
 		case kCFStreamEventOpenCompleted:
+		{
 			[self doStreamOpen];
 			break;
+		}
 		case kCFStreamEventCanAcceptBytes:
+		{
 			[self _sendBytes];
 			break;
+		}
 		case kCFStreamEventErrorOccurred:
 		case kCFStreamEventEndEncountered:
 		{
+#warning these should be non-fatal
 			[self disconnectWithError:[self errorFromCFStreamError:CFWriteStreamGetError(self->writeStream)]];
 			break;
 		}
 		default:
+		{
 			NSLog(@"%s, %p, received unexpected CFWriteStream callback, CFStreamEventType %d.", __PRETTY_FUNCTION__, self, type, nil);
 			break;
+		}
 	}
 	
 	[pool drain];
@@ -718,14 +735,14 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	
 	
 	if (packet->timeout >= 0.0) {
-		readTimer = [NSTimer scheduledTimerWithTimeInterval:(packet->timeout) target:self selector:@selector(_readTimeout:) userInfo:nil repeats:NO];
+		readTimeout = [NSTimer scheduledTimerWithTimeInterval:(packet->timeout) target:self selector:@selector(_readTimeout:) userInfo:nil repeats:NO];
 	}
 	
 	[self _readBytes];
 }
 
 - (void)_readTimeout:(id)sender {
-	if (sender != readTimer) return;
+	if (sender != readTimeout) return;
 	
 	if ([self currentReadPacket] != nil) {
 		[self _endCurrentReadPacket];
@@ -832,8 +849,8 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	
 	[self setCurrentReadPacket:nil];
 	
-	[readTimer invalidate];
-	readTimer = nil;
+	[readTimeout invalidate];
+	readTimeout = nil;
 }
 
 #pragma mark -
@@ -857,14 +874,14 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	if (packet == nil) return;
 	
 	if (packet->timeout >= 0.0) {
-		writeTimer = [NSTimer scheduledTimerWithTimeInterval:(packet->timeout) target:self selector:@selector(_writeTimeout:) userInfo:nil repeats:NO];
+		writeTimeout = [NSTimer scheduledTimerWithTimeInterval:(packet->timeout) target:self selector:@selector(_writeTimeout:) userInfo:nil repeats:NO];
 	}
 	
 	[self _sendBytes];
 }
 
 - (void)_writeTimeout:(id)sender {
-	if (sender != writeTimer) return; // Old timer. Ignore it.
+	if (sender != writeTimeout) return; // Old timer. Ignore it.
 	
 	if ([self currentWritePacket] != nil) {
 		[self _endCurrentWritePacket];
@@ -922,8 +939,8 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	
 	[self setCurrentWritePacket:nil];
 	
-	[writeTimer invalidate];
-	writeTimer = nil;
+	[writeTimeout invalidate];
+	writeTimeout = nil;
 	
 	if ((self.flags & _kCloseSoon) != _kCloseSoon) return;
 	if (([writeQueue count] != 0) || ([self currentWritePacket] != nil)) return;

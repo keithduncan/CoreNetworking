@@ -24,31 +24,31 @@ extern NSString *const AFSocketErrorDomain;
 /*!
 	@struct 
 	@abstract   Based on CFSocketSignature allowing for higher-level functionality
-	@discussion Doesn't include a |protocolFamily| field as CFSocketSignature because a |host| is provided, which could resolve to a number of different protocol family addresses
+	@discussion Doesn't include a |protocolFamily| field like CFSocketSignature because the |host| may resolve to a number of different protocol family addresses
 	
 	@field		|socketType| should be one of the socket types defined in <socket.h>
-	@field		|protocol| should be one of the IP protocols defined in RFC 1700 ( see http://www.faqs.org/rfcs/rfc1700.html ). It is important that an appropriate |socketType| is also provided.
-	@field      |host| is copied using CFHostCreateCopy() the addresses property is resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap it won't be reclaimed.
+	@field		|protocol| should typically be one of the IP protocols defined in RFC 1700 see http://www.faqs.org/rfcs/rfc1700.html - it is important that an appropriate |socketType| is also provided
+	@field      |host| is copied using CFHostCreateCopy() the addresses property is resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap it won't be reclaimed
 	@field		|port| identifies the Transport layer address to communicate using (see RFC 1122)
  */
-struct _AFSocketSignature {
+struct AFSocketSignature {
 /*
  *	These define _how_ to communicate (and allow for the return of a specific handler subclass from the creation methods)
  */
-	struct _AFSocketType {
+	struct AFSocketType {
 		SInt32 socketType;
 		SInt32 protocol;
-	} _type;
+	} type;
 /*
  *	These define _where_ to communicate
  */
-	__strong CFHostRef _host;
-	SInt32 _port;
+	__strong CFHostRef host;
+	SInt32 port;
 };
-typedef struct _AFSocketSignature AFSocketSignature;
+typedef struct AFSocketSignature AFSocketSignature;
 
-extern struct _AFSocketType AFSocketTypeTCP;
-extern struct _AFSocketType AFSocketTypeUDP;
+extern struct AFSocketType AFSocketTypeTCP;
+extern struct AFSocketType AFSocketTypeUDP;
 
 /*!
     @class
@@ -84,12 +84,10 @@ extern struct _AFSocketType AFSocketTypeUDP;
 	__strong CFReadStreamRef readStream;
 	NSMutableArray *readQueue;
 	id _currentReadPacket;
-	NSTimer *readTimer;
 	
 	__strong CFWriteStreamRef writeStream;
 	NSMutableArray *writeQueue;
 	id _currentWritePacket;
-	NSTimer *writeTimer;
 #endif
 }
 
@@ -102,7 +100,7 @@ extern struct _AFSocketType AFSocketTypeUDP;
 	@method
 	@abstract	A socket is created with the given characteristics and the address is set
  */
-+ (id)hostWithSignature:(const CFSocketSignature *)signature delegate:(id <AFConnectionLayerHostDelegate>)delegate;
++ (id)hostWithSignature:(const CFSocketSignature *)signature;
 
 /*
  * Connection Initialisers

@@ -39,6 +39,7 @@
 @protocol AFNetworkLayerControlDelegate <NSObject>
 - (void)layerDidOpen:(id <AFNetworkLayer>)layer;
 - (void)layerDidNotOpen:(id <AFNetworkLayer>)layer;
+
 - (void)layerDidClose:(id <AFNetworkLayer>)layer;
 @end
 

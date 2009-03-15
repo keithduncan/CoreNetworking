@@ -8,25 +8,79 @@
 
 #import "AFConnectionServer.h"
 
+#import <sys/socket.h>
+#import <arpa/inet.h>
+
 #import "AFSocket.h"
 
 #import "AFConnectionPool.h"
+
+// Note: import this header last, allowing for any of the previous headers to import <net/if.h>
+// Note: see the man page for getifaddrs
+#import <ifaddrs.h>
 
 @implementation AFConnectionServer
 
 @synthesize delegate=_delegate;
 @synthesize clientApplications;
 
-+ (id)networkServer {
-#warning these pair of methods should also setup the server to listen for IP address changes
++ (id)_serverWithPort:(SInt32)port addresses:(CFArrayRef)addrs {
+	NSMutableSet *sockets = [NSMutableSet setWithCapacity:CFArrayGetCount(addrs)];
 	
-	[self doesNotRecognizeSelector:_cmd];
-	return nil;
+	for (NSData *currentAddrData in (NSArray *)addrs) {
+		const struct sockaddr *currentAddr = [currentAddrData bytes];
+		
+		CFSocketSignature currentSocketSignature = {
+			.protocolFamily = currentAddr->sa_family,
+			.socketType = SOCK_STREAM,
+			.protocol = IPPROTO_TCP,
+			.address = currentAddrData,
+		};
+		
+		AFSocket *hostSocket = [AFSocket hostWithSignature:&currentSocketSignature];
+		[sockets addObject:hostSocket];
+	}
+	
+	return [[[self alloc] initWithHostSockets:sockets] autorelease];
 }
 
-+ (id)localhostServer {
-	[self doesNotRecognizeSelector:_cmd];
-	return nil;
+#warning these methods should also configure the server to listen for IP-layer changes
+
++ (id)networkServer:(SInt32)port {
+	CFMutableArrayRef addresses = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
+	
+	struct ifaddrs *addrs = NULL;
+	int error = getifaddrs(&addrs);
+	if (error != 0) return nil;
+	
+	struct ifaddrs *currentAddr = addrs;
+	for (; currentAddr != NULL; currentAddr = currentAddr->ifa_next) {
+		if (currentAddr->ifa_addr->sa_family == AF_LINK) continue;
+		
+		CFDataRef addrData = CFDataCreate(kCFAllocatorDefault, currentAddr, currentAddr->ifa_addr->sa_len);
+		CFArrayInsertValueAtIndex(addresses, 0, addrData);
+		CFRelease(addrData);
+	}
+	
+	freeifaddrs(addrs);
+	
+	AFConnectionServer *server = [self _serverWithPort:port addresses:addresses];
+	
+	CFRelease(addresses);
+	
+	return server;
+}
+
++ (id)localhostServer:(SInt32)port {
+	CFHostRef localhost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost");
+	
+	CFStreamError error;
+	memset(&error, 0, sizeof(CFStreamError));
+	
+	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
+	if (!resolved) return nil;
+	
+	return [self _serverWithPort:port addresses:CFHostGetAddressing(localhost, &resolved)];
 }
 
 + (Class)connectionClass {
