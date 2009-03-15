@@ -11,7 +11,7 @@
 #import <sys/socket.h>
 #import <arpa/inet.h>
 
-#import "AFSocket.h"
+#import "AFSocketPort.h"
 
 #import "AFConnectionPool.h"
 
@@ -37,7 +37,7 @@
 			.address = currentAddrData,
 		};
 		
-		AFSocket *hostSocket = [AFSocket hostWithSignature:&currentSocketSignature];
+		AFSocketPort *hostSocket = [AFSocketPort hostWithSignature:&currentSocketSignature];
 		[sockets addObject:hostSocket];
 	}
 	
