@@ -39,7 +39,7 @@
 	if (bytesTotal != NULL) *bytesTotal = total;
 }
 
-- (BOOL)write:(CFWriteStreamRef)writeStream error:(NSError **)errorRef {
+- (BOOL)performWrite:(CFWriteStreamRef)writeStream error:(NSError **)errorRef {
 	BOOL packetComplete = NO, streamError = NO;
 	while (!packetComplete && !streamError && CFWriteStreamCanAcceptBytes(writeStream)) {
 		// Figure out what to write.

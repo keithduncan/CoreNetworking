@@ -23,9 +23,6 @@
 struct AFSocketType AFSocketTypeTCP = {.socketType = SOCK_STREAM, .protocol = IPPROTO_TCP};
 struct AFSocketType AFSocketTypeUDP = {.socketType = SOCK_DGRAM, .protocol = IPPROTO_UDP};
 
-#define READQUEUE_CAPACITY	5           // Initial capacity
-#define WRITEQUEUE_CAPACITY 5           // Initial capacity
-
 enum {
 	_kEnablePreBuffering		= 1UL << 0,   // pre-buffering is enabled.
 	_kDidCallConnectDelegate	= 1UL << 1,   // connect delegate has been called.
@@ -73,17 +70,15 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 - (id)init {
 	[super init];
 	
-	readQueue = [[NSMutableArray alloc] initWithCapacity:READQUEUE_CAPACITY];	
-	writeQueue = [[NSMutableArray alloc] initWithCapacity:WRITEQUEUE_CAPACITY];
+	readQueue = [[NSMutableArray alloc] initWithCapacity:5];	
+	writeQueue = [[NSMutableArray alloc] initWithCapacity:5];
 	
 	return self;
 }
 
 - (void)dealloc {
-	CFSocketInvalidate(_socket);
-	
-	CFRelease(_socketRunLoopSource);
-	CFRelease(_socket);
+	CFRelease(readStream);
+	CFRelease(writeStream);
 	
 	[_currentReadPacket release];
 	[readQueue release];
@@ -113,9 +108,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	return ([readQueue count] == 0 && [writeQueue count] == 0 && [self currentReadPacket] == nil && [self currentWritePacket] == nil);
 }
 
-- (void)currentReadProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total tag:(NSUInteger *)tag {
-	AFPacketRead *packet = [self currentReadPacket];
-	
+- (void)_packet:(AFPacket *)packet progress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total tag:(NSUInteger *)tag {
 	if (packet == nil) {
 		if (fraction != NULL) *fraction = NAN;
 		return;
@@ -125,16 +118,12 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	[packet progress:fraction done:done total:total];
 }
 
+- (void)currentReadProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total tag:(NSUInteger *)tag {
+	[self _packet:[self currentReadPacket] progress:fraction bytesDone:done total:total tag:tag];
+}
+
 - (void)currentWriteProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total tag:(NSUInteger *)tag {
-	AFPacketWrite *packet = [self currentWritePacket];
-	
-	if (packet == nil) {
-		if (fraction != NULL) *fraction = NAN;
-		return;
-	}
-	
-	if (tag != NULL) *tag = packet.tag;
-	[packet progress:fraction done:done total:total];
+	[self _packet:[self currentWritePacket] progress:fraction bytesDone:done total:total tag:tag];
 }
 
 #pragma mark Configuration
@@ -159,11 +148,11 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 - (void)close {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(close) object:nil];
 	
-	if ((self.portFlags & _kCloseSoon) != _kCloseSoon) {
+	// Note: if there are pending writes then the control delegate can keep the streams open
+	if (self.currentWritePacket != nil || [writeQueue count] > 0) {
 		BOOL shouldRemainOpen = NO;
-		
 		if ([self.delegate respondsToSelector:@selector(socketShouldRemainOpenPendingWrites:)])
-			[self.delegate socketShouldRemainOpenPendingWrites:self];
+			shouldRemainOpen = [self.delegate socketShouldRemainOpenPendingWrites:self];
 		
 		if (shouldRemainOpen) {
 			self.portFlags = (self.portFlags | (_kForbidStreamReadWrite | _kCloseSoon));
@@ -176,35 +165,12 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	if (readStream != NULL) {
 		CFReadStreamSetClient(readStream, kCFStreamEventNone, NULL, NULL);
 		CFReadStreamClose(readStream);
-		
-		CFRelease(readStream);
-		readStream = NULL;
 	}
 	
 	if (writeStream != NULL) {
 		CFWriteStreamSetClient(writeStream, kCFStreamEventNone, NULL, NULL);
 		CFWriteStreamClose(writeStream);
-		
-		CFRelease(writeStream);
-		writeStream = NULL;
 	}
-	
-	
-	if (_socket != NULL) {
-		CFSocketInvalidate(_socket);
-		
-		CFRelease(_socket);
-		_socket = NULL;
-	}
-	
-	if (_socketRunLoopSource != NULL) {
-		CFRunLoopRemoveSource(_runLoop, _socketRunLoopSource, kCFRunLoopDefaultMode);
-		
-		CFRelease(_socketRunLoopSource);
-		_socketRunLoopSource = NULL;
-	}
-	
-	_runLoop = NULL;
 	
 	BOOL notifyDelegate = ((self.portFlags & _kDidPassConnectMethod) == _kDidPassConnectMethod);
 	
@@ -215,6 +181,8 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	if (notifyDelegate && [self.delegate respondsToSelector:@selector(layerDidClose:)]) {
 		[self.delegate layerDidClose:self];
 	}
+	
+	[super close];
 }
 
 - (BOOL)isClosed {
@@ -331,7 +299,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	if ((self.portFlags & _kForbidStreamReadWrite) == _kForbidStreamReadWrite) return;
 	NSParameterAssert(terminator != nil);
 	
-	AFPacketRead *packet = [[AFPacketRead alloc] initWithTag:tag timeout:duration readAllAvailable:NO terminator:terminator];
+	AFPacketRead *packet = [[AFPacketRead alloc] initWithTag:tag timeout:duration terminator:terminator];
 	[self _enqueueReadPacket:packet];
 	[packet release];
 }
@@ -486,13 +454,14 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	if (packet == nil || readStream != NULL) return;
 	
 	NSError *error = nil;
-	BOOL packetComplete = [packet read:readStream error:&error];
+	BOOL packetComplete = [packet performRead:readStream error:&error];
 	
 #warning stream errors should be non-fatal
 	if (error != nil) [self disconnectWithError:error];
 	
 	if (packetComplete) {
-		[packet.buffer setLength:(packet->bytesDone)];
+#warning for packets with a terminator we need to cache the data after the terminator for future reads
+		//[packet.buffer setLength:(packet->bytesDone)];
 		
 		if ([self.delegate respondsToSelector:@selector(layer:didRead:forTag:)]) {
 			[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
@@ -550,8 +519,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	if (packet == nil || writeStream == NULL) return;
 	
 	NSError *error = nil;
-	BOOL packetComplete = [packet write:writeStream error:&error];
-	
+	BOOL packetComplete = [packet performWrite:writeStream error:&error];
 #warning steam errors should be non-fatal
 	if (error != nil) [self disconnectWithError:error];
 	
@@ -571,14 +539,9 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	
 	[self setCurrentWritePacket:nil];
 	
-	
 	if ((self.portFlags & _kCloseSoon) != _kCloseSoon) return;
 	if (([writeQueue count] != 0) || ([self currentWritePacket] != nil)) return;
-	
 	[self close];
 }
 
 @end
-
-#undef READQUEUE_CAPACITY
-#undef WRITEQUEUE_CAPACITY

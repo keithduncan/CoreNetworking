@@ -17,8 +17,8 @@
 
 /*!
 	@method	
-	@result	Returns true if the packet is complete
+	@result	true if the packet is complete
  */
-- (BOOL)write:(CFWriteStreamRef)writeStream error:(NSError **)errorRef;
+- (BOOL)performWrite:(CFWriteStreamRef)writeStream error:(NSError **)errorRef;
 
 @end

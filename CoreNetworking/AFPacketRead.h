@@ -13,17 +13,18 @@
 	NSMutableData *_buffer;
 	
 	NSData *_terminator;
-	CFIndex _maximumLength;
+	NSUInteger _maximumLength;
 	
 	BOOL _readAllAvailable;
 }
 
-- (id)initWithTag:(NSInteger)tag timeout:(NSTimeInterval)duration readAllAvailable:(BOOL)readAllAvailable terminator:(id)terminator;
+- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration terminator:(id)terminator;
+- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration readAllAvailable:(BOOL)readAllAvailable;
 
 /*!
 	@method	
-	@result	Returns true if the packet is complete
+	@result	true if the packet is complete
  */
-- (BOOL)read:(CFReadStreamRef)stream error:(NSError **)errorRef;
+- (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef;
 
 @end

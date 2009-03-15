@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AFSocket : NSObject {
+@protocol AFNetworkLayer;
+
+@interface AFSocket : NSObject <AFNetworkLayer> {
 	id _delegate;
 	NSUInteger _socketFlags;
 	

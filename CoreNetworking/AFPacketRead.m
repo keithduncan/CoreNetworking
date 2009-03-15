@@ -24,20 +24,26 @@
 	return self;
 }
 
-- (id)initWithTag:(NSInteger)tag timeout:(NSTimeInterval)duration readAllAvailable:(BOOL)readAllAvailable terminator:(id)terminator {
+- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration terminator:(id)terminator {
 	[self initWithTag:tag timeout:duration];
 	
-	_readAllAvailable = readAllAvailable;
-	
 	if ([terminator isKindOfClass:[NSNumber class]]) {
-		_maximumLength = [terminator integerValue];
+		_maximumLength = [terminator unsignedIntegerValue];
+		[_buffer setLength:_maximumLength];
+		
 		_terminator = nil;
 	} else if ([terminator isKindOfClass:[NSData class]]) {
 		_maximumLength = -1;
 		_terminator = [terminator copy];
 	}
 	
-	if (_maximumLength > 0) [_buffer setLength:_maximumLength];
+	return self;
+}
+
+- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration readAllAvailable:(BOOL)readAllAvailable {
+	[self initWithTag:tag timeout:duration];
+	
+	_readAllAvailable = readAllAvailable;
 	
 	return self;
 }
@@ -51,9 +57,9 @@
 
 - (void)progress:(float *)fraction done:(NSUInteger *)bytesDone total:(NSUInteger *)bytesTotal {
 	// It's only possible to know the progress of our read if we're reading to a certain length
-	// If we're reading to data, we of course have no idea when the data will arrive
-	// If we're reading to timeout, then we have no idea when the next chunk of data will arrive.
-	BOOL hasTotal = (!_readAllAvailable && _terminator == nil);
+		// If we're reading to data, we don't know when the data pattern will arrive
+		// If we're reading to timeout, then we have no idea when the next chunk of data will arrive.
+	BOOL hasTotal = (_maximumLength > 0);
 	
 	NSUInteger done = _bytesRead;
 	NSUInteger total = (hasTotal ? [self.buffer length] : 0);
@@ -107,7 +113,7 @@
 	return (_maximumLength > 0) ? MIN(result, (_maximumLength - _bytesRead)) : result;
 }
 
-- (BOOL)read:(CFReadStreamRef)readStream error:(NSError **)error {
+- (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)error {
 	CFIndex currentTotalBytesRead = 0;
 	
 	BOOL packetComplete = NO;
