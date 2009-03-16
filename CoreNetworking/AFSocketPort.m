@@ -64,6 +64,22 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 
 @synthesize currentReadPacket=_currentReadPacket, currentWritePacket=_currentWritePacket;
 
+/*
+	The layout of the _peer union members is important, we can cast the _peer instance variable to CFTypeRef and introspect using CFGetTypeID to determine the member in use
+ */
+
++ (id <AFNetworkLayer>)peerWithNetService:(id <AFNetServiceCommon>)netService {
+	AFSocketPort *socket = [[self alloc] init];
+	
+	return socket;
+}
+
++ (id <AFNetworkLayer>)peerWithSignature:(const AFSocketSignature *)signature {
+	AFSocketPort *socket = [[self alloc] init];
+	
+	return socket;
+}
+
 - (id)init {
 	[super init];
 	
@@ -89,20 +105,48 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	[super dealloc];
 }
 
-/*
-	The layout of the _peer union members is important, we can introspect the first pointer-width using CFGetTypeID to determine the member in use
- */
-
-+ (id <AFNetworkLayer>)peerWithNetService:(id <AFNetServiceCommon>)netService {
-	AFSocketPort *socket = [[self alloc] init];
+- (NSString *)description {
+	NSMutableString *description = [[[super description] mutableCopy] autorelease];
+	[description appendString:@"\n"];
 	
-	return socket;
-}
-
-+ (id <AFNetworkLayer>)peerWithSignature:(const AFSocketSignature *)signature {
-	AFSocketPort *socket = [[self alloc] init];
+	if (_socket != NULL) {
+		[description appendString:@"\tHost: "];	
+#warning complete this
+		[description appendString:@"\n"];
+	}
 	
-	return socket;
+	if (readStream != NULL || writeStream != NULL) {
+		[description appendString:@"\tPeer: "];
+		[description appendFormat:@"%@:%@", [(NSOutputStream *)writeStream propertyForKey:(NSString *)kCFStreamPropertySocketRemoteHostName], [(NSOutputStream *)writeStream propertyForKey:(NSString *)kCFStreamPropertySocketRemotePortNumber], nil];	
+		[description appendString:@"\n"];
+	}
+	
+	[description appendFormat:@"\t%d pending reads, %d pending writes", [readQueue count], [writeQueue count], nil];
+	[description appendString:@"\n"];
+	
+	AFPacketRead *readPacket = [self currentReadPacket];
+	[description appendFormat:@"\tCurrent Read: %@, ", (readPacket != nil ? @"(null)" : [readPacket description])];
+	[description appendFormat:@"\t%@", [readPacket description], nil];
+	[description appendString:@"\n"];
+	
+	AFPacketWrite *writePacket = [self currentWritePacket];
+	[description appendFormat:@"\tCurrent Read: %@, ", (writePacket != nil ? @"(null)" : [writePacket description])];
+	[description appendFormat:@"\t%@", [writePacket description], nil];
+	[description appendString:@"\n"];
+	
+	{
+		static const char *StreamStatusStrings[] = { "not open", "opening", "open", "reading", "writing", "at end", "closed", "has error" };
+		
+		[description appendFormat:@"\tRead Stream: %p %s, ", readStream, (readStream != NULL ? StreamStatusStrings[CFReadStreamGetStatus(readStream)] : ""), nil];
+		
+		[description appendFormat:@"\tWrite Stream: %p %s, ", writeStream, (writeStream != NULL ? StreamStatusStrings[CFWriteStreamGetStatus(writeStream)] : ""), nil];	
+		if ((self.portFlags & _kCloseSoon) == _kCloseSoon) [description appendString: @"will close pending writes, "];
+	}
+	[description appendString:@"\n"];
+	
+	[description appendFormat:@"\tOpen: %@, Closed: %@", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO"), nil];
+	
+	return description;
 }
 
 - (BOOL)canSafelySetDelegate {
@@ -234,66 +278,6 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	return [NSError errorWithDomain:domain code:err.error userInfo:info];
 }
 
-#pragma mark Diagnostics
-
-- (BOOL)_streamsConnected {
-	if (readStream != NULL) {
-		CFStreamStatus status = CFReadStreamGetStatus(readStream);
-		if (!(status == kCFStreamStatusOpen || status == kCFStreamStatusReading || status == kCFStreamStatusError)) return NO;
-	} else return NO;
-
-	if (writeStream != NULL) {
-		CFStreamStatus status = CFWriteStreamGetStatus(writeStream);
-		if (!(status == kCFStreamStatusOpen || status == kCFStreamStatusWriting || status == kCFStreamStatusError)) return NO;
-	} else return NO;
-
-	return YES;
-}
-
-- (NSString *)description {
-	NSMutableString *description = [[[super description] mutableCopy] autorelease];
-	[description appendString:@"\n"];
-	
-	if (_socket != NULL) {
-		[description appendString:@"\tHost: "];	
-#warning complete this
-		[description appendString:@"\n"];
-	}
-	
-	if (readStream != NULL || writeStream != NULL) {
-		[description appendString:@"\tPeer: "];
-		[description appendFormat:@"%@:%@", [(NSOutputStream *)writeStream propertyForKey:(NSString *)kCFStreamPropertySocketRemoteHostName], [(NSOutputStream *)writeStream propertyForKey:(NSString *)kCFStreamPropertySocketRemotePortNumber], nil];	
-		[description appendString:@"\n"];
-	}
-	
-	[description appendFormat:@"\t%d pending reads, %d pending writes", [readQueue count], [writeQueue count], nil];
-	[description appendString:@"\n"];
-
-	AFPacketRead *readPacket = [self currentReadPacket];
-	[description appendFormat:@"\tCurrent Read: %@, ", (readPacket != nil ? @"(null)" : [readPacket description])];
-	[description appendFormat:@"\t%@", [readPacket description], nil];
-	[description appendString:@"\n"];
-	
-	AFPacketWrite *writePacket = [self currentWritePacket];
-	[description appendFormat:@"\tCurrent Read: %@, ", (writePacket != nil ? @"(null)" : [writePacket description])];
-	[description appendFormat:@"\t%@", [writePacket description], nil];
-	[description appendString:@"\n"];
-	
-	{
-		static const char *StreamStatusStrings[] = { "not open", "opening", "open", "reading", "writing", "at end", "closed", "has error" };
-		
-		[description appendFormat:@"\tRead Stream: %p %s, ", readStream, (readStream != NULL ? StreamStatusStrings[CFReadStreamGetStatus(readStream)] : ""), nil];
-		
-		[description appendFormat:@"\tWrite Stream: %p %s, ", writeStream, (writeStream != NULL ? StreamStatusStrings[CFWriteStreamGetStatus(writeStream)] : ""), nil];	
-		if ((self.portFlags & _kCloseSoon) == _kCloseSoon) [description appendString: @"will close pending writes, "];
-	}
-	[description appendString:@"\n"];
-	
-	[description appendFormat:@"\tOpen: %@, Closed: %@", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO"), nil];
-	
-	return description;
-}
-
 #pragma mark Reading
 
 - (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
@@ -304,19 +288,6 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	[self _enqueueReadPacket:packet];
 	[packet release];
 }
-
-#pragma mark Writing
-
-- (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration; {
-	if ((self.portFlags & _kForbidStreamReadWrite) == _kForbidStreamReadWrite) return;
-	if (data == nil || [data length] == 0) return;
-	
-	AFPacketWrite *packet = [[AFPacketWrite alloc] initWithTag:tag timeout:duration data:data];
-	[self _enqueueWritePacket:packet];
-	[packet release];
-}
-
-#pragma mark Callbacks
 
 static void AFSocketReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -350,6 +321,17 @@ static void AFSocketReadStreamCallback(CFReadStreamRef stream, CFStreamEventType
 	}
 	
 	[pool drain];
+}
+
+#pragma mark Writing
+
+- (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration; {
+	if ((self.portFlags & _kForbidStreamReadWrite) == _kForbidStreamReadWrite) return;
+	if (data == nil || [data length] == 0) return;
+	
+	AFPacketWrite *packet = [[AFPacketWrite alloc] initWithTag:tag timeout:duration data:data];
+	[self _enqueueWritePacket:packet];
+	[packet release];
 }
 
 static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *pInfo) {
@@ -403,10 +385,10 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	[readQueue removeAllObjects];
 }
 
-- (void)packetDidTimeout:(AFPacket *)packet {
+- (void)_packetTimeoutNotification:(NSNotification *)notification {
 #warning timeout should be non-fatal
 	
-	if ([packet isEqual:[self currentReadPacket]]) {
+	if ([[notification object] isEqual:[self currentReadPacket]]) {
 		[self _endCurrentReadPacket];
 		
 		NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -414,7 +396,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 							  nil];
 		
 		[self disconnectWithError:[NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketPortReadTimeoutError userInfo:info]];
-	} else if ([packet isEqual:[self currentWritePacket]]) {
+	} else if ([[notification object] isEqual:[self currentWritePacket]]) {
 		[self _endCurrentWritePacket];
 		
 		NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -434,17 +416,18 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 }
 
 - (void)_dequeueReadPacket {
-	if ([self currentReadPacket] != nil) return;
+	AFPacketRead *packet = [self currentReadPacket];
+	if (packet != nil) return;
 	
 	if ([readQueue count] > 0) {
 		[self setCurrentReadPacket:[readQueue objectAtIndex:0]];
 		[readQueue removeObjectAtIndex:0];
 	}
 	
-	AFPacketRead *packet = [self currentReadPacket];
+	packet = [self currentReadPacket];
 	if (packet == nil) return;
 	
-	[packet setDelegate:(id)self];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetTimeoutNotification:) name:AFPacketTimeoutNotificationName object:packet];
 	[packet startTimeout];
 	
 	[self _readBytes];
@@ -486,6 +469,8 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	AFPacketRead *packet = [self currentReadPacket];
 	NSAssert(packet != nil, @"cannot complete a nil read packet");
 	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketTimeoutNotificationName object:packet];
+	
 	[self setCurrentReadPacket:nil];
 }
 
@@ -498,18 +483,18 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 }
 
 - (void)_dequeueWritePacket {
-	if ([self currentWritePacket] != nil) return;
+	AFPacketWrite *packet = [self currentWritePacket];
+	if (packet != nil) return;
 	
 	if ([writeQueue count] > 0) {
 		[self setCurrentWritePacket:[writeQueue objectAtIndex:0]];
 		[writeQueue removeObjectAtIndex:0];
 	}
 	
-	
-	AFPacketWrite *packet = [self currentWritePacket];
+	packet = [self currentWritePacket];
 	if (packet == nil) return;
 	
-	[packet setDelegate:(id)self];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetTimeoutNotification:) name:AFPacketTimeoutNotificationName object:packet];
 	[packet startTimeout];
 	
 	[self _sendBytes];
@@ -537,6 +522,8 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 - (void)_endCurrentWritePacket {
 	AFPacketWrite *packet = [self currentWritePacket];
 	NSAssert(packet != nil, @"cannot complete a nil write packet");
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketTimeoutNotificationName object:packet];
 	
 	[self setCurrentWritePacket:nil];
 	

@@ -13,7 +13,6 @@
 @implementation AFPacketWrite
 
 @synthesize buffer=_buffer;
-@synthesize delegate=_delegate;
 
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration data:(NSData *)buffer {
 	[self initWithTag:tag timeout:duration];

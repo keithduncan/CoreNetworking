@@ -8,12 +8,13 @@
 
 #import "AFPacket.h"
 
+NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification";
+
 @implementation AFPacket
 
 @dynamic buffer;
 
 @synthesize tag=_tag;
-@synthesize delegate=_delegate;
 
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration {
 	[self init];
@@ -32,13 +33,13 @@
 
 - (NSString *)description {
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
+	[description appendString:@" "];
 	
 	float fraction = 0.0;
-	NSUInteger done = 0.0, total = 0.0;
-	
+	NSUInteger done = 0, total = 0;
 	[self progress:&fraction done:&done total:&total];
 	
-	[description appendFormat:@"Currently progress %ld bytes (%ld total) %d%% done", done, total, fraction, nil];
+	[description appendFormat:@"current progress %ld bytes of %ld total. %d%% done.", done, total, fraction, nil];
 	
 	return description;	
 }
@@ -53,7 +54,7 @@
 }
 
 - (void)_timeout:(NSTimer *)sender {
-	[self.delegate packetDidTimeout:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketTimeoutNotificationName object:self userInfo:nil];
 }
 
 - (void)startTimeout {

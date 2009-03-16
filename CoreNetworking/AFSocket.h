@@ -12,7 +12,9 @@
 
 /*!
 	@class
-	@abstract	An AFSocket is designed to be a hosting socket, it will spawn more sockets upon revieving inbound connections
+	@abstract	An AFSocket is designed to be a hosting socket
+	@discussion	The purpose of this class is to spawn more sockets upon revieving inbound connections
+				If you instantiate a subclass it will spawn instances of your subclass, convenient!
  */
 @interface AFSocket : NSObject <AFNetworkLayer> {
 	id _delegate;

@@ -8,16 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol AFPacketDelegate;
+
 enum {
 	AFPacketNoError			= 0,
 	AFPacketMaxedOutError	= 1,
 };
+typedef NSInteger AFPacketError;
 
-@protocol AFPacketDelegate;
+/*!
+	@constant
+	@abstract	This is posted when a timeout occurs, the object is the packet
+ */
+extern NSString *const AFPacketTimeoutNotificationName;
 
 @interface AFPacket : NSObject {
 	NSUInteger _tag;
-	id <AFPacketDelegate> _delegate;
 	
 	NSTimer *timeoutTimer;
 	NSTimeInterval _duration;
@@ -35,18 +41,12 @@ enum {
 /*!
 	@method
 	@abstract	This is an override point
-	@discussion	Appropriate values are [0.0, 1.0], this method returns 0.0 by default
+	@result		Vaules in the range [0.0, 1.0], this method returns 0.0 by default
 	@param		|fraction| is required, calling with a NULL argument will raise an exception
  */
 - (void)progress:(float *)fraction done:(NSUInteger *)bytesDone total:(NSUInteger *)bytesTotal;
 
-@property (assign) id <AFPacketDelegate> delegate;
-
 - (void)startTimeout;
 - (void)cancelTimeout;
 
-@end
-
-@protocol AFPacketDelegate <NSObject>
-- (void)packetDidTimeout:(AFPacket *)packet;
 @end
