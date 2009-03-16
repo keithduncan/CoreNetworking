@@ -8,6 +8,7 @@
 
 #import "AFNetworkFunctions.h"
 
+#import <sys/socket.h>
 #import <arpa/inet.h>
 
 bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b) {
@@ -43,18 +44,15 @@ bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr
 	return false;
 }
 
-char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen) {
-    switch(addr->sa_family) {
+const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen) {
+    switch (addr->sa_family) {
         case AF_INET: 
-            inet_ntop(AF_INET, &(((struct sockaddr_in *)addr)->sin_addr), dst, maxlen); 
-            break; 
+            return inet_ntop(AF_INET, &(((struct sockaddr_in *)addr)->sin_addr), dst, maxlen); 
         case AF_INET6: 
-            inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)addr)->sin6_addr), dst, maxlen); 
-            break; 
+			return inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)addr)->sin6_addr), dst, maxlen); 
         default: 
-            strncpy(dst, "Unknown AF", maxlen);
-            return NULL; 
+            return strncpy(dst, "Unknown AF", maxlen);
     } 
 	
-    return dst;
+    return NULL;
 }

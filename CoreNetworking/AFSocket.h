@@ -28,9 +28,8 @@
 	@method
 	@abstract	Do NOT use this method to create a host AFSocket, use the instantiator below
 	@discussion	This is called to spawn a new peer socket when AFSocket receives an incoming connection you can override it
-				That's why the method name is prefixed with 'port' to reflect the likelyhood that it will be creating an AFSocketPort or sibling thereof
  */
-+ (id)portWithNativeSocket:(CFSocketNativeHandle)socket;
++ (id)newSocketWithNativeSocket:(CFSocketNativeHandle)socket;
 
 /*!
 	@method

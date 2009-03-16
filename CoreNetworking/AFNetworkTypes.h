@@ -12,6 +12,7 @@ struct AFSocketType {
 	SInt32 socketType;
 	SInt32 protocol;
 };
+typedef struct AFSocketType AFSocketType;
 
-extern struct AFSocketType AFSocketTypeTCP;
-extern struct AFSocketType AFSocketTypeUDP;
+extern AFSocketType AFSocketTypeTCP;
+extern AFSocketType AFSocketTypeUDP;

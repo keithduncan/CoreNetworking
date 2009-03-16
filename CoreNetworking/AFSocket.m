@@ -19,7 +19,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	switch (type) {
 		case kCFSocketConnectCallBack:
 		{
-			// The data argument is either NULL or a pointer to an SInt32 error code, if the connect failed.			
+			// The data argument is either NULL or a pointer to an SInt32 error code, if the connect failed.
 			[self doSocketOpen:socket withCFSocketError:(pData != NULL ? kCFSocketError : kCFSocketSuccess)];
 			break;
 		}
@@ -38,8 +38,9 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	[pool drain];
 }
 
-+ (id)hostWithSignature:(const CFSocketSignature *)signature {
+- (id)initWithSignature:(const CFSocketSignature *)signature delegate:(id)delegate {
 	AFSocket *socket = [[self alloc] init];
+	socket->_delegate = delegate;
 	
 	CFSocketContext context;
 	memset(&context, 0, sizeof(CFSocketContext));
@@ -53,7 +54,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	}
 	
 	{
-#warning shift this to the -open method?
 		socket->_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket->_socket, 0);
 		
 		CFRunLoopRef *loop = &socket->_runLoop;
