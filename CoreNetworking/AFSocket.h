@@ -10,37 +10,34 @@
 
 @protocol AFNetworkLayer;
 
+/*!
+	@class
+	@abstract	An AFSocket is designed to be a hosting socket, it will spawn more sockets upon revieving inbound connections
+ */
 @interface AFSocket : NSObject <AFNetworkLayer> {
 	id _delegate;
 	NSUInteger _socketFlags;
 	
 	__strong CFRunLoopRef _runLoop;
 	
-#if 1
-	/*
-	 These are only needed for a host socket
-	 */
 	__strong CFSocketRef _socket;
 	__strong CFRunLoopSourceRef _socketRunLoopSource;
-#endif
 }
 
-/*
- * Host Initialisers
- *	These return nil if the socket can't be created
+/*!
+	@method
+	@abstract	Do NOT use this method to create a host AFSocket, use the instantiator below
+	@discussion	This is called to spawn a new peer socket when AFSocket receives an incoming connection you can override it
+				That's why the method name is prefixed with 'port' to reflect the likelyhood that it will be creating an AFSocketPort or sibling thereof
  */
++ (id)portWithNativeSocket:(CFSocketNativeHandle)socket;
 
 /*!
 	@method
 	@abstract	A socket is created with the given characteristics and the address is set
+	@discussion	If the socket cannot be created they return nil
+	@param		Providing the |delegate| in the instantiator is akin to creating a CFSocket with the callback function
  */
-+ (id)hostWithSignature:(const CFSocketSignature *)signature;
-
-/*!
-	@method
-	@abstract	This should not be called to create an AFSocket, use one of the class methods above
-	@discussion	This is called to spawn a new socket when AFSocket receives an incoming connection
- */
-- (id)initWithNativeSocket:(CFSocketNativeHandle)socket;
+- (id)initWithSignature:(const CFSocketSignature *)signature delegate:(id)delegate;
 
 @end

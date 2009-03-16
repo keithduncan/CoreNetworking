@@ -68,10 +68,14 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 }
 
 - (void)dealloc {
-	CFSocketInvalidate(_socket);
-	CFRelease(_socket);
+	if (_socket != NULL) {
+		CFSocketInvalidate(_socket);
+		CFRelease(_socket);
+	}
 	
-	CFRelease(_socketRunLoopSource);
+	if (_socketRunLoopSource != NULL) {
+		CFRelease(_socketRunLoopSource);
+	}
 	
 	[super dealloc];
 }

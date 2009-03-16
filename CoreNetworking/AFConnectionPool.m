@@ -30,18 +30,18 @@
 	return [[connections copy] autorelease];
 }
 
-- (void)addConnectionsObject:(AFConnection *)connection {
+- (void)addConnectionsObject:(id)connection {
 	[connections addObject:connection];
 }
 
-- (void)removeConnectionsObject:(AFConnection *)connection {
+- (void)removeConnectionsObject:(id)connection {
 	[connections removeObject:connection];
 }
 
 - (id)connectionWithValue:(id)value forKey:(NSString *)key {
-	AFConnection *connection = nil;
+	id <AFConnectionLayer> connection = nil;
 	
-	for (AFConnection *currentConnection in self.connections) {
+	for (id <AFConnectionLayer> currentConnection in self.connections) {
 		id connectionValue = [currentConnection valueForKey:key];
 		if (![connectionValue isEqual:value]) continue;
 		

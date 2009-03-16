@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AFNetworkFunctions.h"
+#import "AFNetworkTypes.h"
 #import "AFNetworkProtocols.h"
+#import "AFNetworkFunctions.h"
 #import "AFNetworkConstants.h"
 
 #import "AFNetService.h"

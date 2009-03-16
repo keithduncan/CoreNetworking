@@ -30,22 +30,16 @@ typedef NSUInteger AFSocketPortError;
  */
 struct AFSocketSignature {
 /*
- *	These define _how_ to communicate (and allow for the return of a specific handler subclass from the creation methods)
- */
-	struct AFSocketType {
-		SInt32 socketType;
-		SInt32 protocol;
-	} type;
-/*
  *	These define _where_ to communicate
  */
 	__strong CFHostRef host;
 	SInt32 port;
+/*
+ *	These define _how_ to communicate (and allow for the return of a specific handler subclass from the creation methods)
+ */
+	struct AFSocketType type;
 };
 typedef struct AFSocketSignature AFSocketSignature;
-
-extern struct AFSocketType AFSocketTypeTCP;
-extern struct AFSocketType AFSocketTypeUDP;
 
 /*!
     @class
@@ -55,10 +49,6 @@ extern struct AFSocketType AFSocketTypeUDP;
 @interface AFSocketPort : AFSocket <AFConnectionLayer> {
 	NSUInteger _portFlags;
 	
-#if 1
-	/*
-	 These are only needed for a connect socket
-	 */
 	union {
 		struct {
 			__strong CFNetServiceRef netService;
@@ -74,7 +64,6 @@ extern struct AFSocketType AFSocketTypeUDP;
 	__strong CFWriteStreamRef writeStream;
 	NSMutableArray *writeQueue;
 	id _currentWritePacket;
-#endif
 }
 
 /*
@@ -128,6 +117,6 @@ extern struct AFSocketType AFSocketTypeUDP;
 
  @optional
 
-- (void)socket:(AFSocketPort *)socket didReadPartialDataOfLength:(CFIndex)partialLength tag:(NSInteger)tag;
+- (void)socket:(AFSocketPort *)socket didReadPartialDataOfLength:(NSUInteger)partialLength tag:(NSInteger)tag;
 
 @end

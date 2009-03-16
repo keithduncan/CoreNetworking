@@ -16,8 +16,8 @@
 
 @property (readonly) NSSet *connections;
 
-- (void)addConnectionsObject:(AFConnection *)proxy;
-- (void)removeConnectionsObject:(AFConnection *)proxy;
+- (void)addConnectionsObject:(id)proxy;
+- (void)removeConnectionsObject:(id)proxy;
 
 - (id)connectionWithValue:(id)value forKey:(NSString *)key;
 

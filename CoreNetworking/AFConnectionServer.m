@@ -24,7 +24,9 @@
 @synthesize delegate=_delegate;
 @synthesize clientApplications;
 
-+ (id)_serverWithPort:(SInt32)port addresses:(CFArrayRef)addrs {
++ (id)_serverWithPort:(SInt32)port socketType:(struct AFSocketType)type addresses:(CFArrayRef)addrs {
+#warning this methods should also configure the server to listen for IP-layer changes
+	
 	NSMutableSet *sockets = [NSMutableSet setWithCapacity:CFArrayGetCount(addrs)];
 	
 	for (NSData *currentAddrData in (NSArray *)addrs) {
@@ -32,21 +34,21 @@
 		
 		CFSocketSignature currentSocketSignature = {
 			.protocolFamily = currentAddr->sa_family,
-			.socketType = SOCK_STREAM,
-			.protocol = IPPROTO_TCP,
-			.address = currentAddrData,
+			.socketType = type.socketType,
+			.protocol = type.protocol,
+			.address = (CFDataRef)currentAddrData,
 		};
 		
-		AFSocketPort *hostSocket = [AFSocketPort hostWithSignature:&currentSocketSignature];
-		[sockets addObject:hostSocket];
+		AFSocket *socket = [AFSocketPort hostWithSignature:&currentSocketSignature];
+		if (socket == nil) continue;
+		
+		[sockets addObject:socket];
 	}
 	
 	return [[[self alloc] initWithHostSockets:sockets] autorelease];
 }
 
-#warning these methods should also configure the server to listen for IP-layer changes
-
-+ (id)networkServer:(SInt32)port {
++ (id)networkServer:(SInt32)port socketType:(struct AFSocketType)type {
 	CFMutableArrayRef addresses = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
 	
 	struct ifaddrs *addrs = NULL;
@@ -57,21 +59,20 @@
 	for (; currentAddr != NULL; currentAddr = currentAddr->ifa_next) {
 		if (currentAddr->ifa_addr->sa_family == AF_LINK) continue;
 		
-		CFDataRef addrData = CFDataCreate(kCFAllocatorDefault, currentAddr, currentAddr->ifa_addr->sa_len);
+		CFDataRef addrData = CFDataCreate(kCFAllocatorDefault, (void *)currentAddr->ifa_addr, currentAddr->ifa_addr->sa_len);
 		CFArrayInsertValueAtIndex(addresses, 0, addrData);
 		CFRelease(addrData);
 	}
 	
-	freeifaddrs(addrs);
-	
-	AFConnectionServer *server = [self _serverWithPort:port addresses:addresses];
+	AFConnectionServer *server = [self _serverWithPort:port socketType:type addresses:addresses];
 	
 	CFRelease(addresses);
+	freeifaddrs(addrs);
 	
 	return server;
 }
 
-+ (id)localhostServer:(SInt32)port {
++ (id)localhostServer:(SInt32)port socketType:(struct AFSocketType)type {
 	CFHostRef localhost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost");
 	
 	CFStreamError error;
@@ -80,7 +81,7 @@
 	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
 	if (!resolved) return nil;
 	
-	return [self _serverWithPort:port addresses:CFHostGetAddressing(localhost, &resolved)];
+	return [self _serverWithPort:port socketType:type addresses:CFHostGetAddressing(localhost, NULL)];
 }
 
 + (Class)connectionClass {

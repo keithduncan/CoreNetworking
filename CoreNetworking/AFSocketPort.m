@@ -20,9 +20,6 @@
 #import "AFPacketRead.h"
 #import "AFPacketWrite.h"
 
-struct AFSocketType AFSocketTypeTCP = {.socketType = SOCK_STREAM, .protocol = IPPROTO_TCP};
-struct AFSocketType AFSocketTypeUDP = {.socketType = SOCK_DGRAM, .protocol = IPPROTO_UDP};
-
 enum {
 	_kEnablePreBuffering		= 1UL << 0,   // pre-buffering is enabled.
 	_kDidCallConnectDelegate	= 1UL << 1,   // connect delegate has been called.
@@ -77,8 +74,8 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 }
 
 - (void)dealloc {
-	CFRelease(readStream);
-	CFRelease(writeStream);
+	if (readStream != NULL) CFRelease(readStream);
+	if (writeStream != NULL) CFRelease(writeStream);
 	
 	[_currentReadPacket release];
 	[readQueue release];
@@ -91,6 +88,10 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	
 	[super dealloc];
 }
+
+/*
+	The layout of the _peer union members is important, we can introspect the first pointer-width using CFGetTypeID to determine the member in use
+ */
 
 + (id <AFNetworkLayer>)peerWithNetService:(id <AFNetServiceCommon>)netService {
 	AFSocketPort *socket = [[self alloc] init];
@@ -132,7 +133,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	Boolean value = true;
 	value &= CFReadStreamSetProperty(readStream, kCFStreamPropertySSLSettings, (CFDictionaryRef)options);
 	value &= CFWriteStreamSetProperty(writeStream, kCFStreamPropertySSLSettings, (CFDictionaryRef)options);
-	return (value == true ? YES : NO);
+	return (BOOL)value;
 }
 
 #pragma mark Connection

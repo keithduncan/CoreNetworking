@@ -26,13 +26,13 @@
 	@method
 	@abstract	Create a server with ports open on all IP addresses (it equivalent of 0.0.0.0)
  */
-+ (id)networkServer:(SInt32)port;
++ (id)networkServer:(SInt32)port socketType:(struct AFSocketType)type;
 
 /*!
 	@method
 	@abstract	Create a server with ports open on all loopback IP addresses (the equivalent of 127.0.0.1)
  */
-+ (id)localhostServer:(SInt32)port;
++ (id)localhostServer:(SInt32)port socketType:(struct AFSocketType)type;
 
 /*!
 	@method

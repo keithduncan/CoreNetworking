@@ -30,8 +30,7 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 	_service = service;
 	
 	CFSocketContext context;
-	memset(&context, 0, sizeof(CFSocketRef));
-	
+	memset(&context, 0, sizeof(CFSocketContext));
 	context.info = self;
 	
 	_socket = CFSocketCreateWithNative(kCFAllocatorDefault, DNSServiceRefSockFD(_service), kCFSocketReadCallBack, AFServiceDiscoveryProcessResult, &context);
