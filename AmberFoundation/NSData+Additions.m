@@ -532,16 +532,13 @@ typedef NSUInteger AFAction;
 }
 
 - (NSString *)hexString {
-	NSMutableString *hexString = [[NSMutableString alloc] initWithCapacity:[self length]];
+	NSMutableString *hexString = [NSMutableString stringWithCapacity:[self length]];
 	
 	const void *bytes = [self bytes];
 	for (NSUInteger index = 0; index < [self length]; index++)
-		[hexString appendFormat:@"%02x", *(uint8_t **)(bytes+index), nil];
+		[hexString appendFormat:@"%02x", *(uint8_t *)(bytes+index), nil];
 	
-	NSString *value = [[hexString copy] autorelease];
-	[hexString release];
-	
-	return value;
+	return hexString;
 }
 
 @end
