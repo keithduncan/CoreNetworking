@@ -16,7 +16,7 @@
 @end
 
 @interface NSString (AFKeyValueCoding)
-+ (NSString *)keyPathForComponents:(NSString *)component, ... NS_REQUIRES_NIL_TERMINATION;
++ (NSString *)keyPathWithComponents:(NSString *)component, ... NS_REQUIRES_NIL_TERMINATION;
 
 - (NSArray *)keyPathComponents;
 - (NSString *)lastKeyPathComponent;

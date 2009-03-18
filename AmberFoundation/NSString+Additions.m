@@ -31,7 +31,7 @@
 
 static NSString *const AFKeyPathComponentSeparator = @".";
 
-+ (NSString *)keyPathForComponents:(NSString *)component, ... {
++ (NSString *)keyPathWithComponents:(NSString *)component, ... {
 	NSMutableArray *components = [NSMutableArray array];
 	
 	if (component != nil) {
