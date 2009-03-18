@@ -26,13 +26,13 @@
 	@method
 	@abstract	Create a server with ports open on all IP addresses (it equivalent of 0.0.0.0)
  */
-+ (id)networkServer:(SInt32)port socketType:(struct AFSocketType)type;
++ (id)networkServerWithPort:(SInt32 *)port type:(struct AFSocketType)type;
 
 /*!
 	@method
 	@abstract	Create a server with ports open on all loopback IP addresses (the equivalent of 127.0.0.1)
  */
-+ (id)localhostServer:(SInt32)port socketType:(struct AFSocketType)type;
++ (id)localhostServerWithPort:(SInt32 *)port type:(struct AFSocketType)type;
 
 /*!
 	@method
@@ -42,26 +42,13 @@
 + (Class)connectionClass;
 
 /*!
-    @method     
-    @abstract   the server sets the socket delegate to self, expects sockets to implement <AFConnectionLayer>
-*/
-- (id)initWithHostSockets:(NSSet *)sockets;
-
-/*!
-	@method
-	@abstract	open the host sockets
-	@discussion	if the opening of one fails, negotiation will begin with the delegate for the correct course of action
- */
-//- (void)open;
-
-/*!
 	@method
 	@abstract	The delegate is optional in this class, most servers should function without one
  */
 @property (assign) id <AFConnectionServerDelegate> delegate;
 
-- (void)addHostSocketsObject:(id <AFConnectionLayer>)layer;
-- (void)removeHostSocketsObject:(id <AFConnectionLayer>)layer;
+- (void)addHostSocketsObject:(id <AFNetworkLayer>)layer;
+- (void)removeHostSocketsObject:(id <AFNetworkLayer>)layer;
 
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)socket; // Note: override point, if you need to customize your application layer before it is added to the connection pool, call super for basic setup first
 

@@ -104,16 +104,9 @@ typedef struct AFSocketSignature AFSocketSignature;
  */
 - (BOOL)socketShouldRemainOpenPendingWrites:(AFSocketPort *)socket;
 
-/*!
-	@method
-	@abstract	Asynchronous callbacks can be scheduled in another run loop, defaults to CFRunLoopMain() if unimplemented
-	@discussion	This is done in a delegate callback to remove the burden of scheduling newly spawned accept() sockets
- */
-- (CFRunLoopRef)socketShouldScheduleWithRunLoop:(AFSocketPort *)socket;
-
 @end
 
-@protocol AFSocketPortDataDelegate <AFConnectionLayerDataDelegate>
+@protocol AFSocketPortDataDelegate <AFNetworkLayerDataDelegate>
 
  @optional
 

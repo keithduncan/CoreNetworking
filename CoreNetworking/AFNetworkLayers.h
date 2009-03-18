@@ -6,7 +6,12 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "CoreNetworking/CoreNetworking.h"
+#import <Foundation/Foundation.h>
+
+/*
+ *	Network Layers
+ *		Transport + Internetwork
+ */
 
 @protocol AFNetworkLayerDataDelegate;
 @protocol AFNetworkLayerControlDelegate;
@@ -51,17 +56,23 @@
 - (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
 @end
 
+@protocol AFNetworkLayerHostDelegate
+- (BOOL)layer:(id <AFNetworkLayer>)layer willAcceptConnection:(id <AFNetworkLayer>)newLayer;
+- (void)layer:(id <AFNetworkLayer>)layer didAcceptConnection:(id <AFNetworkLayer>)newLayer;
+@end
+
+/*
+ *	Connection Layers
+ */
+
 @protocol AFConnectionLayerControlDelegate;
-@protocol AFConnectionLayerDataDelegate;
-@protocol AFConnectionLayerHostDelegate;
 
 /*!
 	@protocol
 	@abstract    An AFConnectionLayer should maintain a stateful connection between endpoints
  */
 @protocol AFConnectionLayer <AFNetworkLayer>
-@property (assign) id <AFConnectionLayerControlDelegate, AFConnectionLayerDataDelegate> delegate;
-@property (assign) id <AFConnectionLayerHostDelegate> hostDelegate;
+@property (assign) id <AFConnectionLayerControlDelegate> delegate;
 @end
 
 @protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>
@@ -70,10 +81,8 @@
 - (void)layerWillDisconnect:(id <AFConnectionLayer>)layer withError:(NSError *)error;
 @end
 
-@protocol AFConnectionLayerDataDelegate <AFNetworkLayerDataDelegate>
-@end
+/*
+ *	Connectionless Layers
+ */
 
-@protocol AFConnectionLayerHostDelegate
-- (BOOL)layer:(id <AFConnectionLayer>)layer willAcceptConnection:(id <AFConnectionLayer>)newLayer;
-- (void)layer:(id <AFConnectionLayer>)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer;
-@end
+// Note: I need to use UDP first, then figure out what the API should be

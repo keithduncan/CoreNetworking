@@ -12,5 +12,7 @@
 
 #import "CoreNetworking/CoreNetworking.h"
 
+struct sockaddr;
+
 bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b);
 const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen);

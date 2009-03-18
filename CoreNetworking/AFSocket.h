@@ -8,16 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol AFNetworkLayer;
+#import "CoreNetworking/AFNetworkLayers.h"
+
+@protocol AFSocketControlDelegate;
 
 /*!
 	@class
 	@abstract	An AFSocket is designed to be a hosting socket
 	@discussion	The purpose of this class is to spawn more sockets upon revieving inbound connections
-				If you instantiate a subclass it will spawn instances of your subclass, convenient!
+				If you instantiate a subclass it will spawn instances of your subclass, pretty convenient!
  */
 @interface AFSocket : NSObject <AFNetworkLayer> {
-	id _delegate;
+	id <AFSocketControlDelegate> _delegate;
 	NSUInteger _socketFlags;
 	
 	__strong CFRunLoopRef _runLoop;
@@ -28,8 +30,9 @@
 
 /*!
 	@method
-	@abstract	Do NOT use this method to create a host AFSocket, use the instantiator below
+	@abstract	Do NOT use this method to create a _host_ AFSocket, use the instantiator below
 	@discussion	This is called to spawn a new peer socket when AFSocket receives an incoming connection you can override it
+				For clarification, the return value SHOULD be autoreleased
  */
 + (id)newSocketWithNativeSocket:(CFSocketNativeHandle)socket;
 
@@ -40,5 +43,29 @@
 	@param		Providing the |delegate| in the instantiator is akin to creating a CFSocket with the callback function
  */
 - (id)initWithSignature:(const CFSocketSignature *)signature delegate:(id)delegate;
+
+/*!
+	@property
+ */
+@property (assign) id <AFSocketControlDelegate> delegate;
+
+/*!
+	@method
+	@abstract	This may be used to extract the address and port in use
+ */
+- (CFSocketRef)lowerLayer;
+
+@end
+
+@protocol AFSocketControlDelegate
+
+ @optional
+
+/*!
+	@method
+	@abstract	Asynchronous callbacks can be scheduled in another run loop, defaults to CFRunLoopMain() if unimplemented
+	@discussion	This is done in a delegate callback to remove the burden of scheduling newly spawned accept() sockets
+ */
+- (CFRunLoopRef)socketShouldScheduleWithRunLoop:(AFSocket *)socket;
 
 @end

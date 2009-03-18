@@ -60,8 +60,6 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 @synthesize delegate=_delegate;
 @synthesize portFlags=_portFlags;
 
-@synthesize hostDelegate=_delegate;
-
 @synthesize currentReadPacket=_currentReadPacket, currentWritePacket=_currentWritePacket;
 
 /*
@@ -439,7 +437,6 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	
 	NSError *error = nil;
 	BOOL packetComplete = [packet performRead:readStream error:&error];
-	
 #warning stream errors should be non-fatal
 	if (error != nil) [self disconnectWithError:error];
 	
@@ -529,6 +526,7 @@ static void AFSocketWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventTy
 	
 	if ((self.portFlags & _kCloseSoon) != _kCloseSoon) return;
 	if (([writeQueue count] != 0) || ([self currentWritePacket] != nil)) return;
+	
 	[self close];
 }
 

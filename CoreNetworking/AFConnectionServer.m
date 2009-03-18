@@ -24,13 +24,16 @@
 @synthesize delegate=_delegate;
 @synthesize clientApplications;
 
-+ (id)_serverWithPort:(SInt32)port socketType:(struct AFSocketType)type addresses:(CFArrayRef)addrs {
++ (id)_serverWithPort:(SInt32 *)port socketType:(struct AFSocketType)type addresses:(CFArrayRef)addrs {
 #warning this methods should also configure the server to listen for IP-layer changes
-	
-	NSMutableSet *sockets = [NSMutableSet setWithCapacity:CFArrayGetCount(addrs)];
+	AFConnectionServer *server = [[[self alloc] init] autorelease];
 	
 	for (NSData *currentAddrData in (NSArray *)addrs) {
-		const struct sockaddr *currentAddr = [currentAddrData bytes];
+		struct sockaddr *currentAddr = alloca([currentAddrData length]);
+		[currentAddrData getBytes:currentAddr length:[currentAddrData length]];
+		
+		((struct sockaddr_in *)currentAddr)->sin_port = *port;
+#warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 		
 		CFSocketSignature currentSocketSignature = {
 			.protocolFamily = currentAddr->sa_family,
@@ -39,16 +42,25 @@
 			.address = (CFDataRef)currentAddrData,
 		};
 		
-		AFSocket *socket = [AFSocketPort hostWithSignature:&currentSocketSignature];
+		AFSocket *socket = [[AFSocketPort alloc] initWithSignature:&currentSocketSignature delegate:server];
 		if (socket == nil) continue;
 		
-		[sockets addObject:socket];
+		if (*port == 0) {
+			// Note: extract the *actual* port used and use that for future allocations
+			CFDataRef actualAddrData = CFSocketCopyAddress([socket lowerLayer]);
+			*port = ((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port;
+#warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+			CFRelease(actualAddrData);
+		}
+		
+		[server addHostSocketsObject:socket];
+		[socket release];
 	}
 	
-	return [[[self alloc] initWithHostSockets:sockets] autorelease];
+	return server;
 }
 
-+ (id)networkServer:(SInt32)port socketType:(struct AFSocketType)type {
++ (id)networkServerWithPort:(SInt32 *)port type:(struct AFSocketType)type {
 	CFMutableArrayRef addresses = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
 	
 	struct ifaddrs *addrs = NULL;
@@ -72,7 +84,7 @@
 	return server;
 }
 
-+ (id)localhostServer:(SInt32)port socketType:(struct AFSocketType)type {
++ (id)localhostServerWithPort:(SInt32 *)port type:(struct AFSocketType)type {
 	CFHostRef localhost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost");
 	
 	CFStreamError error;
@@ -100,14 +112,6 @@
 	return self;
 }
 
-- (id)initWithHostSockets:(NSSet *)sockets {
-	[self init];
-	
-	[[self mutableSetValueForKeyPath:@"hostSockets"] unionSet:sockets];
-	
-	return self;
-}
-
 - (void)finalize {
 	[self disconnectClients];
 	
@@ -127,12 +131,14 @@
 }
 
 - (void)addHostSocketsObject:(id <AFConnectionLayer>)layer; {
-	layer.hostDelegate = self;
+	layer.delegate = self;
 	
 	[hostSockets addConnectionsObject:layer];
 }
 
 - (void)removeHostSocketsObject:(id <AFConnectionLayer>)layer; {
+	layer.delegate = nil;
+	
 	[hostSockets removeConnectionsObject:layer];
 }
 
@@ -154,8 +160,6 @@
 }
 
 - (void)layerDidConnect:(id <AFConnectionLayer>)socket host:(const CFHostRef)host {
-#warning this callback should use CFHost
-	
 	@try {
 		id <AFConnectionLayer> applicationLayer = [self newApplicationLayerForNetworkLayer:socket];
 		

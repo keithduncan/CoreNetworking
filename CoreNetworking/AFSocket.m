@@ -10,6 +10,12 @@
 
 @implementation AFSocket
 
+@synthesize delegate=_delegate;
+
++ (id)newSocketWithNativeSocket:(CFSocketNativeHandle)socket {
+	
+}
+
 static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *pData, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
@@ -39,54 +45,64 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 }
 
 - (id)initWithSignature:(const CFSocketSignature *)signature delegate:(id)delegate {
-	AFSocket *socket = [[self alloc] init];
-	socket->_delegate = delegate;
+	[self init];
+	
+	_delegate = delegate;
 	
 	CFSocketContext context;
 	memset(&context, 0, sizeof(CFSocketContext));
-	context.info = socket;
+	context.info = self;
 	
-	socket->_socket = CFSocketCreateWithSocketSignature(kCFAllocatorDefault, signature, kCFSocketAcceptCallBack, AFSocketCallback, &context);
+	_socket = CFSocketCreateWithSocketSignature(kCFAllocatorDefault, signature, kCFSocketAcceptCallBack, AFSocketCallback, &context);
 	
-	if (socket->_socket == NULL) {
-		[socket release];
+	if (_socket == NULL) {
+		[self release];
 		return nil;
 	}
 	
 	{
-		socket->_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket->_socket, 0);
-		
-		CFRunLoopRef *loop = &socket->_runLoop;
-		if ([socket->_delegate respondsToSelector:@selector(socketShouldScheduleWithRunLoop:)]) {
-			*loop = [socket->_delegate socketShouldScheduleWithRunLoop:socket];
-		} if (*loop == NULL) *loop = CFRunLoopGetMain();
-		
-		CFRunLoopAddSource(*loop, socket->_socketRunLoopSource, kCFRunLoopDefaultMode);
+		if ([self.delegate respondsToSelector:@selector(socketShouldScheduleWithRunLoop:)]) {
+			_runLoop = [_delegate socketShouldScheduleWithRunLoop:self];
+		} if (_runLoop == NULL) _runLoop = CFRunLoopGetMain();
+	
+		_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0);
+		CFRunLoopAddSource(_runLoop, _socketRunLoopSource, kCFRunLoopDefaultMode);
 	}
 	
-	return socket;
+	return self;
 }
 
-- (void)dealloc {
+/*!
+	@method
+	@abstract	This has been refactored into a separate method so that -dealloc can 'close' the socket without calling the public -close method
+ */
+- (void)_close {
 	if (_socket != NULL) {
 		CFSocketInvalidate(_socket);
+		
 		CFRelease(_socket);
+		_socket = NULL;
 	}
 	
 	if (_socketRunLoopSource != NULL) {
+		// Note: invalidating the socket invalidates its source too
 		CFRelease(_socketRunLoopSource);
+		_socketRunLoopSource = NULL;
 	}
+}
+
+- (void)dealloc {
+	[self _close];
 	
 	[super dealloc];
 }
 
 - (void)close {
-	if (_socket != NULL) {
-		CFSocketInvalidate(_socket);
-		CFRelease(_socket);
-	}
-	
-	if (_socketRunLoopSource != NULL) CFRelease(_socketRunLoopSource);
+	[self _close];
+}
+
+- (CFSocketRef)lowerLayer {
+	return _socket;
 }
 
 @end
