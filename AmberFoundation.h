@@ -14,8 +14,11 @@
 #import "AmberFoundation/AFPropertyListProtocol.h"
 #import "AmberFoundation/AFUserDefaults.h"
 
-#import "AmberFoundation/AFCollection.h"
+#import "AmberFoundation/AFProtocolProxy.h"
+#import "AmberFoundation/AFPriorityProxy.h"
 
+#import "AmberFoundation/AFCollection.h"
+#import "AmberFoundation/NSObject+Metadata.h"
 #import "AmberFoundation/NSObject+Additions.h"
 #import "AmberFoundation/NSData+Additions.h"
 #import "AmberFoundation/NSDate+Additions.h"

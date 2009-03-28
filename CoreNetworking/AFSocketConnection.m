@@ -512,6 +512,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[self _readBytes];
 }
 
+#warning the _readBytes and _sendBytes methods are identical with exception to the selector names called, they could be condensed into a single method taking a packet and read/write type
+
 - (void)_readBytes {
 	AFPacketRead *packet = [self currentReadPacket];
 	if (packet == nil || readStream != NULL) return;
@@ -520,6 +522,15 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	BOOL packetComplete = [packet performRead:readStream error:&error];
 #warning stream errors should be non-fatal
 	if (error != nil) [self disconnectWithError:error];
+	
+	if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)]) {
+		float percent = 0.0;
+		NSUInteger bytesRead = 0;
+		
+		[packet progress:&percent done:&bytesRead total:NULL];
+		
+		[self.delegate socket:self didReadPartialDataOfLength:bytesRead tag:packet.tag];
+	}
 	
 	if (packetComplete) {
 #warning for packets with a terminator we need to cache the data after the terminator for future reads
@@ -531,15 +542,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		
 		[self _endCurrentReadPacket];
 		[self _dequeueReadPacket];
-	} else {		
-		if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)]) {
-			float percent = 0.0;
-			NSUInteger bytesRead = 0;
-			
-			[packet progress:&percent done:&bytesRead total:NULL];
-			
-			[self.delegate socket:self didReadPartialDataOfLength:bytesRead tag:packet.tag];
-		}
 	}
 }
 
@@ -588,6 +590,15 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 #warning steam errors should be non-fatal
 	if (error != nil) [self disconnectWithError:error];
 	
+	if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:tag:)]) {
+		float percent = 0.0;
+		NSUInteger bytesWritten = 0;
+		
+		[packet progress:&percent done:&bytesWritten total:NULL];
+		
+		[self.delegate socket:self didWritePartialDataOfLength:bytesWritten tag:packet.tag];
+	}
+	
 	if (packetComplete) {
 		if ([self.delegate respondsToSelector:@selector(layer:didWrite:forTag:)]) {
 			[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
@@ -595,15 +606,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		
 		[self _endCurrentWritePacket];
 		[self _dequeueWritePacket];
-	} else {
-		if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:tag:)]) {
-			float percent = 0.0;
-			NSUInteger bytesWritten = 0;
-			
-			[packet progress:&percent done:&bytesWritten total:NULL];
-			
-			[self.delegate socket:self didWritePartialDataOfLength:bytesWritten tag:packet.tag];
-		}
 	}
 }
 

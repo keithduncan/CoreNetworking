@@ -11,7 +11,7 @@
 #import <sys/socket.h>
 #import <arpa/inet.h>
 
-#import "AFSocketPort.h"
+#import "AFSocketConnection.h"
 
 #import "AFConnectionPool.h"
 
@@ -19,41 +19,41 @@
 // Note: see the man page for getifaddrs
 #import <ifaddrs.h>
 
+static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerHostConnectionsPropertyObservationContext";
+
 @implementation AFConnectionServer
 
 @synthesize delegate=_delegate;
-@synthesize clientApplications;
+@synthesize clients;
 
 + (id)_serverWithPort:(SInt32 *)port socketType:(struct AFSocketType)type addresses:(CFArrayRef)addrs {
 #warning this methods should also configure the server to listen for IP-layer changes
 	AFConnectionServer *server = [[[self alloc] init] autorelease];
 	
 	for (NSData *currentAddrData in (NSArray *)addrs) {
-		struct sockaddr *currentAddr = alloca([currentAddrData length]);
-		[currentAddrData getBytes:currentAddr length:[currentAddrData length]];
-		
-		((struct sockaddr_in *)currentAddr)->sin_port = *port;
+		currentAddrData = [[currentAddrData mutableCopy] autorelease];
+		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddrData))->sin_port = htons(*port);
 #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 		
 		CFSocketSignature currentSocketSignature = {
-			.protocolFamily = currentAddr->sa_family,
+			.protocolFamily = ((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)currentAddrData))->sa_family,
 			.socketType = type.socketType,
 			.protocol = type.protocol,
 			.address = (CFDataRef)currentAddrData,
 		};
 		
-		AFSocket *socket = [[AFSocketPort alloc] initWithSignature:&currentSocketSignature delegate:server];
+		AFSocket *socket = [[AFSocketConnection alloc] initWithSignature:&currentSocketSignature delegate:server];
 		if (socket == nil) continue;
 		
 		if (*port == 0) {
 			// Note: extract the *actual* port used and use that for future allocations
 			CFDataRef actualAddrData = CFSocketCopyAddress([socket lowerLayer]);
-			*port = ((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port;
+			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port);
 #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 			CFRelease(actualAddrData);
 		}
 		
-		[server addHostSocketsObject:socket];
+		[server.hosts addConnectionsObject:socket];
 		[socket release];
 	}
 	
@@ -104,16 +104,16 @@
 - (id)init {
 	[super init];
 	
-	hostSockets = [[AFConnectionPool alloc] init];
+	hosts = [[AFConnectionPool alloc] init];
+	[hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
 	
-	clientSockets = [[AFConnectionPool alloc] init];
-	clientApplications = [[AFConnectionPool alloc] init];
+	clients = [[AFConnectionPool alloc] init];
 	
 	return self;
 }
 
 - (void)finalize {
-	[self disconnectClients];
+	[self.clients disconnect];
 	
 	[super finalize];
 }
@@ -121,25 +121,22 @@
 - (void)dealloc {
 	[self finalize];
 	
-	[clientApplications release];
-	[clientSockets release];
+	[clients release];
 	
-	[hostSockets disconnect];
-	[hostSockets release];
+	[hosts disconnect];
+	
+	[hosts removeObserver:self forKeyPath:@"connections"];
+	[hosts release];
 	
 	[super dealloc];
 }
 
-- (void)addHostSocketsObject:(id <AFConnectionLayer>)layer; {
-	layer.delegate = self;
-	
-	[hostSockets addConnectionsObject:layer];
-}
-
-- (void)removeHostSocketsObject:(id <AFConnectionLayer>)layer; {
-	layer.delegate = nil;
-	
-	[hostSockets removeConnectionsObject:layer];
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == &ServerHostConnectionsPropertyObservationContext) {
+		if (![[change objectForKey:NSKeyValueChangeKindKey] unsignedIntegerValue] == NSKeyValueChangeInsertion) return;
+		
+		[[change valueForKey:NSKeyValueChangeNewKey] performSelector:@selector(setDelegate:) withObject:self];
+	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)socket {
@@ -155,48 +152,34 @@
 }
 
 - (void)layer:(id <AFConnectionLayer>)socket didAcceptConnection:(id <AFConnectionLayer>)newSocket {
-	[clientSockets addConnectionsObject:newSocket];
+	[clients addConnectionsObject:newSocket];
 #warning check the flow control to make sure that it isn't kept around despite error, it is removed in the callback below
 }
 
-- (void)layerDidConnect:(id <AFConnectionLayer>)socket host:(const CFHostRef)host {
-	@try {
-		id <AFConnectionLayer> applicationLayer = [self newApplicationLayerForNetworkLayer:socket];
-		
-		if ([self.delegate respondsToSelector:@selector(server:shouldConnect:toHost:)]) {
-			BOOL continueConnecting = [self.delegate server:self shouldConnect:applicationLayer toHost:host];
-			
-			if (!continueConnecting) {
-				if ([socket conformsToProtocol:@protocol(AFConnectionLayer)]) {
-					[(id <AFConnectionLayer>)socket close];
-				}
-				
-				return;
-			}
-		}
-		
-		[applicationLayer open];
-		
-		[self.clientApplications addConnectionsObject:applicationLayer];
-	}
-	@finally {
-		[clientSockets removeConnectionsObject:socket];
-	}
-}
-
-- (void)layerDidOpen:(id <AFConnectionLayer>)layer {
+- (void)layerDidConnect:(id <AFConnectionLayer>)socket toPeer:(const CFHostRef)host {
+	id <AFConnectionLayer> applicationLayer = [self newApplicationLayerForNetworkLayer:socket];
 	
+	if ([self.delegate respondsToSelector:@selector(server:shouldConnect:toHost:)]) {
+		BOOL continueConnecting = [self.delegate server:self shouldConnect:applicationLayer toHost:host];
+		
+		if (!continueConnecting) {
+			if ([socket conformsToProtocol:@protocol(AFConnectionLayer)]) {
+				[(id <AFConnectionLayer>)socket close];
+			}
+			
+			return;
+		}
+	}
+	
+	[applicationLayer open];
+	
+#warning notify the server delegate
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
-	if ([self.clientApplications.connections containsObject:layer]) {
-		[self.clientApplications removeConnectionsObject:layer];
+	if ([self.clients.connections containsObject:layer]) {
+		[self.clients removeConnectionsObject:layer];
 	}
-}
-
-- (void)disconnectClients {
-	[clientSockets disconnect];
-	[clientApplications disconnect];
 }
 
 @end

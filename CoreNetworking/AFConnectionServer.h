@@ -15,16 +15,13 @@
 
 @interface AFConnectionServer : NSObject <AFConnectionLayerHostDelegate> {
 	id <AFConnectionServerDelegate> _delegate;
-	
-	AFConnectionPool *hostSockets;
-	
-	AFConnectionPool *clientSockets;
-	AFConnectionPool *clientApplications;
+	AFConnectionPool *hosts, *clients;
 }
 
 /*!
 	@method
 	@abstract	Create a server with ports open on all IP addresses (it equivalent of 0.0.0.0)
+	@param		|port| is passed by reference so that if you pass 0 you get back the actual port
  */
 + (id)networkServerWithPort:(SInt32 *)port type:(struct AFSocketType)type;
 
@@ -47,15 +44,21 @@
  */
 @property (assign) id <AFConnectionServerDelegate> delegate;
 
-- (void)addHostSocketsObject:(id <AFNetworkLayer>)layer;
-- (void)removeHostSocketsObject:(id <AFNetworkLayer>)layer;
+/*!
+	@property
+	@abstract	You can add host sockets to this object, the server observes the |connections| property and sets itself as the delegate for any objects
+ */
+@property (readonly, retain) AFConnectionPool *hosts;
 
+/*!
+	@method
+ */
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)socket; // Note: override point, if you need to customize your application layer before it is added to the connection pool, call super for basic setup first
 
-@property (readonly, retain) AFConnectionPool *clientApplications;
-
-// Note: don't disconnect the -clientApplications pool above, instead call this method which also disconnects the -clientSockets which don't yet have an application layer
-- (void)disconnectClients;
+/*!
+	@property
+ */
+@property (readonly, retain) AFConnectionPool *clients;
 
 @end
 

@@ -14,7 +14,7 @@
 	NSMutableSet *connections;
 }
 
-@property (readonly) NSSet *connections;
+@property (readonly, copy) NSSet *connections;
 
 - (void)addConnectionsObject:(id)proxy;
 - (void)removeConnectionsObject:(id)proxy;

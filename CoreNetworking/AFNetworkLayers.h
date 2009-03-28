@@ -44,12 +44,11 @@
 @protocol AFNetworkLayerControlDelegate <NSObject>
 - (void)layerDidOpen:(id <AFNetworkLayer>)layer;
 - (void)layerDidNotOpen:(id <AFNetworkLayer>)layer;
-
 - (void)layerDidClose:(id <AFNetworkLayer>)layer;
 @end
 
 @protocol AFNetworkLayerDataDelegate <NSObject>
-@property (retain) id <AFNetworkLayer> lowerLayer;
+@property (readonly, retain) id <AFNetworkLayer> lowerLayer;
 - (void)layer:(id <AFNetworkLayer>)layer didRead:(id)data forTag:(NSUInteger)tag;
 - (void)layer:(id <AFNetworkLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag;
  @optional
@@ -57,7 +56,6 @@
 @end
 
 @protocol AFNetworkLayerHostDelegate
-- (BOOL)layer:(id <AFNetworkLayer>)layer willAcceptConnection:(id <AFNetworkLayer>)newLayer;
 - (void)layer:(id <AFNetworkLayer>)layer didAcceptConnection:(id <AFNetworkLayer>)newLayer;
 @end
 
