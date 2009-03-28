@@ -45,10 +45,7 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 }
 
 - (void)progress:(float *)fraction done:(NSUInteger *)bytesDone total:(NSUInteger *)bytesTotal {
-	NSParameterAssert(fraction != NULL);
-	
-	*fraction = 0.0;
-	
+	if (fraction != NULL) *fraction = 0.0;
 	if (bytesDone != NULL) *bytesDone = 0;
 	if (bytesTotal != NULL) *bytesTotal = 0;
 }

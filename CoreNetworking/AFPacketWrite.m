@@ -32,8 +32,7 @@
 	CFIndex done = _bytesWritten;
 	CFIndex total = [self.buffer length];
 	
-	*fraction = (float)done/(float)total;
-	
+	if (fraction != NULL) *fraction = (float)done/(float)total;
 	if (bytesDone != NULL) *bytesDone = done;
 	if (bytesTotal != NULL) *bytesTotal = total;
 }

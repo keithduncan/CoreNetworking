@@ -62,11 +62,14 @@
 	BOOL hasTotal = (_maximumLength > 0);
 	
 	NSUInteger done = _bytesRead;
-	NSUInteger total = (hasTotal ? [self.buffer length] : 0);
+	NSUInteger total = [self.buffer length];
 	
 	if (fraction != NULL) {
-		float ratio = (float)done/(float)total;
-		*fraction = (isnan(ratio) ? 1.0 : ratio); // 0 of 0 bytes is 100% done.
+		if (hasTotal) {
+			*fraction = (float)done/(float)total;
+		} else /* Guard against divide by zero */ {
+			*fraction = NAN;
+		}
 	}
 	
 	if (bytesDone != NULL) *bytesDone = done;
