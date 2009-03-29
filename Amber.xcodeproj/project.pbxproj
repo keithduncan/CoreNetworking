@@ -128,10 +128,6 @@
 		537E78200F545E9700C8E3D4 /* AFCalendarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78160F545E9700C8E3D4 /* AFCalendarControl.m */; };
 		537E78210F545E9700C8E3D4 /* AFCalendarControlCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78170F545E9700C8E3D4 /* AFCalendarControlCell.h */; };
 		537E78220F545E9700C8E3D4 /* AFCalendarControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78180F545E9700C8E3D4 /* AFCalendarControlCell.m */; };
-		537E78230F545E9700C8E3D4 /* AFWeekCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78190F545E9700C8E3D4 /* AFWeekCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		537E78240F545E9700C8E3D4 /* AFWeekCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E781A0F545E9700C8E3D4 /* AFWeekCell.m */; };
-		537E78250F545E9700C8E3D4 /* AFWeekControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E781B0F545E9700C8E3D4 /* AFWeekControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		537E78260F545E9700C8E3D4 /* AFWeekControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E781C0F545E9700C8E3D4 /* AFWeekControl.m */; };
 		537E782A0F545EC600C8E3D4 /* AFTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78280F545EC600C8E3D4 /* AFTextFieldCell.m */; };
 		537E782B0F545EC600C8E3D4 /* AFTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78290F545EC600C8E3D4 /* AFTextFieldCell.h */; };
 		537E7A570F5477B100C8E3D4 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 537E7A560F5477B100C8E3D4 /* ApplicationServices.framework */; };
@@ -168,6 +164,12 @@
 		53B2015F0F6D7739001DC8E7 /* AFPacketWrite.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B2014F0F6D7739001DC8E7 /* AFPacketWrite.m */; };
 		53B201600F6D7739001DC8E7 /* AFSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B201500F6D7739001DC8E7 /* AFSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53B201610F6D7739001DC8E7 /* AFSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B201510F6D7739001DC8E7 /* AFSocket.m */; };
+		53CC8BCD0F7FE2D600ADF5CC /* AFCalendarWeekCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53CC8BC70F7FE2D600ADF5CC /* AFCalendarWeekCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53CC8BCE0F7FE2D600ADF5CC /* AFCalendarWeekCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53CC8BC80F7FE2D600ADF5CC /* AFCalendarWeekCell.m */; };
+		53CC8BCF0F7FE2D600ADF5CC /* AFSegmentedWeekControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 53CC8BC90F7FE2D600ADF5CC /* AFSegmentedWeekControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53CC8BD00F7FE2D600ADF5CC /* AFSegmentedWeekControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 53CC8BCA0F7FE2D600ADF5CC /* AFSegmentedWeekControl.m */; };
+		53CC8BD10F7FE2D600ADF5CC /* AFWeekSegmentCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 53CC8BCB0F7FE2D600ADF5CC /* AFWeekSegmentCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53CC8BD20F7FE2D600ADF5CC /* AFWeekSegmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 53CC8BCC0F7FE2D600ADF5CC /* AFWeekSegmentCell.m */; };
 		53DC5EFD0F655F9800349623 /* AFConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0880F5B061D008F5991 /* AFConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53DC5EFE0F655F9900349623 /* AFConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0890F5B061D008F5991 /* AFConnection.m */; };
 		53DC5EFF0F655F9900349623 /* AFConnectionPool.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E08A0F5B061D008F5991 /* AFConnectionPool.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -237,7 +239,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 537917740F7FC43B0064EB92 /* AmberKit (Additions) */;
+			remoteGlobalIDString = 537917740F7FC43B0064EB92;
 			remoteInfo = "AmberKit (Additions)";
 		};
 		539A60E90D269A7C001CD14A /* PBXContainerItemProxy */ = {
@@ -334,10 +336,6 @@
 		537E78160F545E9700C8E3D4 /* AFCalendarControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCalendarControl.m; sourceTree = "<group>"; };
 		537E78170F545E9700C8E3D4 /* AFCalendarControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFCalendarControlCell.h; sourceTree = "<group>"; };
 		537E78180F545E9700C8E3D4 /* AFCalendarControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCalendarControlCell.m; sourceTree = "<group>"; };
-		537E78190F545E9700C8E3D4 /* AFWeekCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFWeekCell.h; sourceTree = "<group>"; };
-		537E781A0F545E9700C8E3D4 /* AFWeekCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFWeekCell.m; sourceTree = "<group>"; };
-		537E781B0F545E9700C8E3D4 /* AFWeekControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFWeekControl.h; sourceTree = "<group>"; };
-		537E781C0F545E9700C8E3D4 /* AFWeekControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFWeekControl.m; sourceTree = "<group>"; };
 		537E78280F545EC600C8E3D4 /* AFTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTextFieldCell.m; sourceTree = "<group>"; };
 		537E78290F545EC600C8E3D4 /* AFTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTextFieldCell.h; sourceTree = "<group>"; };
 		537E79710F54765000C8E3D4 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
@@ -365,6 +363,12 @@
 		53B201510F6D7739001DC8E7 /* AFSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFSocket.m; path = CoreNetworking/AFSocket.m; sourceTree = "<group>"; };
 		53BEF6A10F5B6A2700063B8D /* libCoreNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCoreNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		53C949B60E17CD7700E21E15 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		53CC8BC70F7FE2D600ADF5CC /* AFCalendarWeekCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFCalendarWeekCell.h; sourceTree = "<group>"; };
+		53CC8BC80F7FE2D600ADF5CC /* AFCalendarWeekCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCalendarWeekCell.m; sourceTree = "<group>"; };
+		53CC8BC90F7FE2D600ADF5CC /* AFSegmentedWeekControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSegmentedWeekControl.h; sourceTree = "<group>"; };
+		53CC8BCA0F7FE2D600ADF5CC /* AFSegmentedWeekControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSegmentedWeekControl.m; sourceTree = "<group>"; };
+		53CC8BCB0F7FE2D600ADF5CC /* AFWeekSegmentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFWeekSegmentCell.h; sourceTree = "<group>"; };
+		53CC8BCC0F7FE2D600ADF5CC /* AFWeekSegmentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFWeekSegmentCell.m; sourceTree = "<group>"; };
 		53EE97470F190070008AD8C0 /* AmberKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmberKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53EE97480F190070008AD8C0 /* AmberKit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AmberKit-Info.plist"; sourceTree = "<group>"; };
 		53FD894F0F4E281400536B83 /* AFSwitchControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSwitchControl.h; sourceTree = "<group>"; };
@@ -510,10 +514,12 @@
 				537E78160F545E9700C8E3D4 /* AFCalendarControl.m */,
 				537E78170F545E9700C8E3D4 /* AFCalendarControlCell.h */,
 				537E78180F545E9700C8E3D4 /* AFCalendarControlCell.m */,
-				537E78190F545E9700C8E3D4 /* AFWeekCell.h */,
-				537E781A0F545E9700C8E3D4 /* AFWeekCell.m */,
-				537E781B0F545E9700C8E3D4 /* AFWeekControl.h */,
-				537E781C0F545E9700C8E3D4 /* AFWeekControl.m */,
+				53CC8BC70F7FE2D600ADF5CC /* AFCalendarWeekCell.h */,
+				53CC8BC80F7FE2D600ADF5CC /* AFCalendarWeekCell.m */,
+				53CC8BC90F7FE2D600ADF5CC /* AFSegmentedWeekControl.h */,
+				53CC8BCA0F7FE2D600ADF5CC /* AFSegmentedWeekControl.m */,
+				53CC8BCB0F7FE2D600ADF5CC /* AFWeekSegmentCell.h */,
+				53CC8BCC0F7FE2D600ADF5CC /* AFWeekSegmentCell.m */,
 			);
 			path = calendarcontrol;
 			sourceTree = "<group>";
@@ -925,8 +931,6 @@
 				537E781D0F545E9700C8E3D4 /* AFCalendarButton.h in Headers */,
 				537E781F0F545E9700C8E3D4 /* AFCalendarControl.h in Headers */,
 				537E78210F545E9700C8E3D4 /* AFCalendarControlCell.h in Headers */,
-				537E78230F545E9700C8E3D4 /* AFWeekCell.h in Headers */,
-				537E78250F545E9700C8E3D4 /* AFWeekControl.h in Headers */,
 				537E782B0F545EC600C8E3D4 /* AFTextFieldCell.h in Headers */,
 				5370DE790F5AED47008F5991 /* AFPluralTransformer.h in Headers */,
 				5370DE7D0F5AED47008F5991 /* AFDateToString.h in Headers */,
@@ -939,6 +943,9 @@
 				5379179E0F7FC8AF0064EB92 /* NSTreeController+Additions.h in Headers */,
 				5379179F0F7FC8B10064EB92 /* NSTreeNode+Additions.h in Headers */,
 				5379181F0F7FCAA30064EB92 /* AmberKit.h in Headers */,
+				53CC8BCD0F7FE2D600ADF5CC /* AFCalendarWeekCell.h in Headers */,
+				53CC8BCF0F7FE2D600ADF5CC /* AFSegmentedWeekControl.h in Headers */,
+				53CC8BD10F7FE2D600ADF5CC /* AFWeekSegmentCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1275,12 +1282,13 @@
 				537E781E0F545E9700C8E3D4 /* AFCalendarButton.m in Sources */,
 				537E78200F545E9700C8E3D4 /* AFCalendarControl.m in Sources */,
 				537E78220F545E9700C8E3D4 /* AFCalendarControlCell.m in Sources */,
-				537E78240F545E9700C8E3D4 /* AFWeekCell.m in Sources */,
-				537E78260F545E9700C8E3D4 /* AFWeekControl.m in Sources */,
 				537E782A0F545EC600C8E3D4 /* AFTextFieldCell.m in Sources */,
 				5370DE780F5AED47008F5991 /* AFPluralTransformer.m in Sources */,
 				5370DE7A0F5AED47008F5991 /* AFDateToString.m in Sources */,
 				537917980F7FC8160064EB92 /* AFBoolToColor.m in Sources */,
+				53CC8BCE0F7FE2D600ADF5CC /* AFCalendarWeekCell.m in Sources */,
+				53CC8BD00F7FE2D600ADF5CC /* AFSegmentedWeekControl.m in Sources */,
+				53CC8BD20F7FE2D600ADF5CC /* AFWeekSegmentCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1666,6 +1674,7 @@
 				INFOPLIST_FILE = "AmberKit-Info.plist";
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberKit;
 			};
@@ -1688,6 +1697,7 @@
 				INFOPLIST_FILE = "AmberKit-Info.plist";
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberKit;
 				ZERO_LINK = NO;
