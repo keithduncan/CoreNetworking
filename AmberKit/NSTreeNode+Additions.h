@@ -1,6 +1,6 @@
 //
 //  NSTreeNode+Additions.h
-//  Shared Source
+//  Amber
 //
 //  Created by Keith Duncan on 22/08/2007.
 //  Copyright 2007 thirty-three. All rights reserved.

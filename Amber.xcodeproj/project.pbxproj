@@ -6,21 +6,6 @@
 	objectVersion = 45;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		539B6E590D4BBB7C00C86E48 /* Install Frameworks */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 539B6EA00D4BBBA600C86E48 /* Build configuration list for PBXAggregateTarget "Install Frameworks" */;
-			buildPhases = (
-				539B6E580D4BBB7C00C86E48 /* CopyFiles */,
-			);
-			dependencies = (
-				539B6E5D0D4BBB8000C86E48 /* PBXTargetDependency */,
-			);
-			name = "Install Frameworks";
-			productName = "Install Frameworks";
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		5302AC830F2121D200867A4A /* Amber.m in Sources */ = {isa = PBXBuildFile; fileRef = 5302AC820F2121D200867A4A /* Amber.m */; };
 		530911780F646BAA00525632 /* AFNetworkConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 530911760F646BAA00525632 /* AFNetworkConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -177,7 +162,6 @@
 		539A44320F782E1200564C73 /* AFProtocolProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A44200F782E1200564C73 /* AFProtocolProxy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A44330F782E1200564C73 /* AFProtocolProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A44210F782E1200564C73 /* AFProtocolProxy.m */; };
 		539A60EE0D269B21001CD14A /* AmberFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A60DA0D269932001CD14A /* AmberFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		539B6E7E0D4BBB8E00C86E48 /* Amber.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5343E70E0C21FB4200B63E6E /* Amber.framework */; };
 		539BFE040F1FE2AE003C1148 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE030F1FE2AE003C1148 /* AmberKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539BFE060F1FE2E7003C1148 /* AmberKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE050F1FE2E7003C1148 /* AmberKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53A028E60F6E8F41004F5414 /* AFNetworkTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 53A028E40F6E8F41004F5414 /* AFNetworkTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -259,13 +243,6 @@
 			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
 			remoteInfo = FoundationAmber;
 		};
-		539B6E5C0D4BBB8000C86E48 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5343E70D0C21FB4200B63E6E;
-			remoteInfo = Amber;
-		};
 		53DDF0340F3A425C00D76032 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
@@ -274,19 +251,6 @@
 			remoteInfo = AmberFoundation;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		539B6E580D4BBB7C00C86E48 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /Library/Frameworks;
-			dstSubfolderSpec = 0;
-			files = (
-				539B6E7E0D4BBB8E00C86E48 /* Amber.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		5302AC820F2121D200867A4A /* Amber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Amber.m; sourceTree = "<group>"; };
@@ -368,7 +332,6 @@
 		5370E0950F5B061D008F5991 /* AFSocketConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFSocketConnection.h; path = CoreNetworking/AFSocketConnection.h; sourceTree = "<group>"; };
 		5370E0960F5B061D008F5991 /* AFSocketConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFSocketConnection.m; path = CoreNetworking/AFSocketConnection.m; sourceTree = "<group>"; };
 		5370E0970F5B061D008F5991 /* CoreNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreNetworking.h; path = CoreNetworking/CoreNetworking.h; sourceTree = "<group>"; };
-		537E532E0CFC89930084F920 /* Amber_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Amber_Prefix.pch; sourceTree = "<group>"; };
 		537E53A00CFC8D400084F920 /* Amber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Amber.h; sourceTree = "<group>"; };
 		537E78130F545E9700C8E3D4 /* AFCalendarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFCalendarButton.h; sourceTree = "<group>"; };
 		537E78140F545E9700C8E3D4 /* AFCalendarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCalendarButton.m; sourceTree = "<group>"; };
@@ -500,7 +463,6 @@
 				53EE97620F1900A0008AD8C0 /* AmberKit */,
 				539A60F70D269B40001CD14A /* AmberFoundation */,
 				53692A780F1B7EE70051C367 /* CoreNetworking */,
-				53EE976D0F19012E008AD8C0 /* Other Sources */,
 				539A60FD0D269B6C001CD14A /* Resources */,
 				537E52F10CFC89760084F920 /* Frameworks */,
 				5343E70F0C21FB4200B63E6E /* Products */,
@@ -837,14 +799,6 @@
 			name = AmberKit;
 			sourceTree = "<group>";
 		};
-		53EE976D0F19012E008AD8C0 /* Other Sources */ = {
-			isa = PBXGroup;
-			children = (
-				537E532E0CFC89930084F920 /* Amber_Prefix.pch */,
-			);
-			name = "Other Sources";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1156,7 +1110,6 @@
 				532F73DD0F0EB1AA004D6056 /* AmberFoundation Touch */,
 				5370E0700F5B0571008F5991 /* CoreNetworking */,
 				53BEF6A00F5B6A2700063B8D /* CoreNetworking Touch */,
-				539B6E590D4BBB7C00C86E48 /* Install Frameworks */,
 			);
 		};
 /* End PBXProject section */
@@ -1382,11 +1335,6 @@
 			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
 			targetProxy = 539A60E90D269A7C001CD14A /* PBXContainerItemProxy */;
 		};
-		539B6E5D0D4BBB8000C86E48 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5343E70D0C21FB4200B63E6E /* Amber */;
-			targetProxy = 539B6E5C0D4BBB8000C86E48 /* PBXContainerItemProxy */;
-		};
 		53DDF0350F3A425C00D76032 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
@@ -1490,7 +1438,6 @@
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				"GCC_MODEL_TUNING[arch=*]" = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Amber_Prefix.pch;
 				INFOPLIST_FILE = "Amber-Info.plist";
 				INSTALL_PATH = "@rpath";
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
@@ -1524,7 +1471,6 @@
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				"GCC_MODEL_TUNING[arch=*]" = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Amber_Prefix.pch;
 				INFOPLIST_FILE = "Amber-Info.plist";
 				INSTALL_PATH = "@rpath";
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
@@ -1559,7 +1505,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_PREFIX_HEADER = AmberKit_Prefix.pch;
 				INFOPLIST_FILE = "AmberKit Additions-Info.plist";
 				INSTALL_PATH = "@rpath/";
 				OTHER_LDFLAGS = (
@@ -1586,7 +1532,7 @@
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_PREFIX_HEADER = AmberKit_Prefix.pch;
 				INFOPLIST_FILE = "AmberKit Additions-Info.plist";
 				INSTALL_PATH = "@rpath/";
 				OTHER_LDFLAGS = (
@@ -1614,7 +1560,6 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "CoreNetworking-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				OTHER_LDFLAGS = (
@@ -1640,7 +1585,6 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "CoreNetworking-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				OTHER_LDFLAGS = (
@@ -1694,27 +1638,6 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
 				STRIP_INSTALLED_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		539B6E5A0D4BBB7D00C86E48 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "Install Frameworks";
-			};
-			name = Debug;
-		};
-		539B6E5B0D4BBB7D00C86E48 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "Install Frameworks";
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -1865,15 +1788,6 @@
 			buildConfigurations = (
 				539A60C50D2698B8001CD14A /* Debug */,
 				539A60C60D2698B8001CD14A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		539B6EA00D4BBBA600C86E48 /* Build configuration list for PBXAggregateTarget "Install Frameworks" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				539B6E5A0D4BBB7D00C86E48 /* Debug */,
-				539B6E5B0D4BBB7D00C86E48 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

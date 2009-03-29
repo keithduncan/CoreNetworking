@@ -1,6 +1,6 @@
 /*
  *  AFGeometry.m
- *  Shared Source
+ *  Amber
  *
  *  Created by Keith Duncan on 04/09/2007.
  *  Copyright 2007 thirty-three. All rights reserved.

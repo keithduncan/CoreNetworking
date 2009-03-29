@@ -1,6 +1,6 @@
 //
 //  AFKeyValueBinding.m
-//  Shared Source
+//  Amber
 //
 //  Created by Keith Duncan on 12/08/2007.
 //  Copyright 2007 thirty-three. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  AFDateToMonthAndYear.h
-//  AFStringViewPlugin
+//  Amber
 //
 //  Created by Keith Duncan on 11/02/2007.
 //  Copyright 2007 thirty-three. All rights reserved.

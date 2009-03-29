@@ -1,6 +1,6 @@
 //
 //  NSGradient+Additions.m
-//  Shared Source
+//  Amber
 //
 //  Created by Keith Duncan on 28/06/2007.
 //  Copyright 2007 thirty-three. All rights reserved.

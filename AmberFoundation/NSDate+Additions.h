@@ -1,6 +1,6 @@
 //
 //  NSDate+Additions.h
-//  dawn
+//  Amber
 //
 //  Created by Keith Duncan on 03/12/2006.
 //  Copyleft 2006 thirty-three. All rights reserved.

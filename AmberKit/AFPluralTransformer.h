@@ -1,6 +1,6 @@
 //
 //  AFPluralTransformer.h
-//  iLog fitness
+//  Amber
 //
 //  Created by Keith Duncan on 21/06/2007.
 //  Copyright 2007 thirty-three. All rights reserved.

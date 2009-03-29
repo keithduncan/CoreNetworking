@@ -1,6 +1,6 @@
 //
 //  NSUserDefaults+Additions.h
-//  dawn
+//  Amber
 //
 //  Created by Keith Duncan on 17/10/2007.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
