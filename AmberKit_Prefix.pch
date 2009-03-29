@@ -7,5 +7,4 @@
 	#import <Quartz/Quartz.h>
 
 	#import "AmberFoundation.h"
-	#import "AmberKitAdditions.h"
 #endif

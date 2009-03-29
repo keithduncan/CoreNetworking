@@ -13,31 +13,36 @@
 
 #import "AmberFoundation/NSString+Additions.h"
 
-static NSString *kAFBundleIdentifierDefaults = @"kIdentifierDefaults";
-static NSString *kAFBundleRegisteredDefaults = @"kRegisteredDefaults";
+NSString *const AFUserDefaultsDidChangeNotification = @"AFUserDefaultsDidChangeNotification";
+
+static NSString *const kAFBundleIdentifierDefaults = @"kIdentifierDefaults";
+static NSString *const kAFBundleRegisteredDefaults = @"kRegisteredDefaults";
 
 @interface AFUserDefaults ()
-@property(readwrite, copy) NSString *identifier;
+@property (copy) NSDictionary *registrationDomain;
 @end
 
 @interface AFUserDefaults (Private)
 - (NSArray *)_searchList;
+- (BOOL)_synchronize;
+- (void)_preferencesDidChange:(NSNotification *)notification;
 @end
 
 @implementation AFUserDefaults
 
+@synthesize registrationDomain=_registration;
 @synthesize identifier=_identifier;
 
-static BOOL isPlistObject(id o) {
-	if ([o isKindOfClass:[NSString class]]) return YES;
-	else if ([o isKindOfClass:[NSData class]]) return YES;
-	else if ([o isKindOfClass:[NSDate class]]) return YES;
-	else if ([o isKindOfClass:[NSNumber class]]) return YES;
-	else if ([o isKindOfClass:[NSArray class]]) {
-		for (id currentObject in o) if (!isPlistObject(currentObject)) return NO;
+static BOOL isPlistObject(id object) {
+	if ([object isKindOfClass:[NSString class]]) return YES;
+	else if ([object isKindOfClass:[NSData class]]) return YES;
+	else if ([object isKindOfClass:[NSDate class]]) return YES;
+	else if ([object isKindOfClass:[NSNumber class]]) return YES;
+	else if ([object isKindOfClass:[NSArray class]]) {
+		for (id currentObject in object) if (!isPlistObject(currentObject)) return NO;
 		return YES;
-    } else if ([o isKindOfClass:[NSDictionary class]]) {		
-		for (id currentKey in o) if (![currentKey isKindOfClass:[NSString class]] || !isPlistObject([(NSDictionary *)o objectForKey:currentKey])) return NO;
+    } else if ([object isKindOfClass:[NSDictionary class]]) {		
+		for (id currentKey in object) if (![currentKey isKindOfClass:[NSString class]] || !isPlistObject([(NSDictionary *)object objectForKey:currentKey])) return NO;
 		return YES;
     } else return NO;
 }
@@ -57,40 +62,21 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 	}
 }
 
-- (id)init {
-	[super init];
-	
-	_defaults = [[NSMutableDictionary alloc] init];
-		
-	return self;
-}
-
 - (id)initWithBundleIdentifier:(NSString *)identifier {
-	if (identifier == nil || [identifier isEmpty]) {
-		[NSException raise:NSInvalidArgumentException format:@"-[%@ %s], passed a nil or empty indentifer", NSStringFromClass([self class]), _cmd, nil];
-		
-		[self release];
-		return nil;
-	}
+	NSParameterAssert((identifier != nil && ![identifier isEmpty]));
 	
 	[self init];
 	
-	self.identifier = identifier;
+	_identifier = [identifier copy];
 	
-	CFArrayRef keys = CFPreferencesCopyKeyList((CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
-	CFDictionaryRef values = CFPreferencesCopyMultiple(keys, (CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
-	
-	[_defaults setObject:(id)values forKey:kAFBundleIdentifierDefaults];
-	
-	CFRelease(values);
-	CFRelease(keys);
+	[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_preferencesDidChange:) name:AFUserDefaultsDidChangeNotification object:self.identifier suspensionBehavior:NSNotificationSuspensionBehaviorHold];
 	
 	return self;
 }
 
 - (void)dealloc {
-	[_defaults release];
-	self.identifier = nil;
+	[_registration release];
+	[_identifier release];
 	
 	[super dealloc];
 }
@@ -105,16 +91,12 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 }
 
 - (void)setObject:(id)value forKey:(NSString *)key {
-	id oldValue = [self objectForKey:key];
-	
-	if (oldValue != nil && [oldValue isEqual:value]) return;
-	else if (!isPlistObject(value)) [NSException raise:NSInvalidArgumentException format:@"-[%@ %s], %@ is not a valid plist object.", NSStringFromClass([self class]), _cmd, value];
-	
-	[[_defaults objectForKey:kAFBundleIdentifierDefaults] setObject:value forKey:key];
+	NSAssert(isPlistObject(value), @"value was not an object of plist type");
+	CFPreferencesSetValue((CFStringRef)key, (CFPropertyListRef)value, (CFStringRef)self.identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
 }
 
 - (void)removeObjectForKey:(NSString *)key {
-	[[_defaults objectForKey:kAFBundleIdentifierDefaults] removeObjectForKey:key];
+	CFPreferencesSetValue((CFStringRef)key, (CFPropertyListRef)NULL, (CFStringRef)self.identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
 }
 
 - (float)floatForKey:(NSString *)key {
@@ -153,30 +135,32 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 	[self setObject:[NSNumber numberWithInteger:value] forKey:key];
 }
 
-- (void)registerDefaults:(NSDictionary *)registrationDictionary {
-	[_defaults setObject:registrationDictionary forKey:kAFBundleRegisteredDefaults];
+- (NSUInteger)unsignedIntegerForKey:(NSString *)key {
+	id value = [self objectForKey:key];
+	return ([value respondsToSelector:@selector(unsignedIntegerValue)] ? [value unsignedIntegerValue] : 0);
 }
 
-- (NSDictionary *)dictionaryRepresentation {
+- (void)setUnsignedInteger:(NSUInteger)value forKey:(NSString *)key {
+	[self setObject:[NSNumber numberWithUnsignedInteger:value] forKey:key];
+}
+
+- (void)registerDefaults:(NSDictionary *)registrationDictionary {
+	self.registrationDomain = registrationDictionary;
+}
+
+- (NSDictionary *)dictionaryValue {
 	NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
-	
 	for (NSDictionary *domain in [[self _searchList] reverseObjectEnumerator]) [defaults addEntriesFromDictionary:domain];
-	
 	return defaults;
 }
 
 - (BOOL)synchronize {
-	NSDictionary *currentDefaults = [_defaults objectForKey:kAFBundleIdentifierDefaults];
+	BOOL result = [self _synchronize];
 	
-	NSArray *newKeys = [currentDefaults allKeys];
-	NSArray *savedKeys = (NSArray *)CFPreferencesCopyKeyList((CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+	if (result)
+		[[NSDistributedNotificationCenter defaultCenter] postNotificationName:AFUserDefaultsDidChangeNotification object:self.identifier userInfo:nil options:0];
 	
-	NSMutableSet *removedKeys = [NSMutableSet set];
-	for (NSString *currentKey in savedKeys) if (![newKeys containsObject:currentKey]) [removedKeys addObject:currentKey];
-	
-	CFPreferencesSetMultiple((CFDictionaryRef)currentDefaults, (CFArrayRef)[removedKeys allObjects], (CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
-		
-	return CFPreferencesSynchronize((CFStringRef)_identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+	return result;
 }
 
 @end
@@ -184,7 +168,25 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 @implementation AFUserDefaults (Private)
 
 - (NSArray *)_searchList {
-	return  [NSArray arrayWithObjects:[_defaults objectForKey:kAFBundleIdentifierDefaults], [_defaults objectForKey:kAFBundleRegisteredDefaults], nil];
+	CFArrayRef keys = CFPreferencesCopyKeyList((CFStringRef)self.identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+	
+	CFDictionaryRef defaults = CFPreferencesCopyMultiple(keys, (CFStringRef)self.identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+	CFRelease(keys);
+	
+	NSArray *searchList = [NSArray arrayWithObjects:(id)defaults, self.registrationDomain, nil];
+	CFRelease(defaults);
+	
+	return searchList;
+}
+
+- (BOOL)_synchronize {	
+	return CFPreferencesSynchronize((CFStringRef)self.identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+}
+
+- (void)_preferencesDidChange:(NSNotification *)notification {
+	if (![[notification object] isEqualToString:self.identifier]) return;
+	
+	[self _synchronize];
 }
 
 @end

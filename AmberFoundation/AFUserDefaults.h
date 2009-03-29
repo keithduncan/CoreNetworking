@@ -10,17 +10,25 @@
 
 /*!
     @class
-    @abstract    This class is a thin layer over the CFPreferences functions, it allows access to the preferences in a single application domain
-    @discussion  It doesn't register for termination notifications nor does it save the values occasionally, this must be handled externally.
+	@abstract    This class is NSUserDefaults for an arbitary bundle identifer, it doesn't restrict you to working with the current application identifer
+	@discussion  It doesn't register for termination notifications nor does it save the values occasionally, this must be handled externally.
+					It does propogate synchronization notifications like NSUserDefaults does. This is particularly useful for plugin defaults used across process boundaries.
 */
 @interface AFUserDefaults : NSObject {
-	id _defaults;
 	NSString *_identifier;
+	id _registration;
 }
 
-- (id)initWithBundleIdentifier:(NSString *)identifier;
+/*!
+	@property
+ */
+@property (readonly, copy) NSString *identifier;
 
-@property(readonly, copy) NSString *identifier;
+/*!
+	@method
+	@abstract	Designated Initialiser
+ */
+- (id)initWithBundleIdentifier:(NSString *)identifier;
 
 - (id)objectForKey:(NSString *)key;
 - (void)setObject:(id)value forKey:(NSString *)key;
@@ -38,15 +46,33 @@
 - (NSInteger)integerForKey:(NSString *)key;
 - (void)setInteger:(NSInteger)value forKey:(NSString *)key;
 
+- (NSUInteger)unsignedIntegerForKey:(NSString *)key;
+- (void)setUnsignedInteger:(NSUInteger)value forKey:(NSString *)key;
+
+/*!
+	@method
+	@abstract	this is inserted at the lowest index of the search list, the values will only be returned if the default domains above it don't contain an object for requested key
+	@param		|regisrationDictionary| is copied
+ */
 - (void)registerDefaults:(NSDictionary *)registrationDictionary;
 
-- (NSDictionary *)dictionaryRepresentation;
+/*!
+	@method
+ */
+- (NSDictionary *)dictionaryValue;
 
+/*!
+	@method
+ */
 - (BOOL)synchronize;
 
 @end
 
-@interface AFUserDefaults (Accessors)
+/*!
+	@category
+	@abstract	these are simply strongly typed synonyms to <tt>-objectForKey:</tt>
+ */
+@interface AFUserDefaults (TypedAccessors)
 - (NSString *)stringForKey:(NSString *)key;
 - (NSArray *)arrayForKey:(NSString *)key;
 - (NSDictionary *)dictionaryForKey:(NSString *)key;
