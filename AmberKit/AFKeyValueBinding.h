@@ -6,11 +6,15 @@
 //  Copyright 2007 thirty-three. All rights reserved.
 //
 
+#if !(TARGET_OS_IPHONE)
+#import <Cocoa/Cocoa.h>
+#else
+
 #import <Foundation/Foundation.h>
 
-#if TARGET_OS_IPHONE
 extern NSString *const AFObservedKeyPathKey;
 extern NSString *const AFObservedObjectKey;
+
 #endif
 
 /*

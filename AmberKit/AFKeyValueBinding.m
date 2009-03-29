@@ -8,7 +8,7 @@
 
 #import "AFKeyValueBinding.h"
 
-#if TARGET_OS_IPHONE
+#if TARGET_OS_MAC && TARGET_OS_IPHONE
 NSString *const AFObservedKeyPathKey = @"keyPath";
 NSString *const AFObservedObjectKey = @"object";
 #endif
