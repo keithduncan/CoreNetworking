@@ -9,12 +9,6 @@
 #import "AmberFoundation/AmberFoundation.h"
 
 //
-//	Categories
-//
-
-#import "AmberKit/AmberKit+Additions.h"
-
-//
 // Custom Controls
 //
 
@@ -30,3 +24,9 @@
 #import "AmberKit/AFBoolToColor.h"
 #import "AmberKit/AFPluralTransformer.h"
 #import "AmberKit/AFDateToString.h"
+
+//
+//	Categories
+//
+
+#import "AmberKit/AmberKit+Additions.h"
