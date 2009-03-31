@@ -48,12 +48,12 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 	[super dealloc];
 }
 
-- (void)scheduleWithRunLoop:(CFRunLoopRef)loop {
-	CFRunLoopAddSource(loop, _source, kCFRunLoopDefaultMode);
+- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
+	CFRunLoopAddSource(loop, _source, mode);
 }
 
-- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop {
-	CFRunLoopRemoveSource(loop, _source, kCFRunLoopDefaultMode);
+- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
+	CFRunLoopRemoveSource(loop, _source, mode);
 }
 
 - (void)invalidate {

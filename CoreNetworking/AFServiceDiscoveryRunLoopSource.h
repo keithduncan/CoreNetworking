@@ -25,8 +25,8 @@
 @property (readonly) DNSServiceRef service;
 - (id)initWithService:(DNSServiceRef)service;
 
-- (void)scheduleWithRunLoop:(CFRunLoopRef)loop;
-- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop;
+- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
+- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
 - (void)invalidate;
 
