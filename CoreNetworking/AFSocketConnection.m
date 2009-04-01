@@ -433,8 +433,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if ((self.connectionFlags & _kDidCallConnectDelegate) == _kDidCallConnectDelegate) return;
 	self.connectionFlags = (self.connectionFlags | _kDidCallConnectDelegate);
 	
-	if ([self.delegate respondsToSelector:@selector(layerDidConnect:toPeer:)])
-		[self.delegate layerDidConnect:self toPeer:_peer._hostDestination.host];
+	if ([self.delegate respondsToSelector:@selector(layer:didConnectToPeer:)])
+		[self.delegate layer:self didConnectToPeer:_peer._hostDestination.host];
 	
 	[self _dequeueReadPacket];
 	[self _dequeueWritePacket];

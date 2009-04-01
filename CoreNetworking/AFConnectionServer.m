@@ -1,6 +1,6 @@
 //
 //  ANServer.m
-//  Bonjour
+//  Amber
 //
 //  Created by Keith Duncan on 25/12/2008.
 //  Copyright 2008 thirty-three software. All rights reserved.
@@ -42,8 +42,10 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 			.address = (CFDataRef)currentAddrData,
 		};
 		
-		AFSocket *socket = [[AFSocketConnection alloc] initWithSignature:&currentSocketSignature delegate:server];
+		AFSocket *socket = [[AFSocketConnection alloc] initWithSignature:&currentSocketSignature callbacks:kCFSocketAcceptCallBack delegate:server];
 		if (socket == nil) continue;
+		
+		[socket scheduleInRunLoop:CFRunLoopGetCurrent() mode:kCFRunLoopDefaultMode];
 		
 		if (*port == 0) {
 			// Note: extract the *actual* port used and use that for future allocations
@@ -54,6 +56,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 		}
 		
 		[server.hosts addConnectionsObject:socket];
+		[socket open];
+		
 		[socket release];
 	}
 	
@@ -123,9 +127,9 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	
 	[clients release];
 	
+	[hosts removeObserver:self forKeyPath:@"connections"];
 	[hosts disconnect];
 	
-	[hosts removeObserver:self forKeyPath:@"connections"];
 	[hosts release];
 	
 	[super dealloc];
@@ -151,12 +155,19 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	return layer;
 }
 
-- (void)layer:(id <AFConnectionLayer>)socket didAcceptConnection:(id <AFConnectionLayer>)newSocket {
-	[clients addConnectionsObject:newSocket];
-#warning check the flow control to make sure that it isn't kept around despite error, it is removed in the callback below
+- (void)layer:(id <AFConnectionLayer>)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
+	AFSocket *newSocket = newLayer;
+	CFSocketSetSocketFlags([newSocket lowerLayer], CFSocketGetSocketFlags([newSocket lowerLayer]) & ~kCFSocketCloseOnInvalidate);
+	
+	AFSocketConnection *newSocketConnection = [[[AFSocketConnection alloc] initWithNative:CFSocketGetNative([newSocket lowerLayer]) callbacks:kCFStreamEventOpenCompleted delegate:self] autorelease];
+	
+	[self.clients addConnectionsObject:newSocketConnection];
+	
+	[newSocketConnection scheduleInRunLoop:CFRunLoopGetCurrent() mode:kCFRunLoopDefaultMode];
+	[newSocketConnection open];
 }
 
-- (void)layerDidConnect:(id <AFConnectionLayer>)socket toPeer:(const CFHostRef)host {
+- (void)layer:(id <AFConnectionLayer>)socket didConnectToPeer:(const CFHostRef)host {
 	id <AFConnectionLayer> applicationLayer = [self newApplicationLayerForNetworkLayer:socket];
 	
 	if ([self.delegate respondsToSelector:@selector(server:shouldConnect:toHost:)]) {
@@ -171,9 +182,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 		}
 	}
 	
-	[applicationLayer open];
-	
-#warning notify the server delegate
+	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
+		[self.delegate layer:self didAcceptConnection:applicationLayer];
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
