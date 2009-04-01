@@ -8,32 +8,20 @@
 
 #import "AFConnection.h"
 
-@interface AFConnection ()
-@property (readwrite, copy) NSURL *destinationEndpoint;
-@end
-
 @implementation AFConnection
 
-@synthesize destinationEndpoint=_destinationEndpoint;
-@synthesize lowerLayer=_lowerLayer;
-
-@synthesize delegate=_delegate;
-
-- (id)initWithDestination:(NSURL *)destinationEndpoint {
-	[self init];
-	
-	self.destinationEndpoint = destinationEndpoint;
-	
-	return self;
-}
+@synthesize destinationEndpoint;
+@synthesize delegate;
+@synthesize lowerLayer;
 
 - (void)dealloc {
-	[_destinationEndpoint release];
-	[_lowerLayer release];
+	[destinationEndpoint release];
+	[lowerLayer release];
 	
 	[super dealloc];
 }
 
+#if 0
 - (void)open {
 	[self.lowerLayer open];
 }
@@ -69,5 +57,10 @@
 - (BOOL)startTLS:(NSDictionary *)options {
 	return [self.lowerLayer startTLS:options];
 }
+#else
+- (id)forwardingTargetForSelector:(SEL)selector {
+	return self.lowerLayer;
+}
+#endif
 
 @end

@@ -6,7 +6,9 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "CoreNetworking/CoreNetworking.h"
+#import <Foundation/Foundation.h>
+
+#import "CoreNetworking/AFConnectionLayer.h"
 
 /*!
     @class
@@ -14,20 +16,22 @@
 	@discussion	Your subclass should encapsulate Application Layer data (as defined in RFC 1122) and pass it to the super class for further processing
 */
 
-@interface AFConnection : NSObject <AFConnectionLayer, AFConnectionLayerControlDelegate> {	
-	NSURL *_destinationEndpoint;
-	id <AFNetworkLayer> _lowerLayer;
+@interface AFConnection : NSObject <AFConnectionLayer, AFConnectionLayerControlDelegate> {
+ @private
+	NSURL *destinationEndpoint;
+	id <AFConnectionLayerControlDelegate> delegate;
 	
-	id <AFConnectionLayerControlDelegate> _delegate;
+	id <AFNetworkLayer> lowerLayer;
 }
 
-@property (retain) id <AFNetworkLayer, AFConnectionLayer> lowerLayer;
+/*!
+	@property
+ */
+@property (copy) NSURL *destinationEndpoint;
 
-- (id)initWithDestination:(NSURL *)destinationEndpoint;
-@property (readonly, copy) NSURL *destinationEndpoint;
-
+/*!
+	@property
+ */
 @property (assign) id <AFConnectionLayerControlDelegate> delegate;
-
-- (BOOL)startTLS:(NSDictionary *)options;
 
 @end
