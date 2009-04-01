@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+#import "AFNetworkLayer.h"
+#import "AFConnectionLayer.h"
+
 #import "AFNetworkTypes.h"
-#import "AFNetworkLayers.h"
 #import "AFNetworkFunctions.h"
 #import "AFNetworkConstants.h"
 

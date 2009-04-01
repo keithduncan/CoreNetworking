@@ -8,6 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+/*!
+	@const
+ */
 extern NSString *const AFCoreNetworkingBundleIdentifier;
 
+/*!
+	@const
+ */
 extern NSString *const AFNetworkingErrorDomain;

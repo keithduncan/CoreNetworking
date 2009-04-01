@@ -47,6 +47,8 @@ typedef struct AFSocketSignature AFSocketSignature;
     @discussion  This class is a mix of two of the primary patterns. Internally, it acts an adaptor between the CFSocket and CFStream API. Externally, it bridges CFHost, CFNetService with CFSocket and CFStream. It provides a CFStream like API.
 */
 @interface AFSocketConnection : NSObject <AFConnectionLayer> {
+	id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate> _delegate;
+	
 	NSUInteger _connectionFlags;
 	NSUInteger _streamFlags;
 	
@@ -68,29 +70,49 @@ typedef struct AFSocketSignature AFSocketSignature;
 }
 
 /*
- * Connection Initialisers
+ * Inbound Initialisers
+ *	These should be used to create a socket connection for received connections
+ */
+
+/*!
+	@method
+	@abstract	the delegate is provided as this stage because after the SYN-ACK (or equivalent) data could be inbound following the ACK (or equivalent) and a subsequent -open would be pointless for an inbound connection
+ */
+- (id)initWithNative:(CFSocketNativeHandle)sock delegate:(id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate;
+
+/*
+ * Outbound Initialisers
  *	Perhaps the connection initialiser should be a class method a facade to a class cluster and return SOCK_STREAM/SOCK_DGRAM etc internal subclasses?
  *	These connections will need to be sent -open before they can be used, just like a stream
  */
 
 /*!
 	@method
-	@abstract	A resolved net service encapsulates all the data from the socket signature above
-	@param		|netService| will be used to create a CFNetService internally for resolving
- */
-+ (id <AFNetworkLayer>)peerWithNetService:(id <AFNetServiceCommon>)netService;
-
-/*!
-	@method
 	@abstract	This doesn't use CFSocketSignature because the protocol family is determined by the CFHostRef address values
  */
-+ (id <AFNetworkLayer>)peerWithSignature:(const AFSocketSignature *)signature;
+- (id <AFConnectionLayer>)initWithSignature:(const AFSocketSignature *)signature;
 
 /*!
 	@method
-	@abstract	will return YES if there are no pending writes/reads
+	@abstract	This initialiser is a sibling to <tt>-initWithSignature:</tt>
+	@discussion	A net service once resolved, encapsulates all the data from <tt>AFSocketSignature</tt>
+	@param		|netService| will be used to create a CFNetService internally
  */
-- (BOOL)canSafelySetDelegate;
+- (id <AFConnectionLayer>)initWithNetService:(id <AFNetServiceCommon>)netService;
+
+
+/*!
+	@method
+	@abstract	the socket connection must be scheduled in at least one run loop to function
+ */
+- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
+
+/*!
+	@method
+	@abstract	the socket connection must be scheduled in at least one run loop to function
+ */
+- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
+
 
 /*!
 	@property
@@ -117,9 +139,16 @@ typedef struct AFSocketSignature AFSocketSignature;
 
 /*!
 	@method
+	@abstract	this is called when the connection encounters an error
+	@param		|fatal| will reflect wether the connection will remain open following the error, if not the control delegate will receive the -layerWillClose: method
+ */
+- (void)socket:(AFSocketConnection *)socket didReceiveError:(NSError *)error isFatal:(BOOL)fatal;
+
+/*!
+	@method
 	@abstract	When the socket is closing you can keep it open until the writes are complete, but you'll have to ensure the object remains live
  */
-- (BOOL)socketShouldRemainOpenPendingWrites:(AFSocketConnection *)socket;
+- (BOOL)socket:(AFSocketConnection *)socket shouldRemainOpenPendingWrites:(NSUInteger)count;
 
 @end
 

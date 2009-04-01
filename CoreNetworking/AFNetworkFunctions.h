@@ -10,9 +10,9 @@
 // These functions operate on data in the Transport and Internet layers, as defined in RFC 1122
 //
 
-#import "CoreNetworking/CoreNetworking.h"
+#import <Foundation/Foundation.h>
 
-struct sockaddr;
+#import <sys/socket.h>
 
 bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b);
 const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen);

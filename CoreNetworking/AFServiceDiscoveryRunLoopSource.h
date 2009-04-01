@@ -6,13 +6,13 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "CoreNetworking/CoreNetworking.h"
+#import <Foundation/Foundation.h>
 
 #import <dns_sd.h>
 
 /*!
 	@class
-	@abstract    Allows for Asynchronous DNSService API callbacks
+	@abstract    Allows for asynchronous DNSService API callbacks
 	@discussion  This class doesn't take ownership of the DNSServiceRef it is instantiated with, it is still the client's responsibility to deallocate the DNSServiceRef once it is no longer needed
 */
 @interface AFServiceDiscoveryRunLoopSource : NSObject {

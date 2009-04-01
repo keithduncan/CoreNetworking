@@ -2,6 +2,7 @@
 //  AFSocket.m
 //
 //	Originally based on AsyncSocket http://code.google.com/p/cocoaasyncsocket/
+//		Although the code is much departed from the original codebase
 //
 //  Created by Keith Duncan
 //  Copyright 2008 thirty-three software. All rights reserved.
@@ -72,58 +73,47 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 @synthesize connectionFlags=_connectionFlags, streamFlags=_streamFlags;
 @synthesize currentReadPacket=_currentReadPacket, currentWritePacket=_currentWritePacket;
 
-+ (id)socketWithNativeSocket:(CFSocketNativeHandle)sock delegate:(id)delegate {
-	AFSocketConnection *port = [[self alloc] init];
-	port->_delegate = delegate;
+- (id)initWithNative:(CFSocketNativeHandle)sock delegate:(id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate {
+	self = [self init];
 	
-	CFRunLoopRef *loop = &port->_runLoop;
-	if ([port->_delegate respondsToSelector:@selector(socketShouldScheduleWithRunLoop:)]) {
-		*loop = [port->_delegate socketShouldScheduleWithRunLoop:port];
-	}
-	if (*loop == NULL) *loop = CFRunLoopGetMain();
+	_delegate = delegate;
 	
 	CFSocketRef socket = CFSocketCreateWithNative(kCFAllocatorDefault, sock, 0, NULL, NULL);
 	CFSocketSetSocketFlags(socket, (CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate));
 	CFDataRef peerAddress = CFSocketCopyPeerAddress(socket);
 	CFRelease(socket);
 	CFHostRef host = CFHostCreateWithAddress(kCFAllocatorDefault, peerAddress);
-	port->_peer._hostDestination.host = (CFHostRef)CFRetain(host);
+	_peer._hostDestination.host = (CFHostRef)CFRetain(host);
 	CFRelease(host);
 	
-	CFStreamCreatePairWithSocket(kCFAllocatorDefault, sock, &port->readStream, &port->writeStream);
+	CFStreamCreatePairWithSocket(kCFAllocatorDefault, sock, &readStream, &writeStream);
 	
 	CFStreamClientContext context;
 	memset(&context, 0, sizeof(CFStreamClientContext));
-	context.info = port;
+	context.info = self;
 	
 	CFStreamEventType types = (kCFStreamEventOpenCompleted | kCFStreamEventHasBytesAvailable | kCFStreamEventCanAcceptBytes | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered);
 	
-	CFReadStreamSetClient(port->readStream, types, AFSocketConnectionReadStreamCallback, &context);
-	CFReadStreamScheduleWithRunLoop(port->readStream, port->_runLoop, kCFRunLoopCommonModes);
+	CFReadStreamSetClient(readStream, types, AFSocketConnectionReadStreamCallback, &context);
+	CFWriteStreamSetClient(writeStream, types, AFSocketConnectionWriteStreamCallback, &context);
 	
-	CFWriteStreamSetClient(port->writeStream, types, AFSocketConnectionWriteStreamCallback, &context);
-	CFWriteStreamScheduleWithRunLoop(port->writeStream, port->_runLoop, kCFRunLoopCommonModes);
-	
-	CFReadStreamOpen(port->readStream);
-	CFWriteStreamOpen(port->writeStream);
-	
-	return port;
+	return self;
 }
 
 /*
 	The layout of the _peer union members is important, we can cast the _peer instance variable to CFTypeRef and introspect using CFGetTypeID to determine the member in use
  */
 
-+ (id <AFNetworkLayer>)peerWithNetService:(id <AFNetServiceCommon>)netService {
-	AFSocketConnection *socket = [[self alloc] init];
+- (id <AFConnectionLayer>)initWithNetService:(id <AFNetServiceCommon>)netService {
+	self = [self init];
 	
-	return socket;
+	return self;
 }
 
-+ (id <AFNetworkLayer>)peerWithSignature:(const AFSocketSignature *)signature {
-	AFSocketConnection *socket = [[self alloc] init];
+- (id <AFConnectionLayer>)initWithSignature:(const AFSocketSignature *)signature {
+	self = [self init];
 	
-	return socket;
+	return self;
 }
 
 - (id)init {
@@ -200,8 +190,14 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	return description;
 }
 
-- (BOOL)canSafelySetDelegate {
-	return ([readQueue count] == 0 && [writeQueue count] == 0 && [self currentReadPacket] == nil && [self currentWritePacket] == nil);
+- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
+	CFReadStreamScheduleWithRunLoop(readStream, loop, mode);
+	CFWriteStreamScheduleWithRunLoop(writeStream, loop, mode);
+}
+
+- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
+	CFReadStreamUnscheduleFromRunLoop(readStream, loop, mode);
+	CFWriteStreamUnscheduleFromRunLoop(writeStream, loop, mode);
 }
 
 - (void)_packet:(AFPacket *)packet progress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total tag:(NSUInteger *)tag {
@@ -234,7 +230,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 #pragma mark Connection
 
 - (void)open {
-	
+	CFReadStreamOpen(readStream);
+	CFWriteStreamOpen(writeStream);
 }
 
 - (BOOL)isOpen {
@@ -247,8 +244,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	// Note: if there are pending writes then the control delegate can keep the streams open
 	if (self.currentWritePacket != nil || [writeQueue count] > 0) {
 		BOOL shouldRemainOpen = NO;
-		if ([self.delegate respondsToSelector:@selector(socketShouldRemainOpenPendingWrites:)])
-			shouldRemainOpen = [self.delegate socketShouldRemainOpenPendingWrites:self];
+		if ([self.delegate respondsToSelector:@selector(socket:shouldRemainOpenPendingWrites:)])
+			shouldRemainOpen = [self.delegate socket:self shouldRemainOpenPendingWrites:([writeQueue count] + 1)];
 		
 		if (shouldRemainOpen) {
 			self.connectionFlags = (self.connectionFlags | (_kForbidStreamReadWrite | _kCloseSoon));
@@ -279,8 +276,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if (notifyDelegate && [self.delegate respondsToSelector:@selector(layerDidClose:)]) {
 		[self.delegate layerDidClose:self];
 	}
-	
-	[super close];
 }
 
 - (BOOL)isClosed {
@@ -438,9 +433,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if ((self.connectionFlags & _kDidCallConnectDelegate) == _kDidCallConnectDelegate) return;
 	self.connectionFlags = (self.connectionFlags | _kDidCallConnectDelegate);
 	
-	if ([self.delegate respondsToSelector:@selector(layerDidConnect:toPeer:)]) {
+	if ([self.delegate respondsToSelector:@selector(layerDidConnect:toPeer:)])
 		[self.delegate layerDidConnect:self toPeer:_peer._hostDestination.host];
-	}
 	
 	[self _dequeueReadPacket];
 	[self _dequeueWritePacket];
@@ -463,9 +457,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[readQueue removeAllObjects];
 }
 
-- (void)_packetTimeoutNotification:(NSNotification *)notification {
-#warning timeout should be non-fatal
-	
+- (void)_packetTimeoutNotification:(NSNotification *)notification {	
 	if ([[notification object] isEqual:[self currentReadPacket]]) {
 		[self _endCurrentReadPacket];
 		
@@ -473,7 +465,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 							  NSLocalizedStringWithDefaultValue(@"AFSocketStreamReadTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Read operation timeout", nil), NSLocalizedDescriptionKey,
 							  nil];
 		
-		[self disconnectWithError:[NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionReadTimeoutError userInfo:info]];
+		NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionReadTimeoutError userInfo:info];
+		
+		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:isFatal:)])
+			[self.delegate socket:self didReceiveError:error isFatal:NO];
 	} else if ([[notification object] isEqual:[self currentWritePacket]]) {
 		[self _endCurrentWritePacket];
 		
@@ -481,7 +476,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 							  NSLocalizedStringWithDefaultValue(@"AFSocketStreamWriteTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Write operation timeout", nil), NSLocalizedDescriptionKey,
 							  nil];
 		
-		[self disconnectWithError:[NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionWriteTimeoutError userInfo:info]];
+		NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionWriteTimeoutError userInfo:info];
+			
+		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:isFatal:)])
+			[self.delegate socket:self didReceiveError:error isFatal:NO];
 	}
 }
 
@@ -512,7 +510,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[self _readBytes];
 }
 
-#warning the _readBytes and _sendBytes methods are identical with exception to the selector names called, they could be condensed into a single method taking a packet and read/write type
+#warning the _readBytes and _sendBytes methods are identical with exception to the selector names called, the packet architecture could be further condensed into a packet queue class
 
 - (void)_readBytes {
 	AFPacketRead *packet = [self currentReadPacket];
@@ -520,8 +518,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	NSError *error = nil;
 	BOOL packetComplete = [packet performRead:readStream error:&error];
-#warning stream errors should be non-fatal
-	if (error != nil) [self disconnectWithError:error];
+
+	if (error != nil && [self.delegate respondsToSelector:@selector(socket:didReceiveError:isFatal:)])
+		[self.delegate socket:self didReceiveError:error isFatal:NO];
 	
 	if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)]) {
 		float percent = 0.0;
@@ -587,8 +586,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	NSError *error = nil;
 	BOOL packetComplete = [packet performWrite:writeStream error:&error];
-#warning steam errors should be non-fatal
-	if (error != nil) [self disconnectWithError:error];
+	
+	if (error != nil && [self.delegate respondsToSelector:@selector(socket:didReceiveError:isFatal:)])
+		[self.delegate socket:self didReceiveError:error isFatal:NO];
 	
 	if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:tag:)]) {
 		float percent = 0.0;

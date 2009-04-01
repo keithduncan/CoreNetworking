@@ -34,7 +34,7 @@
 /*!
 	@method
 	@abstract	The returned object is sent [[connectionClass alloc] init] to create a new application layer.
-					It MUST be overridden in a subclass, calling the superclass implementation will throw an exception
+	@discussion	the default implementation raises an unimplemented exception
  */
 + (Class)connectionClass;
 
@@ -52,6 +52,7 @@
 
 /*!
 	@method
+	@abstract	this method uses the <tt>+connectionClass</tt>
  */
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)socket; // Note: override point, if you need to customize your application layer before it is added to the connection pool, call super for basic setup first
 
