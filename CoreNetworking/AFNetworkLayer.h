@@ -13,8 +13,11 @@
  *		Transport + Internetwork
  */
 
-@protocol AFNetworkLayerDataDelegate;
+@protocol AFNetworkLayerHostDelegate;
 @protocol AFNetworkLayerControlDelegate;
+@protocol AFNetworkLayerDataDelegate;
+
+#pragma mark -
 
 /*!
     @protocol
@@ -25,19 +28,45 @@
 
 @property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
 
+/*!
+	@method
+	@abstract	the delegate callbacks convey success/failure
+	@discussion	good candidate for a block callback argument, allowing for asynchronous -open methods and eliminating the delegate callbacks
+ */
 - (void)open;
+
+/*!
+	@method
+	@abstract	returns YES if the layer is currently open
+ */
 - (BOOL)isOpen;
 
+/*!
+	@method
+	@discussion	a layer may elect to remain open, in which case you will not receive the -layerDidClose: delegate callback until it actually closes
+ */
 - (void)close;
-- (BOOL)isClosed;
 
-- (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
-- (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
+/*!
+	@method
+	@abstract	many layers are linear non-recurrant in nature, like a stream; once closed it may not be openable
+ */
+- (BOOL)isClosed;
 
  @optional
 
-// Pass a dictionary with the keys in CFSocketStreams
+- (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
+- (void)performWrite:(id)dataBuffer forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
+
+/*!
+	@method
+	@abstract	Pass a dictionary with the keys in CFSocketStreams
+ */
 - (BOOL)startTLS:(NSDictionary *)options;
+
+@end
+
+@protocol AFNetworkLayerHostDelegate
 
 @end
 
@@ -54,33 +83,3 @@
  @optional
 - (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
 @end
-
-@protocol AFNetworkLayerHostDelegate
-- (void)layer:(id <AFNetworkLayer>)layer didAcceptConnection:(id <AFNetworkLayer>)newLayer;
-@end
-
-/*
- *	Connection Layers
- */
-
-@protocol AFConnectionLayerControlDelegate;
-
-/*!
-	@protocol
-	@abstract    An AFConnectionLayer should maintain a stateful connection between endpoints
- */
-@protocol AFConnectionLayer <AFNetworkLayer>
-@property (assign) id <AFConnectionLayerControlDelegate> delegate;
-@end
-
-@protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>
- @optional
-- (void)layerDidConnect:(id <AFConnectionLayer>)layer toPeer:(CFHostRef)peer;
-- (void)layerWillDisconnect:(id <AFConnectionLayer>)layer withError:(NSError *)error;
-@end
-
-/*
- *	Connectionless Layers
- */
-
-// Note: I need to use UDP first, then figure out what the API should be
