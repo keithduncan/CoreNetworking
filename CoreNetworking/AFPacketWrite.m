@@ -8,6 +8,8 @@
 
 #import "AFPacketWrite.h"
 
+#import "AFNetworkFunctions.h"
+
 #define WRITE_CHUNKSIZE    (1024 * 4)   // Limit on size of each write pass
 
 @implementation AFPacketWrite
@@ -57,7 +59,7 @@
 	}
 	
 	if (streamError) {
-		*errorRef = [self errorFromCFStreamError:CFWriteStreamGetError(writeStream)];
+		*errorRef = AFErrorFromCFStreamError(CFWriteStreamGetError(writeStream));
 	}
 	
 	return packetComplete;

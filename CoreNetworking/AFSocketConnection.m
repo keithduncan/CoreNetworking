@@ -18,7 +18,9 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
+#import "AFSocket.h"
 #import "AFNetworkConstants.h"
+#import "AFNetworkFunctions.h"
 
 #import "AFPacketRead.h"
 #import "AFPacketWrite.h"
@@ -35,7 +37,9 @@ typedef NSUInteger AFSocketConnectionFlags;
 
 enum {
 	_kReadStreamDidOpen			= 1UL << 0,
-	_kWriteStreamDidOpen		= 1UL << 1,
+	_kReadStreamDidClose		= 1UL << 1,
+	_kWriteStreamDidOpen		= 1UL << 2,
+	_kWriteStreamDidClose		= 1UL << 3,
 };
 typedef NSUInteger AFSocketConnectionStreamFlags;
 
@@ -71,14 +75,18 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 @implementation AFSocketConnection
 
+@synthesize lowerLayer;
 @synthesize delegate=_delegate;
 @synthesize connectionFlags=_connectionFlags, streamFlags=_streamFlags;
 @synthesize currentReadPacket=_currentReadPacket, currentWritePacket=_currentWritePacket;
 
-- (id)initWithNative:(CFSocketNativeHandle)sock delegate:(id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate {
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer delegate:(id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate {
 	self = [self init];
 	
 	_delegate = delegate;
+	
+	CFSocketRef lowerLayerSocket = ((CFSocketRef)[(AFSocket *)layer lowerLayer]);
+	CFSocketNativeHandle sock = CFSocketGetNative(lowerLayerSocket);
 	
 	CFSocketRef socket = CFSocketCreateWithNative(kCFAllocatorDefault, sock, 0, NULL, NULL);
 	CFSocketSetSocketFlags(socket, (CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate));
@@ -243,15 +251,18 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 - (void)close {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(close) object:nil];
 	
-	// Note: if there are pending writes then the control delegate can keep the streams open
-	if (self.currentWritePacket != nil || [writeQueue count] > 0) {
-		BOOL shouldRemainOpen = NO;
-		if ([self.delegate respondsToSelector:@selector(socket:shouldRemainOpenPendingWrites:)])
-			shouldRemainOpen = [self.delegate socket:self shouldRemainOpenPendingWrites:([writeQueue count] + 1)];
-		
-		if (shouldRemainOpen) {
-			self.connectionFlags = (self.connectionFlags | (_kForbidStreamReadWrite | _kCloseSoon));
-			return;
+	// Note: you can only prevent a local close, if the streams were closed remotely there's nothing we can do
+	if ((self.streamFlags & _kReadStreamDidClose) != _kReadStreamDidClose && (self.streamFlags & _kWriteStreamDidClose) != _kWriteStreamDidClose) {
+		// Note: if there are pending writes then the control delegate can keep the streams open
+		if (self.currentWritePacket != nil || [writeQueue count] > 0) {
+			BOOL shouldRemainOpen = NO;
+			if ([self.delegate respondsToSelector:@selector(socket:shouldRemainOpenPendingWrites:)])
+				shouldRemainOpen = [self.delegate socket:self shouldRemainOpenPendingWrites:([writeQueue count] + 1)];
+			
+			if (shouldRemainOpen) {
+				self.connectionFlags = (self.connectionFlags | (_kForbidStreamReadWrite | _kCloseSoon));
+				return;
+			}
 		}
 	}
 	
@@ -271,7 +282,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	BOOL notifyDelegate = ((self.connectionFlags & _kDidPassConnectMethod) == _kDidPassConnectMethod);
 	
-	// Note: clear the flags, self could be reused
+	// Note: clear the flags, self could be reused?
 	// Note: clear the flags before calling the delegate as it could release self
 	self.connectionFlags = 0;
 	
@@ -287,44 +298,16 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 #pragma mark Termination
 
 - (void)disconnectWithError:(NSError *)error {
-	self.connectionFlags = (self.connectionFlags | _kClosingWithError);
-	
-	if ((self.connectionFlags & _kDidPassConnectMethod) == _kDidPassConnectMethod) {
-		if ([self.delegate respondsToSelector:@selector(layer:didDisconnectWithError:)])
-			[self.delegate layer:self didDisconnectWithError:error];
+	if (error != nil) {
+		self.connectionFlags = (self.connectionFlags | _kClosingWithError);
+		
+		if ((self.connectionFlags & _kDidPassConnectMethod) == _kDidPassConnectMethod) {
+			if ([self.delegate respondsToSelector:@selector(layer:didDisconnectWithError:)])
+				[self.delegate layer:self didDisconnectWithError:error];
+		}
 	}
 	
 	[self close];
-}
-
-#pragma mark Errors
-
-- (NSError *)errorFromCFStreamError:(CFStreamError)err {
-	if (err.domain == 0 && err.error == 0) return nil;
-	NSString *domain = @"CFStreamError (unlisted domain)", *message = nil;
-	
-	if (err.domain == kCFStreamErrorDomainPOSIX) {
-		domain = NSPOSIXErrorDomain;
-	} else if (err.domain == kCFStreamErrorDomainMacOSStatus) {
-		domain = NSOSStatusErrorDomain;
-	} else if (err.domain == kCFStreamErrorDomainMach) {
-		domain = NSMachErrorDomain;
-	} else if (err.domain == kCFStreamErrorDomainNetDB) {
-		domain = @"kCFStreamErrorDomainNetDB";
-		message = [NSString stringWithCString:gai_strerror(err.error) encoding:NSASCIIStringEncoding];
-	} else if (err.domain == kCFStreamErrorDomainNetServices) {
-		domain = @"kCFStreamErrorDomainNetServices";
-	} else if (err.domain == kCFStreamErrorDomainSOCKS) {
-		domain = @"kCFStreamErrorDomainSOCKS";
-	} else if (err.domain == kCFStreamErrorDomainSystemConfiguration) {
-		domain = @"kCFStreamErrorDomainSystemConfiguration";
-	} else if (err.domain == kCFStreamErrorDomainSSL) {
-		domain = @"kCFStreamErrorDomainSSL";
-	}
-	
-	NSDictionary *info = nil;
-	if (message != nil) info = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
-	return [NSError errorWithDomain:domain code:err.error userInfo:info];
 }
 
 #pragma mark Reading
@@ -358,10 +341,20 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 			break;
 		}
 		case kCFStreamEventErrorOccurred:
+		{
+			NSError *error = AFErrorFromCFStreamError(CFReadStreamGetError(self->readStream));
+			
+			if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)]) {
+				[self.delegate socket:self didReceiveError:error];
+			}
+
+			break;
+		}
 		case kCFStreamEventEndEncountered:
 		{
-#warning these stream events should be non-fatal
-			[self disconnectWithError:[self errorFromCFStreamError:CFReadStreamGetError(self->readStream)]];
+			self.streamFlags = (self.streamFlags | _kReadStreamDidClose);
+			
+			[self close];
 			break;
 		}
 		default:
@@ -405,10 +398,20 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 			break;
 		}
 		case kCFStreamEventErrorOccurred:
+		{
+			NSError *error = AFErrorFromCFStreamError(CFReadStreamGetError(self->readStream));
+			
+			if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)]) {
+				[self.delegate socket:self didReceiveError:error];
+			}
+			
+			break;
+		}
 		case kCFStreamEventEndEncountered:
 		{
-#warning these should be non-fatal
-			[self disconnectWithError:[self errorFromCFStreamError:CFWriteStreamGetError(self->writeStream)]];
+			self.streamFlags = (self.streamFlags | _kWriteStreamDidClose);
+			
+			[self close];
 			break;
 		}
 		default:
@@ -468,8 +471,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		
 		NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionReadTimeoutError userInfo:info];
 		
-		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:isFatal:)])
-			[self.delegate socket:self didReceiveError:error isFatal:NO];
+		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
+			[self.delegate socket:self didReceiveError:error];
 	} else if ([[notification object] isEqual:[self currentWritePacket]]) {
 		[self _endCurrentWritePacket];
 		
@@ -479,8 +482,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		
 		NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionWriteTimeoutError userInfo:info];
 			
-		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:isFatal:)])
-			[self.delegate socket:self didReceiveError:error isFatal:NO];
+		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
+			[self.delegate socket:self didReceiveError:error];
 	}
 }
 
@@ -519,9 +522,11 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	NSError *error = nil;
 	BOOL packetComplete = [packet performRead:readStream error:&error];
-
-	if (error != nil && [self.delegate respondsToSelector:@selector(socket:didReceiveError:isFatal:)])
-		[self.delegate socket:self didReceiveError:error isFatal:NO];
+	
+	if (error != nil) {
+		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
+			[self.delegate socket:self didReceiveError:error];
+	}
 	
 	if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)]) {
 		float percent = 0.0;
@@ -588,8 +593,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	NSError *error = nil;
 	BOOL packetComplete = [packet performWrite:writeStream error:&error];
 	
-	if (error != nil && [self.delegate respondsToSelector:@selector(socket:didReceiveError:isFatal:)])
-		[self.delegate socket:self didReceiveError:error isFatal:NO];
+	if (error != nil) {
+		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
+			[self.delegate socket:self didReceiveError:error];
+	}
 	
 	if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:tag:)]) {
 		float percent = 0.0;

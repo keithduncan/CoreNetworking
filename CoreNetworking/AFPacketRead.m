@@ -9,6 +9,7 @@
 #import "AFPacketRead.h"
 
 #import "AFNetworkConstants.h"
+#import "AFNetworkFunctions.h"
 
 #define READALL_CHUNKSIZE	256         // Incremental increase in buffer size
 
@@ -176,7 +177,7 @@
 	
 #warning perhaps errors should be returned in a collection
 	if (readStreamError) {
-		*error = [self errorFromCFStreamError:CFReadStreamGetError(readStream)];
+		*error = AFErrorFromCFStreamError(CFReadStreamGetError(readStream));
 	} else if (maxoutError) {
 		NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
 							  NSLocalizedStringWithDefaultValue(@"AFSocketReadMaxedOutError", @"AFSocket", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Read operation reached set maximum length", nil), NSLocalizedDescriptionKey,

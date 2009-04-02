@@ -21,6 +21,10 @@
 
 static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerHostConnectionsPropertyObservationContext";
 
+@interface AFConnectionServer () <AFConnectionLayerControlDelegate>
+
+@end
+
 @implementation AFConnectionServer
 
 @synthesize delegate=_delegate;
@@ -33,7 +37,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	for (NSData *currentAddrData in (NSArray *)addrs) {
 		currentAddrData = [[currentAddrData mutableCopy] autorelease];
 		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddrData))->sin_port = htons(*port);
-#warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+		// Note #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 		
 		CFSocketSignature currentSocketSignature = {
 			.protocolFamily = ((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)currentAddrData))->sa_family,
@@ -49,9 +53,9 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 		
 		if (*port == 0) {
 			// Note: extract the *actual* port used and use that for future allocations
-			CFDataRef actualAddrData = CFSocketCopyAddress([socket lowerLayer]);
+			CFDataRef actualAddrData = CFSocketCopyAddress((CFSocketRef)[socket lowerLayer]);
 			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port);
-#warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+			// Note #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 			CFRelease(actualAddrData);
 		}
 		
@@ -139,7 +143,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
     if (context == &ServerHostConnectionsPropertyObservationContext) {
 		if (![[change objectForKey:NSKeyValueChangeKindKey] unsignedIntegerValue] == NSKeyValueChangeInsertion) return;
 		
-		[[change valueForKey:NSKeyValueChangeNewKey] performSelector:@selector(setDelegate:) withObject:self];
+		[[change valueForKey:NSKeyValueChangeNewKey] makeObjectsPerformSelector:@selector(setDelegate:) withObject:self];
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 

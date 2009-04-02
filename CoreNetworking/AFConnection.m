@@ -8,15 +8,28 @@
 
 #import "AFConnection.h"
 
+@interface AFConnection ()
+@property (readwrite, retain) id <AFNetworkLayer> lowerLayer;
+@end
+
 @implementation AFConnection
 
-@synthesize destinationEndpoint;
-@synthesize delegate;
-@synthesize lowerLayer;
+@synthesize destinationEndpoint=_destinationEndpoint;
+@synthesize delegate=_delegate;
+@synthesize lowerLayer=_lowerLayer;
+
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)lowerLayer delegate:(id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate>)delegate {
+	self = [self init];
+	
+	_delegate = delegate;
+	_lowerLayer = [lowerLayer retain];
+	
+	return self;
+}
 
 - (void)dealloc {
-	[destinationEndpoint release];
-	[lowerLayer release];
+	[_destinationEndpoint release];
+	[_lowerLayer release];
 	
 	[super dealloc];
 }
@@ -45,18 +58,6 @@
 	return [self.lowerLayer isClosed];
 }
 
-- (void)layerDidOpen:(id <AFConnectionLayer>)layer {
-	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidOpen:self];
-}
-
-- (void)layerDidNotOpen:(id <AFConnectionLayer>)layer {
-	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidNotOpen:self];
-}
-
-- (void)layerDidClose:(id <AFConnectionLayer>)layer; {
-	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidClose:self];
-}
-
 - (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
 	[self.lowerLayer performWrite:data forTag:tag withTimeout:duration];
 }
@@ -67,6 +68,18 @@
 
 - (BOOL)startTLS:(NSDictionary *)options {
 	return [self.lowerLayer startTLS:options];
+}
+
+- (void)layerDidOpen:(id <AFConnectionLayer>)layer {
+	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidOpen:self];
+}
+
+- (void)layerDidNotOpen:(id <AFConnectionLayer>)layer {
+	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidNotOpen:self];
+}
+
+- (void)layerDidClose:(id <AFConnectionLayer>)layer; {
+	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidClose:self];
 }
 
 #endif

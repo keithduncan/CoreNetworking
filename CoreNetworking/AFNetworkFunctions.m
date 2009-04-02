@@ -8,6 +8,7 @@
 
 #import "AFNetworkFunctions.h"
 
+#import <netdb.h>
 #import <sys/socket.h>
 #import <arpa/inet.h>
 
@@ -102,4 +103,34 @@ const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen)
     } 
 	
     return NULL;
+}
+
+NSError *AFErrorFromCFStreamError(CFStreamError error) {
+	if (error.domain == 0 && error.error == 0) return nil;
+	NSString *domain = @"CFStreamError (unlisted domain)", *message = nil;
+	
+	if (error.domain == kCFStreamErrorDomainPOSIX) {
+		domain = NSPOSIXErrorDomain;
+	} else if (error.domain == kCFStreamErrorDomainMacOSStatus) {
+		domain = NSOSStatusErrorDomain;
+	} else if (error.domain == kCFStreamErrorDomainMach) {
+		domain = NSMachErrorDomain;
+	} else if (error.domain == kCFStreamErrorDomainNetDB) {
+		domain = @"kCFStreamErrorDomainNetDB";
+		message = [NSString stringWithCString:gai_strerror(error.error) encoding:NSASCIIStringEncoding];
+	} else if (error.domain == kCFStreamErrorDomainNetServices) {
+		domain = @"kCFStreamErrorDomainNetServices";
+	} else if (error.domain == kCFStreamErrorDomainSOCKS) {
+		domain = @"kCFStreamErrorDomainSOCKS";
+	} else if (error.domain == kCFStreamErrorDomainSystemConfiguration) {
+		domain = @"kCFStreamErrorDomainSystemConfiguration";
+	} else if (error.domain == kCFStreamErrorDomainSSL) {
+		domain = @"kCFStreamErrorDomainSSL";
+	}
+	
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+						  message, NSLocalizedDescriptionKey,
+						  nil];
+	
+	return [NSError errorWithDomain:domain code:error.error userInfo:userInfo];
 }

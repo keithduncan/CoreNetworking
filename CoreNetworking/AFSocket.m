@@ -52,8 +52,8 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 - (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options delegate:(id <AFSocketControlDelegate, AFSocketHostDelegate>)delegate {
 	self = [self init];
 	
-	_signature = NSAllocateCollectable(sizeof(signature), NSScannedOption);
-	objc_memmove_collectable(_signature, signature, sizeof(signature));
+	_signature = (CFSocketSignature *)malloc(sizeof(CFSocketSignature));
+	memcpy(_signature, signature, sizeof(CFSocketSignature));
 	// Note: this is here for non-GC
 	CFRetain(_signature->address);
 	

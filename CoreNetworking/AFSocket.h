@@ -34,7 +34,7 @@
 
 /*
  *	Outbound Initialiser
- *		This is not covered by a protocol, the AFConnectionServer knows how to create this class specifically
+ *		This is not goverened by a protocol, the AFConnectionServer knows how to create this class specifically
  */
 
 /*!

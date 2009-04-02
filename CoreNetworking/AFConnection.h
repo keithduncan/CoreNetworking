@@ -15,14 +15,18 @@
     @abstract	Will pass data to the |lowerLayer| for further processing
 	@discussion	Your subclass should encapsulate Application Layer data (as defined in RFC 1122) and pass it to the super class for further processing
 */
-
-@interface AFConnection : NSObject <AFConnectionLayerControlDelegate> {
+@interface AFConnection : NSObject <AFConnectionLayer, AFConnectionLayerControlDelegate> {
  @private
-	NSURL *destinationEndpoint;
-	id <AFConnectionLayerControlDelegate> delegate;
+	NSURL *_destinationEndpoint;
+	id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> _delegate;
 	
-	id <AFNetworkLayer> lowerLayer;
+	id <AFNetworkLayer> _lowerLayer;
 }
+
+/*!
+	@method
+ */
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)lowerLayer delegate:(id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate>)delegate;
 
 /*!
 	@property
@@ -32,14 +36,6 @@
 /*!
 	@property
  */
-@property (assign) id <AFConnectionLayerControlDelegate> delegate;
-
-@end
-
-/*!
-	@category
-	@abstract	the layer conformance is added in a category so they don't actually have to be implemented, they are simply forwarded
- */
-@interface AFConnection () <AFConnectionLayer>
+@property (assign) id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> delegate;
 
 @end

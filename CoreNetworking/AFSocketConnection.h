@@ -51,6 +51,7 @@ typedef struct AFSocketSignature AFSocketSignature;
     @discussion  This class is a mix of two of the primary patterns. Internally, it acts an adaptor between the CFSocket and CFStream API. Externally, it bridges CFHost, CFNetService with CFSocket and CFStream. It provides a CFStream like API.
 */
 @interface AFSocketConnection : NSObject <AFConnectionLayer> {
+	id <AFNetworkLayer> lowerLayer;
 	id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate> _delegate;
 	
 	NSUInteger _connectionFlags;
@@ -72,6 +73,16 @@ typedef struct AFSocketSignature AFSocketSignature;
 	NSMutableArray *writeQueue;
 	id _currentWritePacket;
 }
+
+/*
+ *	Inbound Initialisers
+ *		These are used when you have an accept socket that has spawned a new connection
+ */
+
+/*!
+	@method
+ */
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer delegate:(id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate;
 
 /*
  * Outbound Initialisers
@@ -121,7 +132,7 @@ typedef struct AFSocketSignature AFSocketSignature;
 	@abstract	this is called when the connection encounters an error
 	@param		|fatal| will reflect wether the connection will remain open following the error, if not the control delegate will receive the -layerWillClose: method
  */
-- (void)socket:(AFSocketConnection *)socket didReceiveError:(NSError *)error isFatal:(BOOL)fatal;
+- (void)socket:(AFSocketConnection *)socket didReceiveError:(NSError *)error;
 
 /*!
 	@method

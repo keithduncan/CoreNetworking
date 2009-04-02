@@ -36,8 +36,8 @@ NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData) {
 @synthesize delegate;
 @synthesize presence;
 
-+ (id)serviceWithNetService:(NSNetService *)service {
-	return [[[self alloc] initWithDomain:[service valueForKey:@"domain"] type:[service valueForKey:@"type"] name:[service valueForKey:@"name"]] autorelease];
++ (id)serviceWithNetService:(id <AFNetServiceCommon>)service {
+	return [[[self alloc] initWithDomain:[(id)service valueForKey:@"domain"] type:[(id)service valueForKey:@"type"] name:[(id)service valueForKey:@"name"]] autorelease];
 }
 
 - (id)init {
