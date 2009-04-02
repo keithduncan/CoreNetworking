@@ -18,6 +18,8 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
+#import "AFNetworkConstants.h"
+
 #import "AFPacketRead.h"
 #import "AFPacketWrite.h"
 
@@ -288,9 +290,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	self.connectionFlags = (self.connectionFlags | _kClosingWithError);
 	
 	if ((self.connectionFlags & _kDidPassConnectMethod) == _kDidPassConnectMethod) {
-		if ([self.delegate respondsToSelector:@selector(layerWillDisconnect:withError:)]) {
-			[self.delegate layerWillDisconnect:self withError:error];
-		}
+		if ([self.delegate respondsToSelector:@selector(layer:didDisconnectWithError:)])
+			[self.delegate layer:self didDisconnectWithError:error];
 	}
 	
 	[self close];

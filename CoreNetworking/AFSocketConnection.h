@@ -5,7 +5,11 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "CoreNetworking/CoreNetworking.h"
+#import <Foundation/Foundation.h>
+
+#import "CoreNetworking/AFNetworkTypes.h"
+#import "CoreNetworking/AFConnectionLayer.h"
+#import "CoreNetworking/AFNetService.h"
 
 @protocol AFSocketConnectionDataDelegate;
 @protocol AFSocketConnectionControlDelegate;
@@ -70,17 +74,6 @@ typedef struct AFSocketSignature AFSocketSignature;
 }
 
 /*
- * Inbound Initialisers
- *	These should be used to create a socket connection for received connections
- */
-
-/*!
-	@method
-	@abstract	the delegate is provided as this stage because after the SYN-ACK (or equivalent) data could be inbound following the ACK (or equivalent) and a subsequent -open would be pointless for an inbound connection
- */
-- (id)initWithNative:(CFSocketNativeHandle)sock delegate:(id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate;
-
-/*
  * Outbound Initialisers
  *	Perhaps the connection initialiser should be a class method a facade to a class cluster and return SOCK_STREAM/SOCK_DGRAM etc internal subclasses?
  *	These connections will need to be sent -open before they can be used, just like a stream
@@ -99,20 +92,6 @@ typedef struct AFSocketSignature AFSocketSignature;
 	@param		|netService| will be used to create a CFNetService internally
  */
 - (id <AFConnectionLayer>)initWithNetService:(id <AFNetServiceCommon>)netService;
-
-
-/*!
-	@method
-	@abstract	the socket connection must be scheduled in at least one run loop to function
- */
-- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
-
-/*!
-	@method
-	@abstract	the socket connection must be scheduled in at least one run loop to function
- */
-- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
-
 
 /*!
 	@property

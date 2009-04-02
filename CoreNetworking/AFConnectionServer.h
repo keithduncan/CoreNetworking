@@ -13,6 +13,8 @@
 
 @class AFConnectionPool;
 
+@protocol AFConnectionServerDelegate;
+
 /*!
 	@class
  */
@@ -68,7 +70,7 @@
 
 @end
 
-@protocol AFConnectionServerDelegate <NSObject>
+@protocol AFConnectionServerDelegate <AFConnectionLayerHostDelegate>
  @optional
 - (BOOL)server:(AFConnectionServer *)server shouldConnect:(id <AFConnectionLayer>)connection toHost:(const CFHostRef)addr;
 @end

@@ -156,16 +156,16 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	return description;
 }
 
-- (void)scheduleInRunLoop:(CFRunLoopRef)loop mode:(CFStringRef)mode {
+- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
 	CFRunLoopAddSource(loop, _socketRunLoopSource, mode);
 }
 
-- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop mode:(CFStringRef)mode {
+- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
 	CFRunLoopRemoveSource(loop, _socketRunLoopSource, mode);
 }
 
-- (CFSocketRef)lowerLayer {
-	return _socket;
+- (id)lowerLayer {
+	return (id)_socket;
 }
 
 @end

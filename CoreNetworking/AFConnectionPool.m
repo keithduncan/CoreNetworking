@@ -8,6 +8,8 @@
 
 #import "AFConnectionPool.h"
 
+#import "AFConnectionLayer.h"
+
 @implementation AFConnectionPool
 
 @synthesize connections;
@@ -42,7 +44,7 @@
 	id <AFConnectionLayer> connection = nil;
 	
 	for (id <AFConnectionLayer> currentConnection in self.connections) {
-		id connectionValue = [currentConnection valueForKey:key];
+		id connectionValue = [(id)currentConnection valueForKey:key];
 		if (![connectionValue isEqual:value]) continue;
 		
 		connection = currentConnection;

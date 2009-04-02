@@ -32,6 +32,11 @@
 	__strong CFRunLoopSourceRef _socketRunLoopSource;
 }
 
+/*
+ *	Outbound Initialiser
+ *		This is not covered by a protocol, the AFConnectionServer knows how to create this class specifically
+ */
+
 /*!
 	@method
 	@abstract	A socket is created with the given characteristics and the address is set
@@ -41,25 +46,16 @@
 - (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options delegate:(id <AFConnectionLayerHostDelegate, AFConnectionLayerControlDelegate>)delegate;
 
 /*!
+	@method
+	@abstract	This returns a CFSocketRef despite the weak type, this is to avoid compiler errors.
+	@discussion	You may use this to extract the socket address for display purposes.
+ */
+- (id)lowerLayer;
+
+/*!
 	@property
  */
 @property (assign) id <AFSocketHostDelegate, AFSocketControlDelegate> delegate;
-
-/*!
-	@method
- */
-- (void)scheduleInRunLoop:(CFRunLoopRef)loop mode:(CFStringRef)mode;
-
-/*!
-	@method
- */
-- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop mode:(CFStringRef)mode;
-
-/*!
-	@method
-	@abstract	This may be used to extract the socket address
- */
-- (CFSocketRef)lowerLayer;
 
 @end
 

@@ -26,7 +26,34 @@
 */
 @protocol AFNetworkLayer <NSObject>
 
+/*!
+	@property
+ */
+@property (readonly, retain) id <AFNetworkLayer> lowerLayer;
+
+/*!
+	@property
+ */
 @property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
+
+/*!
+	@method
+	@abstract	Designated Initialiser, with encapsulation in mind
+	@discussion	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound communication will probably have a more specific initialiser
+ */
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer delegate:(id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate>)delegate;
+
+/*!
+	@method
+	@abstract	the socket connection must be scheduled in at least one run loop to function
+ */
+- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
+
+/*!
+	@method
+	@abstract	the socket connection must be scheduled in at least one run loop to function
+ */
+- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
 /*!
 	@method
@@ -55,7 +82,14 @@
 
  @optional
 
+/*!
+	@method
+ */
 - (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
+
+/*!
+	@method
+ */
 - (void)performWrite:(id)dataBuffer forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
 
 /*!
@@ -66,16 +100,25 @@
 
 @end
 
-@protocol AFNetworkLayerHostDelegate
+/*!
+	@protocol
+ */
+@protocol AFNetworkLayerHostDelegate <NSObject>
 
 @end
 
+/*!
+	@protocol
+ */
 @protocol AFNetworkLayerControlDelegate <NSObject>
 - (void)layerDidOpen:(id <AFNetworkLayer>)layer;
 - (void)layerDidNotOpen:(id <AFNetworkLayer>)layer;
 - (void)layerDidClose:(id <AFNetworkLayer>)layer;
 @end
 
+/*!
+	@protocol
+ */
 @protocol AFNetworkLayerDataDelegate <NSObject>
 @property (readonly, retain) id <AFNetworkLayer> lowerLayer;
 - (void)layer:(id <AFNetworkLayer>)layer didRead:(id)data forTag:(NSUInteger)tag;

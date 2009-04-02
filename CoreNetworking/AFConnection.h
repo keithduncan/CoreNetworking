@@ -16,7 +16,7 @@
 	@discussion	Your subclass should encapsulate Application Layer data (as defined in RFC 1122) and pass it to the super class for further processing
 */
 
-@interface AFConnection : NSObject <AFConnectionLayer, AFConnectionLayerControlDelegate> {
+@interface AFConnection : NSObject <AFConnectionLayerControlDelegate> {
  @private
 	NSURL *destinationEndpoint;
 	id <AFConnectionLayerControlDelegate> delegate;
@@ -33,5 +33,13 @@
 	@property
  */
 @property (assign) id <AFConnectionLayerControlDelegate> delegate;
+
+@end
+
+/*!
+	@category
+	@abstract	the layer conformance is added in a category so they don't actually have to be implemented, they are simply forwarded
+ */
+@interface AFConnection () <AFConnectionLayer>
 
 @end

@@ -11,8 +11,8 @@
 #import <sys/socket.h>
 #import <arpa/inet.h>
 
-#import "AFSocketConnection.h"
-
+#import "AFSocket.h"
+#import	"AFNetworkTypes.h"
 #import "AFConnectionPool.h"
 
 // Note: import this header last, allowing for any of the previous headers to import <net/if.h>
@@ -24,7 +24,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 @implementation AFConnectionServer
 
 @synthesize delegate=_delegate;
-@synthesize clients;
+@synthesize clients, hosts;
 
 + (id)_serverWithPort:(SInt32 *)port socketType:(struct AFSocketType)type addresses:(CFArrayRef)addrs {
 #warning this methods should also configure the server to listen for IP-layer changes
@@ -42,10 +42,10 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 			.address = (CFDataRef)currentAddrData,
 		};
 		
-		AFSocket *socket = [[AFSocketConnection alloc] initWithSignature:&currentSocketSignature callbacks:kCFSocketAcceptCallBack delegate:server];
+		AFSocket *socket = [[AFSocket alloc] initWithSignature:&currentSocketSignature callbacks:kCFSocketAcceptCallBack delegate:server];
 		if (socket == nil) continue;
 		
-		[socket scheduleInRunLoop:CFRunLoopGetCurrent() mode:kCFRunLoopDefaultMode];
+		[socket scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
 		
 		if (*port == 0) {
 			// Note: extract the *actual* port used and use that for future allocations
@@ -143,53 +143,32 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
-- (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)socket {
+- (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)newLayer {
 	Class connectionClass = [[self class] connectionClass];
-	
-	AFConnection <AFNetworkLayerDataDelegate> *layer = [[[connectionClass alloc] initWithDestination:nil] autorelease];
-	layer.delegate = self;
-	
-	layer.lowerLayer = (id)socket;
-	[socket setDelegate:(id)layer];
-	
-	return layer;
+	id <AFConnectionLayer> newApplicationLayer = [[[connectionClass alloc] initWithLowerLayer:newLayer delegate:self] autorelease];
+	return newApplicationLayer;
 }
 
 - (void)layer:(id <AFConnectionLayer>)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
 	AFSocket *newSocket = newLayer;
-	CFSocketSetSocketFlags([newSocket lowerLayer], CFSocketGetSocketFlags([newSocket lowerLayer]) & ~kCFSocketCloseOnInvalidate);
+	CFSocketSetSocketFlags((CFSocketRef)[newSocket lowerLayer], CFSocketGetSocketFlags((CFSocketRef)[newSocket lowerLayer]) & ~kCFSocketCloseOnInvalidate);
 	
-	AFSocketConnection *newSocketConnection = [[[AFSocketConnection alloc] initWithNative:CFSocketGetNative([newSocket lowerLayer]) callbacks:kCFStreamEventOpenCompleted delegate:self] autorelease];
+	id <AFConnectionLayer> newConnection = [self newApplicationLayerForNetworkLayer:newLayer];
+	[self.clients addConnectionsObject:newConnection];
 	
-	[self.clients addConnectionsObject:newSocketConnection];
-	
-	[newSocketConnection scheduleInRunLoop:CFRunLoopGetCurrent() mode:kCFRunLoopDefaultMode];
-	[newSocketConnection open];
+	[newConnection scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
+	[newConnection open];
 }
 
 - (void)layer:(id <AFConnectionLayer>)socket didConnectToPeer:(const CFHostRef)host {
-	id <AFConnectionLayer> applicationLayer = [self newApplicationLayerForNetworkLayer:socket];
-	
-	if ([self.delegate respondsToSelector:@selector(server:shouldConnect:toHost:)]) {
-		BOOL continueConnecting = [self.delegate server:self shouldConnect:applicationLayer toHost:host];
-		
-		if (!continueConnecting) {
-			if ([socket conformsToProtocol:@protocol(AFConnectionLayer)]) {
-				[(id <AFConnectionLayer>)socket close];
-			}
-			
-			return;
-		}
-	}
-	
 	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
-		[self.delegate layer:self didAcceptConnection:applicationLayer];
+		[self.delegate layer:self didAcceptConnection:socket];
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
-	if ([self.clients.connections containsObject:layer]) {
-		[self.clients removeConnectionsObject:layer];
-	}
+	if (![self.clients.connections containsObject:layer]) return;
+	
+	[self.clients removeConnectionsObject:layer];
 }
 
 @end

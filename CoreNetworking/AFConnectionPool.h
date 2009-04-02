@@ -6,7 +6,7 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "CoreNetworking/CoreNetworking.h"
+#import <Foundation/Foundation.h>
 
 @class AFConnection;
 
