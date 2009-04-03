@@ -17,37 +17,46 @@
 
 /*!
 	@class
+	@abstract	This is a generic construct for spawning new client layers.
+	@discussion	After instantiating the server you can use one of the convenience methods to open a collection of sockets
  */
 @interface AFConnectionServer : NSObject <AFConnectionLayerHostDelegate, AFSocketHostDelegate> {
+	Class _clientClass;
 	id <AFConnectionServerDelegate> _delegate;
 	AFConnectionPool *hosts, *clients;
 }
 
 /*!
 	@method
-	@abstract	Create a server with ports open on all IP addresses (it equivalent of ::0)
-	@param		|port| is passed by reference so that if you pass 0 you get back the actual port
+	@abstract	Designated Initialiser
  */
-+ (id)networkServerWithPort:(SInt32 *)port type:(struct AFSocketType)type;
+- (id)initWithDelegate:(id <AFConnectionServerDelegate>)delegate clientLayer:(Class)clientClass;
 
 /*!
 	@method
-	@abstract	Create a server with ports open on all loopback IP addresses (the equivalent of ::1)
+	@abstract	This class is used to instantiate a new higher-level layer when the server receives the <tt>-layer:didAcceptConnection:</tt> delegate callback
  */
-+ (id)localhostServerWithPort:(SInt32 *)port type:(struct AFSocketType)type;
-
-/*!
-	@method
-	@abstract	The returned object is sent [[connectionClass alloc] init] to create a new application layer.
-	@discussion	the default implementation raises an unimplemented exception
- */
-+ (Class)connectionClass;
+@property (readonly, assign) Class clientClass;
 
 /*!
 	@method
 	@abstract	The delegate is optional in this class, most servers should function without one
  */
-@property (assign) id <AFConnectionServerDelegate> delegate;
+@property (readonly, assign) id <AFConnectionServerDelegate> delegate;
+
+/*!
+	@method
+	@abstract	Create a server with ports open on all IP addresses (it equivalent of ::0)
+	@param		|port| is passed by reference so that if you pass 0 you get back the actual port
+ */
+- (id)openNetworkSockets:(SInt32 *)port withType:(struct AFSocketType)type;
+
+/*!
+	@method
+	@abstract	Create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to ::1)
+	@discussion	This is likely only to be useful for testing your server, since it won't be accessable from another computer
+ */
+- (id)openLocalhostSockets:(SInt32 *)port withType:(struct AFSocketType)type;
 
 /*!
 	@property

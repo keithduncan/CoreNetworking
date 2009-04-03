@@ -19,103 +19,37 @@
 // Note: see the man page for getifaddrs
 #import <ifaddrs.h>
 
+#warning this class should also provide the ability to listen for IP-layer changes and autoreconfigure
+
 static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerHostConnectionsPropertyObservationContext";
 
 @interface AFConnectionServer () <AFConnectionLayerControlDelegate>
-
+@property (readwrite, assign) Class clientClass;
+@property (readwrite, assign) id <AFConnectionServerDelegate> delegate;
 @end
 
 @implementation AFConnectionServer
 
+@synthesize clientClass=_clientClass;
 @synthesize delegate=_delegate;
 @synthesize clients, hosts;
 
-+ (id)_serverWithPort:(SInt32 *)port socketType:(struct AFSocketType)type addresses:(CFArrayRef)addrs {
-#warning this methods should also configure the server to listen for IP-layer changes
-	AFConnectionServer *server = [[[self alloc] init] autorelease];
-	
-	for (NSData *currentAddrData in (NSArray *)addrs) {
-		currentAddrData = [[currentAddrData mutableCopy] autorelease];
-		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddrData))->sin_port = htons(*port);
-		// Note #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
-		
-		CFSocketSignature currentSocketSignature = {
-			.protocolFamily = ((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)currentAddrData))->sa_family,
-			.socketType = type.socketType,
-			.protocol = type.protocol,
-			.address = (CFDataRef)currentAddrData,
-		};
-		
-		AFSocket *socket = [[AFSocket alloc] initWithSignature:&currentSocketSignature callbacks:kCFSocketAcceptCallBack delegate:server];
-		if (socket == nil) continue;
-		
-		[socket scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
-		
-		if (*port == 0) {
-			// Note: extract the *actual* port used and use that for future allocations
-			CFDataRef actualAddrData = CFSocketCopyAddress((CFSocketRef)[socket lowerLayer]);
-			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port);
-			// Note #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
-			CFRelease(actualAddrData);
-		}
-		
-		[server.hosts addConnectionsObject:socket];
-		[socket open];
-		
-		[socket release];
-	}
-	
-	return server;
-}
-
-+ (id)networkServerWithPort:(SInt32 *)port type:(struct AFSocketType)type {
-	CFMutableArrayRef addresses = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
-	
-	struct ifaddrs *addrs = NULL;
-	int error = getifaddrs(&addrs);
-	if (error != 0) return nil;
-	
-	struct ifaddrs *currentAddr = addrs;
-	for (; currentAddr != NULL; currentAddr = currentAddr->ifa_next) {
-		if (currentAddr->ifa_addr->sa_family == AF_LINK) continue;
-		
-		CFDataRef addrData = CFDataCreate(kCFAllocatorDefault, (void *)currentAddr->ifa_addr, currentAddr->ifa_addr->sa_len);
-		CFArrayInsertValueAtIndex(addresses, 0, addrData);
-		CFRelease(addrData);
-	}
-	
-	AFConnectionServer *server = [self _serverWithPort:port socketType:type addresses:addresses];
-	
-	CFRelease(addresses);
-	freeifaddrs(addrs);
-	
-	return server;
-}
-
-+ (id)localhostServerWithPort:(SInt32 *)port type:(struct AFSocketType)type {
-	CFHostRef localhost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost");
-	
-	CFStreamError error;
-	memset(&error, 0, sizeof(CFStreamError));
-	
-	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
-	if (!resolved) return nil;
-	
-	return [self _serverWithPort:port socketType:type addresses:CFHostGetAddressing(localhost, NULL)];
-}
-
-+ (Class)connectionClass {
-	[self doesNotRecognizeSelector:_cmd];
-	return Nil;
-}
-
 - (id)init {
-	[super init];
+	self = [super init];
 	
 	hosts = [[AFConnectionPool alloc] init];
 	[hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
 	
 	clients = [[AFConnectionPool alloc] init];
+	
+	return self;
+}
+
+- (id)initWithDelegate:(id <AFConnectionServerDelegate>)delegate clientLayer:(Class)clientClass {
+	self = [self init];
+	
+	_clientClass = clientClass;
+	_delegate = delegate;
 	
 	return self;
 }
@@ -139,6 +73,70 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[super dealloc];
 }
 
+- (id)_openSockets:(SInt32 *)port withType:(struct AFSocketType)type addresses:(NSArray *)addrs {
+	for (NSData *currentAddrData in addrs) {
+		currentAddrData = [[currentAddrData mutableCopy] autorelease];
+		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddrData))->sin_port = htons(*port);
+		// Note #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+		
+		CFSocketSignature currentSocketSignature = {
+			.protocolFamily = ((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)currentAddrData))->sa_family,
+			.socketType = type.socketType,
+			.protocol = type.protocol,
+			.address = (CFDataRef)currentAddrData,
+		};
+		
+		AFSocket *socket = [[AFSocket alloc] initWithSignature:&currentSocketSignature callbacks:kCFSocketAcceptCallBack delegate:self];
+		if (socket == nil) continue;
+		
+		[socket scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
+		
+		[self.hosts addConnectionsObject:socket];
+		[socket open];
+		
+		// Note: get the port after setting the address i.e. opening
+		if (*port == 0) {
+			// Note: extract the *actual* port used and use that for future allocations
+			CFDataRef actualAddrData = CFSocketCopyAddress((CFSocketRef)[socket lowerLayer]);
+			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port);
+			// Note #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+			CFRelease(actualAddrData);
+		}
+		
+		[socket release];
+	}
+}
+
+- (id)openNetworkSockets:(SInt32 *)port withType:(struct AFSocketType)type {
+	NSMutableArray *addresses = [NSMutableArray array];
+	
+	struct ifaddrs *addrs = NULL;
+	int error = getifaddrs(&addrs);
+	if (error != 0) return nil;
+	
+	struct ifaddrs *currentAddr = addrs;
+	for (; currentAddr != NULL; currentAddr = currentAddr->ifa_next) {
+		if (currentAddr->ifa_addr->sa_family == AF_LINK) continue;
+		[addresses addObject:[NSData dataWithBytes:((void *)currentAddr->ifa_addr) length:(currentAddr->ifa_addr->sa_len)]];
+	}
+	
+	[self _openSockets:port withType:type addresses:addresses];
+	
+	freeifaddrs(addrs);
+}
+
+- (id)openLocalhostSockets:(SInt32 *)port withType:(struct AFSocketType)type {
+	CFHostRef localhost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost");
+	
+	CFStreamError error;
+	memset(&error, 0, sizeof(CFStreamError));
+	
+	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
+	if (!resolved) return nil;
+	
+	[self _openSockets:port withType:type addresses:(NSArray *)CFHostGetAddressing(localhost, NULL)];
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &ServerHostConnectionsPropertyObservationContext) {
 		if (![[change objectForKey:NSKeyValueChangeKindKey] unsignedIntegerValue] == NSKeyValueChangeInsertion) return;
@@ -148,9 +146,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)newLayer {
-	Class connectionClass = [[self class] connectionClass];
-	id <AFConnectionLayer> newApplicationLayer = [[[connectionClass alloc] initWithLowerLayer:newLayer delegate:self] autorelease];
-	return newApplicationLayer;
+	return [[[[self clientClass] alloc] initWithLowerLayer:newLayer delegate:self] autorelease];
 }
 
 - (void)layer:(id <AFConnectionLayer>)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {

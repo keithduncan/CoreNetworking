@@ -26,22 +26,18 @@ typedef NSUInteger AFSocketConnectionError;
 	@struct 
 	@abstract   Based on CFSocketSignature allowing for higher-level functionality
 	@discussion Doesn't include a |protocolFamily| field like CFSocketSignature because the |host| may resolve to a number of different protocol family addresses
-	
-	@field		|socketType| should be one of the socket types defined in <socket.h>
-	@field		|protocol| should typically be one of the IP protocols defined in RFC 1700 see http://www.faqs.org/rfcs/rfc1700.html - it is important that an appropriate |socketType| is also provided
 	@field      |host| is copied using CFHostCreateCopy() the addresses property is resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap it won't be reclaimed
-	@field		|port| identifies the Transport layer address to communicate using (see RFC 1122)
+	@field		|transport| see the documentation for <tt>AFSocketTransportLayer</tt> it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc) and the port
  */
 struct AFSocketSignature {
 /*
- *	These define _where_ to communicate
+ *	This defines _where_ to communicate
  */
 	__strong CFHostRef host;
-	SInt32 port;
 /*
- *	This defines _how_ to communicate (and allow for the return of a specific handler subclass from the creation methods)
- */
-	struct AFSocketType type;
+ *	This defines _how_ to communicate (and may allow for the return of a specific handler subclass from the creation methods)
+ */	
+	AFSocketTransportLayer transport;
 };
 typedef struct AFSocketSignature AFSocketSignature;
 
