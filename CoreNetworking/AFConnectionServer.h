@@ -12,15 +12,22 @@
 #import "CoreNetworking/AFConnectionLayer.h"
 
 @class AFConnectionPool;
+@class AFConnectionServer;
 
-@protocol AFConnectionServerDelegate;
+/*!
+	@protocol
+ */
+@protocol AFConnectionServerDelegate <AFConnectionLayerHostDelegate>
+ @optional
+- (BOOL)server:(AFConnectionServer *)server shouldConnect:(id <AFConnectionLayer>)connection toHost:(const CFHostRef)addr;
+@end
 
 /*!
 	@class
 	@abstract	This is a generic construct for spawning new client layers.
 	@discussion	After instantiating the server you can use one of the convenience methods to open a collection of sockets
  */
-@interface AFConnectionServer : NSObject <AFConnectionLayerHostDelegate, AFSocketHostDelegate> {
+@interface AFConnectionServer : NSObject <AFConnectionServerDelegate, AFConnectionLayerHostDelegate, AFSocketHostDelegate> {
 	id <AFConnectionServerDelegate> _delegate;
 	
 	Class _clientClass;
@@ -96,9 +103,4 @@
  */
 @property (readonly, retain) AFConnectionPool *clients;
 
-@end
-
-@protocol AFConnectionServerDelegate <AFConnectionLayerHostDelegate>
- @optional
-- (BOOL)server:(AFConnectionServer *)server shouldConnect:(id <AFConnectionLayer>)connection toHost:(const CFHostRef)addr;
 @end

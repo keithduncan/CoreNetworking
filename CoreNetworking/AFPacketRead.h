@@ -14,12 +14,9 @@
 	
 	NSData *_terminator;
 	NSUInteger _maximumLength;
-	
-	BOOL _readAllAvailable;
 }
 
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration terminator:(id)terminator;
-- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration readAllAvailable:(BOOL)readAllAvailable;
 
 /*!
 	@method	

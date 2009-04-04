@@ -29,7 +29,11 @@
 @end
 
 @protocol AFConnectionLayerHostDelegate <AFNetworkLayerHostDelegate>
-- (void)layer:(id <AFConnectionLayer>)layer didAcceptConnection:(id <AFNetworkLayer>)layer;
+/*!
+	@method
+	@abstract	|layer| could be the host that spawned it or an intermediate object
+ */
+- (void)layer:(id)layer didAcceptConnection:(id <AFNetworkLayer>)layer;
 @end
 
 @protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>

@@ -12,11 +12,12 @@
 #import <arpa/inet.h>
 
 #import "AFSocket.h"
+#import "AFSocketConnection.h"
+
 #import	"AFNetworkTypes.h"
 #import "AFConnectionPool.h"
 
-// Note: import this header last, allowing for any of the previous headers to import <net/if.h>
-// Note: see the man page for getifaddrs
+// Note: import this header last, allowing for any of the previous headers to import <net/if.h> see the getifaddrs man page for details
 #import <ifaddrs.h>
 
 #warning this class should also provide the ability to listen for IP-layer changes and autoreconfigure
@@ -34,6 +35,10 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 @synthesize clientClass=_clientClass;
 @synthesize lowerLayer=_lowerLayer;
 @synthesize clients, hosts;
+
+- (id)init {
+	return [self initWithLowerLayer:nil encapsulationClass:[AFSocketConnection class]];
+}
 
 - (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass {
 	self = [super init]; // Note to self, this is intentionally sent to super
@@ -153,7 +158,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	return [[[[self clientClass] alloc] initWithLowerLayer:newLayer delegate:self] autorelease];
 }
 
-- (void)layer:(id <AFConnectionLayer>)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
+- (void)layer:(id)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
 	id <AFConnectionLayer> newConnection = [self newApplicationLayerForNetworkLayer:newLayer];
 	[self.clients addConnectionsObject:newConnection];
 	
@@ -163,14 +168,22 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[newConnection open];
 }
 
-- (void)layer:(id <AFConnectionLayer>)socket didConnectToPeer:(const CFHostRef)host {
+- (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(const CFHostRef)host {
+	BOOL shouldConnect = YES;
+	if ([self.delegate respondsToSelector:@selector(server:shouldConnect:toHost:)])
+		shouldConnect = [self.delegate server:self shouldConnect:layer toHost:host];
+	
+	if (!shouldConnect) {
+		[self.clients removeConnectionsObject:layer];
+		return;
+	}
+	
 	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
 		[self.delegate layer:self didAcceptConnection:socket];
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
 	if (![self.clients.connections containsObject:layer]) return;
-	
 	[self.clients removeConnectionsObject:layer];
 }
 

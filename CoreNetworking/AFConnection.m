@@ -22,7 +22,9 @@
 	self = [self init];
 	
 	_delegate = delegate;
+	
 	_lowerLayer = [lowerLayer retain];
+	_lowerLayer.delegate = self;
 	
 	return self;
 }
@@ -32,22 +34,6 @@
 	[_lowerLayer release];
 	
 	[super dealloc];
-}
-
-- (void)open {
-	
-}
-
-- (BOOL)isOpen {
-	return [self.lowerLayer isOpen];
-}
-
-- (void)close {
-	
-}
-
-- (BOOL)isClosed {
-	return [self.lowerLayer isClosed];
 }
 
 - (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {

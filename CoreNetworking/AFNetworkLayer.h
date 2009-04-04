@@ -45,18 +45,6 @@
 
 /*!
 	@method
-	@abstract	the socket connection must be scheduled in at least one run loop to function
- */
-- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
-
-/*!
-	@method
-	@abstract	the socket connection must be scheduled in at least one run loop to function
- */
-- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
-
-/*!
-	@method
 	@abstract	the delegate callbacks convey success/failure
 	@discussion	good candidate for a block callback argument, allowing for asynchronous -open methods and eliminating the delegate callbacks
  */
@@ -81,6 +69,18 @@
 - (BOOL)isClosed;
 
  @optional
+
+/*!
+	@method
+	@abstract	the socket connection must be scheduled in at least one run loop to function
+ */
+- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
+
+/*!
+	@method
+	@abstract	the socket connection must be scheduled in at least one run loop to function
+ */
+- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
 /*!
 	@method

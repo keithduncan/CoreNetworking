@@ -41,14 +41,6 @@
 	return self;
 }
 
-- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration readAllAvailable:(BOOL)readAllAvailable {
-	[self initWithTag:tag timeout:duration];
-	
-	_readAllAvailable = readAllAvailable;
-	
-	return self;
-}
-
 - (void)dealloc {
 	[_buffer release];
 	[_terminator release];
@@ -77,12 +69,6 @@
 	if (bytesTotal != NULL) *bytesTotal = total;
 }
 
-/**
- * For read packets with a set terminator, returns the safe length of data that can be read
- * without going over a terminator, or the maxLength.
- * 
- * It is assumed the terminator has not already been read.
- **/
 - (NSUInteger)_readLengthForTerminator {
 	NSAssert(_terminator != nil, @"searching for nil terminator in data");
 	
@@ -118,62 +104,44 @@
 }
 
 - (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)error {
-	CFIndex currentTotalBytesRead = 0;
-	
 	BOOL packetComplete = NO;
 	BOOL readStreamError = NO, maxoutError = NO;
 	
 	while (!packetComplete && !readStreamError && !maxoutError && CFReadStreamHasBytesAvailable(readStream)) {
-		// If reading all available data, make sure there's room in the packet buffer.
-		if (_readAllAvailable) {
-			// Make sure there is at least READALL_CHUNKSIZE bytes available.
-			// We don't want to increase the buffer any more than this or we'll waste space.
-			unsigned int bufferIncrement = (READALL_CHUNKSIZE - ([self.buffer length] - _bytesRead));
-			[_buffer increaseLengthBy:bufferIncrement];
-		}
+		NSUInteger maximumReadLength = [self _readLengthForTerminator];
+		NSUInteger bufferIncrement = maximumReadLength - ([self.buffer length] - _bytesRead);
+		[_buffer increaseLengthBy:bufferIncrement];
 		
-		// Number of bytes to read is space left in packet buffer
 		CFIndex bytesToRead = ([self.buffer length] - _bytesRead);
-		
-		// Read data into packet buffer
 		UInt8 *readBuffer = (UInt8 *)([_buffer mutableBytes] + _bytesRead);
 		CFIndex bytesRead = CFReadStreamRead(readStream, readBuffer, bytesToRead);
 		
 		if (bytesRead < 0) {
 			readStreamError = YES;
+			break;
 		} else {
 			_bytesRead += bytesRead;
-			currentTotalBytesRead += bytesRead;
 		}
 		
-		// Is packet done?
-		if (!_readAllAvailable) {
-			if (_terminator != nil) {
-				// Done when we match the byte pattern
+		if (_terminator != nil) {
+			// Done when we match the byte pattern
+			
+			int terminatorLength = [_terminator length];
+			
+			if (_bytesRead >= terminatorLength) {
+				const void *buf = [self.buffer bytes] + (_bytesRead - terminatorLength);
+				const void *seq = [_terminator bytes];
 				
-				int terminatorLength = [_terminator length];
-				
-				if (_bytesRead >= terminatorLength) {
-					const void *buf = [self.buffer bytes] + (_bytesRead - terminatorLength);
-					const void *seq = [_terminator bytes];
-					
-					packetComplete = (memcmp(buf, seq, terminatorLength) == 0);
-				}
-			} else {
-				// Done when sized buffer is full.
-				packetComplete = ([self.buffer length] == _bytesRead);
+				packetComplete = (memcmp(buf, seq, terminatorLength) == 0);
 			}
-		} else if (_readAllAvailable) {
-			// Doesn't end until everything is read
+		} else {
+			// Done when sized buffer is full.
+			packetComplete = ([self.buffer length] == _bytesRead);
 		}
 		
-		if (!packetComplete && _maximumLength >= 0 && _bytesRead >= _maximumLength) {
-			// There's a set maxLength, and we've reached that maxLength without completing the read
-			maxoutError = YES;
-		}
+		// There's a set _maximumLength, and we've reached that maxLength without completing the read
+		maxoutError = (!packetComplete && _maximumLength >= 0 && _bytesRead >= _maximumLength);
 	}
-	
-	if (_readAllAvailable && _bytesRead > 0) packetComplete = YES;
 	
 #warning perhaps errors should be returned in a collection
 	if (readStreamError) {

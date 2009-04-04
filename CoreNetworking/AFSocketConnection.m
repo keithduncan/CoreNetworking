@@ -120,11 +120,23 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 - (id <AFConnectionLayer>)initWithNetService:(id <AFNetServiceCommon>)netService {
 	self = [self init];
 	
+	CFNetServiceRef *service = _peer._netServiceDestination.netService;
+	
+	*service = CFNetServiceCreate(kCFAllocatorDefault, [netService valueForKey:@"domain"], <#CFStringRef serviceType#>, <#CFStringRef name#>, <#SInt32 port#>)
+	 = CFNetServiceCreate(kCFAllocatorDefault, <#CFStringRef domain#>, <#CFStringRef serviceType#>, <#CFStringRef name#>, <#SInt32 port#>)
+	
+	CFStreamCreatePairWithSocketToNetService(kCFAllocatorDefault, <#CFNetServiceRef service#>, <#CFReadStreamRef * readStream#>, <#CFWriteStreamRef * writeStream#>)
+	
 	return self;
 }
 
 - (id <AFConnectionLayer>)initWithSignature:(const AFSocketSignature *)signature {
 	self = [self init];
+	
+	CFHostRef *host = &_peer._hostDestination.host;
+	
+	*host = CFRetain(signature->host);
+	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, signature->transport.port, &readStream, &writeStream);
 	
 	return self;
 }
@@ -141,6 +153,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 - (void)dealloc {
 	[lowerLayer release];
 	
+	// Note: this will also deallocate the netService if it is used instead
 	CFHostRef *host = &_peer._hostDestination.host; // Note: this is simply shorter to re-address, there is no fancyness, move along
 	if (*host != NULL) {
 		CFRelease(*host);
@@ -171,9 +184,12 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	[description appendString:@"\n"];
 	
-	if (readStream != NULL || writeStream != NULL) {
+	[description appendFormat:@"\tOpen: %@, Closed: %@", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO"), nil];
+	[description appendString:@"\n"];
+	
+	if ([self isOpen]) {
 		[description appendString:@"\tPeer: "];
-		[description appendFormat:@"%@:%@", [(NSOutputStream *)writeStream propertyForKey:(NSString *)kCFStreamPropertySocketRemoteHostName], [(NSOutputStream *)writeStream propertyForKey:(NSString *)kCFStreamPropertySocketRemotePortNumber], nil];	
+		[description appendFormat:@"%@", [(id)_peer._hostDestination.host description], nil];
 		[description appendString:@"\n"];
 	}
 	
@@ -181,26 +197,21 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[description appendString:@"\n"];
 	
 	AFPacketRead *readPacket = [self currentReadPacket];
-	[description appendFormat:@"\tCurrent Read: %@, ", (readPacket != nil ? @"(null)" : [readPacket description])];
-	[description appendFormat:@"\t%@", [readPacket description], nil];
+	[description appendFormat:@"\tCurrent Read: %@", readPacket, nil];
 	[description appendString:@"\n"];
 	
 	AFPacketWrite *writePacket = [self currentWritePacket];
-	[description appendFormat:@"\tCurrent Read: %@, ", (writePacket != nil ? @"(null)" : [writePacket description])];
-	[description appendFormat:@"\t%@", [writePacket description], nil];
+	[description appendFormat:@"\tCurrent Read: %@", writePacket, nil];
 	[description appendString:@"\n"];
 	
 	{
 		static const char *StreamStatusStrings[] = { "not open", "opening", "open", "reading", "writing", "at end", "closed", "has error" };
-		
 		[description appendFormat:@"\tRead Stream: %p %s, ", readStream, (readStream != NULL ? StreamStatusStrings[CFReadStreamGetStatus(readStream)] : ""), nil];
-		
 		[description appendFormat:@"\tWrite Stream: %p %s, ", writeStream, (writeStream != NULL ? StreamStatusStrings[CFWriteStreamGetStatus(writeStream)] : ""), nil];	
+		
 		if ((self.connectionFlags & _kCloseSoon) == _kCloseSoon) [description appendString: @"will close pending writes, "];
 	}
 	[description appendString:@"\n"];
-	
-	[description appendFormat:@"\tOpen: %@, Closed: %@", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO"), nil];
 	
 	return description;
 }
@@ -215,7 +226,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	CFWriteStreamUnscheduleFromRunLoop(writeStream, loop, mode);
 }
 
-- (void)_packet:(AFPacket *)packet progress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total tag:(NSUInteger *)tag {
+- (void)_packet:(AFPacket *)packet progress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total forTag:(NSUInteger *)tag {
 	if (packet == nil) {
 		if (fraction != NULL) *fraction = NAN;
 		return;
@@ -225,14 +236,15 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[packet progress:fraction done:done total:total];
 }
 
-- (void)currentReadProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total tag:(NSUInteger *)tag {
-	[self _packet:[self currentReadPacket] progress:fraction bytesDone:done total:total tag:tag];
+- (void)currentReadProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total forTag:(NSUInteger *)tag {
+	[self _packet:[self currentReadPacket] progress:fraction bytesDone:done total:total forTag:tag];
 }
 
-- (void)currentWriteProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total tag:(NSUInteger *)tag {
-	[self _packet:[self currentWritePacket] progress:fraction bytesDone:done total:total tag:tag];
+- (void)currentWriteProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total forTag:(NSUInteger *)tag {
+	[self _packet:[self currentWritePacket] progress:fraction bytesDone:done total:total forTag:tag];
 }
 
+#pragma mark -
 #pragma mark Configuration
 
 - (BOOL)startTLS:(NSDictionary *)options {
@@ -242,6 +254,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	return (BOOL)value;
 }
 
+#pragma mark -
 #pragma mark Connection
 
 - (void)open {
@@ -251,7 +264,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 }
 
 - (BOOL)isOpen {
-	return ((self.connectionFlags & _kDidPassConnectMethod) == _kDidPassConnectMethod);
+	return (((self.streamFlags & _kReadStreamDidOpen) == _kReadStreamDidOpen) && ((self.streamFlags & _kWriteStreamDidOpen) == _kWriteStreamDidOpen));
 }
 
 - (void)close {
@@ -298,7 +311,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 }
 
 - (BOOL)isClosed {
-	return (self.connectionFlags == 0);
+	return (((self.streamFlags & _kReadStreamDidClose) == _kReadStreamDidClose) && ((self.streamFlags & _kWriteStreamDidClose) == _kWriteStreamDidClose));
 }
 
 #pragma mark Termination
@@ -325,6 +338,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	AFPacketRead *packet = [[AFPacketRead alloc] initWithTag:tag timeout:duration terminator:terminator];
 	[self _enqueueReadPacket:packet];
 	[packet release];
+	
+	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 }
 
 static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *pInfo) {
@@ -352,7 +367,7 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 			
 			if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
 				[self.delegate socket:self didReceiveError:error];
-
+			
 			break;
 		}
 		case kCFStreamEventEndEncountered:
@@ -381,6 +396,8 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 	AFPacketWrite *packet = [[AFPacketWrite alloc] initWithTag:tag timeout:duration data:data];
 	[self _enqueueWritePacket:packet];
 	[packet release];
+	
+	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
 }
 
 static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *pInfo) {
@@ -444,8 +461,11 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if ([self.delegate respondsToSelector:@selector(layer:didConnectToPeer:)])
 		[self.delegate layer:self didConnectToPeer:_peer._hostDestination.host];
 	
-	[self _dequeueReadPacket];
-	[self _dequeueWritePacket];
+	if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])
+		[self.delegate layerDidOpen:self];
+	
+	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
+	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
 }
 
 @end
@@ -495,8 +515,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (void)_enqueueReadPacket:(id)packet {
 	[readQueue addObject:packet];
-	
-	[self _dequeueReadPacket];
 }
 
 - (void)_dequeueReadPacket {
@@ -505,7 +523,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if (packet != nil) return;
 	
 	if ([readQueue count] > 0) {
-		[self setCurrentReadPacket:[readQueue objectAtIndex:0]];
+		self.currentReadPacket = [readQueue objectAtIndex:0];
 		[readQueue removeObjectAtIndex:0];
 	}
 	
@@ -543,14 +561,11 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	if (packetComplete) {
 #warning for packets with a terminator we need to cache the data after the terminator for future reads
-		//[packet.buffer setLength:(packet->bytesDone)];
 		
-		if ([self.delegate respondsToSelector:@selector(layer:didRead:forTag:)]) {
+		if ([self.delegate respondsToSelector:@selector(layer:didRead:forTag:)])
 			[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
-		}
 		
 		[self _endCurrentReadPacket];
-		[self _dequeueReadPacket];
 	}
 }
 
@@ -560,15 +575,15 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketTimeoutNotificationName object:packet];
 	
-	[self setCurrentReadPacket:nil];
+	self.currentReadPacket = nil;
+	
+	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 }
 
 #pragma mark -
 
 - (void)_enqueueWritePacket:(id)packet {
 	[writeQueue addObject:packet];
-	
-	[self _dequeueWritePacket];
 }
 
 - (void)_dequeueWritePacket {
@@ -612,12 +627,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	}
 	
 	if (packetComplete) {
-		if ([self.delegate respondsToSelector:@selector(layer:didWrite:forTag:)]) {
+		if ([self.delegate respondsToSelector:@selector(layer:didWrite:forTag:)])
 			[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
-		}
 		
 		[self _endCurrentWritePacket];
-		[self _dequeueWritePacket];
 	}
 }
 
@@ -627,7 +640,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketTimeoutNotificationName object:packet];
 	
-	[self setCurrentWritePacket:nil];
+	self.currentWritePacket = nil;
+	
+	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
 	
 	if ((self.connectionFlags & _kCloseSoon) != _kCloseSoon) return;
 	if (([writeQueue count] != 0) || ([self currentWritePacket] != nil)) return;

@@ -109,13 +109,13 @@ typedef struct AFSocketSignature AFSocketSignature;
 	@method
 	@abstract	all parameters are optional, allowing you to extract only the values you require
  */
-- (void)currentReadProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total tag:(NSUInteger *)tag;
+- (void)currentReadProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total forTag:(NSUInteger *)tag;
 
 /*!
 	@method
 	@abstract	all parameters are optional, allowing you to extract only the values you require	
  */
-- (void)currentWriteProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total tag:(NSUInteger *)tag;
+- (void)currentWriteProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total forTag:(NSUInteger *)tag;
 
 @end
 
