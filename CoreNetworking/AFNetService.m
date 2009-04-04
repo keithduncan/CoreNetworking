@@ -36,8 +36,8 @@ NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData) {
 @synthesize delegate;
 @synthesize presence;
 
-+ (id)serviceWithNetService:(id <AFNetServiceCommon>)service {
-	return [[[self alloc] initWithDomain:[(id)service valueForKey:@"domain"] type:[(id)service valueForKey:@"type"] name:[(id)service valueForKey:@"name"]] autorelease];
+- (id)initWithNetService:(id <AFNetServiceCommon>)service {
+	return [self initWithDomain:[(id)service valueForKey:@"domain"] type:[(id)service valueForKey:@"type"] name:[(id)service valueForKey:@"name"]];
 }
 
 - (id)init {
@@ -187,6 +187,10 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 @end
 
 @implementation NSNetService (_AFAdditions)
+
+- (id)initWithNetService:(id <AFNetServiceCommon>)service {
+	return (id)(*[AFNetService instanceMethodForSelector:_cmd])(self, _cmd, service);
+}
 
 - (NSString *)fullName {
 	return (id)(*[AFNetService instanceMethodForSelector:_cmd])(self, _cmd);
