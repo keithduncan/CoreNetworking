@@ -522,7 +522,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (void)_readBytes {
 	AFPacketRead *packet = [self currentReadPacket];
-	if (packet == nil || readStream != NULL) return;
+	if (packet == nil || readStream == NULL) return;
 	
 	NSError *error = nil;
 	BOOL packetComplete = [packet performRead:readStream error:&error];
