@@ -35,19 +35,13 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 @synthesize lowerLayer=_lowerLayer;
 @synthesize clients, hosts;
 
-- (id)init {
-	self = [super init];
+- (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass {
+	self = [super init]; // Note to self, this is intentionally sent to super
 	
 	hosts = [[AFConnectionPool alloc] init];
 	[hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
 	
 	clients = [[AFConnectionPool alloc] init];
-	
-	return self;
-}
-
-- (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass {
-	self = [self init];
 	
 	_lowerLayer = [server retain];
 	[_lowerLayer setDelegate:self];
