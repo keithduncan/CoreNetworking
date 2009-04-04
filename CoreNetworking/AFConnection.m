@@ -34,16 +34,8 @@
 	[super dealloc];
 }
 
-#if 1
-
-- (id)forwardingTargetForSelector:(SEL)selector {
-	return self.lowerLayer;
-}
-
-#else
-
 - (void)open {
-	[self.lowerLayer open];
+	
 }
 
 - (BOOL)isOpen {
@@ -51,7 +43,7 @@
 }
 
 - (void)close {
-	[self.lowerLayer close];
+	
 }
 
 - (BOOL)isClosed {
@@ -65,23 +57,5 @@
 - (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
 	[self.lowerLayer performRead:terminator forTag:tag withTimeout:duration];
 }
-
-- (BOOL)startTLS:(NSDictionary *)options {
-	return [self.lowerLayer startTLS:options];
-}
-
-- (void)layerDidOpen:(id <AFConnectionLayer>)layer {
-	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidOpen:self];
-}
-
-- (void)layerDidNotOpen:(id <AFConnectionLayer>)layer {
-	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidNotOpen:self];
-}
-
-- (void)layerDidClose:(id <AFConnectionLayer>)layer; {
-	if ([self.delegate respondsToSelector:_cmd]) [self.delegate layerDidClose:self];
-}
-
-#endif
 
 @end

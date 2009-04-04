@@ -83,18 +83,18 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 - (id)initWithLowerLayer:(id <AFNetworkLayer>)layer delegate:(id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate {
 	self = [self init];
 	
-	_delegate = delegate;
+	lowerLayer = [layer retain];
 	
-	CFSocketRef lowerLayerSocket = ((CFSocketRef)[(AFSocket *)layer lowerLayer]);
-	CFSocketNativeHandle sock = CFSocketGetNative(lowerLayerSocket);
-	
-	CFSocketRef socket = CFSocketCreateWithNative(kCFAllocatorDefault, sock, 0, NULL, NULL);
+	CFSocketRef socket = ((CFSocketRef)[(AFSocket *)layer lowerLayer]);
 	CFSocketSetSocketFlags(socket, (CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate));
 	CFDataRef peerAddress = CFSocketCopyPeerAddress(socket);
-	CFRelease(socket);
+	
 	CFHostRef host = CFHostCreateWithAddress(kCFAllocatorDefault, peerAddress);
 	_peer._hostDestination.host = (CFHostRef)CFRetain(host);
 	CFRelease(host);
+	
+	CFSocketNativeHandle sock = CFSocketGetNative(socket);
+	CFSocketInvalidate(socket);
 	
 	CFStreamCreatePairWithSocket(kCFAllocatorDefault, sock, &readStream, &writeStream);
 	
@@ -102,10 +102,13 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	memset(&context, 0, sizeof(CFStreamClientContext));
 	context.info = self;
 	
-	CFStreamEventType types = (kCFStreamEventOpenCompleted | kCFStreamEventHasBytesAvailable | kCFStreamEventCanAcceptBytes | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered);
+	Boolean result = NO;
 	
-	CFReadStreamSetClient(readStream, types, AFSocketConnectionReadStreamCallback, &context);
-	CFWriteStreamSetClient(writeStream, types, AFSocketConnectionWriteStreamCallback, &context);
+	CFStreamEventType types = (kCFStreamEventOpenCompleted | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered);
+	result = CFReadStreamSetClient(readStream, (types | kCFStreamEventHasBytesAvailable), AFSocketConnectionReadStreamCallback, &context);
+	result = CFWriteStreamSetClient(writeStream, (types | kCFStreamEventCanAcceptBytes), AFSocketConnectionWriteStreamCallback, &context);
+	
+	_delegate = delegate;
 	
 	return self;
 }
@@ -127,7 +130,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 }
 
 - (id)init {
-	[super init];
+	self = [super init];
 	
 	readQueue = [[NSMutableArray alloc] init];	
 	writeQueue = [[NSMutableArray alloc] init];
@@ -136,7 +139,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 }
 
 - (void)dealloc {
-	CFHostRef *host = &_peer._hostDestination.host;
+	[lowerLayer release];
+	
+	CFHostRef *host = &_peer._hostDestination.host; // Note: this is simply shorter to re-address, there is no fancyness, move along
 	if (*host != NULL) {
 		CFRelease(*host);
 		*host = NULL;
@@ -240,8 +245,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 #pragma mark Connection
 
 - (void)open {
-	CFReadStreamOpen(readStream);
-	CFWriteStreamOpen(writeStream);
+	Boolean result = NO;
+	result = CFReadStreamOpen(readStream);
+	result = CFWriteStreamOpen(writeStream);
 }
 
 - (BOOL)isOpen {
@@ -344,9 +350,8 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 		{
 			NSError *error = AFErrorFromCFStreamError(CFReadStreamGetError(self->readStream));
 			
-			if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)]) {
+			if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
 				[self.delegate socket:self didReceiveError:error];
-			}
 
 			break;
 		}
@@ -401,9 +406,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		{
 			NSError *error = AFErrorFromCFStreamError(CFReadStreamGetError(self->readStream));
 			
-			if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)]) {
+			if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
 				[self.delegate socket:self didReceiveError:error];
-			}
 			
 			break;
 		}

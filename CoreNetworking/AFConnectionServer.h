@@ -21,8 +21,11 @@
 	@discussion	After instantiating the server you can use one of the convenience methods to open a collection of sockets
  */
 @interface AFConnectionServer : NSObject <AFConnectionLayerHostDelegate, AFSocketHostDelegate> {
-	Class _clientClass;
 	id <AFConnectionServerDelegate> _delegate;
+	
+	Class _clientClass;
+	AFConnectionServer *_lowerLayer;
+	
 	AFConnectionPool *hosts, *clients;
 }
 
@@ -30,19 +33,25 @@
 	@method
 	@abstract	Designated Initialiser
  */
-- (id)initWithDelegate:(id <AFConnectionServerDelegate>)delegate clientLayer:(Class)clientClass;
+- (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass;
 
 /*!
-	@method
+	@property
 	@abstract	This class is used to instantiate a new higher-level layer when the server receives the <tt>-layer:didAcceptConnection:</tt> delegate callback
  */
 @property (readonly, assign) Class clientClass;
 
 /*!
+	@property
+	@abstract	This is the server that this one sits atop. The delegate of this object should be the upper server.
+ */
+@property (readonly, retain) AFConnectionServer *lowerLayer;
+
+/*!
 	@method
 	@abstract	The delegate is optional in this class, most servers should function without one
  */
-@property (readonly, assign) id <AFConnectionServerDelegate> delegate;
+@property (assign) id <AFConnectionServerDelegate> delegate;
 
 /*!
 	@method
@@ -55,6 +64,7 @@
 	@method
 	@abstract	Create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to ::1)
 	@discussion	This is likely only to be useful for testing your server, since it won't be accessable from another computer
+				This is a subset of the sockets opened in <tt>-openNetworkSockets:withType:</tt> and doesn't need to be used in addition to that method
  */
 - (id)openLocalhostSockets:(SInt32 *)port withType:(struct AFSocketType)type;
 

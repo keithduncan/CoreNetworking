@@ -132,8 +132,10 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 - (void)dealloc {
 	[self _close];
 	
-	// Note: this is here for non-GC
-	CFRelease(_signature->address);
+	if (_signature != NULL) {
+		if (_signature->address != NULL)
+			CFRelease(_signature->address);
+	}
 	
 	[super dealloc];
 }

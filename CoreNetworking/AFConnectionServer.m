@@ -25,13 +25,14 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 @interface AFConnectionServer () <AFConnectionLayerControlDelegate>
 @property (readwrite, assign) Class clientClass;
-@property (readwrite, assign) id <AFConnectionServerDelegate> delegate;
+@property (readwrite, retain) AFConnectionServer *lowerLayer;
 @end
 
 @implementation AFConnectionServer
 
-@synthesize clientClass=_clientClass;
 @synthesize delegate=_delegate;
+@synthesize clientClass=_clientClass;
+@synthesize lowerLayer=_lowerLayer;
 @synthesize clients, hosts;
 
 - (id)init {
@@ -45,11 +46,13 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	return self;
 }
 
-- (id)initWithDelegate:(id <AFConnectionServerDelegate>)delegate clientLayer:(Class)clientClass {
+- (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass {
 	self = [self init];
 	
+	_lowerLayer = [server retain];
+	[_lowerLayer setDelegate:self];
+	
 	_clientClass = clientClass;
-	_delegate = delegate;
 	
 	return self;
 }
@@ -62,6 +65,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 - (void)dealloc {
 	[self finalize];
+	
+	[_lowerLayer release];
 	
 	[clients release];
 	
@@ -150,13 +155,12 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (void)layer:(id <AFConnectionLayer>)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
-	AFSocket *newSocket = newLayer;
-	CFSocketSetSocketFlags((CFSocketRef)[newSocket lowerLayer], CFSocketGetSocketFlags((CFSocketRef)[newSocket lowerLayer]) & ~kCFSocketCloseOnInvalidate);
-	
 	id <AFConnectionLayer> newConnection = [self newApplicationLayerForNetworkLayer:newLayer];
 	[self.clients addConnectionsObject:newConnection];
 	
-	[newConnection scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
+	if ([newConnection respondsToSelector:@selector(scheduleInRunLoop:forMode:)])
+		[newConnection scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
+	
 	[newConnection open];
 }
 

@@ -34,6 +34,10 @@
 
 @protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>
  @optional
+/*!
+	@method
+	@param		|peer| may be nil
+ */
 - (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(CFHostRef)peer;
 - (void)layer:(id <AFConnectionLayer>)layer didDisconnectWithError:(NSError *)error;
 @end
