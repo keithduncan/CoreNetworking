@@ -63,7 +63,7 @@
 /*!
 	@method
 	@abstract	Create a server with ports open on all IP addresses (it equivalent of ::0)
-	@discussion	This method is rarely applicable to higher-level servers, if you do not implement it, you MUST forward it to your lower layer
+	@discussion	This method is rarely applicable to higher-level servers, the default implementation walks the server stack to the lowest layer, then executes
 	@param		|port| is passed by reference so that if you pass 0 you get back the actual port
  */
 - (id)openNetworkSockets:(SInt32 *)port withType:(struct AFSocketType)type;
@@ -71,7 +71,7 @@
 /*!
 	@method
 	@abstract	Create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to ::1)
-	@discussion	This method is rarely applicable to higher-level servers, if you do not implement it, you MUST forward it to your lower layer
+	@discussion	This method is rarely applicable to higher-level servers, the default implementation walks the server stack to the lowest layer, then executes
 				This is likely only to be useful for testing your server, since it won't be accessable from another computer
 				This is a subset of the sockets opened in <tt>-openNetworkSockets:withType:</tt> and doesn't need to be used in addition to that method
  */

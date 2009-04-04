@@ -73,6 +73,11 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (id)_openSockets:(SInt32 *)port withType:(struct AFSocketType)type addresses:(NSArray *)addrs {
+	AFConnectionServer *lowestLayer = self;
+	while (lowestLayer.lowerLayer != nil) {
+		lowestLayer = self.lowerLayer;
+	} self = lowestLayer;
+	
 	for (NSData *currentAddrData in addrs) {
 		currentAddrData = [[currentAddrData mutableCopy] autorelease];
 		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddrData))->sin_port = htons(*port);
