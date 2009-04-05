@@ -31,7 +31,6 @@ enum {
 	_kDidPassConnectMethod		= 1UL << 2,   // disconnection results in delegate call.
 	_kForbidStreamReadWrite		= 1UL << 3,   // no new reads or writes are allowed.
 	_kCloseSoon					= 1UL << 4,   // disconnect as soon as nothing is queued.
-	_kClosingWithError			= 1UL << 5,   // the socket is being closed due to an error.
 };
 typedef NSUInteger AFSocketConnectionFlags;
 
@@ -181,7 +180,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (NSString *)description {
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
-	[description appendString:@"\n"];
+	[description appendString:@" {\n"];
 	
 	[description appendFormat:@"\tOpen: %@, Closed: %@", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO"), nil];
 	[description appendString:@"\n"];
@@ -195,22 +194,19 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[description appendFormat:@"\t%d pending reads, %d pending writes", [readQueue count], [writeQueue count], nil];
 	[description appendString:@"\n"];
 	
-	AFPacketRead *readPacket = [self currentReadPacket];
-	[description appendFormat:@"\tCurrent Read: %@", readPacket, nil];
+	static const char *StreamStatusStrings[] = { "not open", "opening", "open", "reading", "writing", "at end", "closed", "has error" };
+	
+	[description appendFormat:@"\tRead Stream: %p %s, ", readStream, (readStream != NULL ? StreamStatusStrings[CFReadStreamGetStatus(readStream)] : ""), nil];
+	[description appendFormat:@"Current Read: %@", [self currentReadPacket], nil];
 	[description appendString:@"\n"];
 	
-	AFPacketWrite *writePacket = [self currentWritePacket];
-	[description appendFormat:@"\tCurrent Read: %@", writePacket, nil];
+	[description appendFormat:@"\tWrite Stream: %p %s, ", writeStream, (writeStream != NULL ? StreamStatusStrings[CFWriteStreamGetStatus(writeStream)] : ""), nil];	
+	[description appendFormat:@"Current Write: %@", [self currentWritePacket], nil];
 	[description appendString:@"\n"];
 	
-	{
-		static const char *StreamStatusStrings[] = { "not open", "opening", "open", "reading", "writing", "at end", "closed", "has error" };
-		[description appendFormat:@"\tRead Stream: %p %s, ", readStream, (readStream != NULL ? StreamStatusStrings[CFReadStreamGetStatus(readStream)] : ""), nil];
-		[description appendFormat:@"\tWrite Stream: %p %s, ", writeStream, (writeStream != NULL ? StreamStatusStrings[CFWriteStreamGetStatus(writeStream)] : ""), nil];	
-		
-		if ((self.connectionFlags & _kCloseSoon) == _kCloseSoon) [description appendString: @"will close pending writes, "];
-	}
-	[description appendString:@"\n"];
+	if ((self.connectionFlags & _kCloseSoon) == _kCloseSoon) [description appendString: @"will close pending writes, "];
+	
+	[description appendString:@"\n}"];
 	
 	return description;
 }
@@ -296,36 +292,18 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		CFWriteStreamClose(writeStream);
 	}
 	
-	self.streamFlags = 0;
-	
-	BOOL notifyDelegate = ((self.connectionFlags & _kDidPassConnectMethod) == _kDidPassConnectMethod);
-	
-	// Note: clear the flags, self could be reused?
-	// Note: clear the flags before calling the delegate as it could release self
 	self.connectionFlags = 0;
 	
-	if (notifyDelegate && [self.delegate respondsToSelector:@selector(layerDidClose:)]) {
+	if ([self.delegate respondsToSelector:@selector(layer:didDisconnectWithError:)])
+		[self.delegate layer:self didDisconnectWithError:nil];
+	
+	if ([self.delegate respondsToSelector:@selector(layerDidClose:)]) {
 		[self.delegate layerDidClose:self];
 	}
 }
 
 - (BOOL)isClosed {
 	return (((self.streamFlags & _kReadStreamDidClose) == _kReadStreamDidClose) && ((self.streamFlags & _kWriteStreamDidClose) == _kWriteStreamDidClose));
-}
-
-#pragma mark Termination
-
-- (void)disconnectWithError:(NSError *)error {
-	if (error != nil) {
-		self.connectionFlags = (self.connectionFlags | _kClosingWithError);
-		
-		if ((self.connectionFlags & _kDidPassConnectMethod) == _kDidPassConnectMethod) {
-			if ([self.delegate respondsToSelector:@selector(layer:didDisconnectWithError:)])
-				[self.delegate layer:self didDisconnectWithError:error];
-		}
-	}
-	
-	[self close];
 }
 
 #pragma mark Reading
@@ -471,11 +449,11 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if ((self.connectionFlags & _kDidCallConnectDelegate) == _kDidCallConnectDelegate) return;
 	self.connectionFlags = (self.connectionFlags | _kDidCallConnectDelegate);
 	
-	if ([self.delegate respondsToSelector:@selector(layer:didConnectToPeer:)])
-		[self.delegate layer:self didConnectToPeer:_peer._hostDestination.host];
-	
 	if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])
 		[self.delegate layerDidOpen:self];
+	
+	if ([self.delegate respondsToSelector:@selector(layer:didConnectToPeer:)])
+		[self.delegate layer:self didConnectToPeer:_peer._hostDestination.host];
 	
 	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];

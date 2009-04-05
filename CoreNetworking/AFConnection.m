@@ -14,7 +14,7 @@
 
 @implementation AFConnection
 
-@synthesize destinationEndpoint=_destinationEndpoint;
+@synthesize peerEndpoint=_peerEndpoint;
 @synthesize delegate=_delegate;
 @synthesize lowerLayer=_lowerLayer;
 
@@ -30,7 +30,7 @@
 }
 
 - (void)dealloc {
-	[_destinationEndpoint release];
+	[_peerEndpoint release];
 	[_lowerLayer release];
 	
 	[super dealloc];

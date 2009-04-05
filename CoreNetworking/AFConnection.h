@@ -20,7 +20,7 @@
 	id <AFNetworkLayer> _lowerLayer;
 	id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> _delegate;
 	
-	NSURL *_destinationEndpoint;
+	NSURL *_peerEndpoint;
 }
 
 /*!
@@ -32,7 +32,7 @@
 /*!
 	@property
  */
-@property (copy) NSURL *destinationEndpoint;
+@property (copy) NSURL *peerEndpoint;
 
 /*!
 	@property

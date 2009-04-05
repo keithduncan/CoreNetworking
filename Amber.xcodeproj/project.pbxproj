@@ -233,14 +233,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 532F73DD0F0EB1AA004D6056 /* AmberFoundation Touch */;
+			remoteGlobalIDString = 532F73DD0F0EB1AA004D6056;
 			remoteInfo = "AmberFoundation Touch";
 		};
 		530021420F881A000044D37F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
 			remoteInfo = AmberFoundation;
 		};
 		53692A480F1B7E970051C367 /* PBXContainerItemProxy */ = {

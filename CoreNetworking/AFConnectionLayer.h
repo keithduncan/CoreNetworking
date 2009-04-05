@@ -37,13 +37,21 @@
 @end
 
 @protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>
+
  @optional
 /*!
 	@method
-	@param		|peer| may be nil
+	@abstract	This method is paired with <tt>-layerDidOpen:</tt> and MUST be sent after it.
  */
 - (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(CFHostRef)peer;
+
+/*!
+	@method
+	@abstract	This method is paired with <tt>-layerDidClose:</tt> and MUST be sent after it.
+	@discussion	This method signals disconnection in both clean and dirty conditions, the |error| argument may be nil.
+ */
 - (void)layer:(id <AFConnectionLayer>)layer didDisconnectWithError:(NSError *)error;
+
 @end
 
 @protocol AFConnectionLayerDataDelegate <AFNetworkLayerDataDelegate>
