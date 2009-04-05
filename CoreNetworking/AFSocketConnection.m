@@ -175,6 +175,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[super dealloc];
 }
 
+- (CFTypeRef)peer {
+	return _peer._hostDestination.host; // Note: this will also return the netService
+}
+
 - (NSString *)description {
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	[description appendString:@"\n"];
@@ -184,7 +188,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	if ([self isOpen]) {
 		[description appendString:@"\tPeer: "];
-		[description appendFormat:@"%@", [(id)_peer._hostDestination.host description], nil];
+		[description appendFormat:@"%@", [(id)[self peer] description], nil];
 		[description appendString:@"\n"];
 	}
 	

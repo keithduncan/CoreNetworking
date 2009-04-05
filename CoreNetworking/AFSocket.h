@@ -54,6 +54,12 @@
 
 /*!
 	@property
+	@abstract	This returns the <tt>CFSocket</tt> peer address in a CFHostRef
+ */
+@property (readonly) CFHostRef peer;
+
+/*!
+	@property
  */
 @property (assign) id <AFSocketHostDelegate, AFSocketControlDelegate> delegate;
 

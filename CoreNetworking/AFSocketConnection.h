@@ -102,6 +102,13 @@ typedef struct AFSocketSignature AFSocketSignature;
 
 /*!
 	@property
+	@abstract	Depending on how the object was instantiated it may be a <tt>CFNetServiceRef</tt> or a <tt>CFHostRef</tt>
+				If this is an inbound connection, it will always be a <tt>CFHostRef</tt>
+ */
+@property (readonly) CFTypeRef peer;
+
+/*!
+	@property
  */
 @property (assign) id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate> delegate;
 

@@ -19,7 +19,7 @@
  */
 @protocol AFConnectionServerDelegate <AFConnectionLayerHostDelegate>
  @optional
-- (BOOL)server:(AFConnectionServer *)server shouldConnect:(id <AFConnectionLayer>)connection toHost:(const CFHostRef)addr;
+- (BOOL)server:(AFConnectionServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection fromHost:(const CFHostRef)host;
 @end
 
 /*!

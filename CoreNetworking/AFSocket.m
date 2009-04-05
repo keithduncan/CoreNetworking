@@ -144,18 +144,19 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 
 - (NSString *)description {
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
-	[description appendString:@"\n"];
+	[description appendString:@" {\n"];
 	
 	if (_socket != NULL) {
 		[description appendString:@"\tAddress: "];
 		
 		char buffer[INET6_ADDRSTRLEN]; // Note: because the -description method is used only for debugging, we can use fixed length buffer
 		sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)[(id)CFSocketCopyAddress(_socket) autorelease]), buffer, sizeof(buffer));
-		
 		[description appendFormat:@"%s\n", buffer, nil];
 		
 		[description appendFormat:@"\tPort: %ld", ntohs(((struct sockaddr_in *)CFDataGetBytePtr((CFDataRef)[(id)CFSocketCopyAddress(_socket) autorelease]))->sin_port), nil];
 	}
+	
+	[description appendString:@"\n}"];
 	
 	return description;
 }
@@ -170,6 +171,14 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 
 - (id)lowerLayer {
 	return (id)_socket;
+}
+
+- (CFHostRef)peer {
+	CFDataRef addr = CFSocketCopyAddress(_socket);
+	CFHostRef peer = CFHostCreateWithAddress(kCFAllocatorDefault, addr);
+	CFRelease(addr);
+	
+	return (CFHostRef)[(id)peer autorelease];
 }
 
 @end

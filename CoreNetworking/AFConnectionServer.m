@@ -183,6 +183,11 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (void)layer:(id)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
+	if ([self.delegate respondsToSelector:@selector(server:shouldAcceptConnection:fromHost:)]) {
+		CFHostRef host = (CFHostRef)[(id)newLayer peer];
+		if (![self.delegate server:self shouldAcceptConnection:newLayer fromHost:host]) return;
+	}
+	
 	id <AFConnectionLayer> newConnection = [self newApplicationLayerForNetworkLayer:newLayer];
 	[self.clients addConnectionsObject:newConnection];
 	
@@ -192,16 +197,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[newConnection open];
 }
 
-- (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(const CFHostRef)host {
-	BOOL shouldConnect = YES;
-	if ([self.delegate respondsToSelector:@selector(server:shouldConnect:toHost:)])
-		shouldConnect = [self.delegate server:self shouldConnect:layer toHost:host];
-	
-	if (!shouldConnect) {
-		[self.clients removeConnectionsObject:layer];
-		return;
-	}
-	
+- (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(const CFHostRef)host {	
 	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
 		[self.delegate layer:self didAcceptConnection:layer];
 }
