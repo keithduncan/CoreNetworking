@@ -182,17 +182,11 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	[description appendString:@" {\n"];
 	
-	[description appendFormat:@"\tOpen: %@, Closed: %@", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO"), nil];
-	[description appendString:@"\n"];
+	[description appendFormat:@"\tPeer: %@\n", [(id)[self peer] description], nil];
 	
-	if ([self isOpen]) {
-		[description appendString:@"\tPeer: "];
-		[description appendFormat:@"%@", [(id)[self peer] description], nil];
-		[description appendString:@"\n"];
-	}
+	[description appendFormat:@"\tOpen: %@, Closed: %@\n", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO"), nil];
 	
-	[description appendFormat:@"\t%d pending reads, %d pending writes", [readQueue count], [writeQueue count], nil];
-	[description appendString:@"\n"];
+	[description appendFormat:@"\t%d pending reads, %d pending writes\n", [readQueue count], [writeQueue count], nil];
 	
 	static const char *StreamStatusStrings[] = { "not open", "opening", "open", "reading", "writing", "at end", "closed", "has error" };
 	
@@ -253,9 +247,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 #pragma mark Connection
 
 - (void)open {
-	Boolean result = NO;
-	result = CFReadStreamOpen(readStream);
-	result = CFWriteStreamOpen(writeStream);
+	Boolean result = YES;
+	result &= CFReadStreamOpen(readStream);
+	result &= CFWriteStreamOpen(writeStream);
 }
 
 - (BOOL)isOpen {
