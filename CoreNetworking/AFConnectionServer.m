@@ -17,6 +17,8 @@
 #import	"AFNetworkTypes.h"
 #import "AFConnectionPool.h"
 
+#import "AFPriorityProxy.h"
+
 // Note: import this header last, allowing for any of the previous headers to import <net/if.h> see the getifaddrs man page for details
 #import <ifaddrs.h>
 
@@ -27,6 +29,12 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 @interface AFConnectionServer () <AFConnectionLayerControlDelegate>
 @property (readwrite, assign) Class clientClass;
 @property (readwrite, retain) AFConnectionServer *lowerLayer;
+@end
+
+@interface AFConnectionServer (Private)
+#if 0
+- (void)_regenerateDelegateProxy;
+#endif
 @end
 
 @implementation AFConnectionServer
@@ -65,6 +73,10 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (void)dealloc {
 	[self finalize];
 	
+#if 0
+	[_proxy release];
+#endif
+	
 	[_lowerLayer release];
 	
 	[clients release];
@@ -75,6 +87,18 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[hosts release];
 	
 	[super dealloc];
+}
+
+- (id)forwardingTargetForSelector:(SEL)selector {
+	return self.delegate;
+	
+#ifdef TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
+#error This forwarding code is not used in the iPhone Foundation.framework, use the old method
+#endif
+}
+
+- (BOOL)respondsToSelector:(SEL)selector {
+	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
 }
 
 - (id)_openSockets:(SInt32 *)port withType:(struct AFSocketType)type addresses:(NSArray *)addrs {
@@ -179,12 +203,33 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
-		[self.delegate layer:self didAcceptConnection:socket];
+		[self.delegate layer:self didAcceptConnection:layer];
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
 	if (![self.clients.connections containsObject:layer]) return;
 	[self.clients removeConnectionsObject:layer];
 }
+
+@end
+
+@implementation AFConnectionServer (Private)
+
+#if 0
+- (void)_regenerateDelegateProxy {
+	[_proxy release];
+	
+	AFPriorityProxy *proxy = [[AFPriorityProxy alloc] init];
+	
+	if ([_delegate isKindOfClass:[AFConnectionServer class]]) {
+		// Note: going through the accessor will return the existing proxy
+		[proxy insertTarget:[(AFConnectionServer *)_delegate delegate] atPriority:0];
+	}
+	
+	[proxy insertTarget:_delegate atPriority:0];
+	
+	_proxy = (id)proxy;
+}
+#endif
 
 @end

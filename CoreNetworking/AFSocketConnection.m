@@ -51,6 +51,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 @end
 
 @interface AFSocketConnection (Streams)
+- (BOOL)_configureStreams;
 - (void)_streamDidOpen;
 @end
 
@@ -98,15 +99,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	CFStreamCreatePairWithSocket(kCFAllocatorDefault, sock, &readStream, &writeStream);
 	
-	CFStreamClientContext context;
-	memset(&context, 0, sizeof(CFStreamClientContext));
-	context.info = self;
-	
-	Boolean result = NO;
-	
-	CFStreamEventType types = (kCFStreamEventOpenCompleted | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered);
-	result = CFReadStreamSetClient(readStream, (types | kCFStreamEventHasBytesAvailable), AFSocketConnectionReadStreamCallback, &context);
-	result = CFWriteStreamSetClient(writeStream, (types | kCFStreamEventCanAcceptBytes), AFSocketConnectionWriteStreamCallback, &context);
+	[self _configureStreams];
 	
 	_delegate = delegate;
 	
@@ -120,12 +113,12 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 - (id <AFConnectionLayer>)initWithNetService:(id <AFNetServiceCommon>)netService {
 	self = [self init];
 	
-	CFNetServiceRef *service = _peer._netServiceDestination.netService;
+	CFNetServiceRef *service = &_peer._netServiceDestination.netService;
 	
-	*service = CFNetServiceCreate(kCFAllocatorDefault, [netService valueForKey:@"domain"], <#CFStringRef serviceType#>, <#CFStringRef name#>, <#SInt32 port#>)
-	 = CFNetServiceCreate(kCFAllocatorDefault, <#CFStringRef domain#>, <#CFStringRef serviceType#>, <#CFStringRef name#>, <#SInt32 port#>)
+	*service = CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)[(id)netService valueForKey:@"domain"], (CFStringRef)[(id)netService valueForKey:@"type"], (CFStringRef)[(id)netService valueForKey:@"name"], 0);
+	CFStreamCreatePairWithSocketToNetService(kCFAllocatorDefault, *service, &readStream, &writeStream);
 	
-	CFStreamCreatePairWithSocketToNetService(kCFAllocatorDefault, <#CFNetServiceRef service#>, <#CFReadStreamRef * readStream#>, <#CFWriteStreamRef * writeStream#>)
+	[self _configureStreams];
 	
 	return self;
 }
@@ -135,8 +128,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	CFHostRef *host = &_peer._hostDestination.host;
 	
-	*host = CFRetain(signature->host);
+	*host = (CFHostRef)CFRetain(signature->host);
 	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, signature->transport.port, &readStream, &writeStream);
+	
+	[self _configureStreams];
 	
 	return self;
 }
@@ -153,7 +148,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 - (void)dealloc {
 	[lowerLayer release];
 	
-	// Note: this will also deallocate the netService if it is used instead
+	// Note: this will also deallocate the netService if present
 	CFHostRef *host = &_peer._hostDestination.host; // Note: this is simply shorter to re-address, there is no fancyness, move along
 	if (*host != NULL) {
 		CFRelease(*host);
@@ -451,6 +446,20 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 @implementation AFSocketConnection (Streams)
 
+- (BOOL)_configureStreams {
+	CFStreamClientContext context;
+	memset(&context, 0, sizeof(CFStreamClientContext));
+	context.info = self;
+	
+	CFStreamEventType types = (kCFStreamEventOpenCompleted | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered);
+	
+	Boolean result = YES;
+	if (readStream != NULL) result &= CFReadStreamSetClient(readStream, (types | kCFStreamEventHasBytesAvailable), AFSocketConnectionReadStreamCallback, &context);
+	if (writeStream != NULL) result &= CFWriteStreamSetClient(writeStream, (types | kCFStreamEventCanAcceptBytes), AFSocketConnectionWriteStreamCallback, &context);
+	
+	return result;
+}
+
 - (void)_streamDidOpen {
 	if ((self.streamFlags & _kReadStreamDidOpen) != _kReadStreamDidOpen || 
 		(self.streamFlags & _kWriteStreamDidOpen) != _kWriteStreamDidOpen) return;
@@ -511,7 +520,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	}
 }
 
-#pragma mark -
+#pragma mark --
 
 - (void)_enqueueReadPacket:(id)packet {
 	[readQueue addObject:packet];
@@ -580,7 +589,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 }
 
-#pragma mark -
+#pragma mark --
 
 - (void)_enqueueWritePacket:(id)packet {
 	[writeQueue addObject:packet];
