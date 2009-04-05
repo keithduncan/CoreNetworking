@@ -31,7 +31,7 @@
 - (id)initWithKeyPath:(NSString *)keyPath {
 	self = [super init];
 	
-	NSParameterAssert(key != nil);
+	NSParameterAssert(keyPath != nil);
 	_keyPath = [keyPath copy];
 	
 	return self;
@@ -47,7 +47,7 @@
 }
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"%@ index: %p \n{\n%@\n}", ]), [super description], self.index, self.index, nil];
+	return [NSString stringWithFormat:@"%@ index: %p \n{\n%@\n}", [super description], self.index, self.index, nil];
 }
 
 - (NSUInteger)count {
