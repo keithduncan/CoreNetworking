@@ -8,27 +8,41 @@
 
 #import <Foundation/Foundation.h>
 
+/*!
+	@function
+	@abstract	This returns whether or not it is safe to use <tt>-objectAtIndex:</tt> for a given index.
+ */
 NS_INLINE BOOL AFArrayContainsIndex(NSArray *array, NSUInteger index) {
-	return NSLocationInRange(index, (NSRange){0, [array count]});
+	return NSLocationInRange(index, NSMakeRange(0, [array count]));
 }
 
+/*!
+	@function
+	@abstract	This returns nil of the index isn't present in the array.
+ */
 NS_INLINE id AFSafeObjectAtIndex(NSArray *array, NSUInteger index) {
 	return (AFArrayContainsIndex(array, index) ? [array objectAtIndex:index] : nil);
 }
 
-@interface NSSet (AFAdditions)
-// This returns a copy of the original with the additional objects appended to the collection
-- (NSSet *)setByAddingObjects:(id)firstObject, ... NS_REQUIRES_NIL_TERMINATION;
-@end
-
+/*!
+	@category
+ */
 @interface NSArray (AFAdditions)
+
+/*!
+	@method
+ */
 - (NSArray *)arrayByAddingObjectsFromSet:(NSSet *)set;
 
+/*!
+	@method
+ */
 - (NSArray *)subarrayFromIndex:(NSUInteger)index;
 
-- (id)onlyObject; // Note: this returns the only object in the array, or nil if the receiver contains more than one object
-@end
+/*!
+	@method
+	@abstract	This returns the only object in the array, or nil if the receiver contains more than one object.
+ */
+- (id)onlyObject;
 
-@interface NSDictionary (AFAdditions)
-- (NSDictionary *)diff:(id)dictionary;
 @end
