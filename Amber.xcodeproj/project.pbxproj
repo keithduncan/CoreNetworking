@@ -111,7 +111,7 @@
 		537772A60F89264D0042C727 /* AFKeyIndexedSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 537772A20F89264D0042C727 /* AFKeyIndexedSet.m */; };
 		537772C50F8934BC0042C727 /* NSSet+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 537772C30F8934BC0042C727 /* NSSet+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537772C60F8934BC0042C727 /* NSSet+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 537772C40F8934BC0042C727 /* NSSet+Additions.m */; };
-		537772C70F8934BC0042C727 /* NSSet+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 537772C30F8934BC0042C727 /* NSSet+Additions.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		537772C70F8934BC0042C727 /* NSSet+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 537772C30F8934BC0042C727 /* NSSet+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537772C80F8934BC0042C727 /* NSSet+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 537772C40F8934BC0042C727 /* NSSet+Additions.m */; };
 		537772CB0F8935000042C727 /* NSDictionary+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 537772C90F8935000042C727 /* NSDictionary+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537772CC0F8935000042C727 /* NSDictionary+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 537772CA0F8935000042C727 /* NSDictionary+Additions.m */; };
