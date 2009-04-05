@@ -101,6 +101,14 @@
 		5370E0BA0F5B061D008F5991 /* AFSocketConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0960F5B061D008F5991 /* AFSocketConnection.m */; };
 		5370E0BB0F5B061D008F5991 /* CoreNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0970F5B061D008F5991 /* CoreNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5375FA6A0F2543D400CEC661 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
+		537772870F89259A0042C727 /* AFKeyIndexedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 537772850F89259A0042C727 /* AFKeyIndexedArray.m */; };
+		537772880F89259A0042C727 /* AFKeyIndexedArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 537772860F89259A0042C727 /* AFKeyIndexedArray.h */; };
+		537772890F89259A0042C727 /* AFKeyIndexedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 537772850F89259A0042C727 /* AFKeyIndexedArray.m */; };
+		5377728A0F89259A0042C727 /* AFKeyIndexedArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 537772860F89259A0042C727 /* AFKeyIndexedArray.h */; };
+		537772A30F89264D0042C727 /* AFKeyIndexedSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 537772A10F89264D0042C727 /* AFKeyIndexedSet.h */; };
+		537772A40F89264D0042C727 /* AFKeyIndexedSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 537772A20F89264D0042C727 /* AFKeyIndexedSet.m */; };
+		537772A50F89264D0042C727 /* AFKeyIndexedSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 537772A10F89264D0042C727 /* AFKeyIndexedSet.h */; };
+		537772A60F89264D0042C727 /* AFKeyIndexedSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 537772A20F89264D0042C727 /* AFKeyIndexedSet.m */; };
 		5379174C0F7FC3560064EB92 /* AmberKit+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537917800F7FC4BC0064EB92 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537917810F7FC4BC0064EB92 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE6D0F5AED26008F5991 /* AFKeyValueBinding.m */; };
@@ -350,6 +358,10 @@
 		5370E0950F5B061D008F5991 /* AFSocketConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFSocketConnection.h; path = CoreNetworking/AFSocketConnection.h; sourceTree = "<group>"; };
 		5370E0960F5B061D008F5991 /* AFSocketConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFSocketConnection.m; path = CoreNetworking/AFSocketConnection.m; sourceTree = "<group>"; };
 		5370E0970F5B061D008F5991 /* CoreNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreNetworking.h; path = CoreNetworking/CoreNetworking.h; sourceTree = "<group>"; };
+		537772850F89259A0042C727 /* AFKeyIndexedArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFKeyIndexedArray.m; path = AmberFoundation/AFKeyIndexedArray.m; sourceTree = "<group>"; };
+		537772860F89259A0042C727 /* AFKeyIndexedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFKeyIndexedArray.h; path = AmberFoundation/AFKeyIndexedArray.h; sourceTree = "<group>"; };
+		537772A10F89264D0042C727 /* AFKeyIndexedSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFKeyIndexedSet.h; path = AmberFoundation/AFKeyIndexedSet.h; sourceTree = "<group>"; };
+		537772A20F89264D0042C727 /* AFKeyIndexedSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFKeyIndexedSet.m; path = AmberFoundation/AFKeyIndexedSet.m; sourceTree = "<group>"; };
 		5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AmberKit+Additions.h"; sourceTree = "<group>"; };
 		537917750F7FC43B0064EB92 /* libAmberKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAmberKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		537E53A00CFC8D400084F920 /* Amber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Amber.h; sourceTree = "<group>"; };
@@ -621,6 +633,17 @@
 			name = Additions;
 			sourceTree = "<group>";
 		};
+		537772830F89258A0042C727 /* Collections */ = {
+			isa = PBXGroup;
+			children = (
+				537772A10F89264D0042C727 /* AFKeyIndexedSet.h */,
+				537772A20F89264D0042C727 /* AFKeyIndexedSet.m */,
+				537772860F89259A0042C727 /* AFKeyIndexedArray.h */,
+				537772850F89259A0042C727 /* AFKeyIndexedArray.m */,
+			);
+			name = Collections;
+			sourceTree = "<group>";
+		};
 		537917990F7FC8220064EB92 /* Value Transformers */ = {
 			isa = PBXGroup;
 			children = (
@@ -652,6 +675,7 @@
 			children = (
 				539A60DA0D269932001CD14A /* AmberFoundation.h */,
 				539A613D0D269E8A001CD14A /* General */,
+				537772830F89258A0042C727 /* Collections */,
 				539A610D0D269C02001CD14A /* Categories */,
 				539A610E0D269C7C001CD14A /* Other Sources */,
 			);
@@ -859,6 +883,8 @@
 				539A44190F782DF500564C73 /* NSObject+Additions.h in Headers */,
 				539A44300F782E1200564C73 /* AFPriorityProxy.h in Headers */,
 				539A44320F782E1200564C73 /* AFProtocolProxy.h in Headers */,
+				5377728A0F89259A0042C727 /* AFKeyIndexedArray.h in Headers */,
+				537772A50F89264D0042C727 /* AFKeyIndexedSet.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -930,6 +956,8 @@
 				539A44170F782DF500564C73 /* NSObject+Additions.h in Headers */,
 				539A442A0F782E1200564C73 /* AFPriorityProxy.h in Headers */,
 				539A442C0F782E1200564C73 /* AFProtocolProxy.h in Headers */,
+				537772880F89259A0042C727 /* AFKeyIndexedArray.h in Headers */,
+				537772A30F89264D0042C727 /* AFKeyIndexedSet.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1221,6 +1249,8 @@
 				539A44180F782DF500564C73 /* NSObject+Additions.m in Sources */,
 				539A44310F782E1200564C73 /* AFPriorityProxy.m in Sources */,
 				539A44330F782E1200564C73 /* AFProtocolProxy.m in Sources */,
+				537772890F89259A0042C727 /* AFKeyIndexedArray.m in Sources */,
+				537772A60F89264D0042C727 /* AFKeyIndexedSet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1279,6 +1309,8 @@
 				539A44160F782DF500564C73 /* NSObject+Additions.m in Sources */,
 				539A442B0F782E1200564C73 /* AFPriorityProxy.m in Sources */,
 				539A442D0F782E1200564C73 /* AFProtocolProxy.m in Sources */,
+				537772870F89259A0042C727 /* AFKeyIndexedArray.m in Sources */,
+				537772A40F89264D0042C727 /* AFKeyIndexedSet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
