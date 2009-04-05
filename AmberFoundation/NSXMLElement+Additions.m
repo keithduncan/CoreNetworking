@@ -8,14 +8,14 @@
 
 #import "NSXMLElement+Additions.h"
 
-#import "AFCollection.h"
 #import "NSString+Additions.h"
+#import "NSArray+Additions.h"
 
 #ifndef TARGET_OS_IPHONE
 
 @implementation NSXMLElement (AFAdditions)
 
-NSXMLNode *NodeForKey(NSXMLElement *element, NSString *key) {
+static NSXMLNode *NodeForKey(NSXMLElement *element, NSString *key) {
 	NSArray *elements = [element elementsForName:key];
 	
 	if ([elements count] == 0) return nil;

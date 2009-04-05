@@ -80,6 +80,15 @@
 	return [self.index objectForKey:value];
 }
 
+- (NSSet *)objectsForIndexedValues:(NSSet *)values {
+	NSMutableSet *objects = [NSMutableSet setWithCapacity:[values count]];
+	
+	for (id indexedValue in values)
+		[objects addObject:[self objectForIndexedValue:indexedValue]];
+	
+	return objects;
+}
+
 - (void)removeObjectForIndexedValue:(id <NSCopying>)value {
 	id object = [self.index objectForKey:value];
 	if (object == nil) return;

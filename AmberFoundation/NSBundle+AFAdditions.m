@@ -8,7 +8,7 @@
 
 #import "NSBundle+AFAdditions.h"
 
-#import "AFCollection.h"
+#import "NSArray+Additions.h"
 
 NSString *const AFCompanyNameKey = @"AFCompanyName";
 

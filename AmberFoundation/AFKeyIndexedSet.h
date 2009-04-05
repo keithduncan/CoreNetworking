@@ -38,6 +38,11 @@
 /*!
 	@method
  */
+- (NSSet *)objectsForIndexedValues:(NSSet *)values;
+
+/*!
+	@method
+ */
 - (void)removeObjectForIndexedValue:(id <NSCopying>)value;
 
 /*!
