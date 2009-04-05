@@ -50,11 +50,11 @@ static NSMethodSignature *AFProtcolGetMethodSignature(SEL selector, Protocol *pr
 	NSMethodSignature *signature = nil;
 	
 	unsigned int count = 0;
-	Protocol **conformingProtocols = protocol_copyProtocolList(_protocol, &count);
+	Protocol **conformingProtocols = protocol_copyProtocolList(protocol, &count);
 	
 	if (count != 0) {
 		for (unsigned int currentIndex = 0; currentIndex < count; currentIndex++) {
-			Protocol *currentProtocol = conformingProtocols[curentIndex];
+			Protocol *currentProtocol = conformingProtocols[currentIndex];
 			signature = AFProtcolGetMethodSignature(selector, currentProtocol);
 			if (signature != nil) break;
 		}
@@ -66,7 +66,7 @@ static NSMethodSignature *AFProtcolGetMethodSignature(SEL selector, Protocol *pr
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
-	return AFProtcolGetMethodSignature(selector,_protocol);
+	return AFProtcolGetMethodSignature(selector, _protocol);
 }
 
 @end

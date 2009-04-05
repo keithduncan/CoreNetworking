@@ -11,7 +11,7 @@
 @implementation AFPriorityProxy
 
 - (id)init {
-	priorityMap = [[NSMapTable mapTableWithStrongToStrongObjects] retain];
+	priorityMap = [[NSMapTable mapTableWithWeakToStrongObjects] retain];
 	
 	dispatchMap = [[NSMapTable alloc] initWithKeyOptions:(NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality) valueOptions:(NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality) capacity:/* Default CF collection capacity */ 3];
 	
@@ -42,7 +42,7 @@
 	@abstract	This increments the priority value of each target by one
  */
 - (void)_slidePriorityAtIndex:(NSUInteger)index {
-	NSMapTable *newPriorityMap = [NSMapTable mapTableWithStrongToStrongObjects];
+	NSMapTable *newPriorityMap = [[NSMapTable mapTableWithWeakToStrongObjects] retain];
 	
 	for (id currentPriorityTarget in priorityMap) {
 		NSNumber *currentPriorityIndex = NSMapGet(priorityMap, currentPriorityTarget);
@@ -52,7 +52,7 @@
 	}
 	
 	[priorityMap release];
-	priorityMap = [newPriorityMap retain];
+	priorityMap = newPriorityMap;
 }
 
 /*!

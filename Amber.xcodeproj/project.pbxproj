@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5300213A0F8819C00044D37F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532F73E20F0EB1D7004D6056 /* Foundation.framework */; };
+		5300213F0F8819E00044D37F /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		5302AC830F2121D200867A4A /* Amber.m in Sources */ = {isa = PBXBuildFile; fileRef = 5302AC820F2121D200867A4A /* Amber.m */; };
 		530911780F646BAA00525632 /* AFNetworkConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 530911760F646BAA00525632 /* AFNetworkConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		530911790F646BAA00525632 /* AFNetworkConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 530911770F646BAA00525632 /* AFNetworkConstants.m */; };
@@ -227,6 +229,20 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
+		530021400F8819F60044D37F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 532F73DD0F0EB1AA004D6056 /* AmberFoundation Touch */;
+			remoteInfo = "AmberFoundation Touch";
+		};
+		530021420F881A000044D37F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			remoteInfo = AmberFoundation;
+		};
 		53692A480F1B7E970051C367 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
@@ -421,6 +437,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5300213F0F8819E00044D37F /* AmberFoundation.framework in Frameworks */,
+				5300213A0F8819C00044D37F /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,10 +507,10 @@
 			isa = PBXGroup;
 			children = (
 				5343E70E0C21FB4200B63E6E /* Amber.framework */,
-				539A60C30D2698B7001CD14A /* AmberFoundation.framework */,
-				532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */,
 				53EE97470F190070008AD8C0 /* AmberKit.framework */,
 				537917750F7FC43B0064EB92 /* libAmberKit.a */,
+				539A60C30D2698B7001CD14A /* AmberFoundation.framework */,
+				532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */,
 				5370E0710F5B0571008F5991 /* CoreNetworking.framework */,
 				53BEF6A10F5B6A2700063B8D /* libCoreNetworking.a */,
 			);
@@ -1025,6 +1043,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				530021430F881A000044D37F /* PBXTargetDependency */,
 			);
 			name = CoreNetworking;
 			productName = CoreNetworking;
@@ -1077,6 +1096,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				530021410F8819F60044D37F /* PBXTargetDependency */,
 			);
 			name = "CoreNetworking Touch";
 			productName = "CoreNetworking Touch";
@@ -1321,6 +1341,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		530021410F8819F60044D37F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 532F73DD0F0EB1AA004D6056 /* AmberFoundation Touch */;
+			targetProxy = 530021400F8819F60044D37F /* PBXContainerItemProxy */;
+		};
+		530021430F881A000044D37F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			targetProxy = 530021420F881A000044D37F /* PBXContainerItemProxy */;
+		};
 		53692A490F1B7E970051C367 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 53EE97460F190070008AD8C0 /* AmberKit */;
