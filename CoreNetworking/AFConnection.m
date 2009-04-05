@@ -24,7 +24,7 @@
 	_delegate = delegate;
 	
 	_lowerLayer = [lowerLayer retain];
-	_lowerLayer.delegate = self;
+	_lowerLayer.delegate = (id)self;
 	
 	return self;
 }
@@ -34,6 +34,10 @@
 	[_lowerLayer release];
 	
 	[super dealloc];
+}
+
+- (id)forwardingTargetForSelector:(SEL)selector {
+	return self.lowerLayer;
 }
 
 - (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {

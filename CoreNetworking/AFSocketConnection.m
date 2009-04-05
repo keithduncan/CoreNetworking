@@ -204,9 +204,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[description appendFormat:@"Current Write: %@", [self currentWritePacket], nil];
 	[description appendString:@"\n"];
 	
-	if ((self.connectionFlags & _kCloseSoon) == _kCloseSoon) [description appendString: @"will close pending writes, "];
+	if ((self.connectionFlags & _kCloseSoon) == _kCloseSoon) [description appendString: @"will close pending writes\n"];
 	
-	[description appendString:@"\n}"];
+	[description appendString:@"}"];
 	
 	return description;
 }
@@ -453,7 +453,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		[self.delegate layerDidOpen:self];
 	
 	if ([self.delegate respondsToSelector:@selector(layer:didConnectToPeer:)])
-		[self.delegate layer:self didConnectToPeer:_peer._hostDestination.host];
+		[self.delegate layer:self didConnectToPeer:(id)_peer._hostDestination.host];
 	
 	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];

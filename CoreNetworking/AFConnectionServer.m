@@ -197,7 +197,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[newConnection open];
 }
 
-- (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(const CFHostRef)host {
+- (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(id)host {
 	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
 		[self.delegate layer:self didAcceptConnection:layer];
 }

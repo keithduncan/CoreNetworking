@@ -43,7 +43,7 @@
 	@method
 	@abstract	This method is paired with <tt>-layerDidOpen:</tt> and MUST be sent after it.
  */
-- (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(CFHostRef)peer;
+- (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(id)peer;
 
 /*!
 	@method

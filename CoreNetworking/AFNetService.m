@@ -87,8 +87,8 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 				
 	context.info = self;
 	
-	service =  CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)domain, (CFStringRef)type, (CFStringRef)name, 0);
-	Boolean client = CFNetServiceSetClient(service, AFNetServiceClientCallBack, &context);
+	_service =  CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)domain, (CFStringRef)type, (CFStringRef)name, 0);
+	Boolean client = CFNetServiceSetClient(_service, AFNetServiceClientCallBack, &context);
 	
 	if (!client) {
 		[NSException raise:NSInternalInconsistencyException format:@"%s, couldn't set service client", __PRETTY_FUNCTION__, nil];
@@ -97,7 +97,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 		return nil;
 	}
 	
-	monitor = CFNetServiceMonitorCreate(kCFAllocatorDefault, service, AFNetServiceMonitorClientCallBack, &context);
+	monitor = CFNetServiceMonitorCreate(kCFAllocatorDefault, _service, AFNetServiceMonitorClientCallBack, &context);
 	
 	return self;
 }
@@ -108,7 +108,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	CFNetServiceMonitorInvalidate(monitor);
 	CFRelease(monitor);
 	
-	CFRelease(service);
+	CFRelease(_service);
 	
 	[presence release];
 	
@@ -125,15 +125,15 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 }
 
 - (NSString *)domain {
-	return (id)CFNetServiceGetDomain(service);
+	return (id)CFNetServiceGetDomain(_service);
 }
 
 - (NSString *)type {
-	return (id)CFNetServiceGetType(service);
+	return (id)CFNetServiceGetType(_service);
 }
 
 - (NSString *)name {
-	return (id)CFNetServiceGetName(service);
+	return (id)CFNetServiceGetName(_service);
 }
 
 - (void)startMonitoring {
@@ -151,13 +151,13 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 }
 
 - (void)resolveWithTimeout:(NSTimeInterval)delta {
-	CFNetServiceScheduleWithRunLoop(service, CFRunLoopGetMain(), kCFRunLoopCommonModes);
-	CFNetServiceResolveWithTimeout(service, delta, NULL);
+	CFNetServiceScheduleWithRunLoop(_service, CFRunLoopGetMain(), kCFRunLoopCommonModes);
+	CFNetServiceResolveWithTimeout(_service, delta, NULL);
 }
 
 - (void)stopResolve {
-	CFNetServiceCancel(service);
-	CFNetServiceUnscheduleFromRunLoop(service, CFRunLoopGetMain(), kCFRunLoopCommonModes);
+	CFNetServiceCancel(_service);
+	CFNetServiceUnscheduleFromRunLoop(_service, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 }
 
 - (void)stop {
@@ -166,7 +166,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 }
 
 - (NSArray *)addresses {	
-	return (id)CFNetServiceGetAddressing(service);
+	return (id)CFNetServiceGetAddressing(_service);
 }
 
 - (NSString *)fullName {
