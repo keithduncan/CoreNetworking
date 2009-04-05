@@ -92,8 +92,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (id)forwardingTargetForSelector:(SEL)selector {
 	return self.delegate;
 	
-#ifdef TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
-#error This forwarding code is not used in the iPhone Foundation.framework, use the old method
+#if TARGET_OS_IPHONE && !(TARGET_IPHONE_SIMULATOR)
+#error This forwarding code is not used in the iPhone Foundation.framework, use the forwarding methods
 #endif
 }
 
