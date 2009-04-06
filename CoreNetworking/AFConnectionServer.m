@@ -90,27 +90,27 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (id)forwardingTargetForSelector:(SEL)selector {
-	return self.delegate;
-	
-#if TARGET_OS_IPHONE && !(TARGET_IPHONE_SIMULATOR)
-#error This forwarding code is not used in the iPhone Foundation.framework, use the forwarding methods
-#endif
+	return self.lowerLayer;
 }
 
 - (BOOL)respondsToSelector:(SEL)selector {
 	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
 }
 
+/*!
+	@method
+	@abstract	This method contains its own forwarding code, because all instances respond to it.
+				The sockets are opened on the lowest layer of the stack.
+ */
 - (id)_openSockets:(SInt32 *)port withType:(struct AFSocketType)type addresses:(NSArray *)addrs {
 	AFConnectionServer *lowestLayer = self;
-	while (lowestLayer.lowerLayer != nil) {
-		lowestLayer = self.lowerLayer;
-	} self = lowestLayer;
+	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
+	self = lowestLayer;
 	
 	for (NSData *currentAddrData in addrs) {
 		currentAddrData = [[currentAddrData mutableCopy] autorelease];
 		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddrData))->sin_port = htons(*port);
-		// Note #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+		// FIXME: #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 		
 		CFSocketSignature currentSocketSignature = {
 			.protocolFamily = ((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)currentAddrData))->sa_family,
@@ -132,7 +132,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 			// Note: extract the *actual* port used and use that for future allocations
 			CFDataRef actualAddrData = CFSocketCopyAddress((CFSocketRef)[socket lowerLayer]);
 			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port);
-			// Note #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+			// FIXME: #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 			CFRelease(actualAddrData);
 		}
 		

@@ -8,19 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AFNetworkLayer.h"
-#import "AFConnectionLayer.h"
-
 #import "AFNetworkTypes.h"
 #import "AFNetworkFunctions.h"
 #import "AFNetworkConstants.h"
 
-#import "AFNetService.h"
-#import "AFServiceDiscoveryRunLoopSource.h"
-
-#import "AFConnection.h"
-#import "AFConnectionPool.h"
-#import "AFConnectionServer.h"
+#import "AFNetworkLayer.h"
+#import "AFConnectionLayer.h"
 
 #import "AFSocket.h"
 #import "AFSocketConnection.h"
+
+#import "AFConnection.h"
+
+#import "AFConnectionPool.h"
+#import "AFConnectionServer.h"
+
+#import "AFNetService.h"
+#import "AFServiceDiscoveryRunLoopSource.h"

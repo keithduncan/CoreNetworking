@@ -40,6 +40,10 @@
 	return self.lowerLayer;
 }
 
+- (BOOL)respondsToSelector:(SEL)selector {
+	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
+}
+
 - (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
 	[self.lowerLayer performWrite:data forTag:tag withTimeout:duration];
 }
