@@ -46,8 +46,8 @@
 		5370DEBD0F5AEDFE008F5991 /* AFUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEAD0F5AEDFE008F5991 /* AFUserDefaults.m */; };
 		5370DED60F5AEE23008F5991 /* NSArray+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEBE0F5AEE23008F5991 /* NSArray+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DED70F5AEE23008F5991 /* NSArray+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEBF0F5AEE23008F5991 /* NSArray+Additions.m */; };
-		5370DED80F5AEE23008F5991 /* NSBundle+AFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEC00F5AEE23008F5991 /* NSBundle+AFAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5370DED90F5AEE23008F5991 /* NSBundle+AFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEC10F5AEE23008F5991 /* NSBundle+AFAdditions.m */; };
+		5370DED80F5AEE23008F5991 /* NSBundle+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEC00F5AEE23008F5991 /* NSBundle+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5370DED90F5AEE23008F5991 /* NSBundle+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEC10F5AEE23008F5991 /* NSBundle+Additions.m */; };
 		5370DEDA0F5AEE23008F5991 /* NSData+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEC20F5AEE23008F5991 /* NSData+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DEDB0F5AEE23008F5991 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEC30F5AEE23008F5991 /* NSData+Additions.m */; };
 		5370DEDC0F5AEE23008F5991 /* NSDate+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEC40F5AEE23008F5991 /* NSDate+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -66,8 +66,8 @@
 		5370DEED0F5AEE23008F5991 /* NSXMLElement+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DED50F5AEE23008F5991 /* NSXMLElement+Additions.m */; };
 		5370DEEE0F5AEE23008F5991 /* NSArray+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEBE0F5AEE23008F5991 /* NSArray+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DEEF0F5AEE23008F5991 /* NSArray+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEBF0F5AEE23008F5991 /* NSArray+Additions.m */; };
-		5370DEF00F5AEE23008F5991 /* NSBundle+AFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEC00F5AEE23008F5991 /* NSBundle+AFAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5370DEF10F5AEE23008F5991 /* NSBundle+AFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEC10F5AEE23008F5991 /* NSBundle+AFAdditions.m */; };
+		5370DEF00F5AEE23008F5991 /* NSBundle+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEC00F5AEE23008F5991 /* NSBundle+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5370DEF10F5AEE23008F5991 /* NSBundle+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEC10F5AEE23008F5991 /* NSBundle+Additions.m */; };
 		5370DEF20F5AEE23008F5991 /* NSData+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEC20F5AEE23008F5991 /* NSData+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DEF30F5AEE23008F5991 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEC30F5AEE23008F5991 /* NSData+Additions.m */; };
 		5370DEF40F5AEE23008F5991 /* NSDate+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEC40F5AEE23008F5991 /* NSDate+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -122,8 +122,8 @@
 		537917810F7FC4BC0064EB92 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE6D0F5AED26008F5991 /* AFKeyValueBinding.m */; };
 		537917840F7FC4C00064EB92 /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE9A0F5AED93008F5991 /* NSBezierPath+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537917850F7FC4C00064EB92 /* NSBezierPath+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE9B0F5AED93008F5991 /* NSBezierPath+Additions.m */; };
-		537917860F7FC4C10064EB92 /* NSBundle+AKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE950F5AED76008F5991 /* NSBundle+AKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		537917870F7FC4C20064EB92 /* NSBundle+AKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE940F5AED76008F5991 /* NSBundle+AKAdditions.m */; };
+		537917860F7FC4C10064EB92 /* NSBundle+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE950F5AED76008F5991 /* NSBundle+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		537917870F7FC4C20064EB92 /* NSBundle+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE940F5AED76008F5991 /* NSBundle+Additions.m */; };
 		537917880F7FC4C30064EB92 /* NSGradient+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE9D0F5AED93008F5991 /* NSGradient+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537917890F7FC4C40064EB92 /* NSGradient+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE9C0F5AED93008F5991 /* NSGradient+Additions.m */; };
 		5379178A0F7FC4C40064EB92 /* NSTreeController+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE8B0F5AED5D008F5991 /* NSTreeController+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -135,7 +135,7 @@
 		537917980F7FC8160064EB92 /* AFBoolToColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE760F5AED47008F5991 /* AFBoolToColor.m */; };
 		5379179A0F7FC8A90064EB92 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5379179B0F7FC8AD0064EB92 /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE9A0F5AED93008F5991 /* NSBezierPath+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5379179C0F7FC8AD0064EB92 /* NSBundle+AKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE950F5AED76008F5991 /* NSBundle+AKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5379179C0F7FC8AD0064EB92 /* NSBundle+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE950F5AED76008F5991 /* NSBundle+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5379179D0F7FC8AE0064EB92 /* NSGradient+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE9D0F5AED93008F5991 /* NSGradient+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5379179E0F7FC8AF0064EB92 /* NSTreeController+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE8B0F5AED5D008F5991 /* NSTreeController+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5379179F0F7FC8B10064EB92 /* NSTreeNode+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE880F5AED5D008F5991 /* NSTreeNode+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -151,6 +151,7 @@
 		537E782A0F545EC600C8E3D4 /* AFTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E78280F545EC600C8E3D4 /* AFTextFieldCell.m */; };
 		537E782B0F545EC600C8E3D4 /* AFTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E78290F545EC600C8E3D4 /* AFTextFieldCell.h */; };
 		537E7A570F5477B100C8E3D4 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 537E7A560F5477B100C8E3D4 /* ApplicationServices.framework */; };
+		538AD2D50F8A81780031CFF7 /* AmberKit+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A44160F782DF500564C73 /* NSObject+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A44120F782DF500564C73 /* NSObject+Additions.m */; };
 		539A44170F782DF500564C73 /* NSObject+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A44130F782DF500564C73 /* NSObject+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A44180F782DF500564C73 /* NSObject+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A44120F782DF500564C73 /* NSObject+Additions.m */; };
@@ -314,8 +315,8 @@
 		5370DE890F5AED5D008F5991 /* NSTreeNode+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSTreeNode+Additions.m"; path = "AmberKit/NSTreeNode+Additions.m"; sourceTree = "<group>"; };
 		5370DE8A0F5AED5D008F5991 /* NSTreeController+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSTreeController+Additions.m"; path = "AmberKit/NSTreeController+Additions.m"; sourceTree = "<group>"; };
 		5370DE8B0F5AED5D008F5991 /* NSTreeController+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSTreeController+Additions.h"; path = "AmberKit/NSTreeController+Additions.h"; sourceTree = "<group>"; };
-		5370DE940F5AED76008F5991 /* NSBundle+AKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBundle+AKAdditions.m"; path = "AmberKit/NSBundle+AKAdditions.m"; sourceTree = "<group>"; };
-		5370DE950F5AED76008F5991 /* NSBundle+AKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBundle+AKAdditions.h"; path = "AmberKit/NSBundle+AKAdditions.h"; sourceTree = "<group>"; };
+		5370DE940F5AED76008F5991 /* NSBundle+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBundle+Additions.m"; path = "AmberKit/NSBundle+Additions.m"; sourceTree = "<group>"; };
+		5370DE950F5AED76008F5991 /* NSBundle+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBundle+Additions.h"; path = "AmberKit/NSBundle+Additions.h"; sourceTree = "<group>"; };
 		5370DE9A0F5AED93008F5991 /* NSBezierPath+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBezierPath+Additions.h"; path = "AmberKit/NSBezierPath+Additions.h"; sourceTree = "<group>"; };
 		5370DE9B0F5AED93008F5991 /* NSBezierPath+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBezierPath+Additions.m"; path = "AmberKit/NSBezierPath+Additions.m"; sourceTree = "<group>"; };
 		5370DE9C0F5AED93008F5991 /* NSGradient+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSGradient+Additions.m"; path = "AmberKit/NSGradient+Additions.m"; sourceTree = "<group>"; };
@@ -330,8 +331,8 @@
 		5370DEAD0F5AEDFE008F5991 /* AFUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFUserDefaults.m; path = AmberFoundation/AFUserDefaults.m; sourceTree = "<group>"; };
 		5370DEBE0F5AEE23008F5991 /* NSArray+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+Additions.h"; path = "AmberFoundation/NSArray+Additions.h"; sourceTree = "<group>"; };
 		5370DEBF0F5AEE23008F5991 /* NSArray+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray+Additions.m"; path = "AmberFoundation/NSArray+Additions.m"; sourceTree = "<group>"; };
-		5370DEC00F5AEE23008F5991 /* NSBundle+AFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBundle+AFAdditions.h"; path = "AmberFoundation/NSBundle+AFAdditions.h"; sourceTree = "<group>"; };
-		5370DEC10F5AEE23008F5991 /* NSBundle+AFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBundle+AFAdditions.m"; path = "AmberFoundation/NSBundle+AFAdditions.m"; sourceTree = "<group>"; };
+		5370DEC00F5AEE23008F5991 /* NSBundle+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBundle+Additions.h"; path = "AmberFoundation/NSBundle+Additions.h"; sourceTree = "<group>"; };
+		5370DEC10F5AEE23008F5991 /* NSBundle+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBundle+Additions.m"; path = "AmberFoundation/NSBundle+Additions.m"; sourceTree = "<group>"; };
 		5370DEC20F5AEE23008F5991 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Additions.h"; path = "AmberFoundation/NSData+Additions.h"; sourceTree = "<group>"; };
 		5370DEC30F5AEE23008F5991 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Additions.m"; path = "AmberFoundation/NSData+Additions.m"; sourceTree = "<group>"; };
 		5370DEC40F5AEE23008F5991 /* NSDate+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+Additions.h"; path = "AmberFoundation/NSDate+Additions.h"; sourceTree = "<group>"; };
@@ -723,8 +724,8 @@
 				537772C40F8934BC0042C727 /* NSSet+Additions.m */,
 				537772C90F8935000042C727 /* NSDictionary+Additions.h */,
 				537772CA0F8935000042C727 /* NSDictionary+Additions.m */,
-				5370DEC00F5AEE23008F5991 /* NSBundle+AFAdditions.h */,
-				5370DEC10F5AEE23008F5991 /* NSBundle+AFAdditions.m */,
+				5370DEC00F5AEE23008F5991 /* NSBundle+Additions.h */,
+				5370DEC10F5AEE23008F5991 /* NSBundle+Additions.m */,
 				5370DEC20F5AEE23008F5991 /* NSData+Additions.h */,
 				5370DEC30F5AEE23008F5991 /* NSData+Additions.m */,
 				5370DEC40F5AEE23008F5991 /* NSDate+Additions.h */,
@@ -760,8 +761,8 @@
 				5370DE9B0F5AED93008F5991 /* NSBezierPath+Additions.m */,
 				5370DE9D0F5AED93008F5991 /* NSGradient+Additions.h */,
 				5370DE9C0F5AED93008F5991 /* NSGradient+Additions.m */,
-				5370DE950F5AED76008F5991 /* NSBundle+AKAdditions.h */,
-				5370DE940F5AED76008F5991 /* NSBundle+AKAdditions.m */,
+				5370DE950F5AED76008F5991 /* NSBundle+Additions.h */,
+				5370DE940F5AED76008F5991 /* NSBundle+Additions.m */,
 				5370DE880F5AED5D008F5991 /* NSTreeNode+Additions.h */,
 				5370DE890F5AED5D008F5991 /* NSTreeNode+Additions.m */,
 				5370DE8B0F5AED5D008F5991 /* NSTreeController+Additions.h */,
@@ -887,7 +888,7 @@
 				5370DEBA0F5AEDFE008F5991 /* AFRange.h in Headers */,
 				5370DEBC0F5AEDFE008F5991 /* AFUserDefaults.h in Headers */,
 				5370DEEE0F5AEE23008F5991 /* NSArray+Additions.h in Headers */,
-				5370DEF00F5AEE23008F5991 /* NSBundle+AFAdditions.h in Headers */,
+				5370DEF00F5AEE23008F5991 /* NSBundle+Additions.h in Headers */,
 				5370DEF20F5AEE23008F5991 /* NSData+Additions.h in Headers */,
 				5370DEF40F5AEE23008F5991 /* NSDate+Additions.h in Headers */,
 				5370DEF60F5AEE23008F5991 /* NSFileManager+Additions.h in Headers */,
@@ -945,10 +946,11 @@
 			files = (
 				537917800F7FC4BC0064EB92 /* AFKeyValueBinding.h in Headers */,
 				537917840F7FC4C00064EB92 /* NSBezierPath+Additions.h in Headers */,
-				537917860F7FC4C10064EB92 /* NSBundle+AKAdditions.h in Headers */,
+				537917860F7FC4C10064EB92 /* NSBundle+Additions.h in Headers */,
 				537917880F7FC4C30064EB92 /* NSGradient+Additions.h in Headers */,
 				5379178A0F7FC4C40064EB92 /* NSTreeController+Additions.h in Headers */,
 				5379178C0F7FC4C60064EB92 /* NSTreeNode+Additions.h in Headers */,
+				538AD2D50F8A81780031CFF7 /* AmberKit+Additions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -962,7 +964,7 @@
 				5370DEB20F5AEDFE008F5991 /* AFRange.h in Headers */,
 				5370DEB40F5AEDFE008F5991 /* AFUserDefaults.h in Headers */,
 				5370DED60F5AEE23008F5991 /* NSArray+Additions.h in Headers */,
-				5370DED80F5AEE23008F5991 /* NSBundle+AFAdditions.h in Headers */,
+				5370DED80F5AEE23008F5991 /* NSBundle+Additions.h in Headers */,
 				5370DEDA0F5AEE23008F5991 /* NSData+Additions.h in Headers */,
 				5370DEDC0F5AEE23008F5991 /* NSDate+Additions.h in Headers */,
 				5370DEDE0F5AEE23008F5991 /* NSFileManager+Additions.h in Headers */,
@@ -1028,7 +1030,7 @@
 				537917970F7FC8130064EB92 /* AFBoolToColor.h in Headers */,
 				5379179A0F7FC8A90064EB92 /* AFKeyValueBinding.h in Headers */,
 				5379179B0F7FC8AD0064EB92 /* NSBezierPath+Additions.h in Headers */,
-				5379179C0F7FC8AD0064EB92 /* NSBundle+AKAdditions.h in Headers */,
+				5379179C0F7FC8AD0064EB92 /* NSBundle+Additions.h in Headers */,
 				5379179D0F7FC8AE0064EB92 /* NSGradient+Additions.h in Headers */,
 				5379179E0F7FC8AF0064EB92 /* NSTreeController+Additions.h in Headers */,
 				5379179F0F7FC8B10064EB92 /* NSTreeNode+Additions.h in Headers */,
@@ -1257,7 +1259,7 @@
 				5370DEBB0F5AEDFE008F5991 /* AFRange.m in Sources */,
 				5370DEBD0F5AEDFE008F5991 /* AFUserDefaults.m in Sources */,
 				5370DEEF0F5AEE23008F5991 /* NSArray+Additions.m in Sources */,
-				5370DEF10F5AEE23008F5991 /* NSBundle+AFAdditions.m in Sources */,
+				5370DEF10F5AEE23008F5991 /* NSBundle+Additions.m in Sources */,
 				5370DEF30F5AEE23008F5991 /* NSData+Additions.m in Sources */,
 				5370DEF50F5AEE23008F5991 /* NSDate+Additions.m in Sources */,
 				5370DEF70F5AEE23008F5991 /* NSFileManager+Additions.m in Sources */,
@@ -1303,7 +1305,7 @@
 			files = (
 				537917810F7FC4BC0064EB92 /* AFKeyValueBinding.m in Sources */,
 				537917850F7FC4C00064EB92 /* NSBezierPath+Additions.m in Sources */,
-				537917870F7FC4C20064EB92 /* NSBundle+AKAdditions.m in Sources */,
+				537917870F7FC4C20064EB92 /* NSBundle+Additions.m in Sources */,
 				537917890F7FC4C40064EB92 /* NSGradient+Additions.m in Sources */,
 				5379178B0F7FC4C50064EB92 /* NSTreeController+Additions.m in Sources */,
 				5379178D0F7FC4C60064EB92 /* NSTreeNode+Additions.m in Sources */,
@@ -1319,7 +1321,7 @@
 				5370DEB30F5AEDFE008F5991 /* AFRange.m in Sources */,
 				5370DEB50F5AEDFE008F5991 /* AFUserDefaults.m in Sources */,
 				5370DED70F5AEE23008F5991 /* NSArray+Additions.m in Sources */,
-				5370DED90F5AEE23008F5991 /* NSBundle+AFAdditions.m in Sources */,
+				5370DED90F5AEE23008F5991 /* NSBundle+Additions.m in Sources */,
 				5370DEDB0F5AEE23008F5991 /* NSData+Additions.m in Sources */,
 				5370DEDD0F5AEE23008F5991 /* NSDate+Additions.m in Sources */,
 				5370DEDF0F5AEE23008F5991 /* NSFileManager+Additions.m in Sources */,

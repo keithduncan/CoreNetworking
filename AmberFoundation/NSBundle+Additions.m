@@ -6,7 +6,7 @@
 //  Copyright 2009 thirty-three software. All rights reserved.
 //
 
-#import "NSBundle+AFAdditions.h"
+#import "NSBundle+Additions.h"
 
 #import "NSArray+Additions.h"
 

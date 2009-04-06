@@ -9,7 +9,7 @@
 #import "AmberKit/AFKeyValueBinding.h"
 
 #import "AmberKit/NSTreeNode+Additions.h"
-#import "AmberKit/NSBundle+AKAdditions.h"
+#import "AmberKit/NSBundle+Additions.h"
 #import "AmberKit/NSBezierPath+Additions.h"
 #import "AmberKit/NSGradient+Additions.h"
 #import "AmberKit/NSTreeController+Additions.h"
