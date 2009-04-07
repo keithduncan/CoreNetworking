@@ -1,5 +1,5 @@
 //
-//  ANStackProtocols.h
+//  AFNetworkLayer.h
 //  Bonjour
 //
 //  Created by Keith Duncan on 26/12/2008.
@@ -27,6 +27,13 @@
 @protocol AFNetworkLayer <NSObject>
 
 /*!
+	@method
+	@abstract	Designated Initialiser, with encapsulation in mind
+	@discussion	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound communication will probably have a more specific initialiser
+ */
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer delegate:(id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate>)delegate;
+
+/*!
 	@property
  */
 @property (readonly, retain) id <AFNetworkLayer> lowerLayer;
@@ -36,49 +43,48 @@
  */
 @property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
 
-/*!
-	@method
-	@abstract	Designated Initialiser, with encapsulation in mind
-	@discussion	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound communication will probably have a more specific initialiser
- */
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer delegate:(id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate>)delegate;
+ @optional
 
 /*!
 	@method
-	@abstract	the delegate callbacks convey success/failure
-	@discussion	good candidate for a block callback argument, allowing for asynchronous -open methods and eliminating the delegate callbacks
+	@abstract	The delegate callbacks convey success/failure.
+	@discussion	This is a good candidate for a block callback argument, allowing for asynchronous -open methods and eliminating the delegate callbacks.
  */
 - (void)open;
 
 /*!
 	@method
-	@abstract	returns YES if the layer is currently open
+	@result		YES if the layer is currently open.
  */
 - (BOOL)isOpen;
 
 /*!
 	@method
-	@discussion	a layer may elect to remain open, in which case you will not receive the -layerDidClose: delegate callback until it actually closes
+	@discussion	A layer may elect to remain open, in which case you will not receive the -layerDidClose: delegate callback until it actually closes.
  */
 - (void)close;
 
 /*!
 	@method
-	@abstract	many layers are linear non-recurrant in nature, like a stream; once closed it may not be openable
+	@abstract	Many layers are linear non-recurrant in nature, like a TCP stream; once closed it cannot be reopened.
  */
 - (BOOL)isClosed;
 
- @optional
+/*!
+	@method
+	@abstract	Pass a dictionary with the SSL keys specified in CFSocketStreams.
+ */
+- (BOOL)startTLS:(NSDictionary *)options;
 
 /*!
 	@method
-	@abstract	the socket connection must be scheduled in at least one run loop to function
+	@abstract	The socket connection must be scheduled in at least one run loop to function.
  */
 - (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
 /*!
 	@method
-	@abstract	the socket connection must be scheduled in at least one run loop to function
+	@abstract	The socket connection must be scheduled in at least one run loop to function.
  */
 - (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
@@ -91,12 +97,6 @@
 	@method
  */
 - (void)performWrite:(id)dataBuffer forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
-
-/*!
-	@method
-	@abstract	Pass a dictionary with the keys in CFSocketStreams
- */
-- (BOOL)startTLS:(NSDictionary *)options;
 
 @end
 
@@ -111,18 +111,47 @@
 	@protocol
  */
 @protocol AFNetworkLayerControlDelegate <NSObject>
+
+/*!
+	@method
+ */
 - (void)layerDidOpen:(id <AFNetworkLayer>)layer;
+
+/*!
+	@method
+ */
 - (void)layerDidNotOpen:(id <AFNetworkLayer>)layer;
+
+/*!
+	@method
+ */
 - (void)layerDidClose:(id <AFNetworkLayer>)layer;
+
+/*!
+	@method
+ */
+- (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
+
 @end
 
 /*!
 	@protocol
  */
 @protocol AFNetworkLayerDataDelegate <NSObject>
+
+/*!
+	@property
+ */
 @property (readonly, retain) id <AFNetworkLayer> lowerLayer;
+
+/*!
+	@method
+ */
 - (void)layer:(id <AFNetworkLayer>)layer didRead:(id)data forTag:(NSUInteger)tag;
+
+/*!
+	@method
+ */
 - (void)layer:(id <AFNetworkLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag;
- @optional
-- (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
+
 @end

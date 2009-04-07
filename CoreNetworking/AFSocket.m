@@ -13,6 +13,10 @@
 
 #import "AFNetworkFunctions.h"
 
+@interface AFSocket (Private)
+- (void)_close;
+@end
+
 @implementation AFSocket
 
 @synthesize delegate=_delegate;
@@ -49,6 +53,22 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	[pool drain];
 }
 
+- (id)initWithLowerLayer:(id)layer delegate:(id)delegate {
+	self = [self init];
+	
+	CFSocketRef socket = (CFSocketRef)layer;
+	
+	CFSocketContext context;
+	memset(&context, 0, sizeof(CFSocketContext));
+	context.info = self;
+	
+	_socket = CFSocketCreateWithNative(kCFAllocatorDefault, CFSocketGetNative(socket), 0, AFSocketCallback, &context);
+	
+	_delegate = delegate;
+	
+	return self;
+}
+
 - (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options delegate:(id <AFSocketControlDelegate, AFSocketHostDelegate>)delegate {
 	self = [self init];
 	
@@ -56,8 +76,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	memcpy(_signature, signature, sizeof(CFSocketSignature));
 	// Note: this is here for non-GC
 	CFRetain(_signature->address);
-	
-	_delegate = delegate;
 	
 	CFSocketContext context;
 	memset(&context, 0, sizeof(CFSocketContext));
@@ -80,11 +98,28 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	}
 #endif
 	
+	_delegate = delegate;
+	
 	return self;
 }
 
+- (void)dealloc {
+	[self _close];
+	
+	if (_signature != NULL) {
+		if (_signature->address != NULL)
+			CFRelease(_signature->address);
+	}
+	
+	[super dealloc];
+}
+
 - (void)open {
-	CFSocketError socketError = CFSocketSetAddress(_socket, _signature->address);
+	CFSocketError socketError = kCFSocketSuccess;
+	
+	if (_signature != NULL) {
+		socketError = CFSocketSetAddress(_socket, _signature->address);
+	}
 	
 	if (socketError == kCFSocketSuccess) {
 		if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])
@@ -103,26 +138,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	return CFSocketIsValid(_socket);
 }
 
-/*!
-	@method
-	@abstract	This has been refactored into a separate method so that -dealloc can 'close' the socket without calling the public -close method
-	@discussion	These are set to NULL so that closing again, or deallocating doesn't crash the socket
- */
-- (void)_close {
-	if (_socket != NULL) {
-		CFSocketInvalidate(_socket);
-		
-		CFRelease(_socket);
-		_socket = NULL;
-	}
-	
-	if (_socketRunLoopSource != NULL) {
-		// Note: invalidating the socket invalidates its source too
-		CFRelease(_socketRunLoopSource);
-		_socketRunLoopSource = NULL;
-	}
-}
-
 - (void)close {
 	[self _close];
 }
@@ -131,32 +146,19 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	return ![self isOpen];
 }
 
-- (void)dealloc {
-	[self _close];
-	
-	if (_signature != NULL) {
-		if (_signature->address != NULL)
-			CFRelease(_signature->address);
-	}
-	
-	[super dealloc];
-}
-
 - (NSString *)description {
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	[description appendString:@" {\n"];
 	
 	if (_socket != NULL) {
-		[description appendString:@"\tAddress: "];
-		
-		char buffer[INET6_ADDRSTRLEN]; // Note: because the -description method is used only for debugging, we can use fixed length buffer
+		char buffer[INET6_ADDRSTRLEN]; // Note: because the -description method is used only for debugging, we can use a fixed length buffer
 		sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)[(id)CFSocketCopyAddress(_socket) autorelease]), buffer, sizeof(buffer));
-		[description appendFormat:@"%s\n", buffer, nil];
 		
-		[description appendFormat:@"\tPort: %ld", ntohs(((struct sockaddr_in *)CFDataGetBytePtr((CFDataRef)[(id)CFSocketCopyAddress(_socket) autorelease]))->sin_port), nil];
+		[description appendFormat:@"\tAddress: %s\n", buffer, nil];
+		[description appendFormat:@"\tPort: %ld\n", ntohs(((struct sockaddr_in *)CFDataGetBytePtr((CFDataRef)[(id)CFSocketCopyAddress(_socket) autorelease]))->sin_port), nil];
 	}
 	
-	[description appendString:@"\n}"];
+	[description appendString:@"}"];
 	
 	return description;
 }
@@ -179,6 +181,30 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	CFRelease(addr);
 	
 	return (CFHostRef)[(id)peer autorelease];
+}
+
+@end
+
+@implementation AFSocket (Private)
+
+/*!
+	@method
+	@abstract	This has been refactored into a separate method so that -dealloc can 'close' the socket without calling the public -close method
+	@discussion	These are set to NULL so that closing again, or deallocating doesn't crash the socket
+ */
+- (void)_close {
+	if (_socket != NULL) {
+		CFSocketInvalidate(_socket);
+		
+		CFRelease(_socket);
+		_socket = NULL;
+	}
+	
+	if (_socketRunLoopSource != NULL) {
+		// Note: invalidating the socket invalidates its source too
+		CFRelease(_socketRunLoopSource);
+		_socketRunLoopSource = NULL;
+	}
 }
 
 @end

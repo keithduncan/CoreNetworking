@@ -44,12 +44,4 @@
 	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
 }
 
-- (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
-	[self.lowerLayer performWrite:data forTag:tag withTimeout:duration];
-}
-
-- (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
-	[self.lowerLayer performRead:terminator forTag:tag withTimeout:duration];
-}
-
 @end

@@ -33,7 +33,18 @@
 
 /*
  *	Outbound Initialiser
- *		This is not goverened by a protocol, the AFConnectionServer knows how to create this class specifically
+ *		
+ */
+
+/*!
+	@method
+	@param		|lowerLayer| is expected to be a CFSocketRef that the native socket can be extracted from.
+ */
+- (id)initWithLowerLayer:(id)layer delegate:(id)delegate;
+
+/*
+ *	Inbound Initialiser
+ *		This is not goverened by a protocol, luckily the AFConnectionServer knows how to create this class specifically.
  */
 
 /*!
@@ -46,21 +57,21 @@
 
 /*!
 	@method
-	@abstract	This returns a CFSocketRef despite the weak type, this is to avoid compiler errors.
-	@discussion	You may use this to extract the socket address for display purposes.
+	@abstract	This returns a <tt>CFSocketRef</tt> despite the weak type to avoid compiler errors.
+	@discussion	You may want to use this to extract the socket address for display purposes.
  */
 - (id)lowerLayer;
 
 /*!
 	@property
-	@abstract	This returns the <tt>CFSocket</tt> peer address in a CFHostRef
  */
-@property (readonly) CFHostRef peer;
+@property (assign) id <AFSocketHostDelegate, AFSocketControlDelegate> delegate;
 
 /*!
 	@property
+	@abstract	This returns the <tt>CFSocket</tt> peer address wrapped in a CFHostRef
  */
-@property (assign) id <AFSocketHostDelegate, AFSocketControlDelegate> delegate;
+@property (readonly) CFHostRef peer;
 
 @end
 

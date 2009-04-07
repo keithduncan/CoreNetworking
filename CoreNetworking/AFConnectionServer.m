@@ -179,7 +179,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)newLayer {
-	return [[[[self clientClass] alloc] initWithLowerLayer:newLayer delegate:self] autorelease];
+	return [[[[self clientClass] alloc] initWithLowerLayer:newLayer delegate:(id)self] autorelease];
 }
 
 - (void)layer:(id)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
