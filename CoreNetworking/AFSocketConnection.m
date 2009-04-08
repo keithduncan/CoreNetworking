@@ -306,9 +306,14 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if ((self.connectionFlags & _kForbidStreamReadWrite) == _kForbidStreamReadWrite) return;
 	NSParameterAssert(terminator != nil);
 	
-	AFPacketRead *packet = [[AFPacketRead alloc] initWithTag:tag timeout:duration terminator:terminator];
+	AFPacketRead *packet = nil;
+	if ([terminator isKindOfClass:[AFPacketRead class]]) {
+		packet = terminator;
+	} else {
+		packet = [[[AFPacketRead alloc] initWithTag:tag timeout:duration terminator:terminator] autorelease];
+	}
+	
 	[self _enqueueReadPacket:packet];
-	[packet release];
 	
 	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 }
@@ -364,9 +369,14 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 	if ((self.connectionFlags & _kForbidStreamReadWrite) == _kForbidStreamReadWrite) return;
 	if (data == nil || [data length] == 0) return;
 	
-	AFPacketWrite *packet = [[AFPacketWrite alloc] initWithTag:tag timeout:duration data:data];
+	AFPacketWrite *packet = nil;
+	if ([data isKindOfClass:[AFPacketWrite class]]) {
+		packet = data
+	} else {
+		packet = [[[AFPacketWrite alloc] initWithTag:tag timeout:duration data:data] autorelease];
+	}
+	
 	[self _enqueueWritePacket:packet];
-	[packet release];
 	
 	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
 }
