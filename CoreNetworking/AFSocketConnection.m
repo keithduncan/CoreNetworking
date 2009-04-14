@@ -18,6 +18,8 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
+#import "AmberFoundation/AFPriorityProxy.h"
+
 #import "AFSocket.h"
 #import "AFNetworkConstants.h"
 #import "AFNetworkFunctions.h"
@@ -146,6 +148,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (void)dealloc {
 	[lowerLayer release];
+	[_proxy release];
 	
 	// Note: this will also deallocate the netService if present
 	CFHostRef *host = &_peer._hostDestination.host; // Note: this is simply shorter to re-address, there is no fancyness, move along
@@ -172,6 +175,19 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	
 	[super dealloc];
+}
+
+- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
+	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
+	
+	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
+	[proxy insertTarget:_delegate atPriority:0];
+	
+	return proxy;
+}
+
+- (id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate {
+	return [self delegateProxy:nil];
 }
 
 - (CFTypeRef)peer {
@@ -291,9 +307,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if ([self.delegate respondsToSelector:@selector(layer:didDisconnectWithError:)])
 		[self.delegate layer:self didDisconnectWithError:nil];
 	
-	if ([self.delegate respondsToSelector:@selector(layerDidClose:)]) {
+	if ([self.delegate respondsToSelector:@selector(layerDidClose:)])
 		[self.delegate layerDidClose:self];
-	}
 }
 
 - (BOOL)isClosed {
@@ -371,7 +386,7 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 	
 	AFPacketWrite *packet = nil;
 	if ([data isKindOfClass:[AFPacketWrite class]]) {
-		packet = data
+		packet = data;
 	} else {
 		packet = [[[AFPacketWrite alloc] initWithTag:tag timeout:duration data:data] autorelease];
 	}
@@ -467,7 +482,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 #pragma mark -
 
-@implementation AFSocketConnection (Private)
+@implementation AFSocketConnection (PacketQueue)
 
 - (void)_emptyQueues {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_dequeueWritePacket) object:nil];
@@ -555,12 +570,13 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	}
 	
 	if (packetComplete) {
+		packet = [[packet retain] autorelease];
+		[self _endCurrentReadPacket];
+		
 #warning for packets with a terminator we need to cache the data after the terminator for future reads
 		
 		if ([self.delegate respondsToSelector:@selector(layer:didRead:forTag:)])
 			[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
-		
-		[self _endCurrentReadPacket];
 	}
 }
 
@@ -622,10 +638,11 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	}
 	
 	if (packetComplete) {
+		packet = [[packet retain] autorelease];
+		[self _endCurrentWritePacket];
+		
 		if ([self.delegate respondsToSelector:@selector(layer:didWrite:forTag:)])
 			[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
-		
-		[self _endCurrentWritePacket];
 	}
 }
 

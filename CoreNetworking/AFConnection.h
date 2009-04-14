@@ -12,13 +12,13 @@
 
 /*!
     @class
-    @abstract	Will pass data to the |lowerLayer| for further processing
-	@discussion	Your subclass should encapsulate Application Layer data (as defined in RFC 1122) and pass it to the super class for further processing
+    @abstract	Will forward messages to the |lowerLayer|.
+	@discussion	Your subclass should encapsulate Application Layer data (as defined in RFC 1122) and pass it to the superclass for further processing.
 */
 @interface AFConnection : NSObject <AFConnectionLayer> {
  @private
-	id <AFNetworkLayer> _lowerLayer;
-	id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> _delegate;
+	id <AFConnectionLayer> _lowerLayer;
+	id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> _delegate, _proxy;
 	
 	NSURL *_peerEndpoint;
 }

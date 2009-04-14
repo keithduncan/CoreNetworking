@@ -28,7 +28,7 @@
 	@discussion	After instantiating the server you can use one of the convenience methods to open a collection of sockets
  */
 @interface AFConnectionServer : NSObject <AFConnectionServerDelegate, AFConnectionLayerHostDelegate, AFSocketHostDelegate> {
-	id <AFConnectionServerDelegate> _delegate;
+	id <AFConnectionServerDelegate> _delegate, _proxy;
 	
 	Class _clientClass;
 	AFConnectionServer *_lowerLayer;

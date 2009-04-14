@@ -8,6 +8,8 @@
 
 #import "AFConnection.h"
 
+#import "AmberFoundation/AFPriorityProxy.h"
+
 @interface AFConnection ()
 @property (readwrite, retain) id <AFNetworkLayer> lowerLayer;
 @end
@@ -30,10 +32,25 @@
 }
 
 - (void)dealloc {
-	[_peerEndpoint release];
 	[_lowerLayer release];
+	[_proxy release];
+	
+	[_peerEndpoint release];
 	
 	[super dealloc];
+}
+
+- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
+	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
+	
+	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
+	[proxy insertTarget:_delegate atPriority:0];
+	
+	return proxy;
+}
+
+- (id <AFConnectionLayerControlDelegate, AFConnectionLayerDataDelegate>)delegate {
+	return [self delegateProxy:nil];
 }
 
 - (id)forwardingTargetForSelector:(SEL)selector {

@@ -48,7 +48,7 @@ typedef struct AFSocketSignature AFSocketSignature;
 */
 @interface AFSocketConnection : NSObject <AFConnectionLayer> {
 	id <AFNetworkLayer> lowerLayer;
-	id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate> _delegate;
+	id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate> _delegate, _proxy;
 	
 	NSUInteger _connectionFlags;
 	NSUInteger _streamFlags;

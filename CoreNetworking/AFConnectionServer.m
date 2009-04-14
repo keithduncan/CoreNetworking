@@ -31,12 +31,6 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 @property (readwrite, retain) AFConnectionServer *lowerLayer;
 @end
 
-@interface AFConnectionServer (Private)
-#if 0
-- (void)_regenerateDelegateProxy;
-#endif
-@end
-
 @implementation AFConnectionServer
 
 @synthesize delegate=_delegate;
@@ -73,9 +67,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (void)dealloc {
 	[self finalize];
 	
-#if 0
 	[_proxy release];
-#endif
 	
 	[_lowerLayer release];
 	
@@ -87,6 +79,19 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[hosts release];
 	
 	[super dealloc];
+}
+
+- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
+	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
+	
+	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) [(id)_delegate delegateProxy:proxy];
+	[proxy insertTarget:_delegate atPriority:0];
+	
+	return proxy;
+}
+
+- (id <AFConnectionServerDelegate>)delegate {
+	return (id)[self delegateProxy:nil];
 }
 
 - (id)forwardingTargetForSelector:(SEL)selector {
@@ -204,28 +209,16 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
 	if (![self.clients.connections containsObject:layer]) return;
+	
+	layer = [[layer retain] autorelease];
 	[self.clients removeConnectionsObject:layer];
-}
-
-@end
-
-@implementation AFConnectionServer (Private)
-
-#if 0
-- (void)_regenerateDelegateProxy {
-	[_proxy release];
 	
-	AFPriorityProxy *proxy = [[AFPriorityProxy alloc] init];
-	
-	if ([_delegate isKindOfClass:[AFConnectionServer class]]) {
-		// Note: going through the accessor will return the existing proxy
-		[proxy insertTarget:[(AFConnectionServer *)_delegate delegate] atPriority:0];
+	if (self.lowerLayer != nil) {
+		layer = layer.lowerLayer;
+		layer.delegate = self.lowerLayer;
+		
+		[layer close];
 	}
-	
-	[proxy insertTarget:_delegate atPriority:0];
-	
-	_proxy = (id)proxy;
 }
-#endif
 
 @end

@@ -11,6 +11,8 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 
+#import "AmberFoundation/AFPriorityProxy.h"
+
 #import "AFNetworkFunctions.h"
 
 @interface AFSocket (Private)
@@ -112,6 +114,19 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	}
 	
 	[super dealloc];
+}
+
+- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
+	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
+	
+	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
+	[proxy insertTarget:_delegate atPriority:0];
+	
+	return proxy;
+}
+
+- (id <AFSocketControlDelegate, AFSocketHostDelegate>)delegate {
+	return [self delegateProxy:nil];
 }
 
 - (void)open {

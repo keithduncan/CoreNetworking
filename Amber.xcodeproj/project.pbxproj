@@ -512,6 +512,7 @@
 				53A028F80F6E9906004F5414 /* Socket */,
 				5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */,
 				53A028FA0F6E9921004F5414 /* Connection */,
+				538AD3E00F8AA7430031CFF7 /* Server */,
 			);
 			name = Layers;
 			sourceTree = "<group>";
@@ -548,7 +549,6 @@
 			isa = PBXGroup;
 			children = (
 				5370E0970F5B061D008F5991 /* CoreNetworking.h */,
-				538AD3E00F8AA7430031CFF7 /* Server */,
 				5333F8490F82CC6B00A9AF8A /* Layers */,
 				53A028F90F6E990F004F5414 /* Bonjour */,
 				53A028F60F6E98ED004F5414 /* Packets */,
