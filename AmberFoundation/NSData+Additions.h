@@ -34,3 +34,9 @@
 + (id)dataWithHexString:(NSString *)string;
 - (NSString *)hexString;
 @end
+
+@interface NSData (AFPacketTerminator)
++ (NSData *)CRLF;
++ (NSData *)CR;
++ (NSData *)LF;
+@end

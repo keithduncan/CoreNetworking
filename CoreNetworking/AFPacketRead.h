@@ -9,6 +9,7 @@
 #import "CoreNetworking/AFPacket.h"
 
 @interface AFPacketRead : AFPacket {
+ @private
 	CFIndex _bytesRead;	
 	NSMutableData *_buffer;
 	

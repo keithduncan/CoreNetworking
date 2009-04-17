@@ -835,8 +835,6 @@
 			children = (
 				53B201500F6D7739001DC8E7 /* AFSocket.h */,
 				53B201510F6D7739001DC8E7 /* AFSocket.m */,
-				5370E0950F5B061D008F5991 /* AFSocketConnection.h */,
-				5370E0960F5B061D008F5991 /* AFSocketConnection.m */,
 			);
 			name = Socket;
 			sourceTree = "<group>";
@@ -857,6 +855,8 @@
 			children = (
 				5370E0880F5B061D008F5991 /* AFConnection.h */,
 				5370E0890F5B061D008F5991 /* AFConnection.m */,
+				5370E0950F5B061D008F5991 /* AFSocketConnection.h */,
+				5370E0960F5B061D008F5991 /* AFSocketConnection.m */,
 			);
 			name = Connection;
 			sourceTree = "<group>";

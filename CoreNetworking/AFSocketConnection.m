@@ -187,7 +187,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 }
 
 - (id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate {
-	return [self delegateProxy:nil];
+	return (id)[self delegateProxy:nil];
 }
 
 - (CFTypeRef)peer {

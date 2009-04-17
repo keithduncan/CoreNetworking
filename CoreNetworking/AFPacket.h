@@ -10,6 +10,9 @@
 
 @protocol AFPacketDelegate;
 
+/*!
+	@enum
+ */
 enum {
 	AFPacketNoError			= 0,
 	AFPacketMaxedOutError	= 1,
@@ -22,14 +25,25 @@ typedef NSInteger AFPacketError;
  */
 extern NSString *const AFPacketTimeoutNotificationName;
 
+/*!
+	@class
+ */
 @interface AFPacket : NSObject {
+ @private
 	NSUInteger _tag;
 	
 	NSTimer *timeoutTimer;
 	NSTimeInterval _duration;
 }
 
+/*!
+	@property
+ */
 @property (readonly) NSUInteger tag;
+
+/*!
+	@method
+ */
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration;
 
 /*!
@@ -46,7 +60,14 @@ extern NSString *const AFPacketTimeoutNotificationName;
  */
 - (void)progress:(float *)fraction done:(NSUInteger *)bytesDone total:(NSUInteger *)bytesTotal;
 
+/*!
+	@method
+ */
 - (void)startTimeout;
+
+/*!
+	@method
+ */
 - (void)cancelTimeout;
 
 @end

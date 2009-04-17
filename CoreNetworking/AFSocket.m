@@ -126,7 +126,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 }
 
 - (id <AFSocketControlDelegate, AFSocketHostDelegate>)delegate {
-	return [self delegateProxy:nil];
+	return (id)[self delegateProxy:nil];
 }
 
 - (void)open {
@@ -192,10 +192,10 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 
 - (CFHostRef)peer {
 	CFDataRef addr = CFSocketCopyAddress(_socket);
-	CFHostRef peer = CFHostCreateWithAddress(kCFAllocatorDefault, addr);
+	CFHostRef peer = [(id)CFMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, addr)) autorelease];
 	CFRelease(addr);
 	
-	return (CFHostRef)[(id)peer autorelease];
+	return peer;
 }
 
 @end

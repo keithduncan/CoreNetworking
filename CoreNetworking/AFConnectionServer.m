@@ -137,7 +137,6 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 			// Note: extract the *actual* port used and use that for future allocations
 			CFDataRef actualAddrData = CFSocketCopyAddress((CFSocketRef)[socket lowerLayer]);
 			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port);
-			// FIXME: #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 			CFRelease(actualAddrData);
 		}
 		

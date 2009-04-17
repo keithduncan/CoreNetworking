@@ -9,6 +9,7 @@
 #import "CoreNetworking/AFPacket.h"
 
 @interface AFPacketWrite : AFPacket {
+ @private
 	NSData *_buffer;
 	NSUInteger _bytesWritten;
 }

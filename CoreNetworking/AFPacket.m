@@ -10,11 +10,16 @@
 
 NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification";
 
+@interface AFPacket ()
+@property (readonly) NSTimeInterval duration;
+@end
+
 @implementation AFPacket
 
 @dynamic buffer;
 
 @synthesize tag=_tag;
+@synthesize duration=_duration;
 
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration {
 	[self init];
@@ -55,6 +60,8 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 }
 
 - (void)startTimeout {
+	if (self.duration < 0) return;
+	
 	timeoutTimer = [[NSTimer scheduledTimerWithTimeInterval:_duration target:self selector:@selector(_timeout:) userInfo:nil repeats:NO] retain];
 }
 

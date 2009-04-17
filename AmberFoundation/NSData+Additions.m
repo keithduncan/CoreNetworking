@@ -28,7 +28,6 @@
 
 #import <CommonCrypto/CommonDigest.h>
 
-
 #if (TARGET_OS_MAC && !(TARGET_OS_IPHONE))
 enum {
 	ENCRYPT,
@@ -529,6 +528,7 @@ typedef NSUInteger AFAction;
 
 + (id)dataWithHexString:(NSString *)string {
 	[self doesNotRecognizeSelector:_cmd];
+	return nil;
 }
 
 - (NSString *)hexString {
@@ -539,6 +539,22 @@ typedef NSUInteger AFAction;
 		[hexString appendFormat:@"%02x", *(uint8_t *)(bytes+index), nil];
 	
 	return hexString;
+}
+
+@end
+
+@implementation NSData (AFPacketTerminator)
+
++ (NSData *)CRLF {
+	return [NSData dataWithBytes:"\x0D\x0A" length:2];
+}
+
++ (NSData *)CR {
+	return [NSData dataWithBytes:"\x0D" length:1];
+}
+
++ (NSData *)LF {
+	return [NSData dataWithBytes:"\x0A" length:1];
 }
 
 @end
