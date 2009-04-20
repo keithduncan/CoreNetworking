@@ -14,7 +14,7 @@
 #import <arpa/inet.h>
 #import <netdb.h>
 
-#if TARGET_OS_IPHONE
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
 
