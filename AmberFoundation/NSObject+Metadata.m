@@ -47,19 +47,19 @@ NSData *AFBundleSectionData(NSBundle *bundle, const char *segmentName, const cha
 	return nil;
 }
 
-id af_class_getMetadataObjectForKey(Class class, const char *key) {
+id af_class_getMetadataObjectForKey(Class classObject, const char *key) {
 	if (_kBundleMetadataMap == nil) {
 		_kBundleMetadataMap = [[NSMutableDictionary alloc] initWithCapacity:_dyld_image_count()];
 	}
 	
-	NSBundle *classBundle = [NSBundle bundleForClass:class];
+	NSBundle *classBundle = [NSBundle bundleForClass:classObject];
 	NSDictionary *metadata = [_kBundleMetadataMap objectForKey:[classBundle bundlePath]];
 	
 	if (metadata == nil) {
 		NSData *rawMetadata = AFBundleSectionData(classBundle, SEG_OBJC, AF_SECT_METADATA);
 		
 		if (rawMetadata == nil) {
-			[NSException raise:NSInvalidArgumentException format:@"%s, the bundle <%p> containing class %@ doesn't contain metadata.", __PRETTY_FUNCTION__, classBundle, NSStringFromClass(class), nil];
+			[NSException raise:NSInvalidArgumentException format:@"%s, the bundle <%p> containing class %@ doesn't contain metadata.", __PRETTY_FUNCTION__, classBundle, NSStringFromClass(classObject), nil];
 			return nil;
 		}
 		
@@ -68,7 +68,7 @@ id af_class_getMetadataObjectForKey(Class class, const char *key) {
 		[_kBundleMetadataMap setObject:metadata forKey:[classBundle bundlePath]];
 	}
 	
-	id classMetadata = [metadata objectForKey:NSStringFromClass(class)];
+	id classMetadata = [metadata objectForKey:NSStringFromClass(classObject)];
 	return (key != NULL) ? [classMetadata objectForKey:[NSString stringWithUTF8String:key]] : classMetadata;
 }
 

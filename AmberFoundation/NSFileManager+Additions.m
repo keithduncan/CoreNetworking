@@ -10,7 +10,7 @@
 
 #import <CommonCrypto/CommonDigest.h>
 
-#if TARGET_OS_MAC && !(TARGET_OS_IPHONE)
+#if TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && !TARGET_OS_IPHONE)
 #import <openssl/dsa.h>
 #import <openssl/evp.h>
 #import <openssl/pem.h>
@@ -27,7 +27,7 @@
 	return [hash isEqualToString:[[data MD5Hash] hexString]];
 }
 
-#if TARGET_OS_MAC && !(TARGET_OS_IPHONE)
+#if TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && !TARGET_OS_IPHONE)
 - (BOOL)validatePath:(NSString *)path withDSASignature:(NSString *)encodedSignature publicDSAKey:(NSString *)publicKey {	
 	if (path == nil || encodedSignature == nil || publicKey == nil) return NO;
 	
