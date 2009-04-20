@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#ifdef TARGET_OS_IPHONE
+#if TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && !TARGET_OS_IPHONE)
 #import <CoreGraphics/CoreGraphics.h>
 #endif
 

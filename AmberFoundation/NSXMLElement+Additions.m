@@ -11,7 +11,7 @@
 #import "NSString+Additions.h"
 #import "NSArray+Additions.h"
 
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && !TARGET_OS_IPHONE)
 
 @implementation NSXMLElement (AFAdditions)
 

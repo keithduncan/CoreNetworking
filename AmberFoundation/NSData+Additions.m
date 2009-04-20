@@ -12,7 +12,7 @@
 
 #import "NSData+Additions.h"
 
-#if (TARGET_OS_MAC && !(TARGET_OS_IPHONE))
+#if TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && !TARGET_OS_IPHONE)
 #import <openssl/ssl.h>
 
 #import <openssl/rsa.h>
@@ -28,7 +28,7 @@
 
 #import <CommonCrypto/CommonDigest.h>
 
-#if (TARGET_OS_MAC && !(TARGET_OS_IPHONE))
+#if TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && !TARGET_OS_IPHONE)
 enum {
 	ENCRYPT,
 	DECRYPT
@@ -61,7 +61,7 @@ typedef NSUInteger AFAction;
 @end
 #endif
 
-#if (TARGET_OS_MAC && !(TARGET_OS_IPHONE))
+#if TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && !TARGET_OS_IPHONE)
 @implementation NSData (AFEncryption_Private)
 
 - (NSData *)symmetrically:(AFAction)action withKey:(NSString *)key {
