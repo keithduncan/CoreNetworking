@@ -6,7 +6,7 @@
 //  Copyright 2007 thirty-three. All rights reserved.
 //
 
-#if TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && !TARGET_OS_IPHONE)
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 
 #import <Cocoa/Cocoa.h>
 
@@ -42,7 +42,7 @@ extern NSString *const AFUnboundValueKey;
 - (id)controllerForBinding:(NSString *)binding;
 - (NSString *)keyPathForBinding:(NSString *)binding;
 
-#if TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && !TARGET_OS_IPHONE)
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 - (NSValueTransformer *)valueTransformerForBinding:(NSString *)binding;
 #endif
 

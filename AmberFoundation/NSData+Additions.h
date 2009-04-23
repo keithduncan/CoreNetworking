@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#if TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && !TARGET_OS_IPHONE)
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 @interface NSData (AFEncryption)
 // Note: these probably need revising anyway...
 - (NSData *)encryptWithPrivateKey:(NSString *)privateKey;
