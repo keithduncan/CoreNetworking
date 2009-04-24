@@ -14,7 +14,7 @@
 #import <arpa/inet.h>
 #import <netdb.h>
 
-#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
 
@@ -38,9 +38,13 @@ typedef NSUInteger AFSocketConnectionFlags;
 
 enum {
 	_kReadStreamDidOpen			= 1UL << 0,
-	_kReadStreamDidClose		= 1UL << 1,
-	_kWriteStreamDidOpen		= 1UL << 2,
-	_kWriteStreamDidClose		= 1UL << 3,
+	_kReadStreamWillStartTLS	= 1UL << 1,
+	_kReadStreamDidStartTLS		= 1UL << 2,
+	_kReadStreamDidClose		= 1UL << 3,
+	_kWriteStreamDidOpen		= 1UL << 4,
+	_kWriteStreamWillStartTLS	= 1UL << 5,
+	_kWriteStreamDidStartTLS	= 1UL << 6,
+	_kWriteStreamDidClose		= 1UL << 7,
 };
 typedef NSUInteger AFSocketConnectionStreamFlags;
 
@@ -54,6 +58,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 @interface AFSocketConnection (Streams)
 - (BOOL)_configureStreams;
 - (void)_streamDidOpen;
+- (void)_streamDidStartTLS;
 @end
 
 @interface AFSocketConnection (PacketQueue)
@@ -253,6 +258,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 #pragma mark Configuration
 
 - (BOOL)startTLS:(NSDictionary *)options {
+	if ((self.streamFlags & _kReadStreamWillStartTLS) == _kReadStreamWillStartTLS) return NO;
+	self.streamFlags = (self.streamFlags | (_kReadStreamWillStartTLS | _kWriteStreamWillStartTLS));
+	
 	Boolean value = true;
 	value &= CFReadStreamSetProperty(readStream, kCFStreamPropertySSLSettings, (CFDictionaryRef)options);
 	value &= CFWriteStreamSetProperty(writeStream, kCFStreamPropertySSLSettings, (CFDictionaryRef)options);
@@ -349,7 +357,14 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 		}
 		case kCFStreamEventHasBytesAvailable:
 		{
-			[self _readBytes];
+			if ((self.streamFlags & _kReadStreamWillStartTLS) == _kReadStreamWillStartTLS && (self.streamFlags & _kReadStreamDidStartTLS) != _kReadStreamDidStartTLS) {
+				self.streamFlags = (self.streamFlags | _kReadStreamDidStartTLS);
+				
+				[self _streamDidStartTLS];
+			} else {
+				[self _readBytes];
+			}
+			
 			break;
 		}
 		case kCFStreamEventErrorOccurred:
@@ -412,7 +427,14 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		}
 		case kCFStreamEventCanAcceptBytes:
 		{
-			[self _sendBytes];
+			if ((self.streamFlags & _kWriteStreamWillStartTLS) == _kWriteStreamWillStartTLS && (self.streamFlags & _kWriteStreamDidStartTLS) != _kWriteStreamDidStartTLS) {
+				self.streamFlags = (self.streamFlags | _kWriteStreamDidStartTLS);
+				
+				[self _streamDidStartTLS];
+			} else {
+				[self _sendBytes];
+			}
+			
 			break;
 		}
 		case kCFStreamEventErrorOccurred:
@@ -476,6 +498,13 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
+}
+
+- (void)_streamDidStartTLS {
+	//if ((self.streamFlags & _kReadStreamDidStartTLS) != _kReadStreamDidStartTLS || (self.streamFlags & _kWriteStreamDidStartTLS) != _kWriteStreamDidStartTLS) return;
+	
+	if ([self.delegate respondsToSelector:@selector(layerDidStartTLS:)])
+		[self.delegate layerDidStartTLS:self];
 }
 
 @end
@@ -628,13 +657,13 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 			[self.delegate socket:self didReceiveError:error];
 	}
 	
-	if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:tag:)]) {
+	if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:total:tag:)]) {
 		float percent = 0.0;
-		NSUInteger bytesWritten = 0;
+		NSUInteger bytesWritten = 0, totalBytes = 0;
 		
-		[packet progress:&percent done:&bytesWritten total:NULL];
+		[packet progress:&percent done:&bytesWritten total:&totalBytes];
 		
-		[self.delegate socket:self didWritePartialDataOfLength:bytesWritten tag:packet.tag];
+		[self.delegate socket:self didWritePartialDataOfLength:bytesWritten total:totalBytes tag:packet.tag];
 	}
 	
 	if (packetComplete) {

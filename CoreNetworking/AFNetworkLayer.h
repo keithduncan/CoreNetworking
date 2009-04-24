@@ -72,7 +72,7 @@
 
 /*!
 	@method
-	@abstract	Pass a dictionary with the SSL keys specified in CFSocketStreams.
+	@abstract	Pass a dictionary with the SSL keys specified in CFSocketStream.h
  */
 - (BOOL)startTLS:(NSDictionary *)options;
 

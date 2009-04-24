@@ -10,8 +10,6 @@
 
 #import "AFNetworkFunctions.h"
 
-#define WRITE_CHUNKSIZE    (1024 * 4)   // Limit on size of each write pass
-
 @implementation AFPacketWrite
 
 @synthesize buffer=_buffer;
@@ -40,31 +38,24 @@
 }
 
 - (BOOL)performWrite:(CFWriteStreamRef)writeStream error:(NSError **)errorRef {
-	BOOL packetComplete = NO, streamError = NO;
-	while (!packetComplete && !streamError && CFWriteStreamCanAcceptBytes(writeStream)) {
-		// Figure out what to write.
+	BOOL packetComplete = NO;
+	
+	while (!packetComplete && CFWriteStreamCanAcceptBytes(writeStream)) {
 		NSUInteger bytesRemaining = ([self.buffer length] - _bytesWritten);
-		NSUInteger bytesToWrite = (bytesRemaining < WRITE_CHUNKSIZE) ? bytesRemaining : WRITE_CHUNKSIZE;
 		
 		UInt8 *writeStart = (UInt8 *)([self.buffer bytes] + _bytesWritten);
-		CFIndex actualBytesWritten = CFWriteStreamWrite(writeStream, writeStart, bytesToWrite);
+		CFIndex actualBytesWritten = CFWriteStreamWrite(writeStream, writeStart, bytesRemaining);
 		
 		if (actualBytesWritten < 0) {
-			actualBytesWritten = 0;
-			streamError = YES;
+			*errorRef = AFErrorFromCFStreamError(CFWriteStreamGetError(writeStream));
+			return NO;
 		}
 		
 		_bytesWritten += actualBytesWritten;
-		packetComplete = ( _bytesWritten == [self.buffer length]);
-	}
-	
-	if (streamError) {
-		*errorRef = AFErrorFromCFStreamError(CFWriteStreamGetError(writeStream));
+		packetComplete = (_bytesWritten == [self.buffer length]);
 	}
 	
 	return packetComplete;
 }
 
 @end
-
-#undef WRITE_CHUNKSIZE

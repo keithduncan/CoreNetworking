@@ -1,11 +1,10 @@
-/*
- *  AFGeometry.m
- *  Amber
- *
- *  Created by Keith Duncan on 04/09/2007.
- *  Copyright 2007 thirty-three. All rights reserved.
- *
- */
+//
+//  AFGeometry.m
+//  AmberFoundation
+//
+//  Created by Keith Duncan on 12/06/2007.
+//  Copyright 2007 thirty-three. All rights reserved.
+//
 
 #include "AFGeometry.h"
 
