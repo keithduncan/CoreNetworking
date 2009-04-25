@@ -36,8 +36,15 @@ NS_INLINE CGPoint AFRectCenterPoint(CGRect rect) {
 /*!
 	@function
  */
+NS_INLINE CGRect AFSizeCenteredAroundPoint(CGSize size, CGPoint point) {
+	return CGRectMake(point.x - (size.width/2.0), point.y - (size.height/2.0), size.width, size.height);
+}
+
+/*!
+	@function
+ */
 NS_INLINE CGRect AFRectCenteredAroundPoint(CGRect frame, CGPoint point) {
-	return CGRectMake(point.x - (frame.size.width/2.0), point.y - (frame.size.height/2.0), frame.size.width, frame.size.height);
+	return AFSizeCenteredAroundPoint(frame.size, point);
 }
 
 /*!

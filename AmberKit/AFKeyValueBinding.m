@@ -8,7 +8,7 @@
 
 #import "AFKeyValueBinding.h"
 
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+#if !TARGET_OS_IPHONE
 NSString *const AFObservedKeyPathKey = @"keyPath";
 NSString *const AFObservedObjectKey = @"object";
 #endif
@@ -23,7 +23,7 @@ NSString *const AFUnboundValueKey = @"AFUnboundValue";
 	
 	id value = [controller valueForKeyPath:[self keyPathForBinding:binding]];
 	
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+#if !TARGET_OS_IPHONE
 	NSValueTransformer *transformer = [self valueTransformerForBinding:binding];
 	if (transformer != nil) value = [transformer transformedValue:value];
 #endif
@@ -32,7 +32,7 @@ NSString *const AFUnboundValueKey = @"AFUnboundValue";
 }
 
 - (void)setValue:(id)value forBinding:(NSString *)binding {
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+#if !TARGET_OS_IPHONE
 	NSValueTransformer *transformer = [self valueTransformerForBinding:binding];
 	if (transformer != nil && [[transformer class] allowsReverseTransformation]) value = [transformer reverseTransformedValue:value];
 #endif
@@ -49,22 +49,22 @@ NSString *const AFUnboundValueKey = @"AFUnboundValue";
 }
 
 - (id)controllerForBinding:(NSString *)binding {
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
-	return [[(id <AFKeyValueBinding>)self infoForBinding:binding] objectForKey:NSObservedObjectKey];
-#elif TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE)
+#if TARGET_OS_IPHONE
 	return [[(id <AFKeyValueBinding>)self infoForBinding:binding] objectForKey:AFObservedObjectKey];
+#else
+	return [[(id <AFKeyValueBinding>)self infoForBinding:binding] objectForKey:NSObservedObjectKey];
 #endif
 }
 
 - (NSString *)keyPathForBinding:(NSString *)binding {
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
-	return [[(id <AFKeyValueBinding>)self infoForBinding:binding] objectForKey:NSObservedKeyPathKey];
-#elif TARGET_OS_MAC && (defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE)
+#if TARGET_OS_IPHONE
 	return [[(id <AFKeyValueBinding>)self infoForBinding:binding] objectForKey:AFObservedKeyPathKey];
+#else
+	return [[(id <AFKeyValueBinding>)self infoForBinding:binding] objectForKey:NSObservedKeyPathKey];
 #endif
 }
 
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+#if !TARGET_OS_IPHONE
 - (NSValueTransformer *)valueTransformerForBinding:(NSString *)binding {
 	NSDictionary *bindingOptions = [[self infoForBinding:binding] objectForKey:NSOptionsKey];
 	
