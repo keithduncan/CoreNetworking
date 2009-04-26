@@ -15,6 +15,7 @@
 #import "AFSocketConnection.h"
 
 #import	"AFNetworkTypes.h"
+#import "AFNetworkFunctions.h"
 #import "AFConnectionPool.h"
 
 #import "AFPriorityProxy.h"
@@ -37,6 +38,47 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 @synthesize clientClass=_clientClass;
 @synthesize lowerLayer=_lowerLayer;
 @synthesize clients, hosts;
+
++ (NSSet *)localhostSocketAddresses {
+	CFHostRef localhost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost");
+	
+	CFStreamError error;
+	memset(&error, 0, sizeof(CFStreamError));
+	
+	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
+	if (!resolved) return nil;
+	
+	return [NSSet setWithArray:(NSArray *)CFHostGetAddressing(localhost, NULL)];
+}
+
++ (NSSet *)networkSocketAddresses {
+	NSMutableSet *networkAddresses = [NSMutableSet set];
+	NSSet *localhostAddresses = [[self class] localhostSocketAddresses];
+	
+	struct ifaddrs *addrs = NULL;
+	int error = getifaddrs(&addrs);
+	if (error != 0) return nil;
+	
+	struct ifaddrs *currentInterfaceAddress = addrs;
+	for (; currentInterfaceAddress != NULL; currentInterfaceAddress = currentInterfaceAddress->ifa_next) {
+		struct sockaddr *currentAddr = currentInterfaceAddress->ifa_addr;
+		if (currentAddr->sa_family == AF_LINK) continue;
+		
+		BOOL shouldSkipNetworkAddress = NO;
+		for (NSData *currentLocalhostAddress in localhostAddresses) {
+			struct sockaddr *currentLocalhostAddr = (struct sockaddr *)[currentLocalhostAddress bytes];
+			shouldSkipNetworkAddress = sockaddr_compare(currentAddr, currentLocalhostAddr);
+			if (shouldSkipNetworkAddress) break;
+		} if (shouldSkipNetworkAddress) continue;
+		
+		NSData *currentNetworkAddress = [NSData dataWithBytes:((void *)currentAddr) length:(currentAddr->sa_len)];
+		[networkAddresses addObject:currentNetworkAddress];
+	}
+	
+	freeifaddrs(addrs);
+	
+	return networkAddresses;
+}
 
 - (id)init {
 	return [self initWithLowerLayer:nil encapsulationClass:[AFSocketConnection class]];
@@ -102,25 +144,25 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
 }
 
-/*!
-	@method
-	@abstract	This method contains its own forwarding code, because all instances respond to it.
-				The sockets are opened on the lowest layer of the stack.
- */
-- (id)_openSockets:(SInt32 *)port withType:(struct AFSocketType)type addresses:(NSArray *)addrs {
+- (void)openSockets:(const AFSocketTransport *)signature addresses:(NSSet *)sockAddrs {
+	SInt32 port = signature->port;
+	[self openSockets:&port withType:signature->type addresses:sockAddrs];
+}
+
+- (void)openSockets:(SInt32 *)port withType:(const AFSocketType *)type addresses:(NSSet *)sockAddrs {
 	AFConnectionServer *lowestLayer = self;
 	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
 	self = lowestLayer;
 	
-	for (NSData *currentAddrData in addrs) {
+	for (NSData *currentAddrData in sockAddrs) {
 		currentAddrData = [[currentAddrData mutableCopy] autorelease];
 		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddrData))->sin_port = htons(*port);
 		// FIXME: #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 		
 		CFSocketSignature currentSocketSignature = {
 			.protocolFamily = ((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)currentAddrData))->sa_family,
-			.socketType = type.socketType,
-			.protocol = type.protocol,
+			.socketType = type->socketType,
+			.protocol = type->protocol,
 			.address = (CFDataRef)currentAddrData,
 		};
 		
@@ -142,36 +184,6 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 		
 		[socket release];
 	}
-}
-
-- (id)openNetworkSockets:(SInt32 *)port withType:(struct AFSocketType)type {
-	NSMutableArray *addresses = [NSMutableArray array];
-	
-	struct ifaddrs *addrs = NULL;
-	int error = getifaddrs(&addrs);
-	if (error != 0) return nil;
-	
-	struct ifaddrs *currentAddr = addrs;
-	for (; currentAddr != NULL; currentAddr = currentAddr->ifa_next) {
-		if (currentAddr->ifa_addr->sa_family == AF_LINK) continue;
-		[addresses addObject:[NSData dataWithBytes:((void *)currentAddr->ifa_addr) length:(currentAddr->ifa_addr->sa_len)]];
-	}
-	
-	[self _openSockets:port withType:type addresses:addresses];
-	
-	freeifaddrs(addrs);
-}
-
-- (id)openLocalhostSockets:(SInt32 *)port withType:(struct AFSocketType)type {
-	CFHostRef localhost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost");
-	
-	CFStreamError error;
-	memset(&error, 0, sizeof(CFStreamError));
-	
-	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
-	if (!resolved) return nil;
-	
-	[self _openSockets:port withType:type addresses:(NSArray *)CFHostGetAddressing(localhost, NULL)];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {

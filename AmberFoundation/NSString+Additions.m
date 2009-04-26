@@ -31,6 +31,14 @@
 
 static NSString *const AFKeyPathComponentSeparator = @".";
 
+- (NSArray *)keyPathComponents {
+	return [self componentsSeparatedByString:AFKeyPathComponentSeparator];
+}
+
+- (NSString *)lastKeyPathComponent {
+	return [[self keyPathComponents] lastObject];
+}
+
 + (NSString *)keyPathWithComponents:(NSString *)component, ... {
 	NSMutableArray *components = [NSMutableArray array];
 	
@@ -48,29 +56,27 @@ static NSString *const AFKeyPathComponentSeparator = @".";
 	return [components componentsJoinedByString:AFKeyPathComponentSeparator];
 }
 
-- (NSArray *)keyPathComponents {
-	return [self componentsSeparatedByString:AFKeyPathComponentSeparator];
-}
-
-- (NSString *)lastKeyPathComponent {
-	return [[self keyPathComponents] lastObject];
-}
-
 - (NSString *)stringByAppendingKeyPath:(NSString *)keyPath {
 	return [self stringByAppendingFormat:@"%@%@", AFKeyPathComponentSeparator, keyPath];
 }
 
 - (NSString *)stringByRemovingKeyPathComponentAtIndex:(NSUInteger)index {
 	NSArray *keyPathComponents = [self keyPathComponents];
-	if (!NSLocationInRange(index, (NSRange){0, [keyPathComponents count]})) [NSException raise:NSRangeException format:@"-[NSString(AFKeyPathUtilities) &s] attempting to access keypath component at index %d beyond range.", _cmd, index];
+	if (!NSLocationInRange(index, NSMakeRange(0, [keyPathComponents count]))) {
+		[NSException raise:NSRangeException format:@"%s, attempting to access keypath component at index %d beyond range.", __PRETTY_FUNCTION__, index];
+		return nil;
+	}
 	
 	NSMutableArray *mutableKeyPathComponents = [keyPathComponents mutableCopy];
 	[mutableKeyPathComponents removeObjectAtIndex:index];
-	
 	NSString *newKeyPath = [mutableKeyPathComponents componentsJoinedByString:AFKeyPathComponentSeparator];
 	[mutableKeyPathComponents release];
 	
 	return newKeyPath;
+}
+
+- (NSString *)stringByRemovingLastKeyPathComponent {
+	return [self stringByRemovingKeyPathComponentAtIndex:([[self keyPathComponents] count]-1)];
 }
 
 @end

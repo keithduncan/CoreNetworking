@@ -11,6 +11,8 @@
 #import "CoreNetworking/AFSocket.h"
 #import "CoreNetworking/AFConnectionLayer.h"
 
+#import "CoreNetworking/AFNetworkTypes.h"
+
 @class AFConnectionPool;
 @class AFConnectionServer;
 
@@ -35,6 +37,22 @@
 	
 	AFConnectionPool *hosts, *clients;
 }
+
+/*!
+	@method
+	@discussion	A collection of NSData objects containing a (struct sockaddr *)
+	@result		All the network socket addresses, these may be accessable from other network clients (ignoring firewalls).
+ */
++ (NSSet *)networkSocketAddresses;
+
+/*!
+	@method
+	@discussion	A collection of NSData objects containing a (struct sockaddr *)
+				This is likely only to be useful for testing your server, since it won't be accessable from another computer
+	@result		All the localhost socket addresses, these are only accessible from the local machine.
+				This allows you to create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to ::1).
+ */
++ (NSSet *)localhostSocketAddresses;
 
 /*!
 	@method
@@ -69,20 +87,20 @@
 
 /*!
 	@method
-	@abstract	Create a server with ports open on all IP addresses (it equivalent of ::0)
-	@discussion	This method is rarely applicable to higher-level servers, the default implementation walks the server stack to the lowest layer, then executes
-	@param		|port| is passed by reference so that if you pass 0 you get back the actual port
+	@abstract	Shorthand for <tt>-openSockets:withType:addresses:</tt> where you already have an <tt>AFSocketTransportLayer</tt> preconfigured.
+	@discussion	See <tt>-openSockets:withType:addresses:</tt>
  */
-- (id)openNetworkSockets:(SInt32 *)port withType:(struct AFSocketType)type;
+- (void)openSockets:(const AFSocketTransport *)signature addresses:(NSSet *)sockAddrs;
 
 /*!
 	@method
-	@abstract	Create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to ::1)
-	@discussion	This method is rarely applicable to higher-level servers, the default implementation walks the server stack to the lowest layer, then executes
-				This is likely only to be useful for testing your server, since it won't be accessable from another computer
-				This is a subset of the sockets opened in <tt>-openNetworkSockets:withType:</tt> and doesn't need to be used in addition to that method
+	@abstract	Opens an AFSocket for each address and schedules it on the current run-loop.
+	@discussion	This method is rarely applicable to higher-level servers, therefore this method contains 
+				its own forwarding code (because all instances respond to it) and the sockets are opened
+				on the lowest layer of the stack.
+	@param		|port| is passed by reference so that if you pass 0 you get back the actual port
  */
-- (id)openLocalhostSockets:(SInt32 *)port withType:(struct AFSocketType)type;
+- (void)openSockets:(SInt32 *)port withType:(const AFSocketType *)type addresses:(NSSet *)sockAddrs;
 
 /*!
 	@property

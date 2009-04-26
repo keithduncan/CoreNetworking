@@ -38,8 +38,18 @@ extern const AFSocketType AFSocketTypeUDP;
 	@field		|type| see the documentation on <tt>AFSocketType</tt>
 	@field		|port| identifies the Transport Layer address to communicate using (see RFC 1122) in network byte order
  */
-struct AFSocketTransportLayer {
-	AFSocketType type;
+struct AFSocketTransport {
+	const AFSocketType *type;
 	SInt32 port;
 };
-typedef struct AFSocketTransportLayer AFSocketTransportLayer;
+typedef struct AFSocketTransport AFSocketTransport;
+
+/*!
+	@const
+ */
+const AFSocketTransport AFSocketTransportHTTP;
+
+/*!
+	@const
+ */
+const AFSocketTransport AFSocketTransportHTTPS;

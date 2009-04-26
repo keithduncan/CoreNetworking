@@ -37,7 +37,7 @@ struct AFSocketSignature {
 /*
  *	This defines _how_ to communicate (and may allow for the return of a specific handler subclass from the creation methods)
  */	
-	AFSocketTransportLayer transport;
+	AFSocketTransport transport;
 };
 typedef struct AFSocketSignature AFSocketSignature;
 
@@ -159,6 +159,6 @@ typedef struct AFSocketSignature AFSocketSignature;
 	@method
 	@abstract	instead of calling the <tt>-currentWriteProgress:...</tt> on a timer, you can (optionally) implement this delegate method to be notified of write progress
  */
-- (void)socket:(AFSocketConnection *)socket didWritePartialDataOfLength:(NSUInteger)partialLength tag:(NSInteger)tag;
+- (void)socket:(AFSocketConnection *)socket didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength tag:(NSInteger)tag;
 
 @end
