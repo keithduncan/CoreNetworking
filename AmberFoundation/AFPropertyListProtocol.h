@@ -8,14 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString *const AFClassNameKey;
-extern NSString *const AFObjectDataKey;
-
-@protocol AFPropertyListProtocol
+@protocol AFPropertyList <NSObject>
 - (id)initWithPropertyListRepresentation:(id)propertyListRepresentation;
 - (id)propertyListRepresentation;
 @end
 
-@interface NSArray (AFPropertyList)
-+ (id)arrayWithPropertyListRepresentation:(id)propertyListRepresentation;
+@interface NSArray (AFPropertyList) <AFPropertyList>
+
 @end
+
+@interface NSDictionary (AFPropertyList) <AFPropertyList>
+
+@end
+
+extern CFPropertyListRef AFPropertyListRepresentationArchive(id <AFPropertyList> object);
+extern id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresentation);

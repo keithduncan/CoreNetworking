@@ -20,6 +20,7 @@
 
 - (id)init {
 	self = [super init];
+	if (self == nil) return nil;
 	
 	_objects = [[NSMutableSet alloc] init];
 	_index = [[NSMutableDictionary alloc] init];
@@ -29,6 +30,7 @@
 
 - (id)initWithKeyPath:(NSString *)keyPath {
 	self = [self init];
+	if (self == nil) return nil;
 	
 	NSParameterAssert(keyPath != nil);
 	_keyPath = [keyPath copy];

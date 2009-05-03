@@ -1,15 +1,12 @@
 //
 //  AFPropertyListProtocol.m
-//  Amber
+//  dawn
 //
 //  Created by Keith Duncan on 14/03/2007.
 //  Copyright 2007 thirty-three. All rights reserved.
 //
 
 #import "AFPropertyListProtocol.h"
-
-NSString *const AFClassNameKey = @"propertyListClass";
-NSString *const AFObjectDataKey = @"propertyListData";
 
 static BOOL isPlistObject(id object) {
 	if ([object isKindOfClass:[NSString class]]) return YES;
@@ -32,40 +29,42 @@ static BOOL isPlistObject(id object) {
     } else return NO;
 }
 
-static BOOL isPlistRepresentation(id object) {
-	return ([object isKindOfClass:[NSDictionary class]] && [object count] == 2 && [object objectForKey:AFClassNameKey] != nil && [object objectForKey:AFObjectDataKey] != nil);
+static NSString *const AFPropertyListClassNameKey = @"propertyListClass";
+static NSString *const AFPropertyListObjectDataKey = @"propertyListData";
+
+CFPropertyListRef AFPropertyListRepresentationArchive(id <AFPropertyList> object) {
+	return [NSDictionary dictionaryWithObjectsAndKeys:
+			[object propertyListRepresentation], AFPropertyListObjectDataKey,
+			NSStringFromClass([object class]), AFPropertyListClassNameKey,
+			nil];
+}
+
+id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresentation) {
+	return [[[NSClassFromString([(NSDictionary *)propertyListRepresentation objectForKey:AFPropertyListClassNameKey]) alloc] initWithPropertyListRepresentation:[(NSDictionary *)propertyListRepresentation objectForKey:AFPropertyListObjectDataKey]] autorelease];
 }
 
 @implementation NSArray (AFPropertyList)
 
-+ (id)arrayWithPropertyListRepresentation:(id)propertyListRepresentation {
-	return [[[self alloc] initWithPropertyListRepresentation:propertyListRepresentation] autorelease];
-}
-
 - (id)initWithPropertyListRepresentation:(id)propertyListRepresentation {
+	[self release];
+	
 	NSMutableArray *newArray = [NSMutableArray arrayWithCapacity:[propertyListRepresentation count]];
 	
 	for (id currentObject in propertyListRepresentation) {
-		if (isPlistRepresentation(currentObject)) {
-			id newObject = [[NSClassFromString([currentObject objectForKey:AFClassNameKey]) alloc] initWithPropertyListRepresentation:[currentObject valueForKey:AFObjectDataKey]];
-			[newArray addObject:newObject];
-			[newObject release];
-		} else [newArray addObject:currentObject];
+		id newObject = AFPropertyListRepresentationUnarchive(currentObject);
+		[newArray addObject:newObject];
 	}
 	
-	return [self initWithArray:newArray];
+	// Note: this allows us to return a subclass
+	return [[[self class] alloc] initWithArray:newArray];
 }
 
 - (id)propertyListRepresentation {
 	NSMutableArray *propertyListRepresentation = [NSMutableArray array];
 	
-	for (NSObject <AFPropertyListProtocol> *currentObject in self) {	
-		NSDictionary *objectDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-										  [currentObject propertyListRepresentation], AFObjectDataKey, 
-										  NSStringFromClass([currentObject class]), AFClassNameKey,
-										  nil];
-		
-		[propertyListRepresentation addObject:objectDictionary];
+	for (id <AFPropertyList> currentObject in self) {	
+		CFPropertyListRef representation = AFPropertyListRepresentationArchive(currentObject);
+		[propertyListRepresentation addObject:(id)representation];
 	}
 	
 	return propertyListRepresentation;
@@ -73,28 +72,35 @@ static BOOL isPlistRepresentation(id object) {
 
 @end
 
-#if 0
 @implementation NSDictionary (AFPropertyList)
 
-+ (id)dictionaryWithPropertyListRepresentation:(id)propertyListRepresentation {
-	return [[[self alloc] initWithPropertyListRepresentation:propertyListRepresentation] autorelease];
-}
-
 - (id)initWithPropertyListRepresentation:(id)propertyListRepresentation {
+	[self release];
 	
+	NSMutableDictionary *newDictionary = [NSMutableDictionary dictionaryWithCapacity:[propertyListRepresentation count]];
+	
+	for (NSString *currentKey in propertyListRepresentation) {
+		[newDictionary setObject:AFPropertyListRepresentationUnarchive([propertyListRepresentation objectForKey:currentKey]) forKey:currentKey];
+	}
+	
+	// Note: this allows us to return a subclass
+	return [[[self class] alloc] initWithDictionary:newDictionary];
 }
 
-- (id)propertyListRepresentation {
-	if (!isPlistObject(self)) [NSException raise:NSInternalInconsistencyException format:[NSString stringWithFormat:@"-[NSDictionary(AFPropertyList) %s], tried to archive object \"%@\", which doesn't conform to the AFPropertyListProtocol", _cmd, self]];
-	
+- (id)propertyListRepresentation {	
 	NSMutableDictionary *propertyListRepresentation = [NSMutableDictionary dictionaryWithCapacity:[self count]];
 	
-	for (id currentKey in self) {
-		if (isPlistObject(cu [self objectForKey:currentKey]
+	for (NSString *currentKey in self) {
+		id <AFPropertyList> currentObject = [self objectForKey:currentKey];
+		if (!isPlistObject(currentObject)) {
+			[NSException raise:NSInternalInconsistencyException format:@"%s, %@ is not a plist object type, cannot serialize", __PRETTY_FUNCTION__, currentObject, nil];
+			return nil;
+		}
+		
+		[propertyListRepresentation setObject:(id)AFPropertyListRepresentationArchive(currentObject) forKey:currentKey];
 	}
 	
 	return propertyListRepresentation;
 }
 
 @end
-#endif

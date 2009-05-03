@@ -13,6 +13,8 @@
 
 #import "AmberFoundation/NSString+Additions.h"
 
+#if !TARGET_OS_IPHONE
+
 NSString *const AFUserDefaultsDidChangeNotification = @"AFUserDefaultsDidChangeNotification";
 
 static NSString *const kAFBundleIdentifierDefaults = @"kIdentifierDefaults";
@@ -190,3 +192,5 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 }
 
 @end
+
+#endif

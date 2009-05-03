@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#if !TARGET_OS_IPHONE
+
 /*!
     @class
 	@abstract    This class is NSUserDefaults for an arbitary bundle identifer, it doesn't restrict you to working with the current application identifer
@@ -78,3 +80,5 @@
 - (NSDictionary *)dictionaryForKey:(NSString *)key;
 - (NSData *)dataForKey:(NSString *)key;
 @end
+
+#endif
