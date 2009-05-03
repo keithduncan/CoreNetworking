@@ -10,17 +10,27 @@
 
 @class AFConnection;
 
+/*!
+	@class
+	@abstract	This class will take on a more important role later on, I intend for it to become an interface to a thread pool too.
+ */
 @interface AFConnectionPool : NSObject {
-	NSMutableSet *connections;
+	NSMutableSet *_connections;
 }
 
-@property (readonly, copy) NSSet *connections;
+@property (readonly) NSSet *connections;
 
 - (void)addConnectionsObject:(id)proxy;
 - (void)removeConnectionsObject:(id)proxy;
 
+/*!
+	@method
+ */
 - (id)connectionWithValue:(id)value forKey:(NSString *)key;
 
+/*!
+	@method
+ */
 - (void)disconnect;
 
 @end

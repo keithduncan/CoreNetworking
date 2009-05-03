@@ -10,34 +10,39 @@
 
 #import "AFConnectionLayer.h"
 
+@interface AFConnectionPool ()
+@property (retain) NSMutableSet *mutableConnections;
+@end
+
 @implementation AFConnectionPool
 
-@synthesize connections;
+@synthesize mutableConnections=_connections;
 
 - (id)init {
-	[super init];
+	self = [super init];
+	if (self == nil) return nil;
 	
-	connections = [[NSMutableSet alloc] init];
+	self.mutableConnections = [NSMutableSet set];
 	
 	return self;
 }
 
 - (void)dealloc {
-	[connections release];
+	self.mutableConnections = nil;
 	
 	[super dealloc];
 }
 
 - (NSSet *)connections {
-	return [[connections copy] autorelease];
+	return [[self.mutableConnections copy] autorelease];
 }
 
 - (void)addConnectionsObject:(id)connection {
-	[connections addObject:connection];
+	[self.mutableConnections addObject:connection];
 }
 
 - (void)removeConnectionsObject:(id)connection {
-	[connections removeObject:connection];
+	[self.mutableConnections removeObject:connection];
 }
 
 - (id)connectionWithValue:(id)value forKey:(NSString *)key {
