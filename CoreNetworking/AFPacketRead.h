@@ -10,11 +10,10 @@
 
 @interface AFPacketRead : AFPacket {
  @private
-	CFIndex _bytesRead;	
+	CFIndex _bytesRead;
 	NSMutableData *_buffer;
 	
-	NSData *_terminator;
-	NSUInteger _maximumLength;
+	id _terminator;
 }
 
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration terminator:(id)terminator;

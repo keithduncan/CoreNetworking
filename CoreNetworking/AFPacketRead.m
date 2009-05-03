@@ -11,8 +11,6 @@
 #import "AFNetworkConstants.h"
 #import "AFNetworkFunctions.h"
 
-#define READALL_CHUNKSIZE	256         // Incremental increase in buffer size
-
 @implementation AFPacketRead
 
 @synthesize buffer=_buffer;
@@ -26,16 +24,13 @@
 }
 
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration terminator:(id)terminator {
-	[self initWithTag:tag timeout:duration];
+	self = [self initWithTag:tag timeout:duration];
+	if (self == nil) return nil;
 	
-	if ([terminator isKindOfClass:[NSNumber class]]) {
-		_maximumLength = [terminator unsignedIntegerValue];
-		[_buffer setLength:_maximumLength];
-		
-		_terminator = nil;
-	} else if ([terminator isKindOfClass:[NSData class]]) {
-		_maximumLength = -1;
-		_terminator = [terminator copy];
+	_terminator = [terminator copy];
+	
+	if ([_terminator isKindOfClass:[NSNumber class]]) {
+		[_buffer setLength:[_terminator unsignedIntegerValue]];
 	}
 	
 	return self;
@@ -52,7 +47,7 @@
 	// It's only possible to know the progress of our read if we're reading to a certain length
 		// If we're reading to data, we don't know when the data pattern will arrive
 		// If we're reading to timeout, then we have no idea when the next chunk of data will arrive.
-	BOOL hasTotal = (_maximumLength > 0);
+	BOOL hasTotal = ([_terminator isKindOfClass:[NSNumber class]]);
 	
 	NSUInteger done = _bytesRead;
 	NSUInteger total = [self.buffer length];
@@ -69,47 +64,55 @@
 	if (bytesTotal != NULL) *bytesTotal = total;
 }
 
-- (NSUInteger)_readLengthForTerminator {
-	NSAssert(_terminator != nil, @"searching for nil terminator in data");
+- (NSUInteger)_maximumReadLength {
+	NSAssert(_terminator != nil, @"searching for nil terminator");
 	
-	// What we're going to do is look for a partial sequence of the terminator at the end of the buffer.
-	// If a partial sequence occurs, then we must assume the next bytes to arrive will be the rest of the term,
-	// and we can only read that amount.
-	// Otherwise, we're safe to read the entire length of the term.
-	
-	unsigned result = [_terminator length];
-	
-	// i = index within buffer at which to check data
-	// j = length of term to check against
-	
-	// Note: Beware of implicit casting rules
-	// This could give you -1: MAX(0, (0 - [term length] + 1));
-	
-	CFIndex i = MAX(0, (CFIndex)(_bytesRead - [_terminator length] + 1));
-	CFIndex j = MIN([_terminator length] - 1, _bytesRead);
-	
-	while (i < _bytesRead) {
-		const void *subBuffer = ([self.buffer bytes] + i);
-		
-		if (memcmp(subBuffer, [_terminator bytes], j) == 0) {
-			result = [_terminator length] - j;
-			break;
-		}
-		
-		i++;
-		j--;
+	if ([_terminator isKindOfClass:[NSNumber class]]) {
+		return ([_terminator unsignedIntegerValue] - _bytesRead);
 	}
 	
-	return (_maximumLength > 0) ? MIN(result, (_maximumLength - _bytesRead)) : result;
+	if ([_terminator isKindOfClass:[NSData class]]) {
+		// What we're going to do is look for a partial sequence of the terminator at the end of the buffer.
+		// If a partial sequence occurs, then we must assume the next bytes to arrive will be the rest of the term,
+		// and we can only read that amount.
+		// Otherwise, we're safe to read the entire length of the term.
+		
+		unsigned result = [_terminator length];
+		
+		// i = index within buffer at which to check data
+		// j = length of term to check against
+		
+		// Note: Beware of implicit casting rules
+		// This could give you -1: MAX(0, (0 - [term length] + 1));
+		
+		CFIndex i = MAX(0, (CFIndex)(_bytesRead - [_terminator length] + 1));
+		CFIndex j = MIN([_terminator length] - 1, _bytesRead);
+		
+		while (i < _bytesRead) {
+			const void *subBuffer = ([self.buffer bytes] + i);
+			
+			if (memcmp(subBuffer, [_terminator bytes], j) == 0) {
+				result = [_terminator length] - j;
+				break;
+			}
+			
+			i++;
+			j--;
+		}
+		
+		return result;
+	}
+	
+	[NSException raise:NSInternalInconsistencyException format:@"Cannot determine the maximum read length.", nil];
+	return 0;
 }
 
 - (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)error {
 	BOOL packetComplete = NO;
-	BOOL readStreamError = NO, maxoutError = NO;
 	
-	while (!packetComplete && !readStreamError && !maxoutError && CFReadStreamHasBytesAvailable(readStream)) {
-		NSUInteger maximumReadLength = [self _readLengthForTerminator];
-		NSUInteger bufferIncrement = maximumReadLength - ([self.buffer length] - _bytesRead);
+	while (!packetComplete && CFReadStreamHasBytesAvailable(readStream)) {
+		NSUInteger maximumReadLength = [self _maximumReadLength];
+		NSUInteger bufferIncrement = (maximumReadLength - ([self.buffer length] - _bytesRead));
 		[_buffer increaseLengthBy:bufferIncrement];
 		
 		CFIndex bytesToRead = ([self.buffer length] - _bytesRead);
@@ -117,15 +120,14 @@
 		CFIndex bytesRead = CFReadStreamRead(readStream, readBuffer, bytesToRead);
 		
 		if (bytesRead < 0) {
-			readStreamError = YES;
-			break;
+			*error = AFErrorFromCFStreamError(CFReadStreamGetError(readStream));
+			return NO;
 		} else {
 			_bytesRead += bytesRead;
 		}
 		
-		if (_terminator != nil) {
+		if ([_terminator isKindOfClass:[NSData class]]) {
 			// Done when we match the byte pattern
-			
 			int terminatorLength = [_terminator length];
 			
 			if (_bytesRead >= terminatorLength) {
@@ -136,27 +138,11 @@
 			}
 		} else {
 			// Done when sized buffer is full.
-			packetComplete = ([self.buffer length] == _bytesRead);
+			packetComplete = (_bytesRead == [self.buffer length]);
 		}
-		
-		// There's a set _maximumLength, and we've reached that maxLength without completing the read
-		maxoutError = (!packetComplete && _maximumLength >= 0 && _bytesRead >= _maximumLength);
-	}
-	
-#warning perhaps errors should be returned in a collection
-	if (readStreamError) {
-		*error = AFErrorFromCFStreamError(CFReadStreamGetError(readStream));
-	} else if (maxoutError) {
-		NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
-							  NSLocalizedStringWithDefaultValue(@"AFSocketReadMaxedOutError", @"AFSocket", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Read operation reached set maximum length", nil), NSLocalizedDescriptionKey,
-							  nil];
-		
-		*error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFPacketMaxedOutError userInfo:info];
 	}
 	
 	return packetComplete;
 }
 
 @end
-
-#undef READALL_CHUNKSIZE
