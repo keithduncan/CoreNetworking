@@ -125,6 +125,11 @@
 /*!
 	@method
  */
+- (void)layer:(id <AFNetworkLayer>)layer didReceiveError:(NSError *)error;
+
+/*!
+	@method
+ */
 - (void)layerDidClose:(id <AFNetworkLayer>)layer;
 
 /*!

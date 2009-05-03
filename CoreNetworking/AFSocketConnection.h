@@ -133,13 +133,6 @@ typedef struct AFSocketSignature AFSocketSignature;
 
 /*!
 	@method
-	@abstract	this is called when the connection encounters an error
-	@param		|fatal| will reflect wether the connection will remain open following the error, if not the control delegate will receive the -layerWillClose: method
- */
-- (void)socket:(AFSocketConnection *)socket didReceiveError:(NSError *)error;
-
-/*!
-	@method
 	@abstract	When the socket is closing you can keep it open until the writes are complete, but you'll have to ensure the object remains live
  */
 - (BOOL)socket:(AFSocketConnection *)socket shouldRemainOpenPendingWrites:(NSUInteger)count;

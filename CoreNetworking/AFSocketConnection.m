@@ -315,12 +315,20 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	[self _emptyQueues];
 	
+	NSError *streamError = nil;
+	
 	if (readStream != NULL) {
+		if (streamError == nil)
+			streamError = [NSMakeCollectable(CFReadStreamCopyError(readStream)) autorelease];
+		
 		CFReadStreamSetClient(readStream, kCFStreamEventNone, NULL, NULL);
 		CFReadStreamClose(readStream);
 	}
 	
 	if (writeStream != NULL) {
+		if (streamError == nil)
+			streamError = [NSMakeCollectable(CFReadStreamCopyError(readStream)) autorelease];
+		
 		CFWriteStreamSetClient(writeStream, kCFStreamEventNone, NULL, NULL);
 		CFWriteStreamClose(writeStream);
 	}
@@ -328,7 +336,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	self.connectionFlags = 0;
 	
 	if ([self.delegate respondsToSelector:@selector(layer:didDisconnectWithError:)])
-		[self.delegate layer:self didDisconnectWithError:nil];
+		[self.delegate layer:self didDisconnectWithError:streamError];
 	
 	if ([self.delegate respondsToSelector:@selector(layerDidClose:)])
 		[self.delegate layerDidClose:self];
@@ -386,8 +394,8 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 		{
 			NSError *error = AFErrorFromCFStreamError(CFReadStreamGetError(self->readStream));
 			
-			if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
-				[self.delegate socket:self didReceiveError:error];
+			if ([self.delegate respondsToSelector:@selector(layer:didReceiveError:)])
+				[self.delegate layer:self didReceiveError:error];
 			
 			break;
 		}
@@ -456,8 +464,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		{
 			NSError *error = AFErrorFromCFStreamError(CFReadStreamGetError(self->readStream));
 			
-			if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
-				[self.delegate socket:self didReceiveError:error];
+			if ([self.delegate respondsToSelector:@selector(layer:didReceiveError:)])
+				[self.delegate layer:self didReceiveError:error];
 			
 			break;
 		}
@@ -509,7 +517,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		[self.delegate layerDidOpen:self];
 	
 	if ([self.delegate respondsToSelector:@selector(layer:didConnectToPeer:)])
-		[self.delegate layer:self didConnectToPeer:(id)_peer._hostDestination.host];
+		[self.delegate layer:self didConnectToPeer:(id)[self peer]];
 	
 	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
 	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
