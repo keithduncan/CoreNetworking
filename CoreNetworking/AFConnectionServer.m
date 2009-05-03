@@ -10,6 +10,7 @@
 
 #import <sys/socket.h>
 #import <arpa/inet.h>
+#import <objc/runtime.h>
 
 #import "AFSocket.h"
 #import "AFSocketConnection.h"
@@ -86,6 +87,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 - (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass {
 	self = [super init]; // Note to self, this is intentionally sent to super
+	if (self == nil) return nil;
+#warning take a look at the initialisation patterns in here again, see if you can't simplify/unify them
 	
 	hosts = [[AFConnectionPool alloc] init];
 	[hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
@@ -103,14 +106,14 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (void)finalize {
 	[self.clients disconnect];
 	
+#if __OBJC_GC__
 	[super finalize];
+#endif
 }
 
 - (void)dealloc {
 	[self finalize];
-	
-	[_proxy release];
-	
+		
 	[_lowerLayer release];
 	
 	[clients release];
@@ -126,8 +129,11 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
 	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
 	
-	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) [(id)_delegate delegateProxy:proxy];
-	[proxy insertTarget:_delegate atPriority:0];
+	id delegate = nil;
+	object_getInstanceVariable(self, "_delegate", (void **)&delegate);
+	
+	if ([delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)delegate delegateProxy:proxy];
+	[proxy insertTarget:delegate atPriority:0];
 	
 	return proxy;
 }
@@ -195,7 +201,10 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)newLayer {
-	return [[[[self clientClass] alloc] initWithLowerLayer:newLayer delegate:(id)self] autorelease];
+	id <AFConnectionLayer> connection = [[[[self clientClass] alloc] initWithLowerLayer:newLayer] autorelease];
+	[connection setDelegate:(id)self];
+	
+	return connection;
 }
 
 - (void)layer:(id)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
@@ -221,15 +230,13 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
 	if (![self.clients.connections containsObject:layer]) return;
 	
-	layer = [[layer retain] autorelease];
-	[self.clients removeConnectionsObject:layer];
-	
 	if (self.lowerLayer != nil) {
-		layer = layer.lowerLayer;
-		layer.delegate = self.lowerLayer;
-		
+		id <AFNetworkLayer> lowerLayer = layer.lowerLayer;
+		lowerLayer.delegate = (id)self.lowerLayer;
 		[layer close];
 	}
+	
+	[self.clients removeConnectionsObject:layer];
 }
 
 @end

@@ -30,11 +30,11 @@
 	@discussion	After instantiating the server you can use one of the convenience methods to open a collection of sockets
  */
 @interface AFConnectionServer : NSObject <AFConnectionServerDelegate, AFConnectionLayerHostDelegate, AFSocketHostDelegate> {
-	id <AFConnectionServerDelegate> _delegate, _proxy;
-	
-	Class _clientClass;
 	AFConnectionServer *_lowerLayer;
 	
+	id <AFConnectionServerDelegate> _delegate;
+	
+	Class _clientClass;
 	AFConnectionPool *hosts, *clients;
 }
 
@@ -69,12 +69,6 @@
 
 /*!
 	@property
-	@abstract	This class is used to instantiate a new higher-level layer when the server receives the <tt>-layer:didAcceptConnection:</tt> delegate callback
- */
-@property (readonly, assign) Class clientClass;
-
-/*!
-	@property
 	@abstract	This is the server that this one sits atop. The delegate of this object should be the upper server.
  */
 @property (readonly, retain) AFConnectionServer *lowerLayer;
@@ -101,6 +95,12 @@
 	@param		|port| is passed by reference so that if you pass 0 you get back the actual port
  */
 - (void)openSockets:(SInt32 *)port withType:(const AFSocketType *)type addresses:(NSSet *)sockAddrs;
+
+/*!
+	@property
+	@abstract	This class is used to instantiate a new higher-level layer when the server receives the <tt>-layer:didAcceptConnection:</tt> delegate callback
+ */
+@property (readonly, assign) Class clientClass;
 
 /*!
 	@property
