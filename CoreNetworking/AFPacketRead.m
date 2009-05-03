@@ -43,25 +43,17 @@
 	[super dealloc];
 }
 
-- (void)progress:(float *)fraction done:(NSUInteger *)bytesDone total:(NSUInteger *)bytesTotal {
-	// It's only possible to know the progress of our read if we're reading to a certain length
-		// If we're reading to data, we don't know when the data pattern will arrive
-		// If we're reading to timeout, then we have no idea when the next chunk of data will arrive.
+- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {	
 	BOOL hasTotal = ([_terminator isKindOfClass:[NSNumber class]]);
 	
 	NSUInteger done = _bytesRead;
 	NSUInteger total = [self.buffer length];
 	
-	if (fraction != NULL) {
-		if (hasTotal) {
-			*fraction = (float)done/(float)total;
-		} else /* Guard against divide by zero */ {
-			*fraction = NAN;
-		}
-	}
-	
 	if (bytesDone != NULL) *bytesDone = done;
-	if (bytesTotal != NULL) *bytesTotal = total;
+	if (bytesTotal != NULL) *bytesTotal = (hasTotal ? total : NSUIntegerMax);
+	
+	// Guard against divide by zero
+	return (hasTotal ? ((float)done/(float)total) : NAN);
 }
 
 - (NSUInteger)_maximumReadLength {

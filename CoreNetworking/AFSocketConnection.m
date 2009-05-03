@@ -251,22 +251,17 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	CFWriteStreamUnscheduleFromRunLoop(writeStream, loop, mode);
 }
 
-- (void)_packet:(AFPacket *)packet progress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total forTag:(NSUInteger *)tag {
-	if (packet == nil) {
-		if (fraction != NULL) *fraction = NAN;
-		return;
-	}
-	
+- (float)_packetProgress:(AFPacket *)packet bytesDone:(NSUInteger *)done bytesTotal:(NSUInteger *)total forTag:(NSUInteger *)tag {	
 	if (tag != NULL) *tag = packet.tag;
-	[packet progress:fraction done:done total:total];
+	return (packet == nil ? NAN : [packet currentProgressWithBytesDone:done bytesTotal:total]);
 }
 
-- (void)currentReadProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total forTag:(NSUInteger *)tag {
-	[self _packet:[self currentReadPacket] progress:fraction bytesDone:done total:total forTag:tag];
+- (float)currentReadProgressWithBytesDone:(NSUInteger *)done bytesTotal:(NSUInteger *)total forTag:(NSUInteger *)tag {
+	return [self _packetProgress:[self currentReadPacket] bytesDone:done bytesTotal:total forTag:tag];
 }
 
-- (void)currentWriteProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total forTag:(NSUInteger *)tag {
-	[self _packet:[self currentWritePacket] progress:fraction bytesDone:done total:total forTag:tag];
+- (float)currentWriteProgressWithBytesDone:(NSUInteger *)done bytesTotal:(NSUInteger *)total forTag:(NSUInteger *)tag {
+	return [self _packetProgress:[self currentWritePacket] bytesDone:done bytesTotal:total forTag:tag];
 }
 
 #pragma mark -
@@ -550,33 +545,32 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[readQueue removeAllObjects];
 }
 
-- (void)_packetTimeoutNotification:(NSNotification *)notification {	
+- (void)_packetTimeoutNotification:(NSNotification *)notification {
+	NSError *error = nil;
+	
 	if ([[notification object] isEqual:[self currentReadPacket]]) {
 		[self _endCurrentReadPacket];
 		
 		NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
-							  NSLocalizedStringWithDefaultValue(@"AFSocketStreamReadTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Read operation timeout", nil), NSLocalizedDescriptionKey,
+							  NSLocalizedStringWithDefaultValue(@"AFSocketStreamReadTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Read operation timeout.", nil), NSLocalizedDescriptionKey,
 							  nil];
 		
-		NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionReadTimeoutError userInfo:info];
-		
-		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
-			[self.delegate socket:self didReceiveError:error];
+		error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionReadTimeoutError userInfo:info];
 	} else if ([[notification object] isEqual:[self currentWritePacket]]) {
 		[self _endCurrentWritePacket];
 		
 		NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
-							  NSLocalizedStringWithDefaultValue(@"AFSocketStreamWriteTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Write operation timeout", nil), NSLocalizedDescriptionKey,
+							  NSLocalizedStringWithDefaultValue(@"AFSocketStreamWriteTimeoutError", @"AFSocketStream", [NSBundle mainBundle], @"Write operation timeout.", nil), NSLocalizedDescriptionKey,
 							  nil];
 		
-		NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionWriteTimeoutError userInfo:info];
-			
-		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
-			[self.delegate socket:self didReceiveError:error];
+		error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionWriteTimeoutError userInfo:info];
 	}
+	
+	if ([self.delegate respondsToSelector:@selector(layer:didReceiveError:)])
+		[self.delegate layer:self didReceiveError:error];
 }
 
-#pragma mark --
+#pragma mark -
 
 - (void)_enqueueReadPacket:(id)packet {
 	[readQueue addObject:packet];
@@ -615,17 +609,15 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	BOOL packetComplete = [packet performRead:readStream error:&error];
 	
 	if (error != nil) {
-		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
-			[self.delegate socket:self didReceiveError:error];
+		if ([self.delegate respondsToSelector:@selector(layer:didReceiveError:)])
+			[self.delegate layer:self didReceiveError:error];
 	}
 	
-	if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:tag:)]) {
-		float percent = 0.0;
-		NSUInteger bytesRead = 0;
+	if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:total:forTag:)]) {
+		NSUInteger bytesRead = 0, bytesTotal = 0;
+		float percent = [packet currentProgressWithBytesDone:&bytesRead bytesTotal:&bytesTotal];
 		
-		[packet progress:&percent done:&bytesRead total:NULL];
-		
-		[self.delegate socket:self didReadPartialDataOfLength:bytesRead tag:packet.tag];
+		[self.delegate socket:self didReadPartialDataOfLength:bytesRead total:bytesTotal forTag:packet.tag];
 	}
 	
 	if (packetComplete) {
@@ -648,7 +640,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 }
 
-#pragma mark --
+#pragma mark -
 
 - (void)_enqueueWritePacket:(id)packet {
 	[writeQueue addObject:packet];
@@ -685,17 +677,15 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	BOOL packetComplete = [packet performWrite:writeStream error:&error];
 	
 	if (error != nil) {
-		if ([self.delegate respondsToSelector:@selector(socket:didReceiveError:)])
-			[self.delegate socket:self didReceiveError:error];
+		if ([self.delegate respondsToSelector:@selector(layer:didReceiveError:)])
+			[self.delegate layer:self didReceiveError:error];
 	}
 	
-	if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:total:tag:)]) {
-		float percent = 0.0;
+	if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:total:forTag:)]) {
 		NSUInteger bytesWritten = 0, totalBytes = 0;
+		float percent =	[packet currentProgressWithBytesDone:&bytesWritten bytesTotal:&totalBytes];
 		
-		[packet progress:&percent done:&bytesWritten total:&totalBytes];
-		
-		[self.delegate socket:self didWritePartialDataOfLength:bytesWritten total:totalBytes tag:packet.tag];
+		[self.delegate socket:self didWritePartialDataOfLength:bytesWritten total:totalBytes forTag:packet.tag];
 	}
 	
 	if (packetComplete) {

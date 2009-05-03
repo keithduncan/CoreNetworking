@@ -49,10 +49,11 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 	return description;	
 }
 
-- (void)progress:(float *)fraction done:(NSUInteger *)bytesDone total:(NSUInteger *)bytesTotal {
-	if (fraction != NULL) *fraction = 0.0;
+- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {
 	if (bytesDone != NULL) *bytesDone = 0;
 	if (bytesTotal != NULL) *bytesTotal = 0;
+	
+	return 0.0;
 }
 
 - (void)_timeout:(NSTimer *)sender {

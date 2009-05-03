@@ -28,13 +28,14 @@
 	[super dealloc];
 }
 
-- (void)progress:(float *)fraction done:(NSUInteger *)bytesDone total:(NSUInteger *)bytesTotal {
+- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {
 	CFIndex done = _bytesWritten;
 	CFIndex total = [self.buffer length];
 	
-	if (fraction != NULL) *fraction = (float)done/(float)total;
 	if (bytesDone != NULL) *bytesDone = done;
 	if (bytesTotal != NULL) *bytesTotal = total;
+	
+	return ((float)done/(float)total);
 }
 
 - (BOOL)performWrite:(CFWriteStreamRef)writeStream error:(NSError **)errorRef {

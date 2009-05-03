@@ -58,7 +58,7 @@ extern NSString *const AFPacketTimeoutNotificationName;
 	@result		Vaules in the range [0.0, 1.0], this method returns 0.0 by default
 	@param		|fraction| is required, calling with a NULL argument will raise an exception
  */
-- (void)progress:(float *)fraction done:(NSUInteger *)bytesDone total:(NSUInteger *)bytesTotal;
+- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal;
 
 /*!
 	@method

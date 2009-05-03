@@ -117,13 +117,13 @@ typedef struct AFSocketSignature AFSocketSignature;
 	@method
 	@abstract	all parameters are optional, allowing you to extract only the values you require
  */
-- (void)currentReadProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total forTag:(NSUInteger *)tag;
+- (float)currentReadProgressWithBytesDone:(NSUInteger *)done bytesTotal:(NSUInteger *)total forTag:(NSUInteger *)tag;
 
 /*!
 	@method
 	@abstract	all parameters are optional, allowing you to extract only the values you require	
  */
-- (void)currentWriteProgress:(float *)fraction bytesDone:(NSUInteger *)done total:(NSUInteger *)total forTag:(NSUInteger *)tag;
+- (float)currentWriteProgressWithBytesDone:(NSUInteger *)done bytesTotal:(NSUInteger *)total forTag:(NSUInteger *)tag;
 
 @end
 
@@ -146,13 +146,14 @@ typedef struct AFSocketSignature AFSocketSignature;
 /*!
 	@method
 	@abstract	instead of calling the <tt>-currentReadProgress:...</tt> on a timer, you can (optionally) implement this delegate method to be notified of read progress
+	@param		|total| will be NSUIntegerMax if the packet terminator is a data pattern.
  */
-- (void)socket:(AFSocketConnection *)socket didReadPartialDataOfLength:(NSUInteger)partialLength tag:(NSInteger)tag;
+- (void)socket:(AFSocketConnection *)socket didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
 
 /*!
 	@method
 	@abstract	instead of calling the <tt>-currentWriteProgress:...</tt> on a timer, you can (optionally) implement this delegate method to be notified of write progress
  */
-- (void)socket:(AFSocketConnection *)socket didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength tag:(NSInteger)tag;
+- (void)socket:(AFSocketConnection *)socket didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
 
 @end
