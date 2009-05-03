@@ -27,21 +27,21 @@
 @protocol AFNetworkLayer <NSObject>
 
 /*!
+	@property
+ */
+@property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
+
+/*!
 	@method
 	@abstract	Designated Initialiser, with encapsulation in mind
 	@discussion	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound communication will probably have a more specific initialiser
  */
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer delegate:(id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate>)delegate;
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer;
 
 /*!
 	@property
  */
 @property (readonly, retain) id <AFNetworkLayer> lowerLayer;
-
-/*!
-	@property
- */
-@property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
 
  @optional
 

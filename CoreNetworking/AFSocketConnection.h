@@ -48,7 +48,8 @@ typedef struct AFSocketSignature AFSocketSignature;
 */
 @interface AFSocketConnection : NSObject <AFConnectionLayer> {
 	id <AFNetworkLayer> lowerLayer;
-	id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate> _delegate, _proxy;
+	
+	id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate> _delegate;
 	
 	NSUInteger _connectionFlags;
 	NSUInteger _streamFlags;
@@ -78,7 +79,7 @@ typedef struct AFSocketSignature AFSocketSignature;
 /*!
 	@method
  */
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer delegate:(id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate;
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer;
 
 /*
  * Outbound Initialisers
@@ -102,15 +103,15 @@ typedef struct AFSocketSignature AFSocketSignature;
 
 /*!
 	@property
+ */
+@property (assign) id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate> delegate;
+
+/*!
+	@property
 	@abstract	Depending on how the object was instantiated it may be a <tt>CFNetServiceRef</tt> or a <tt>CFHostRef</tt>
 				If this is an inbound connection, it will always be a <tt>CFHostRef</tt>
  */
 @property (readonly) CFTypeRef peer;
-
-/*!
-	@property
- */
-@property (assign) id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate> delegate;
 
 /*!
 	@method

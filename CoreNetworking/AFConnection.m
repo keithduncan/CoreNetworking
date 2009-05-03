@@ -8,34 +8,31 @@
 
 #import "AFConnection.h"
 
+#import <objc/runtime.h>
+
 #import "AmberFoundation/AFPriorityProxy.h"
 
 @interface AFConnection ()
-@property (readwrite, retain) id <AFNetworkLayer> lowerLayer;
+@property (readwrite, retain) id <AFConnectionLayer> lowerLayer;
 @end
 
 @implementation AFConnection
 
-@synthesize peerEndpoint=_peerEndpoint;
 @synthesize delegate=_delegate;
 @synthesize lowerLayer=_lowerLayer;
 
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)lowerLayer delegate:(id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate>)delegate {
+- (id)initWithLowerLayer:(id <AFConnectionLayer>)lowerLayer {
 	self = [self init];
+	if (self == nil) return nil;
 	
-	_delegate = delegate;
-	
-	_lowerLayer = [lowerLayer retain];
-	_lowerLayer.delegate = (id)self;
+	self.lowerLayer = lowerLayer;
+	self.lowerLayer.delegate = (id)self;
 	
 	return self;
 }
 
 - (void)dealloc {
-	[_lowerLayer release];
-	[_proxy release];
-	
-	[_peerEndpoint release];
+	self.lowerLayer = nil;
 	
 	[super dealloc];
 }
@@ -43,14 +40,17 @@
 - (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
 	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
 	
-	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
-	[proxy insertTarget:_delegate atPriority:0];
+	id delegate = nil;
+	object_getInstanceVariable(self, "_delegate", (void **)&delegate);
+	
+	if ([delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)delegate delegateProxy:proxy];
+	[proxy insertTarget:delegate atPriority:0];
 	
 	return proxy;
 }
 
 - (id <AFConnectionLayerControlDelegate, AFConnectionLayerDataDelegate>)delegate {
-	return [self delegateProxy:nil];
+	return (id <AFConnectionLayerControlDelegate, AFConnectionLayerDataDelegate>)[self delegateProxy:nil];
 }
 
 - (id)forwardingTargetForSelector:(SEL)selector {

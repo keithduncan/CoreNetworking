@@ -10,10 +10,15 @@
 
 #import <sys/socket.h>
 #import <netinet/in.h>
+#import <objc/runtime.h>
 
 #import "AmberFoundation/AFPriorityProxy.h"
 
 #import "AFNetworkFunctions.h"
+
+@interface AFSocket ()
+
+@end
 
 @interface AFSocket (Private)
 - (void)_close;
@@ -55,8 +60,9 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	[pool drain];
 }
 
-- (id)initWithLowerLayer:(id)layer delegate:(id)delegate {
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer {
 	self = [self init];
+	if (self == nil) return nil;
 	
 	CFSocketRef socket = (CFSocketRef)layer;
 	
@@ -66,13 +72,12 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	
 	_socket = CFSocketCreateWithNative(kCFAllocatorDefault, CFSocketGetNative(socket), 0, AFSocketCallback, &context);
 	
-	_delegate = delegate;
-	
 	return self;
 }
 
 - (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options delegate:(id <AFSocketControlDelegate, AFSocketHostDelegate>)delegate {
 	self = [self init];
+	if (self == nil) return nil;
 	
 	_signature = (CFSocketSignature *)malloc(sizeof(CFSocketSignature));
 	memcpy(_signature, signature, sizeof(CFSocketSignature));
@@ -100,7 +105,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	}
 #endif
 	
-	_delegate = delegate;
+	self.delegate = delegate;
 	
 	return self;
 }
@@ -119,8 +124,11 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 - (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
 	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
 	
-	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
-	[proxy insertTarget:_delegate atPriority:0];
+	id delegate = nil;
+	object_getInstanceVariable(self, "_delegate", &delegate);
+	
+	if ([delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)delegate delegateProxy:proxy];
+	[proxy insertTarget:delegate atPriority:0];
 	
 	return proxy;
 }
@@ -192,7 +200,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 
 - (CFHostRef)peer {
 	CFDataRef addr = CFSocketCopyAddress(_socket);
-	CFHostRef peer = [(id)CFMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, addr)) autorelease];
+	CFHostRef peer = (CFHostRef)[(id)CFMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, addr)) autorelease];
 	CFRelease(addr);
 	
 	return peer;

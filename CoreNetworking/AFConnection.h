@@ -18,25 +18,30 @@
 @interface AFConnection : NSObject <AFConnectionLayer> {
  @private
 	id <AFConnectionLayer> _lowerLayer;
-	id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> _delegate, _proxy;
 	
-	NSURL *_peerEndpoint;
+	id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> _delegate;
 }
+
+/*
+ *	Inbound Connections
+ */
 
 /*!
 	@method
-	@abstract	This assigns the |lowerLayer| delegate to self
+	@abstract	This is used for inbound connections.
+	@discussion	This assigns the |lowerLayer| delegate to self.
+				The delegate must be provided at this stage because the peer has already connected to us.
  */
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)lowerLayer delegate:(id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate>)delegate;
+- (id)initWithLowerLayer:(id <AFConnectionLayer>)lowerLayer;
+
+/*!
+	@property
+ */
+@property (readonly, retain) id <AFConnectionLayer> lowerLayer;
 
 /*!
 	@property
  */
 @property (assign) id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> delegate;
-
-/*!
-	@property
- */
-@property (copy) NSURL *peerEndpoint;
 
 @end

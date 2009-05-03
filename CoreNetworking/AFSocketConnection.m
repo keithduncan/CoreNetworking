@@ -13,6 +13,7 @@
 #import <sys/socket.h>
 #import <arpa/inet.h>
 #import <netdb.h>
+#import <objc/runtime.h>
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
@@ -87,9 +88,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 @synthesize connectionFlags=_connectionFlags, streamFlags=_streamFlags;
 @synthesize currentReadPacket=_currentReadPacket, currentWritePacket=_currentWritePacket;
 
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer delegate:(id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate>)delegate {
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer {
 	self = [self init];
-	
+	if (self == nil) return nil;
+
 	lowerLayer = [layer retain];
 	
 	CFSocketRef socket = ((CFSocketRef)[(AFSocket *)layer lowerLayer]);
@@ -106,8 +108,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	CFStreamCreatePairWithSocket(kCFAllocatorDefault, sock, &readStream, &writeStream);
 	
 	[self _configureStreams];
-	
-	_delegate = delegate;
 	
 	return self;
 }
@@ -131,11 +131,14 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (id <AFConnectionLayer>)initWithSignature:(const AFSocketSignature *)signature {
 	self = [self init];
+	if (self == nil) return nil;
+	
+	memcpy(&_peer._hostDestination, signature, sizeof(AFSocketSignature));
 	
 	CFHostRef *host = &_peer._hostDestination.host;
 	
 	*host = (CFHostRef)CFRetain(signature->host);
-	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, signature->transport.port, &readStream, &writeStream);
+	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, _peer._hostDestination.transport.port, &readStream, &writeStream);
 	
 	[self _configureStreams];
 	
@@ -144,6 +147,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (id)init {
 	self = [super init];
+	if (self == nil) return nil;
 	
 	readQueue = [[NSMutableArray alloc] init];	
 	writeQueue = [[NSMutableArray alloc] init];
@@ -151,9 +155,18 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	return self;
 }
 
+- (void)finalize {
+	[NSObject cancelPreviousPerformRequestsWithTarget:self];
+	
+#if __OBJC_GC__
+	[super finalize];
+#endif
+}
+
 - (void)dealloc {
+	[self finalize];
+	
 	[lowerLayer release];
-	[_proxy release];
 	
 	// Note: this will also deallocate the netService if present
 	CFHostRef *host = &_peer._hostDestination.host; // Note: this is simply shorter to re-address, there is no fancyness, move along
@@ -177,7 +190,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[_currentWritePacket release];
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget:self.delegate selector:@selector(layerDidClose:) object:self];
-	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	
 	[super dealloc];
 }
@@ -185,8 +197,11 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 - (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
 	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
 	
-	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
-	[proxy insertTarget:_delegate atPriority:0];
+	id delegate = nil;
+	object_getInstanceVariable(self, "_delegate", (void **)&delegate);
+	
+	if ([delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)delegate delegateProxy:proxy];
+	[proxy insertTarget:delegate atPriority:0];
 	
 	return proxy;
 }
@@ -496,8 +511,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if ([self.delegate respondsToSelector:@selector(layer:didConnectToPeer:)])
 		[self.delegate layer:self didConnectToPeer:(id)_peer._hostDestination.host];
 	
-	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
+	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 }
 
 - (void)_streamDidStartTLS {
@@ -505,6 +520,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	if ([self.delegate respondsToSelector:@selector(layerDidStartTLS:)])
 		[self.delegate layerDidStartTLS:self];
+	
+	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
+	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
 }
 
 @end
@@ -558,6 +576,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (void)_dequeueReadPacket {
 	if (readStream == NULL) return;
+	if (![self isOpen]) return;
+	
+	if (((self.streamFlags & _kReadStreamWillStartTLS) == _kReadStreamWillStartTLS) && ((self.streamFlags & _kReadStreamDidStartTLS) != _kReadStreamDidStartTLS)) return;
+	
 	AFPacketRead *packet = [self currentReadPacket];
 	if (packet != nil) return;
 	
@@ -602,8 +624,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		packet = [[packet retain] autorelease];
 		[self _endCurrentReadPacket];
 		
-#warning for packets with a terminator we need to cache the data after the terminator for future reads
-		
 		if ([self.delegate respondsToSelector:@selector(layer:didRead:forTag:)])
 			[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
 	}
@@ -628,6 +648,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (void)_dequeueWritePacket {
 	if (writeStream == NULL) return;
+	if (![self isOpen]) return;
+	
+	if (((self.streamFlags & _kWriteStreamWillStartTLS) == _kWriteStreamWillStartTLS) && ((self.streamFlags & _kWriteStreamDidStartTLS) != _kWriteStreamDidStartTLS)) return;
+	
 	AFPacketWrite *packet = [self currentWritePacket];
 	if (packet != nil) return;
 	

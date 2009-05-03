@@ -21,30 +21,26 @@
  */
 @interface AFSocket : NSObject <AFConnectionLayer> {
  @private
-	id <AFSocketControlDelegate, AFSocketHostDelegate> _delegate;
-	
-	__strong CFSocketSignature *_signature;
-	
-	NSUInteger _socketFlags;
 	__strong CFSocketRef _socket;
-	
+	__strong CFSocketSignature *_signature;
 	__strong CFRunLoopSourceRef _socketRunLoopSource;
+	
+	id <AFSocketControlDelegate, AFSocketHostDelegate> _delegate;
 }
 
 /*
- *	Outbound Initialiser
- *		
+ *	Inbound Initialiser
  */
 
 /*!
 	@method
 	@param		|lowerLayer| is expected to be a CFSocketRef that the native socket can be extracted from.
  */
-- (id)initWithLowerLayer:(id)layer delegate:(id)delegate;
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer;
 
 /*
- *	Inbound Initialiser
- *		This is not goverened by a protocol, luckily the AFConnectionServer knows how to create this class specifically.
+ *	Outbound Initialiser
+ *		This is not governed by a protocol, luckily the AFConnectionServer knows how to create this class specifically.
  */
 
 /*!
@@ -74,6 +70,7 @@
 @property (readonly) CFHostRef peer;
 
 @end
+
 
 @protocol AFSocketHostDelegate <AFConnectionLayerHostDelegate>
 
