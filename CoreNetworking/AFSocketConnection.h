@@ -14,16 +14,6 @@
 @protocol AFSocketConnectionDataDelegate;
 @protocol AFSocketConnectionControlDelegate;
 
-enum {
-	AFSocketConnectionNoError				= 0,
-	AFSocketConnectionReachabilityError		= 1,
-	AFSocketConnectionAbortError			= 2,
-	AFSocketConnectionReadTimeoutError		= 3,
-	AFSocketConnectionWriteTimeoutError		= 4,
-	AFSocketConnectionTLSError				= 5,
-};
-typedef NSUInteger AFSocketConnectionError;
-
 /*!
 	@struct 
 	@abstract   Based on CFSocketSignature allowing for higher-level functionality

@@ -118,6 +118,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (id <AFConnectionLayer>)initWithNetService:(id <AFNetServiceCommon>)netService {
 	self = [self init];
+	if (self == nil) return nil;
 	
 	CFNetServiceRef *service = &_peer._netServiceDestination.netService;
 	
@@ -282,7 +283,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 								  nil];
 		
 		NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionTLSError userInfo:userInfo];
-		[self.delegate layer:self didNotStartTLS:error];
+		
+		if ([self.delegate respondsToSelector:@selector(layer:didNotStartTLS:)])
+			[self.delegate layer:self didNotStartTLS:error];
 	}
 }
 
@@ -325,8 +328,8 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 									  nil];
 			
 			NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionReachabilityError userInfo:userInfo];
-			[self.delegate layer:self didNotOpen:error];
 			
+			[self.delegate layer:self didNotOpen:error];
 			return;
 		}
 	}
@@ -337,7 +340,6 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	if (result) return;
 	
 	[self.delegate layer:self didNotOpen:nil];
-	
 	[self close];
 }
 
@@ -569,7 +571,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 - (void)_streamDidStartTLS {
 	//if ((self.streamFlags & _kReadStreamDidStartTLS) != _kReadStreamDidStartTLS || (self.streamFlags & _kWriteStreamDidStartTLS) != _kWriteStreamDidStartTLS) return;
 	
-	[self.delegate layerDidStartTLS:self];
+	if ([self.delegate respondsToSelector:@selector(layerDidStartTLS:)])
+		[self.delegate layerDidStartTLS:self];
 	
 	[self performSelector:@selector(_dequeueWritePacket) withObject:nil afterDelay:0.0];
 	[self performSelector:@selector(_dequeueReadPacket) withObject:nil afterDelay:0.0];
@@ -663,12 +666,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		[self.delegate socket:self didReadPartialDataOfLength:bytesRead total:bytesTotal forTag:packet.tag];
 	}
 	
-	if (packetComplete) {
-		packet = [[packet retain] autorelease];
-		[self _endCurrentReadPacket];
-		
-		[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
-	}
+	if (!packetComplete) return;
+	
+	[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
+	[self _endCurrentReadPacket];
 }
 
 - (void)_endCurrentReadPacket {
@@ -729,12 +730,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		[self.delegate socket:self didWritePartialDataOfLength:bytesWritten total:totalBytes forTag:packet.tag];
 	}
 	
-	if (packetComplete) {
-		packet = [[packet retain] autorelease];
-		[self _endCurrentWritePacket];
+	if (!packetComplete) return;
 		
-		[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
-	}
+	[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
+	[self _endCurrentWritePacket];
 }
 
 - (void)_endCurrentWritePacket {

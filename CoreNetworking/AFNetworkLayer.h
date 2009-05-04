@@ -125,16 +125,6 @@
 
 /*!
 	@method
- */
-- (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
-
-/*!
-	@method
- */
-- (void)layer:(id <AFNetworkLayer>)layer didNotStartTLS:(NSError *)error;
-
-/*!
-	@method
 	@abstract	This is to be called for connected-stream errors only.
  */
 - (void)layer:(id <AFNetworkLayer>)layer didReceiveError:(NSError *)error;
@@ -143,6 +133,18 @@
 	@method
  */
 - (void)layerDidClose:(id <AFNetworkLayer>)layer;
+
+ @optional
+
+/*!
+	@method
+ */
+- (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
+
+/*!
+	@method
+ */
+- (void)layer:(id <AFNetworkLayer>)layer didNotStartTLS:(NSError *)error;
 
 @end
 

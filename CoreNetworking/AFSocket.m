@@ -15,6 +15,7 @@
 #import "AmberFoundation/AFPriorityProxy.h"
 
 #import "AFNetworkFunctions.h"
+#import "AFNetworkConstants.h"
 
 @interface AFSocket ()
 
@@ -145,14 +146,20 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	}
 	
 	if (socketError == kCFSocketSuccess) {
-		if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])
-			[self.delegate layerDidOpen:self];
-		
+		[self.delegate layerDidOpen:self];
 		return;
 	}
 	
-	if ([self.delegate respondsToSelector:@selector(layerDidNotOpen:)])
-		[self.delegate layerDidNotOpen:self];
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+							  NSLocalizedStringWithDefaultValue(@"AFSocketError", @"AFSocket", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Couldn't open socket.", nil), NSLocalizedDescriptionKey,
+							  nil];
+	
+	AFNetworkingErrorCode errorCode = AFSocketErrorUnknown;
+	if (socketError == kCFSocketTimeout) errorCode = AFSocketErrorTimeout;
+	
+	NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:errorCode userInfo:userInfo];
+	
+	[self.delegate layer:self didNotOpen:error];
 }
 
 - (BOOL)isOpen {
