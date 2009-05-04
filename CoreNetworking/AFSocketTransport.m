@@ -8,7 +8,7 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "AFSocketConnection.h"
+#import "AFSocketTransport.h"
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
@@ -49,20 +49,20 @@ enum {
 };
 typedef NSUInteger AFSocketConnectionStreamFlags;
 
-@interface AFSocketConnection ()
+@interface AFSocketTransport ()
 @property (assign) NSUInteger connectionFlags;
 @property (assign) NSUInteger streamFlags;
 @property (retain) AFPacketRead *currentReadPacket;
 @property (retain) AFPacketWrite *currentWritePacket;
 @end
 
-@interface AFSocketConnection (Streams)
+@interface AFSocketTransport (Streams)
 - (BOOL)_configureStreams;
 - (void)_streamDidOpen;
 - (void)_streamDidStartTLS;
 @end
 
-@interface AFSocketConnection (PacketQueue)
+@interface AFSocketTransport (PacketQueue)
 - (void)_emptyQueues;
 
 - (void)_enqueueReadPacket:(id)packet;
@@ -81,18 +81,25 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 #pragma mark -
 
-@implementation AFSocketConnection
+@implementation AFSocketTransport
 
-@synthesize lowerLayer;
-@synthesize delegate=_delegate;
+@dynamic lowerLayer, delegate;
 @synthesize connectionFlags=_connectionFlags, streamFlags=_streamFlags;
 @synthesize currentReadPacket=_currentReadPacket, currentWritePacket=_currentWritePacket;
 
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer {
-	self = [self init];
+- (id)init {
+	self = [super init];
 	if (self == nil) return nil;
+	
+	readQueue = [[NSMutableArray alloc] init];	
+	writeQueue = [[NSMutableArray alloc] init];
+	
+	return self;
+}
 
-	lowerLayer = [layer retain];
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer {
+	self = [super initWithLowerLayer:layer];
+	if (self == nil) return nil;
 	
 	CFSocketRef socket = ((CFSocketRef)[(AFSocket *)layer lowerLayer]);
 	CFSocketSetSocketFlags(socket, (CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate));
@@ -130,11 +137,11 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	return self;
 }
 
-- (id <AFConnectionLayer>)initWithSignature:(const AFSocketSignature *)signature {
+- (id <AFConnectionLayer>)initWithSignature:(const AFSocketPeerSignature *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
-	memcpy(&_peer._hostDestination, signature, sizeof(AFSocketSignature));
+	memcpy(&_peer._hostDestination, signature, sizeof(AFSocketPeerSignature));
 	
 	CFHostRef *host = &_peer._hostDestination.host;
 	
@@ -142,16 +149,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, _peer._hostDestination.transport.port, &readStream, &writeStream);
 	
 	[self _configureStreams];
-	
-	return self;
-}
-
-- (id)init {
-	self = [super init];
-	if (self == nil) return nil;
-	
-	readQueue = [[NSMutableArray alloc] init];	
-	writeQueue = [[NSMutableArray alloc] init];
 	
 	return self;
 }
@@ -167,8 +164,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (void)dealloc {
 	[self finalize];
-	
-	[lowerLayer release];
 	
 	// Note: this will also deallocate the netService if present
 	CFHostRef *host = &_peer._hostDestination.host; // Note: this is simply shorter to re-address, there is no fancyness, move along
@@ -414,7 +409,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	AFSocketConnection *self = [[(AFSocketConnection *)pInfo retain] autorelease];
+	AFSocketTransport *self = [[(AFSocketTransport *)pInfo retain] autorelease];
 	NSCParameterAssert(stream == self->readStream);
 	
 	switch (type) {
@@ -482,7 +477,7 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	AFSocketConnection *self = [[(AFSocketConnection *)pInfo retain] autorelease];
+	AFSocketTransport *self = [[(AFSocketTransport *)pInfo retain] autorelease];
 	NSCParameterAssert(stream == self->writeStream);
 	
 	switch (type) {
@@ -533,7 +528,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 #pragma mark -
 
-@implementation AFSocketConnection (Streams)
+@implementation AFSocketTransport (Streams)
 
 - (BOOL)_configureStreams {
 	CFStreamClientContext context;
@@ -578,7 +573,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 #pragma mark -
 
-@implementation AFSocketConnection (PacketQueue)
+@implementation AFSocketTransport (PacketQueue)
 
 - (void)_emptyQueues {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_dequeueWritePacket) object:nil];

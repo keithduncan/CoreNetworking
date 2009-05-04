@@ -27,7 +27,7 @@
 
 @implementation AFSocket
 
-@synthesize delegate=_delegate;
+@dynamic lowerLayer, delegate;
 
 static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
@@ -62,7 +62,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 }
 
 - (id)initWithLowerLayer:(id <AFNetworkLayer>)layer {
-	self = [self init];
+	self = [super initWithLowerLayer:layer];
 	if (self == nil) return nil;
 	
 	CFSocketRef socket = (CFSocketRef)layer;
@@ -120,22 +120,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	}
 	
 	[super dealloc];
-}
-
-- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
-	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
-	
-	id delegate = nil;
-	object_getInstanceVariable(self, "_delegate", (void **)&delegate);
-	
-	if ([delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)delegate delegateProxy:proxy];
-	[proxy insertTarget:delegate atPriority:0];
-	
-	return proxy;
-}
-
-- (id <AFSocketControlDelegate, AFSocketHostDelegate>)delegate {
-	return (id)[self delegateProxy:nil];
 }
 
 - (void)open {
@@ -197,10 +181,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 
 - (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
 	CFRunLoopRemoveSource(loop, _socketRunLoopSource, mode);
-}
-
-- (id)lowerLayer {
-	return (id)_socket;
 }
 
 - (CFHostRef)peer {

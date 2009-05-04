@@ -13,7 +13,7 @@
 #import <objc/runtime.h>
 
 #import "AFSocket.h"
-#import "AFSocketConnection.h"
+#import "AFSocketTransport.h"
 
 #import	"AFNetworkTypes.h"
 #import "AFNetworkFunctions.h"
@@ -33,10 +33,10 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 @implementation AFConnectionServer
 
+@synthesize lowerLayer=_lowerLayer;
 @synthesize delegate=_delegate;
 @synthesize clientClass=_clientClass;
-@synthesize lowerLayer=_lowerLayer;
-@synthesize clients, hosts;
+@synthesize hosts, clients;
 
 + (NSSet *)localhostSocketAddresses {
 	CFHostRef localhost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost");
@@ -79,12 +79,12 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	return networkAddresses;
 }
 
-- (id)init {
-	return [self initWithLowerLayer:nil encapsulationClass:[AFSocketConnection class]];
++ (id)server {
+	return [[[self alloc] initWithLowerLayer:nil encapsulationClass:[AFSocketTransport class]] autorelease];
 }
 
 - (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass {
-	self = [super init]; // Note to self, this is intentionally sent to super
+	self = [self init];
 	if (self == nil) return nil;
 	
 	hosts = [[AFConnectionPool alloc] init];
@@ -146,12 +146,12 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
 }
 
-- (void)openSockets:(const AFSocketTransport *)signature addresses:(NSSet *)sockAddrs {
+- (void)openSockets:(const AFSocketTransportSignature *)signature addresses:(NSSet *)sockAddrs {
 	SInt32 port = signature->port;
 	[self openSockets:&port withType:signature->type addresses:sockAddrs];
 }
 
-- (void)openSockets:(SInt32 *)port withType:(const AFSocketType *)type addresses:(NSSet *)sockAddrs {
+- (void)openSockets:(SInt32 *)port withType:(const AFSocketTransportType *)type addresses:(NSSet *)sockAddrs {
 	AFConnectionServer *lowestLayer = self;
 	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
 	self = lowestLayer;

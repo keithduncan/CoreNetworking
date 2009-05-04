@@ -6,9 +6,8 @@
 //  Copyright 2009 thirty-three. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "CoreNetworking/AFNetworkObject.h"
 
-#import "CoreNetworking/AFNetworkLayer.h"
 #import "CoreNetworking/AFConnectionLayer.h"
 
 @protocol AFSocketHostDelegate;
@@ -19,13 +18,11 @@
 	@abstract	An simple object-oriented wrapper around CFSocket
 	@discussion	The current purpose of this class is to spawn more sockets upon revieving inbound connections
  */
-@interface AFSocket : NSObject <AFConnectionLayer> {
+@interface AFSocket : AFNetworkObject <AFConnectionLayer> {
  @private
 	__strong CFSocketRef _socket;
 	__strong CFSocketSignature *_signature;
 	__strong CFRunLoopSourceRef _socketRunLoopSource;
-	
-	id <AFSocketControlDelegate, AFSocketHostDelegate> _delegate;
 }
 
 /*
@@ -52,30 +49,28 @@
 - (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options delegate:(id <AFConnectionLayerHostDelegate, AFConnectionLayerControlDelegate>)delegate;
 
 /*!
-	@method
-	@abstract	This returns a <tt>CFSocketRef</tt> despite the weak type to avoid compiler errors.
-	@discussion	You may want to use this to extract the socket address for display purposes.
+	@property
+	@abstract	This returns the <tt>CFSocket</tt> peer address wrapped in a CFHostRef
  */
-- (id)lowerLayer;
+@property (readonly) CFHostRef peer;
 
 /*!
 	@property
  */
 @property (assign) id <AFSocketHostDelegate, AFSocketControlDelegate> delegate;
 
-/*!
-	@property
-	@abstract	This returns the <tt>CFSocket</tt> peer address wrapped in a CFHostRef
- */
-@property (readonly) CFHostRef peer;
-
 @end
 
-
+/*!
+	@protocol
+ */
 @protocol AFSocketHostDelegate <AFConnectionLayerHostDelegate>
 
 @end
 
+/*!
+	@protocol
+ */
 @protocol AFSocketControlDelegate <AFConnectionLayerControlDelegate>
 
 @end

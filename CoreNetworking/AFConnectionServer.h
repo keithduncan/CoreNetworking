@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CoreNetworking/AFNetworkTypes.h"
+
 #import "CoreNetworking/AFSocket.h"
 #import "CoreNetworking/AFConnectionLayer.h"
-
-#import "CoreNetworking/AFNetworkTypes.h"
 
 @class AFConnectionPool;
 @class AFConnectionServer;
@@ -56,10 +56,11 @@
 
 /*!
 	@method
-	@abstract	Override Initialiser
-	@discussion	A server should know how to create its own lower-layer, do so in this method
+	@abstract	Override Constructor
+	@discussion	This should call the designated initialiser with an appropriate |lowerLayer| and encapsulation class.
+				By default this creates a server with no |lowerLayer| and <tt>AFSocketTransport</tt> as the encapsulation class.
  */
-- (id)init;
++ (id)server;
 
 /*!
 	@method
@@ -81,10 +82,10 @@
 
 /*!
 	@method
-	@abstract	Shorthand for <tt>-openSockets:withType:addresses:</tt> where you already have an <tt>AFSocketTransportLayer</tt> preconfigured.
+	@abstract	Shorthand for <tt>-openSockets:withType:addresses:</tt> where you already have an <tt>AFSocketTransportSignature</tt> preconfigured.
 	@discussion	See <tt>-openSockets:withType:addresses:</tt>
  */
-- (void)openSockets:(const AFSocketTransport *)signature addresses:(NSSet *)sockAddrs;
+- (void)openSockets:(const AFSocketTransportSignature *)signature addresses:(NSSet *)sockAddrs;
 
 /*!
 	@method
@@ -94,7 +95,7 @@
 				on the lowest layer of the stack.
 	@param		|port| is passed by reference so that if you pass 0 you get back the actual port
  */
-- (void)openSockets:(SInt32 *)port withType:(const AFSocketType *)type addresses:(NSSet *)sockAddrs;
+- (void)openSockets:(SInt32 *)port withType:(const AFSocketTransportType *)type addresses:(NSSet *)sockAddrs;
 
 /*!
 	@property

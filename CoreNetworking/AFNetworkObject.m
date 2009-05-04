@@ -1,0 +1,92 @@
+//
+//  AFNetworkObject.m
+//  Amber
+//
+//  Created by Keith Duncan on 04/05/2009.
+//  Copyright 2009 thirty-three. All rights reserved.
+//
+
+#import "AFNetworkObject.h"
+
+#import <objc/runtime.h>
+
+#import "AmberFoundation/AFPriorityProxy.h"
+
+@interface AFNetworkObject ()
+@property (readwrite, retain) id <AFNetworkLayer> lowerLayer;
+@property (readwrite, retain) NSMutableDictionary *transportInfo;
+@end
+
+@implementation AFNetworkObject
+
+@synthesize lowerLayer=_lowerLayer;
+@synthesize delegate=_delegate;
+@synthesize transportInfo=_transportInfo;
+
++ (Class)lowerLayerClass {
+	[self doesNotRecognizeSelector:_cmd];
+	return Nil;
+}
+
+- (id)init {
+	self = [super init];
+	if (self == nil) return nil;
+	
+	self.transportInfo = [NSMutableDictionary dictionary];
+	
+	return self;
+}
+
+- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer {
+	self = [self init];
+	if (self == nil) return nil;
+	
+	self.lowerLayer = layer;
+	self.lowerLayer.delegate = (id)self;
+	
+	return self;
+}
+
+- (id <AFNetworkLayer>)initWithSignature:(const AFSocketPeerSignature *)signature {	
+	id <AFNetworkLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithSignature:signature] autorelease];
+	return [self initWithLowerLayer:lowerLayer];
+}
+
+- (id <AFNetworkLayer>)initWithNetService:(id <AFNetServiceCommon>)netService {
+	id <AFNetworkLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithNetService:netService] autorelease];
+	return [self initWithLowerLayer:lowerLayer];
+}
+
+- (void)dealloc {
+	self.lowerLayer = nil;
+	self.transportInfo = nil;
+	
+	[super dealloc];
+}
+
+- (id)forwardingTargetForSelector:(SEL)selector {
+	return self.lowerLayer;
+}
+
+- (BOOL)respondsToSelector:(SEL)selector {
+	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
+}
+
+- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
+	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
+	
+	id delegate = nil;
+	object_getInstanceVariable(self, "_delegate", (void **)&delegate);
+	// Note: this intentionally doesn't use the accessor, I changed it before and left this comment here to warn me off next time.
+	
+	if ([delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)delegate delegateProxy:proxy];
+	[proxy insertTarget:delegate atPriority:0];
+	
+	return proxy;
+}
+
+- (id)delegate {
+	return [self delegateProxy:nil];
+}
+
+@end

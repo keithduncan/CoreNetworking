@@ -6,8 +6,6 @@
 //  Copyright 2009 thirty-three. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
 #import "CoreNetworking/AFNetworkLayer.h"
 
 /*
@@ -25,9 +23,17 @@
 	@abstract    An AFConnectionLayer should maintain a stateful connection between endpoints
  */
 @protocol AFConnectionLayer <AFNetworkLayer>
+
+/*!
+	@property
+ */
 @property (assign) id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> delegate;
+
 @end
 
+/*!
+	@protocol
+ */
 @protocol AFConnectionLayerHostDelegate <AFNetworkLayerHostDelegate>
 /*!
 	@method
@@ -36,6 +42,9 @@
 - (void)layer:(id)layer didAcceptConnection:(id <AFNetworkLayer>)layer;
 @end
 
+/*!
+	@protocol
+ */
 @protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>
 
  @optional
@@ -57,6 +66,9 @@
 
 @end
 
+/*!
+	@protocol
+ */
 @protocol AFConnectionLayerDataDelegate <AFNetworkLayerDataDelegate>
 
 @end
