@@ -95,15 +95,14 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	return self;
 }
 
-- (void)dealloc {	
+- (void)dealloc {
+	[self close];
+	
 	if (_signature != NULL)
 		if (_signature->address != NULL)
 			CFRelease(_signature->address);
 	
 	free(_signature);
-	
-	CFRelease(_socket);
-	CFRelease(_socketRunLoopSource);
 	
 	[super dealloc];
 }
@@ -136,7 +135,13 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 }
 
 - (void)close {
-	[self _close];
+	if (_socket != NULL) {
+		CFSocketInvalidate(_socket);
+		_socket = NULL;
+	}
+	
+	CFRelease(_socketRunLoopSource);
+	_socketRunLoopSource = NULL;
 }
 
 - (BOOL)isClosed {
