@@ -24,8 +24,6 @@
 // Note: import this header last, allowing for any of the previous headers to import <net/if.h> see the getifaddrs man page for details
 #import <ifaddrs.h>
 
-#warning this class should also provide the ability to listen for IP-layer changes and autoreconfigure
-
 static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerHostConnectionsPropertyObservationContext";
 
 @interface AFConnectionServer () <AFConnectionLayerControlDelegate>
@@ -88,7 +86,6 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass {
 	self = [super init]; // Note to self, this is intentionally sent to super
 	if (self == nil) return nil;
-#warning take a look at the initialisation patterns in here again, see if you can't simplify/unify them
 	
 	hosts = [[AFConnectionPool alloc] init];
 	[hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];

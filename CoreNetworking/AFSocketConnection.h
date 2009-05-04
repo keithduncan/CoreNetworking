@@ -16,9 +16,11 @@
 
 enum {
 	AFSocketConnectionNoError				= 0,
-	AFSocketConnectionAbortError			= 1,
-	AFSocketConnectionReadTimeoutError	= 2,
-	AFSocketConnectionWriteTimeoutError	= 3,
+	AFSocketConnectionReachabilityError		= 1,
+	AFSocketConnectionAbortError			= 2,
+	AFSocketConnectionReadTimeoutError		= 3,
+	AFSocketConnectionWriteTimeoutError		= 4,
+	AFSocketConnectionTLSError				= 5,
 };
 typedef NSUInteger AFSocketConnectionError;
 

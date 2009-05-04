@@ -40,9 +40,8 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	[description appendString:@" "];
 	
-	float fraction = 0.0;
 	NSUInteger done = 0, total = 0;
-	[self progress:&fraction done:&done total:&total];
+	float fraction = [self currentProgressWithBytesDone:&done bytesTotal:&total];
 	
 	[description appendFormat:@"current progress %ld bytes of %ld total. %d%% done.", done, total, fraction, nil];
 	

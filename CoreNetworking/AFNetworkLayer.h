@@ -74,22 +74,23 @@
 	@method
 	@abstract	Pass a dictionary with the SSL keys specified in CFSocketStream.h
  */
-- (BOOL)startTLS:(NSDictionary *)options;
+- (void)startTLS:(NSDictionary *)options;
 
 /*!
-	@method
-	@abstract	The socket connection must be scheduled in at least one run loop to function.
+ @method
+ @abstract	The socket connection must be scheduled in at least one run loop to function.
  */
 - (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
 /*!
 	@method
-	@abstract	The socket connection must be scheduled in at least one run loop to function.
+	@abstract	The socket connection must remain scheduled in at least one run loop to function.
  */
 - (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
 /*!
 	@method
+	@param		|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length, an NSData for bit pattern, or an AFPacketRead subclass for custom behaviour.
  */
 - (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
 
@@ -120,10 +121,21 @@
 /*!
 	@method
  */
-- (void)layerDidNotOpen:(id <AFNetworkLayer>)layer;
+- (void)layer:(id <AFNetworkLayer>)layer didNotOpen:(NSError *)error;
 
 /*!
 	@method
+ */
+- (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
+
+/*!
+	@method
+ */
+- (void)layer:(id <AFNetworkLayer>)layer didNotStartTLS:(NSError *)error;
+
+/*!
+	@method
+	@abstract	This is to be called for connected-stream errors only.
  */
 - (void)layer:(id <AFNetworkLayer>)layer didReceiveError:(NSError *)error;
 
@@ -131,11 +143,6 @@
 	@method
  */
 - (void)layerDidClose:(id <AFNetworkLayer>)layer;
-
-/*!
-	@method
- */
-- (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
 
 @end
 

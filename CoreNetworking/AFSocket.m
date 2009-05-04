@@ -125,7 +125,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
 	
 	id delegate = nil;
-	object_getInstanceVariable(self, "_delegate", &delegate);
+	object_getInstanceVariable(self, "_delegate", (void **)&delegate);
 	
 	if ([delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)delegate delegateProxy:proxy];
 	[proxy insertTarget:delegate atPriority:0];
@@ -153,8 +153,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	
 	if ([self.delegate respondsToSelector:@selector(layerDidNotOpen:)])
 		[self.delegate layerDidNotOpen:self];
-	
-	return;
 }
 
 - (BOOL)isOpen {
