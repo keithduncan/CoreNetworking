@@ -25,7 +25,7 @@
 		va_end(objectList);
 	}
 	
-	return [newSet copy];
+	return newSet;
 }
 
 @end

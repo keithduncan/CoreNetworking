@@ -29,11 +29,7 @@
 	@abstract	This is a generic construct for spawning new client layers.
 	@discussion	After instantiating the server you can use one of the convenience methods to open a collection of sockets
  */
-@interface AFConnectionServer : NSObject <AFConnectionServerDelegate, AFConnectionLayerHostDelegate, AFSocketHostDelegate> {
-	AFConnectionServer *_lowerLayer;
-	
-	id <AFConnectionServerDelegate> _delegate;
-	
+@interface AFConnectionServer : AFNetworkObject <AFConnectionServerDelegate, AFConnectionLayerHostDelegate, AFSocketHostDelegate> {	
 	Class _clientClass;
 	AFConnectionPool *hosts, *clients;
 }

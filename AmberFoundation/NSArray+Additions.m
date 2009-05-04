@@ -11,11 +11,8 @@
 @implementation NSArray (AFAdditions)
 
 - (NSArray *)arrayByAddingObjectsFromSet:(NSSet *)set {
-	NSMutableArray *newArray = [[NSMutableArray arrayWithCapacity:([self count] + [set count])] retain];
-	
-	[newArray addObjectsFromArray:self];
+	NSMutableArray *newArray = [NSMutableArray arrayWithArray:self];
 	for (id object in set) [newArray addObject:object];
-	
 	return newArray;
 }
 

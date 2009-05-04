@@ -28,18 +28,15 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 @interface AFConnectionServer () <AFConnectionLayerControlDelegate>
 @property (readwrite, assign) Class clientClass;
-@property (readwrite, retain) AFConnectionServer *lowerLayer;
 @end
 
 @implementation AFConnectionServer
 
-@synthesize lowerLayer=_lowerLayer;
-@synthesize delegate=_delegate;
 @synthesize clientClass=_clientClass;
 @synthesize hosts, clients;
 
 + (NSSet *)localhostSocketAddresses {
-	CFHostRef localhost = CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost");
+	CFHostRef localhost = [NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost")) autorelease];
 	
 	CFStreamError error;
 	memset(&error, 0, sizeof(CFStreamError));
@@ -84,16 +81,13 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass {
-	self = [self init];
+	self = [self initWithLowerLayer:(id)server];
 	if (self == nil) return nil;
 	
 	hosts = [[AFConnectionPool alloc] init];
 	[hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
 	
 	clients = [[AFConnectionPool alloc] init];
-	
-	_lowerLayer = [server retain];
-	[_lowerLayer setDelegate:self];
 	
 	_clientClass = clientClass;
 	
@@ -109,8 +103,6 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 - (void)dealloc {
 	[self finalize];
-		
-	[_lowerLayer release];
 	
 	[clients release];
 	
@@ -120,30 +112,6 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[hosts release];
 	
 	[super dealloc];
-}
-
-- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
-	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
-	
-	id delegate = nil;
-	object_getInstanceVariable(self, "_delegate", (void **)&delegate);
-	
-	if ([delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)delegate delegateProxy:proxy];
-	[proxy insertTarget:delegate atPriority:0];
-	
-	return proxy;
-}
-
-- (id <AFConnectionServerDelegate>)delegate {
-	return (id)[self delegateProxy:nil];
-}
-
-- (id)forwardingTargetForSelector:(SEL)selector {
-	return self.lowerLayer;
-}
-
-- (BOOL)respondsToSelector:(SEL)selector {
-	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
 }
 
 - (void)openSockets:(const AFSocketTransportSignature *)signature addresses:(NSSet *)sockAddrs {
@@ -181,7 +149,6 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 			CFHostRef addrHost = (CFHostRef)[socket peer];
 			CFDataRef actualAddrData = CFArrayGetValueAtIndex(CFHostGetAddressing(addrHost, NULL), 0);
 			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port);
-			CFRelease(actualAddrData);
 		}
 		
 		[socket release];
@@ -209,11 +176,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	}
 	
 	id <AFConnectionLayer> newConnection = [self newApplicationLayerForNetworkLayer:newLayer];
+	
 	[self.clients addConnectionsObject:newConnection];
-	
-	if ([newConnection respondsToSelector:@selector(scheduleInRunLoop:forMode:)])
-		[newConnection scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
-	
 	[newConnection open];
 }
 

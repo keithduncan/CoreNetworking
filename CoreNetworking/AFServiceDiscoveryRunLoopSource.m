@@ -22,6 +22,7 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 	
 	DNSServiceErrorType error = kDNSServiceErr_NoError;
 	error = DNSServiceProcessResult(self->_service);
+	(void)error; // Note: keep clang happy
 }
 
 - (id)initWithService:(DNSServiceRef)service {
@@ -33,10 +34,10 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 	memset(&context, 0, sizeof(CFSocketContext));
 	context.info = self;
 	
-	_socket = CFSocketCreateWithNative(kCFAllocatorDefault, DNSServiceRefSockFD(_service), kCFSocketReadCallBack, AFServiceDiscoveryProcessResult, &context);
+	_socket = NSMakeCollectable(CFSocketCreateWithNative(kCFAllocatorDefault, DNSServiceRefSockFD(_service), kCFSocketReadCallBack, AFServiceDiscoveryProcessResult, &context));
 	CFSocketSetSocketFlags(_socket, (CFOptionFlags)0); // Note: don't close the underlying socket
 	
-	_source = CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, (CFIndex)0);
+	_source = NSMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, (CFIndex)0));
 	
 	return self;
 }

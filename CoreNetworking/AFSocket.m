@@ -82,32 +82,45 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_signature = (CFSocketSignature *)malloc(sizeof(CFSocketSignature));
-	memcpy(_signature, signature, sizeof(CFSocketSignature));
-	CFRetain(_signature->address);
+	_signature = NSAllocateCollectable(sizeof(CFSocketSignature), NSScannedOption);
+	objc_memmove_collectable(_signature, signature, sizeof(CFSocketSignature));
+	// Note: this is to keep things tickety boo under GC and otherwise
+	NSMakeCollectable(CFRetain(_signature->address));
 	
 	CFSocketContext context;
 	memset(&context, 0, sizeof(CFSocketContext));
 	context.info = self;
 	
-	_socket = CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, options, AFSocketCallback, &context);
+	_socket = NSMakeCollectable(CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, options, AFSocketCallback, &context));
+	
 	if (_socket == NULL) {
 		[self release];
 		return nil;
 	}
 	
-	_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0);
-		
+	_socketRunLoopSource = NSMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0));
+	
 	return self;
 }
 
-- (void)dealloc {
+- (void)finalize {
 	[self _close];
 	
-	if (_signature != NULL) {
+	if ([NSGarbageCollector defaultCollector] == nil) return;
+	[super finalize];
+}
+
+- (void)dealloc {
+	[self finalize];
+	
+	if (_signature != NULL)
 		if (_signature->address != NULL)
 			CFRelease(_signature->address);
-	}
+	
+	free(_signature);
+	
+	CFRelease(_socket);
+	CFRelease(_socketRunLoopSource);
 	
 	[super dealloc];
 }
@@ -192,16 +205,10 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 - (void)_close {
 	if (_socket != NULL) {
 		CFSocketInvalidate(_socket);
-		
-		CFRelease(_socket);
 		_socket = NULL;
 	}
 	
-	if (_socketRunLoopSource != NULL) {
-		// Note: invalidating the socket invalidates its source too
-		CFRelease(_socketRunLoopSource);
-		_socketRunLoopSource = NULL;
-	}
+	_socketRunLoopSource = NULL;
 }
 
 @end

@@ -18,16 +18,33 @@
 @interface AFServiceDiscoveryRunLoopSource : NSObject {
 	DNSServiceRef _service;
 	
-	CFSocketRef _socket;	
-	CFRunLoopSourceRef _source;
+	__strong CFSocketRef _socket;	
+	__strong CFRunLoopSourceRef _source;
 }
 
-@property (readonly) DNSServiceRef service;
+/*!
+	@method
+ */
 - (id)initWithService:(DNSServiceRef)service;
 
+/*!
+	@property
+ */
+@property (readonly) DNSServiceRef service;
+
+/*!
+	@method
+ */
 - (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
+
+/*!
+	@method
+ */
 - (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
+/*!
+	@method
+ */
 - (void)invalidate;
 
 @end

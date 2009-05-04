@@ -48,7 +48,8 @@
 		CFIndex actualBytesWritten = CFWriteStreamWrite(writeStream, writeStart, bytesRemaining);
 		
 		if (actualBytesWritten < 0) {
-			*errorRef = AFErrorFromCFStreamError(CFWriteStreamGetError(writeStream));
+			if (errorRef != NULL)
+				*errorRef = AFErrorFromCFStreamError(CFWriteStreamGetError(writeStream));
 			return NO;
 		}
 		

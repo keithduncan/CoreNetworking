@@ -99,7 +99,7 @@
 	return 0;
 }
 
-- (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)error {
+- (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)errorRef {
 	BOOL packetComplete = NO;
 	
 	while (!packetComplete && CFReadStreamHasBytesAvailable(readStream)) {
@@ -112,7 +112,8 @@
 		CFIndex bytesRead = CFReadStreamRead(readStream, readBuffer, bytesToRead);
 		
 		if (bytesRead < 0) {
-			*error = AFErrorFromCFStreamError(CFReadStreamGetError(readStream));
+			if (errorRef != NULL)
+				*errorRef = AFErrorFromCFStreamError(CFReadStreamGetError(readStream));
 			return NO;
 		} else {
 			_bytesRead += bytesRead;
