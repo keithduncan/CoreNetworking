@@ -73,16 +73,17 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	
 	_socket = CFSocketCreateWithNative(kCFAllocatorDefault, CFSocketGetNative(socket), 0, AFSocketCallback, &context);
 	
+	_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0);
+	
 	return self;
 }
 
-- (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options delegate:(id <AFSocketControlDelegate, AFSocketHostDelegate>)delegate {
+- (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options {
 	self = [self init];
 	if (self == nil) return nil;
 	
 	_signature = (CFSocketSignature *)malloc(sizeof(CFSocketSignature));
 	memcpy(_signature, signature, sizeof(CFSocketSignature));
-	// Note: this is here for non-GC
 	CFRetain(_signature->address);
 	
 	CFSocketContext context;
@@ -96,18 +97,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	}
 	
 	_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0);
-
-#if 0
-	int sockoptError = 0, reuseAddr = 1;
-	sockoptError = setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_REUSEADDR, &reuseAddr, sizeof(reuseAddr));
-	if (sockoptError != 0) {
-		[self release];
-		return nil;
-	}
-#endif
-	
-	self.delegate = delegate;
-	
+		
 	return self;
 }
 
@@ -123,15 +113,15 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 }
 
 - (void)open {
-	CFSocketError socketError = kCFSocketSuccess;
+	CFSocketError socketError = kCFSocketError;
 	
 	if (_signature != NULL) {
 		socketError = CFSocketSetAddress(_socket, _signature->address);
-	}
-	
-	if (socketError == kCFSocketSuccess) {
-		[self.delegate layerDidOpen:self];
-		return;
+		
+		if (socketError == kCFSocketSuccess) {
+			[self.delegate layerDidOpen:self];
+			return;
+		}
 	}
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -142,7 +132,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	if (socketError == kCFSocketTimeout) errorCode = AFSocketErrorTimeout;
 	
 	NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:errorCode userInfo:userInfo];
-	
 	[self.delegate layer:self didNotOpen:error];
 }
 
@@ -155,19 +144,19 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 }
 
 - (BOOL)isClosed {
-	return ![self isOpen];
+	return !([self isOpen]);
 }
 
 - (NSString *)description {
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
-	[description appendString:@" {\n"];
+	[description appendString:@"{\n"];
 	
 	if (_socket != NULL) {
 		char buffer[INET6_ADDRSTRLEN]; // Note: because the -description method is used only for debugging, we can use a fixed length buffer
-		sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)[(id)CFSocketCopyAddress(_socket) autorelease]), buffer, sizeof(buffer));
+		sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)[NSMakeCollectable(CFSocketCopyAddress(_socket)) autorelease]), buffer, INET6_ADDRSTRLEN);
 		
 		[description appendFormat:@"\tAddress: %s\n", buffer, nil];
-		[description appendFormat:@"\tPort: %ld\n", ntohs(((struct sockaddr_in *)CFDataGetBytePtr((CFDataRef)[(id)CFSocketCopyAddress(_socket) autorelease]))->sin_port), nil];
+		[description appendFormat:@"\tPort: %ld\n", ntohs(((struct sockaddr_in *)CFDataGetBytePtr((CFDataRef)[NSMakeCollectable(CFSocketCopyAddress(_socket)) autorelease]))->sin_port), nil];
 	}
 	
 	[description appendString:@"}"];
@@ -185,7 +174,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 
 - (CFHostRef)peer {
 	CFDataRef addr = CFSocketCopyAddress(_socket);
-	CFHostRef peer = (CFHostRef)[(id)CFMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, addr)) autorelease];
+	CFHostRef peer = (CFHostRef)[NSMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, addr)) autorelease];
 	CFRelease(addr);
 	
 	return peer;

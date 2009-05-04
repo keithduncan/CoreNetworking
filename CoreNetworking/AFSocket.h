@@ -27,16 +27,17 @@
 
 /*
  *	Inbound Initialiser
+ *		This is used to bring a stack online when receiving an inbound connection.
  */
 
 /*!
 	@method
-	@param		|lowerLayer| is expected to be a CFSocketRef that the native socket can be extracted from.
+	@param		|lowerLayer| is expected to be a CFSocketRef from which the native socket can be extracted.
  */
 - (id)initWithLowerLayer:(id <AFNetworkLayer>)layer;
 
 /*
- *	Outbound Initialiser
+ *	Host Initialiser
  *		This is not governed by a protocol, luckily the AFConnectionServer knows how to create this class specifically.
  */
 
@@ -44,20 +45,19 @@
 	@method
 	@abstract	A socket is created with the given characteristics and the address is set
 	@discussion	If the socket cannot be created they return nil
-	@param		Providing the |delegate| in the instantiator is akin to creating a CFSocket with the callback function
  */
-- (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options delegate:(id <AFConnectionLayerHostDelegate, AFConnectionLayerControlDelegate>)delegate;
+- (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options;
+
+/*!
+	@property
+ */
+@property (assign) id <AFSocketHostDelegate, AFSocketControlDelegate> delegate;
 
 /*!
 	@property
 	@abstract	This returns the <tt>CFSocket</tt> peer address wrapped in a CFHostRef
  */
 @property (readonly) CFHostRef peer;
-
-/*!
-	@property
- */
-@property (assign) id <AFSocketHostDelegate, AFSocketControlDelegate> delegate;
 
 @end
 

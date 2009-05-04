@@ -168,18 +168,18 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 			.address = (CFDataRef)currentAddrData,
 		};
 		
-		AFSocket *socket = [[AFSocket alloc] initWithSignature:&currentSocketSignature callbacks:kCFSocketAcceptCallBack delegate:self];
+		AFSocket *socket = [[AFSocket alloc] initWithSignature:&currentSocketSignature callbacks:kCFSocketAcceptCallBack];
 		if (socket == nil) continue;
 		
-		[socket scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
-		
 		[self.hosts addConnectionsObject:socket];
+		
 		[socket open];
 		
 		// Note: get the port after setting the address i.e. opening
 		if (*port == 0) {
-			// Note: extract the *actual* port used and use that for future allocations
-			CFDataRef actualAddrData = CFSocketCopyAddress((CFSocketRef)[socket lowerLayer]);
+			// Note: extract the *actual* port used and use that for future sockets allocations
+			CFHostRef addrHost = (CFHostRef)[socket peer];
+			CFDataRef actualAddrData = CFArrayGetValueAtIndex(CFHostGetAddressing(addrHost, NULL), 0);
 			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port);
 			CFRelease(actualAddrData);
 		}
@@ -199,7 +199,6 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)newLayer {
 	id <AFConnectionLayer> connection = [[[[self clientClass] alloc] initWithLowerLayer:newLayer] autorelease];
 	[connection setDelegate:(id)self];
-	
 	return connection;
 }
 
@@ -218,9 +217,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[newConnection open];
 }
 
-- (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(id)host {
-	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
-		[self.delegate layer:self didAcceptConnection:layer];
+- (void)layerDidOpen:(id <AFNetworkLayer>)layer {
+	
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {

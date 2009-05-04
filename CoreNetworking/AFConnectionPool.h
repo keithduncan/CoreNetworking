@@ -8,25 +8,37 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CoreNetworking/AFNetworkLayer.h"
+
 @class AFConnection;
 
 /*!
 	@class
-	@abstract	This class will take on a more important role later on, I intend for it to become an interface to a thread pool too.
+	@abstract	The pool will automatically schedule added connections.
  */
 @interface AFConnectionPool : NSObject {
 	NSMutableSet *_connections;
 }
 
+/*!
+	@property
+ */
 @property (readonly) NSSet *connections;
-
-- (void)addConnectionsObject:(id)proxy;
-- (void)removeConnectionsObject:(id)proxy;
 
 /*!
 	@method
  */
-- (id)connectionWithValue:(id)value forKey:(NSString *)key;
+- (void)addConnectionsObject:(id <AFNetworkLayer>)proxy;
+
+/*!
+	@method
+ */
+- (void)removeConnectionsObject:(id <AFNetworkLayer>)proxy;
+
+/*!
+	@method
+ */
+- (id <AFNetworkLayer>)connectionWithValue:(id)value forKey:(NSString *)key;
 
 /*!
 	@method
