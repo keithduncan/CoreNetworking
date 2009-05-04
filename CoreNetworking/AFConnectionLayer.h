@@ -6,7 +6,7 @@
 //  Copyright 2009 thirty-three. All rights reserved.
 //
 
-#import "CoreNetworking/AFNetworkLayer.h"
+#import "CoreNetworking/AFTransportLayer.h"
 
 /*
  *	Connection Layers
@@ -22,7 +22,7 @@
 	@protocol
 	@abstract    An AFConnectionLayer should maintain a stateful connection between endpoints
  */
-@protocol AFConnectionLayer <AFNetworkLayer>
+@protocol AFConnectionLayer <AFTransportLayer>
 
 /*!
 	@property
@@ -39,7 +39,7 @@
 	@method
 	@abstract	|layer| could be the host that spawned it or an intermediate object
  */
-- (void)layer:(id)layer didAcceptConnection:(id <AFNetworkLayer>)layer;
+- (void)layer:(id)layer didAcceptConnection:(id <AFTransportLayer>)layer;
 @end
 
 /*!

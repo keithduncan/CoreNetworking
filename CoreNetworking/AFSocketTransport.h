@@ -5,7 +5,7 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "CoreNetworking/AFNetworkObject.h"
+#import "CoreNetworking/AFNetworkLayer.h"
 
 #import "CoreNetworking/AFNetworkTypes.h"
 #import "CoreNetworking/AFConnectionLayer.h"
@@ -18,7 +18,7 @@
     @abstract    Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the 'stream' suffix was dropped so not to imply the exclusive use of SOCK_STREAM
     @discussion  This class is a mix of two of the primary patterns. Internally, it acts an adaptor between the CFSocket and CFStream API. Externally, it bridges CFHost, CFNetService with CFSocket and CFStream. It provides a CFStream like API.
 */
-@interface AFSocketTransport : AFNetworkObject <AFConnectionLayer> {	
+@interface AFSocketTransport : AFNetworkLayer <AFConnectionLayer> {	
 	NSUInteger _connectionFlags;
 	NSUInteger _streamFlags;
 	

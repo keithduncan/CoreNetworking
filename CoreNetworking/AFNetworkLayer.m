@@ -6,18 +6,18 @@
 //  Copyright 2009 thirty-three. All rights reserved.
 //
 
-#import "AFNetworkObject.h"
+#import "AFNetworkLayer.h"
 
 #import <objc/runtime.h>
 
 #import "AmberFoundation/AFPriorityProxy.h"
 
-@interface AFNetworkObject ()
-@property (readwrite, retain) id <AFNetworkLayer> lowerLayer;
+@interface AFNetworkLayer ()
+@property (readwrite, retain) id <AFTransportLayer> lowerLayer;
 @property (readwrite, retain) NSMutableDictionary *transportInfo;
 @end
 
-@implementation AFNetworkObject
+@implementation AFNetworkLayer
 
 @synthesize lowerLayer=_lowerLayer;
 @synthesize delegate=_delegate;
@@ -37,7 +37,7 @@
 	return self;
 }
 
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer {
+- (id)initWithLowerLayer:(id <AFTransportLayer>)layer {
 	self = [self init];
 	if (self == nil) return nil;
 	
@@ -47,13 +47,13 @@
 	return self;
 }
 
-- (id <AFNetworkLayer>)initWithSignature:(const AFSocketPeerSignature *)signature {	
-	id <AFNetworkLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithSignature:signature] autorelease];
+- (id <AFTransportLayer>)initWithSignature:(const AFSocketPeerSignature *)signature {	
+	id <AFTransportLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithSignature:signature] autorelease];
 	return [self initWithLowerLayer:lowerLayer];
 }
 
-- (id <AFNetworkLayer>)initWithNetService:(id <AFNetServiceCommon>)netService {
-	id <AFNetworkLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithNetService:netService] autorelease];
+- (id <AFTransportLayer>)initWithNetService:(id <AFNetServiceCommon>)netService {
+	id <AFTransportLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithNetService:netService] autorelease];
 	return [self initWithLowerLayer:lowerLayer];
 }
 

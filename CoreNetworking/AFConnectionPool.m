@@ -37,19 +37,19 @@
 	return [[self.mutableConnections copy] autorelease];
 }
 
-- (void)addConnectionsObject:(id <AFNetworkLayer>)connection {
+- (void)addConnectionsObject:(id <AFTransportLayer>)connection {
 	[self.mutableConnections addObject:connection];
 	
 	[connection scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
 }
 
-- (void)removeConnectionsObject:(id <AFNetworkLayer>)connection {
+- (void)removeConnectionsObject:(id <AFTransportLayer>)connection {
 	[connection unscheduleFromRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
 	
 	[self.mutableConnections removeObject:connection];
 }
 
-- (id <AFNetworkLayer>)connectionWithValue:(id)value forKey:(NSString *)key {
+- (id <AFTransportLayer>)connectionWithValue:(id)value forKey:(NSString *)key {
 	id <AFConnectionLayer> connection = nil;
 	
 	for (id <AFConnectionLayer> currentConnection in self.connections) {

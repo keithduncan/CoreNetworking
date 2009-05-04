@@ -1,171 +1,86 @@
 //
-//  AFNetworkLayer.h
-//  Bonjour
+//  AFNetworkObject.h
+//  Amber
 //
-//  Created by Keith Duncan on 26/12/2008.
-//  Copyright 2008 thirty-three software. All rights reserved.
+//  Created by Keith Duncan on 04/05/2009.
+//  Copyright 2009 thirty-three. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
+#import "CoreNetworking/AFNetService.h"
+#import "CoreNetworking/AFNetworkTypes.h"
+#import "CoreNetworking/AFTransportLayer.h"
+
+/*!
+	@class
+	@abstract	This is the parent class for all the network stack objects. You are unlikely to use it directly.
+	@discussion	CFHostRef and CFNetServiceRef are both first class citizens in CoreNetworking, and you can easily bring a stack online using either.
+				There are two designated outbound initialisers, each accepting one of the destination types.
+ */
+@interface AFNetworkLayer : NSObject {
+ @private
+	id <AFTransportLayer> _lowerLayer;
+	id _delegate;
+	
+	NSMutableDictionary *_transportInfo;
+}
+
 /*
- *	Network Layers
- *		Transport + Internetwork
+ *	Inbound Initialisers
+ *		These are used when you have an accept socket that has spawned a new connection
  */
 
-@protocol AFNetworkLayerHostDelegate;
-@protocol AFNetworkLayerControlDelegate;
-@protocol AFNetworkLayerDataDelegate;
+/*!
+	@method
+ */
+- (id)initWithLowerLayer:(id <AFTransportLayer>)layer;
 
-#pragma mark -
+/*
+ * Outbound Initialisers
+ *	Perhaps the connection initialiser should be a class method a facade to a class cluster and return SOCK_STREAM/SOCK_DGRAM etc internal subclasses?
+ *	These connections will need to be sent -open before they can be used, just like a stream
+ */
 
 /*!
-    @protocol
-    @abstract	An AFNetworkLayer object should encapsulate data (as defined in RFC 1122)
-	@discussion	This implementation mandates that a layer pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a cluster-chain allowing for maximum flexiblity.
-*/
-@protocol AFNetworkLayer <NSObject>
+	@method
+	@abstract	You must override this method if you want to use the designated outbound initialisers.
+				The default implementation raises an exception.
+ */
++ (Class)lowerLayerClass;
+
+/*!
+	@method
+	@abstract	This initialiser is a sibling to <tt>-initWithNetService:</tt>.
+				This doesn't use CFSocketSignature because the protocol family is determined by the CFHostRef address values
+				The default implementation creates a lower-layer using <tt>+lowerLayerClass</tt> and calls the same initialiser on the new object.
+ */
+- (id <AFTransportLayer>)initWithSignature:(const AFSocketPeerSignature *)signature;
+
+/*!
+	@method
+	@abstract	This initialiser is a sibling to <tt>-initWithSignature:</tt>.
+	@discussion	A net service - once resolved - encapsulates all the data from <tt>AFSocketPeerSignature</tt>
+				The default implementation creates a lower-layer using <tt>+lowerLayerClass</tt> and calls the same initialiser on the new object.
+	@param		|netService| will be used to create a CFNetService internally
+ */
+- (id <AFTransportLayer>)initWithNetService:(id <AFNetServiceCommon>)netService;
 
 /*!
 	@property
  */
-@property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
+@property (readonly, retain) id <AFTransportLayer> lowerLayer;
 
 /*!
 	@method
-	@abstract	Designated Initialiser, with encapsulation in mind
-	@discussion	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound communication will probably have a more specific initialiser
+	@abstract	When accessing this property, you will not recieve the object passed in, this method returns a proxy that allows a user to forward messages up the delegate stack.
  */
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer;
+@property (assign) id delegate;
 
 /*!
 	@property
+	@abstract	This isn't used by the framework, it is intended for use like <tt>-[NSThread threadDictionary]</tt> to store miscellaneous data.
  */
-@property (readonly, retain) id <AFNetworkLayer> lowerLayer;
-
- @optional
-
-/*!
-	@method
-	@abstract	The delegate callbacks convey success/failure.
-	@discussion	This is a good candidate for a block callback argument, allowing for asynchronous -open methods and eliminating the delegate callbacks.
- */
-- (void)open;
-
-/*!
-	@method
-	@result		YES if the layer is currently open.
- */
-- (BOOL)isOpen;
-
-/*!
-	@method
-	@discussion	A layer may elect to remain open, in which case you will not receive the -layerDidClose: delegate callback until it actually closes.
- */
-- (void)close;
-
-/*!
-	@method
-	@abstract	Many layers are linear non-recurrant in nature, like a TCP stream; once closed it cannot be reopened.
- */
-- (BOOL)isClosed;
-
-/*!
-	@method
-	@abstract	Pass a dictionary with the SSL keys specified in CFSocketStream.h
- */
-- (void)startTLS:(NSDictionary *)options;
-
-/*!
- @method
- @abstract	The socket connection must be scheduled in at least one run loop to function.
- */
-- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
-
-/*!
-	@method
-	@abstract	The socket connection must remain scheduled in at least one run loop to function.
- */
-- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
-
-/*!
-	@method
-	@param		|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length, an NSData for bit pattern, or an AFPacketRead subclass for custom behaviour.
- */
-- (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
-
-/*!
-	@method
- */
-- (void)performWrite:(id)dataBuffer forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
-
-@end
-
-/*!
-	@protocol
- */
-@protocol AFNetworkLayerHostDelegate <NSObject>
-
-@end
-
-/*!
-	@protocol
- */
-@protocol AFNetworkLayerControlDelegate <NSObject>
-
-/*!
-	@method
- */
-- (void)layerDidOpen:(id <AFNetworkLayer>)layer;
-
-/*!
-	@method
- */
-- (void)layer:(id <AFNetworkLayer>)layer didNotOpen:(NSError *)error;
-
-/*!
-	@method
-	@abstract	This is to be called for connected-stream errors only.
- */
-- (void)layer:(id <AFNetworkLayer>)layer didReceiveError:(NSError *)error;
-
-/*!
-	@method
- */
-- (void)layerDidClose:(id <AFNetworkLayer>)layer;
-
- @optional
-
-/*!
-	@method
- */
-- (void)layerDidStartTLS:(id <AFNetworkLayer>)layer;
-
-/*!
-	@method
- */
-- (void)layer:(id <AFNetworkLayer>)layer didNotStartTLS:(NSError *)error;
-
-@end
-
-/*!
-	@protocol
- */
-@protocol AFNetworkLayerDataDelegate <NSObject>
-
-/*!
-	@property
- */
-@property (readonly, retain) id <AFNetworkLayer> lowerLayer;
-
-/*!
-	@method
- */
-- (void)layer:(id <AFNetworkLayer>)layer didRead:(id)data forTag:(NSUInteger)tag;
-
-/*!
-	@method
- */
-- (void)layer:(id <AFNetworkLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag;
+@property (readonly, retain) NSMutableDictionary *transportInfo;
 
 @end

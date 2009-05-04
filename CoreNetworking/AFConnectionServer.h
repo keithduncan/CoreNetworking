@@ -6,11 +6,9 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "CoreNetworking/AFNetworkLayer.h"
 
 #import "CoreNetworking/AFNetworkTypes.h"
-
-#import "CoreNetworking/AFSocket.h"
 #import "CoreNetworking/AFConnectionLayer.h"
 
 @class AFConnectionPool;
@@ -29,7 +27,7 @@
 	@abstract	This is a generic construct for spawning new client layers.
 	@discussion	After instantiating the server you can use one of the convenience methods to open a collection of sockets
  */
-@interface AFConnectionServer : AFNetworkObject <AFConnectionServerDelegate, AFConnectionLayerHostDelegate, AFSocketHostDelegate> {	
+@interface AFConnectionServer : AFNetworkLayer <AFConnectionServerDelegate, AFConnectionLayerHostDelegate> {	
 	Class _clientClass;
 	AFConnectionPool *hosts, *clients;
 }

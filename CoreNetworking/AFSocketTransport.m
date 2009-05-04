@@ -97,7 +97,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	return self;
 }
 
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer {
+- (id)initWithLowerLayer:(id <AFTransportLayer>)layer {
 	self = [super initWithLowerLayer:layer];
 	if (self == nil) return nil;
 	
@@ -105,9 +105,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	CFSocketRef socket = ((CFSocketRef)[(AFSocket *)layer lowerLayer]);
 	CFSocketSetSocketFlags(socket, (CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate));
-	CFDataRef peerAddress = NSMakeCollectable(CFSocketCopyPeerAddress(socket));
+	CFDataRef peerAddress = (CFDataRef)NSMakeCollectable(CFSocketCopyPeerAddress(socket));
 	
-	_peer._hostDestination.host = NSMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, peerAddress));
+	_peer._hostDestination.host = (CFHostRef)NSMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, peerAddress));
 	
 	CFSocketNativeHandle sock = CFSocketGetNative(socket);
 	CFSocketInvalidate(socket);
@@ -131,7 +131,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if (self == nil) return nil;
 	
 	CFNetServiceRef *service = &_peer._netServiceDestination.netService;
-	*service = NSMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)[(id)netService valueForKey:@"domain"], (CFStringRef)[(id)netService valueForKey:@"type"], (CFStringRef)[(id)netService valueForKey:@"name"], 0));
+	*service = (CFNetServiceRef)NSMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)[(id)netService valueForKey:@"domain"], (CFStringRef)[(id)netService valueForKey:@"type"], (CFStringRef)[(id)netService valueForKey:@"name"], 0));
 	
 	CFStreamCreatePairWithSocketToNetService(kCFAllocatorDefault, *service, &readStream, &writeStream);
 	

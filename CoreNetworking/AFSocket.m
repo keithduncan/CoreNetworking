@@ -61,7 +61,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	[pool drain];
 }
 
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer {
+- (id)initWithLowerLayer:(id <AFTransportLayer>)layer {
 	self = [super initWithLowerLayer:layer];
 	if (self == nil) return nil;
 	

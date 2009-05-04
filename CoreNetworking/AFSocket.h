@@ -6,7 +6,7 @@
 //  Copyright 2009 thirty-three. All rights reserved.
 //
 
-#import "CoreNetworking/AFNetworkObject.h"
+#import "CoreNetworking/AFNetworkLayer.h"
 
 #import "CoreNetworking/AFConnectionLayer.h"
 
@@ -18,7 +18,7 @@
 	@abstract	An simple object-oriented wrapper around CFSocket
 	@discussion	The current purpose of this class is to spawn more sockets upon revieving inbound connections
  */
-@interface AFSocket : AFNetworkObject <AFConnectionLayer> {
+@interface AFSocket : AFNetworkLayer <AFConnectionLayer> {
  @private
 	__strong CFSocketRef _socket;
 	__strong CFSocketSignature *_signature;
@@ -34,7 +34,7 @@
 	@method
 	@param		|lowerLayer| is expected to be a CFSocketRef from which the native socket can be extracted.
  */
-- (id)initWithLowerLayer:(id <AFNetworkLayer>)layer;
+- (id)initWithLowerLayer:(id <AFTransportLayer>)layer;
 
 /*
  *	Host Initialiser

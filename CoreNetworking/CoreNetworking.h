@@ -12,7 +12,7 @@
 #import "CoreNetworking/AFNetworkFunctions.h"
 #import "CoreNetworking/AFNetworkConstants.h"
 
-#import "CoreNetworking/AFNetworkLayer.h"
+#import "CoreNetworking/AFTransportLayer.h"
 #import "CoreNetworking/AFConnectionLayer.h"
 
 #import "CoreNetworking/AFNetworkObject.h"

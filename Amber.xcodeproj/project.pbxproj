@@ -21,16 +21,16 @@
 		532F74FE0F0EB209004D6056 /* AmberFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A60DA0D269932001CD14A /* AmberFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5333F83C0F82CB7A00A9AF8A /* AFConnectionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5333F83E0F82CB7A00A9AF8A /* AFConnectionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		535511ED0FAF4A27004F8FC5 /* AFNetworkLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EC0FAF4A27004F8FC5 /* AFNetworkLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		535511EE0FAF4A27004F8FC5 /* AFNetworkLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EC0FAF4A27004F8FC5 /* AFNetworkLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		535511ED0FAF4A27004F8FC5 /* AFTransportLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		535511EE0FAF4A27004F8FC5 /* AFTransportLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535511F10FAF4A34004F8FC5 /* AFSocketTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EF0FAF4A34004F8FC5 /* AFSocketTransport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535511F20FAF4A34004F8FC5 /* AFSocketTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 535511F00FAF4A34004F8FC5 /* AFSocketTransport.m */; };
 		535511F30FAF4A34004F8FC5 /* AFSocketTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EF0FAF4A34004F8FC5 /* AFSocketTransport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535511F40FAF4A34004F8FC5 /* AFSocketTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 535511F00FAF4A34004F8FC5 /* AFSocketTransport.m */; };
-		5355141F0FAF6A35004F8FC5 /* AFNetworkObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 5355141D0FAF6A35004F8FC5 /* AFNetworkObject.h */; };
-		535514200FAF6A35004F8FC5 /* AFNetworkObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5355141E0FAF6A35004F8FC5 /* AFNetworkObject.m */; };
-		535514210FAF6A35004F8FC5 /* AFNetworkObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 5355141D0FAF6A35004F8FC5 /* AFNetworkObject.h */; };
-		535514220FAF6A35004F8FC5 /* AFNetworkObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5355141E0FAF6A35004F8FC5 /* AFNetworkObject.m */; };
+		5355141F0FAF6A35004F8FC5 /* AFNetworkLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5355141D0FAF6A35004F8FC5 /* AFNetworkLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		535514200FAF6A35004F8FC5 /* AFNetworkLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */; };
+		535514210FAF6A35004F8FC5 /* AFNetworkLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5355141D0FAF6A35004F8FC5 /* AFNetworkLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		535514220FAF6A35004F8FC5 /* AFNetworkLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */; };
 		53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
@@ -304,11 +304,11 @@
 		5343E70E0C21FB4200B63E6E /* Amber.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Amber.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5343E7100C21FB4200B63E6E /* Amber-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Amber-Info.plist"; sourceTree = "<group>"; };
 		5343E7230C21FBEA00B63E6E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		535511EC0FAF4A27004F8FC5 /* AFNetworkLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkLayer.h; path = CoreNetworking/AFNetworkLayer.h; sourceTree = "<group>"; };
+		535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFTransportLayer.h; path = CoreNetworking/AFTransportLayer.h; sourceTree = "<group>"; };
 		535511EF0FAF4A34004F8FC5 /* AFSocketTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFSocketTransport.h; path = CoreNetworking/AFSocketTransport.h; sourceTree = "<group>"; };
 		535511F00FAF4A34004F8FC5 /* AFSocketTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFSocketTransport.m; path = CoreNetworking/AFSocketTransport.m; sourceTree = "<group>"; };
-		5355141D0FAF6A35004F8FC5 /* AFNetworkObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkObject.h; path = CoreNetworking/AFNetworkObject.h; sourceTree = "<group>"; };
-		5355141E0FAF6A35004F8FC5 /* AFNetworkObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkObject.m; path = CoreNetworking/AFNetworkObject.m; sourceTree = "<group>"; };
+		5355141D0FAF6A35004F8FC5 /* AFNetworkLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkLayer.h; path = CoreNetworking/AFNetworkLayer.h; sourceTree = "<group>"; };
+		5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkLayer.m; path = CoreNetworking/AFNetworkLayer.m; sourceTree = "<group>"; };
 		53692BA50F1B85A90051C367 /* AmberFoundation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation_Prefix.pch; sourceTree = "<group>"; };
 		53692BA60F1B85B10051C367 /* AmberKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberKit_Prefix.pch; sourceTree = "<group>"; };
 		53692C180F1B87CA0051C367 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
@@ -514,8 +514,8 @@
 		5333F8490F82CC6B00A9AF8A /* Layers */ = {
 			isa = PBXGroup;
 			children = (
-				5355141D0FAF6A35004F8FC5 /* AFNetworkObject.h */,
-				5355141E0FAF6A35004F8FC5 /* AFNetworkObject.m */,
+				5355141D0FAF6A35004F8FC5 /* AFNetworkLayer.h */,
+				5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */,
 				535511F70FAF4C18004F8FC5 /* Protocols */,
 				535511F80FAF4C1F004F8FC5 /* Classes */,
 			);
@@ -553,7 +553,7 @@
 		535511F70FAF4C18004F8FC5 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				535511EC0FAF4A27004F8FC5 /* AFNetworkLayer.h */,
+				535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */,
 				5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */,
 			);
 			name = Protocols;
@@ -951,9 +951,9 @@
 				53A028E80F6E8F41004F5414 /* AFNetworkTypes.h in Headers */,
 				5333F83C0F82CB7A00A9AF8A /* AFConnectionLayer.h in Headers */,
 				53FE19030F856A3200980D32 /* AFPacketQueue.h in Headers */,
-				535511ED0FAF4A27004F8FC5 /* AFNetworkLayer.h in Headers */,
+				535511ED0FAF4A27004F8FC5 /* AFTransportLayer.h in Headers */,
 				535511F10FAF4A34004F8FC5 /* AFSocketTransport.h in Headers */,
-				5355141F0FAF6A35004F8FC5 /* AFNetworkObject.h in Headers */,
+				5355141F0FAF6A35004F8FC5 /* AFNetworkLayer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1019,9 +1019,9 @@
 				53A028E60F6E8F41004F5414 /* AFNetworkTypes.h in Headers */,
 				5333F83E0F82CB7A00A9AF8A /* AFConnectionLayer.h in Headers */,
 				53FE19050F856A3200980D32 /* AFPacketQueue.h in Headers */,
-				535511EE0FAF4A27004F8FC5 /* AFNetworkLayer.h in Headers */,
+				535511EE0FAF4A27004F8FC5 /* AFTransportLayer.h in Headers */,
 				535511F30FAF4A34004F8FC5 /* AFSocketTransport.h in Headers */,
-				535514210FAF6A35004F8FC5 /* AFNetworkObject.h in Headers */,
+				535514210FAF6A35004F8FC5 /* AFNetworkLayer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1314,7 +1314,7 @@
 				53A028E90F6E8F41004F5414 /* AFNetworkTypes.m in Sources */,
 				53FE19040F856A3200980D32 /* AFPacketQueue.m in Sources */,
 				535511F20FAF4A34004F8FC5 /* AFSocketTransport.m in Sources */,
-				535514200FAF6A35004F8FC5 /* AFNetworkObject.m in Sources */,
+				535514200FAF6A35004F8FC5 /* AFNetworkLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1386,7 +1386,7 @@
 				53A028E70F6E8F41004F5414 /* AFNetworkTypes.m in Sources */,
 				53FE19060F856A3200980D32 /* AFPacketQueue.m in Sources */,
 				535511F40FAF4A34004F8FC5 /* AFSocketTransport.m in Sources */,
-				535514220FAF6A35004F8FC5 /* AFNetworkObject.m in Sources */,
+				535514220FAF6A35004F8FC5 /* AFNetworkLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

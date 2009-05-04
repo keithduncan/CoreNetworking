@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CoreNetworking/AFNetworkLayer.h"
+#import "CoreNetworking/AFTransportLayer.h"
 
 @class AFConnection;
 
@@ -28,17 +28,17 @@
 /*!
 	@method
  */
-- (void)addConnectionsObject:(id <AFNetworkLayer>)proxy;
+- (void)addConnectionsObject:(id <AFTransportLayer>)proxy;
 
 /*!
 	@method
  */
-- (void)removeConnectionsObject:(id <AFNetworkLayer>)proxy;
+- (void)removeConnectionsObject:(id <AFTransportLayer>)proxy;
 
 /*!
 	@method
  */
-- (id <AFNetworkLayer>)connectionWithValue:(id)value forKey:(NSString *)key;
+- (id <AFTransportLayer>)connectionWithValue:(id)value forKey:(NSString *)key;
 
 /*!
 	@method

@@ -6,7 +6,7 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "CoreNetworking/AFNetworkObject.h"
+#import "CoreNetworking/AFNetworkLayer.h"
 
 #import "CoreNetworking/AFConnectionLayer.h"
 
@@ -15,7 +15,7 @@
     @abstract	Will forward messages to the |lowerLayer|.
 	@discussion	Your subclass should encapsulate Application Layer data (as defined in RFC 1122) and pass it to the superclass for further processing.
 */
-@interface AFConnection : AFNetworkObject <AFConnectionLayer>
+@interface AFConnection : AFNetworkLayer <AFConnectionLayer>
 
 /*!
 	@property

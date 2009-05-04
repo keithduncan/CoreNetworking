@@ -32,11 +32,12 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 @implementation AFConnectionServer
 
+@dynamic lowerLayer, delegate;
 @synthesize clientClass=_clientClass;
 @synthesize hosts, clients;
 
 + (NSSet *)localhostSocketAddresses {
-	CFHostRef localhost = [NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost")) autorelease];
+	CFHostRef localhost = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost")) autorelease];
 	
 	CFStreamError error;
 	memset(&error, 0, sizeof(CFStreamError));
@@ -181,7 +182,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[newConnection open];
 }
 
-- (void)layerDidOpen:(id <AFNetworkLayer>)layer {
+- (void)layerDidOpen:(id <AFTransportLayer>)layer {
 	
 }
 
@@ -189,7 +190,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	if (![self.clients.connections containsObject:layer]) return;
 	
 	if (self.lowerLayer != nil) {
-		id <AFNetworkLayer> lowerLayer = layer.lowerLayer;
+		id <AFTransportLayer> lowerLayer = layer.lowerLayer;
 		lowerLayer.delegate = (id)self.lowerLayer;
 		[layer close];
 	}
