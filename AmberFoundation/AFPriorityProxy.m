@@ -34,7 +34,7 @@
 	
 	[description appendFormat:@"\n\tDispatch Order: %@", dispatchOrder, nil];
 	
-	[description appendString:@"}"];
+	[description appendString:@"\n}"];
 	
 	return description;
 }
