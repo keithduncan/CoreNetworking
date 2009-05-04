@@ -1602,7 +1602,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = "CoreNetworking-Info.plist";
-				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				INSTALL_PATH = "@rpath/";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -1627,7 +1627,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = "CoreNetworking-Info.plist";
-				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				INSTALL_PATH = "@rpath/";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
