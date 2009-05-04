@@ -27,6 +27,18 @@
 	[super dealloc];
 }
 
+- (NSString *)description {
+	NSMutableString *description = [[[super description] mutableCopy] autorelease];
+	
+	[description appendString:@" {"];
+	
+	[description appendFormat:@"\n\tDispatch Order: %@", dispatchOrder, nil];
+	
+	[description appendString:@"}"];
+	
+	return description;
+}
+
 - (BOOL)respondsToSelector:(SEL)selector {
 	for (id currentDispatchTarget in dispatchOrder) {
 		if (![currentDispatchTarget respondsToSelector:selector]) continue;
