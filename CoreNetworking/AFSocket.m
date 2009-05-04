@@ -17,14 +17,6 @@
 #import "AFNetworkFunctions.h"
 #import "AFNetworkConstants.h"
 
-@interface AFSocket ()
-
-@end
-
-@interface AFSocket (Private)
-- (void)_close;
-@end
-
 @implementation AFSocket
 
 @dynamic lowerLayer, delegate;
@@ -91,28 +83,19 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	memset(&context, 0, sizeof(CFSocketContext));
 	context.info = self;
 	
-	_socket = NSMakeCollectable(CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, options, AFSocketCallback, &context));
+	_socket = (CFSocketRef)NSMakeCollectable(CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, options, AFSocketCallback, &context));
 	
 	if (_socket == NULL) {
 		[self release];
 		return nil;
 	}
 	
-	_socketRunLoopSource = NSMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0));
+	_socketRunLoopSource = (CFRunLoopSourceRef)NSMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0));
 	
 	return self;
 }
 
-- (void)finalize {
-	[self _close];
-	
-	if ([NSGarbageCollector defaultCollector] == nil) return;
-	[super finalize];
-}
-
-- (void)dealloc {
-	[self finalize];
-	
+- (void)dealloc {	
 	if (_signature != NULL)
 		if (_signature->address != NULL)
 			CFRelease(_signature->address);
@@ -191,24 +174,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	CFRelease(addr);
 	
 	return peer;
-}
-
-@end
-
-@implementation AFSocket (Private)
-
-/*!
-	@method
-	@abstract	This has been refactored into a separate method so that -dealloc can 'close' the socket without calling the public -close method
-	@discussion	These are set to NULL so that closing again, or deallocating doesn't crash the socket
- */
-- (void)_close {
-	if (_socket != NULL) {
-		CFSocketInvalidate(_socket);
-		_socket = NULL;
-	}
-	
-	_socketRunLoopSource = NULL;
 }
 
 @end

@@ -95,15 +95,18 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	return self;
 }
 
-- (void)finalize {
+- (void)_close {
 	[self.clients disconnect];
+}
+
+- (void)finalize {
+	[self _close];
 	
-	if ([NSGarbageCollector defaultCollector] == nil) return;
 	[super finalize];
 }
 
 - (void)dealloc {
-	[self finalize];
+	[self _close];
 	
 	[clients release];
 	

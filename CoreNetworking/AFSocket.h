@@ -10,9 +10,6 @@
 
 #import "CoreNetworking/AFConnectionLayer.h"
 
-@protocol AFSocketHostDelegate;
-@protocol AFSocketControlDelegate;
-
 /*!
 	@class
 	@abstract	An simple object-oriented wrapper around CFSocket
@@ -20,8 +17,9 @@
  */
 @interface AFSocket : AFNetworkLayer <AFConnectionLayer> {
  @private
-	__strong CFSocketRef _socket;
 	__strong CFSocketSignature *_signature;
+	
+	__strong CFSocketRef _socket;
 	__strong CFRunLoopSourceRef _socketRunLoopSource;
 }
 
@@ -51,26 +49,12 @@
 /*!
 	@property
  */
-@property (assign) id <AFSocketHostDelegate, AFSocketControlDelegate> delegate;
+@property (assign) id <AFConnectionLayerHostDelegate, AFConnectionLayerControlDelegate> delegate;
 
 /*!
 	@property
 	@abstract	This returns the <tt>CFSocket</tt> peer address wrapped in a CFHostRef
  */
 @property (readonly) CFHostRef peer;
-
-@end
-
-/*!
-	@protocol
- */
-@protocol AFSocketHostDelegate <AFConnectionLayerHostDelegate>
-
-@end
-
-/*!
-	@protocol
- */
-@protocol AFSocketControlDelegate <AFConnectionLayerControlDelegate>
 
 @end

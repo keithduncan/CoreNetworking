@@ -162,17 +162,19 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	return self;
 }
 
-- (void)finalize {
+- (void)_close {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self.delegate selector:@selector(layerDidClose:) object:self];
-	
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
+}
+
+- (void)finalize {
+	[self _close];
 	
-	if ([NSGarbageCollector defaultCollector] == nil) return;
 	[super finalize];
 }
 
 - (void)dealloc {
-	[self finalize];
+	[self _close];
 	
 	// Note: this will also deallocate the netService if present
 	CFHostRef *host = &_peer._hostDestination.host; // Note: this is simply shorter to re-address, there is no fancyness, move along
