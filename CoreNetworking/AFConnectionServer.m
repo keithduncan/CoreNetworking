@@ -103,9 +103,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (void)finalize {
 	[self.clients disconnect];
 	
-#if __OBJC_GC__
+	if ([NSGarbageCollector defaultCollector] == nil) return;
 	[super finalize];
-#endif
 }
 
 - (void)dealloc {

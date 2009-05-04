@@ -161,9 +161,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	
-#if __OBJC_GC__
+	if ([NSGarbageCollector defaultCollector] == nil) return;
 	[super finalize];
-#endif
 }
 
 - (void)dealloc {
@@ -294,17 +293,14 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
     SCNetworkConnectionFlags *flags = (SCNetworkConnectionFlags *)CFDataGetBytePtr(data);
-    assert(flags != NULL);
+    NSCAssert(flags != NULL, @"The reachability flags must not be nil.");
 	
-    if ((*flags & kSCNetworkFlagsTransientConnection) == kSCNetworkFlagsTransientConnection) return YES;
-    if ((*flags & kSCNetworkFlagsReachable) == kSCNetworkFlagsReachable) return YES;
-    if ((*flags & kSCNetworkFlagsConnectionRequired) == kSCNetworkFlagsConnectionRequired) return YES;
-    if ((*flags & kSCNetworkFlagsConnectionAutomatic) == kSCNetworkFlagsConnectionAutomatic) return YES;
-    if ((*flags & kSCNetworkFlagsInterventionRequired) == kSCNetworkFlagsInterventionRequired) return YES;
-    if ((*flags & kSCNetworkFlagsIsLocalAddress) == kSCNetworkFlagsIsLocalAddress) return YES;
-    if ((*flags & kSCNetworkFlagsIsDirect) == kSCNetworkFlagsIsDirect) return YES;
-    
-	return NO;
+	BOOL reachable = (*flags & kSCNetworkFlagsReachable) 
+						&& !(*flags & kSCNetworkFlagsConnectionRequired)
+						&& !(*flags & kSCNetworkFlagsConnectionAutomatic)
+						&& !(*flags & kSCNetworkFlagsInterventionRequired);
+	
+	return reachable;
 }
 
 - (void)open {
@@ -320,11 +316,11 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 		CFDataRef reachability = CFHostGetReachability(host, &result);
 		BOOL reachable = _AFSocketConnectionReachabilityResult(reachability);
 		
-		if (!reachable) {
+		if (!reachable || error.domain != 0) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 									  (id)reachability, @"reachbilityFlagsData",
-									  (error.domain != 0 ? AFErrorFromCFStreamError(error) : nil), NSUnderlyingErrorKey,
-									  NSLocalizedStringWithDefaultValue(@"AFSocketConnectionReachabilityError", @"AFSocketConnection", [NSBundle mainBundle], @"Cannot reach the destination host with your current network configuration.", nil), NSLocalizedDescriptionKey,
+									  NSLocalizedStringWithDefaultValue(@"AFSocketConnectionReachabilityError", @"AFSocketConnection", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Cannot reach the destination host with your current network configuration.", nil), NSLocalizedDescriptionKey,
+									  (error.domain != 0 ? AFErrorFromCFStreamError(error) : nil), NSUnderlyingErrorKey, // Note: this key-pair must come last, it contains a nil sentinel
 									  nil];
 			
 			NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionReachabilityError userInfo:userInfo];
