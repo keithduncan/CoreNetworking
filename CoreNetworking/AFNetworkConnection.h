@@ -20,7 +20,7 @@
 /*!
 	@property
  */
-@property (readonly, retain) id <AFConnectionLayer> lowerLayer;
+@property (readonly) id <AFConnectionLayer> lowerLayer;
 
 /*!
 	@property

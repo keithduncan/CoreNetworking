@@ -64,9 +64,9 @@
 
 /*!
 	@property
-	@abstract	This is the server that this one sits atop. The delegate of this object should be the upper server.
+	@abstract	The server that this one sits atop. The delegate of this object should be the upper-layer server.
  */
-@property (readonly, retain) AFConnectionServer *lowerLayer;
+@property (readonly) AFConnectionServer *lowerLayer;
 
 /*!
 	@method
@@ -89,7 +89,7 @@
 				on the lowest layer of the stack.
 	@param		|port| is passed by reference so that if you pass 0 you get back the actual port
  */
-- (void)openSockets:(SInt32 *)port withType:(const AFNetworkSocketSignature *)type addresses:(NSSet *)sockAddrs;
+- (void)openSockets:(SInt32 *)port withSignature:(const AFNetworkSocketSignature *)signature addresses:(NSSet *)sockAddrs;
 
 /*!
 	@property

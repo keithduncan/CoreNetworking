@@ -20,6 +20,7 @@
 @implementation AFNetworkSocket
 
 @dynamic lowerLayer, delegate;
+@synthesize socket=_socket;
 
 static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
@@ -29,14 +30,15 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	
 	switch (type) {
 		case kCFSocketAcceptCallBack:
-		{
-			AFNetworkSocket *newSocket = [[[[self class] alloc] init] autorelease];
+		{	
+			AFNetworkSocket *newSocket = [[[[self class] alloc] initWithLowerLayer:nil] autorelease];
 			
 			CFSocketContext context;
 			memset(&context, 0, sizeof(CFSocketContext));
 			context.info = newSocket;
 			
 			newSocket->_socket = CFSocketCreateWithNative(kCFAllocatorDefault, *(CFSocketNativeHandle *)data, 0, AFSocketCallback, &context);
+			newSocket->_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, newSocket->_socket, 0);
 			
 			if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
 				[self.delegate layer:self didAcceptConnection:newSocket];
@@ -53,23 +55,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	[pool drain];
 }
 
-- (id)initWithLowerLayer:(id <AFTransportLayer>)layer {
-	self = [super initWithLowerLayer:layer];
-	if (self == nil) return nil;
-	
-	CFSocketRef socket = (CFSocketRef)layer;
-	
-	CFSocketContext context;
-	memset(&context, 0, sizeof(CFSocketContext));
-	context.info = self;
-	
-	_socket = CFSocketCreateWithNative(kCFAllocatorDefault, CFSocketGetNative(socket), 0, AFSocketCallback, &context);
-	
-	_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0);
-	
-	return self;
-}
-
 - (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options {
 	self = [self init];
 	if (self == nil) return nil;
@@ -83,16 +68,21 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	memset(&context, 0, sizeof(CFSocketContext));
 	context.info = self;
 	
-	_socket = (CFSocketRef)NSMakeCollectable(CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, options, AFSocketCallback, &context));
+	_socket = CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, options, AFSocketCallback, &context);
+	_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0);
 	
 	if (_socket == NULL) {
 		[self release];
 		return nil;
 	}
 	
-	_socketRunLoopSource = (CFRunLoopSourceRef)NSMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0));
-	
 	return self;
+}
+
+- (void)finalize {
+	[self close];
+	
+	[super finalize];
 }
 
 - (void)dealloc {
@@ -137,6 +127,8 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 - (void)close {
 	if (_socket != NULL) {
 		CFSocketInvalidate(_socket);
+		
+		CFRelease(_socket);
 		_socket = NULL;
 	}
 	
@@ -174,10 +166,8 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 }
 
 - (CFHostRef)peer {
-	CFDataRef addr = CFSocketCopyAddress(_socket);
+	CFDataRef addr = (CFDataRef)[NSMakeCollectable(CFSocketCopyAddress(_socket)) autorelease];
 	CFHostRef peer = (CFHostRef)[NSMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, addr)) autorelease];
-	CFRelease(addr);
-	
 	return peer;
 }
 

@@ -101,18 +101,17 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	self = [super initWithLowerLayer:layer];
 	if (self == nil) return nil;
 	
-#error this relies on getting the socket from the lowerLayer
+	AFNetworkSocket *networkSocket = layer;
+	CFSocketRef socket = (CFSocketRef)[networkSocket socket];
 	
-	CFSocketRef socket = ((CFSocketRef)[(AFNetworkSocket *)layer lowerLayer]);
-	CFSocketSetSocketFlags(socket, (CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate));
-	CFDataRef peerAddress = (CFDataRef)NSMakeCollectable(CFSocketCopyPeerAddress(socket));
+	CFSocketSetSocketFlags(socket, CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate);
 	
-	_peer._hostDestination.host = (CFHostRef)NSMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, peerAddress));
+	_peer._hostDestination.host = (CFHostRef)NSMakeCollectable(CFRetain([(id)layer peer]));
 	
-	CFSocketNativeHandle sock = CFSocketGetNative(socket);
-	CFSocketInvalidate(socket);
+	CFSocketNativeHandle nativeSocket = CFSocketGetNative(socket);
+	CFSocketInvalidate(socket); // Note: the underlying CFSocket must be invalidated for the CFStreams to capture the events
 	
-	CFStreamCreatePairWithSocket(kCFAllocatorDefault, sock, &readStream, &writeStream);
+	CFStreamCreatePairWithSocket(kCFAllocatorDefault, nativeSocket, &readStream, &writeStream);
 	
 	NSMakeCollectable(readStream);
 	NSMakeCollectable(writeStream);

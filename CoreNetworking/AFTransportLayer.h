@@ -41,7 +41,7 @@
 /*!
 	@property
  */
-@property (readonly, retain) id <AFTransportLayer> lowerLayer;
+@property (readonly) id <AFTransportLayer> lowerLayer;
 
  @optional
 
@@ -152,11 +152,6 @@
 	@protocol
  */
 @protocol AFTransportLayerDataDelegate <NSObject>
-
-/*!
-	@property
- */
-@property (readonly, retain) id <AFTransportLayer> lowerLayer;
 
 /*!
 	@method

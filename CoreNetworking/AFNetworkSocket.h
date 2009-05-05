@@ -24,17 +24,6 @@
 }
 
 /*
- *	Inbound Initialiser
- *		This is used to bring a stack online when receiving an inbound connection.
- */
-
-/*!
-	@method
-	@param		|lowerLayer| is expected to be a CFSocketRef from which the native socket can be extracted.
- */
-- (id)initWithLowerLayer:(id <AFTransportLayer>)layer;
-
-/*
  *	Host Initialiser
  *		This is not governed by a protocol, luckily the AFConnectionServer knows how to create this class specifically.
  */
@@ -50,6 +39,11 @@
 	@property
  */
 @property (assign) id <AFConnectionLayerHostDelegate, AFConnectionLayerControlDelegate> delegate;
+
+/*!
+	@property
+ */
+@property (readonly) CFSocketRef socket;
 
 /*!
 	@property

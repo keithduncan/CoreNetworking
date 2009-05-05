@@ -119,11 +119,11 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (void)openSockets:(const AFNetworkTransportSignature *)signature addresses:(NSSet *)sockAddrs {
-	SInt32 port = signature->port;
-	[self openSockets:&port withType:signature->type addresses:sockAddrs];
+	SInt32 *port = (SInt32 *)&(signature->port);
+	[self openSockets:port withSignature:signature->type addresses:sockAddrs];
 }
 
-- (void)openSockets:(SInt32 *)port withType:(const AFNetworkSocketSignature *)type addresses:(NSSet *)sockAddrs {
+- (void)openSockets:(SInt32 *)port withSignature:(const AFNetworkSocketSignature *)signature addresses:(NSSet *)sockAddrs {
 	AFConnectionServer *lowestLayer = self;
 	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
 	self = lowestLayer;
@@ -135,8 +135,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 		
 		CFSocketSignature currentSocketSignature = {
 			.protocolFamily = ((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)currentAddrData))->sa_family,
-			.socketType = type->socketType,
-			.protocol = type->protocol,
+			.socketType = signature->socketType,
+			.protocol = signature->protocol,
 			.address = (CFDataRef)currentAddrData,
 		};
 		

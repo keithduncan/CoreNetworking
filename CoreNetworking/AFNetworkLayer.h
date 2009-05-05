@@ -69,7 +69,7 @@
 /*!
 	@property
  */
-@property (readonly, retain) id <AFTransportLayer> lowerLayer;
+@property (readonly) id <AFTransportLayer> lowerLayer;
 
 /*!
 	@method
