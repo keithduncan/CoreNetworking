@@ -47,7 +47,7 @@
 	return self;
 }
 
-- (id <AFTransportLayer>)initWithSignature:(const AFSocketPeerSignature *)signature {	
+- (id <AFTransportLayer>)initWithSignature:(const AFNetworkTransportPeerSignature *)signature {	
 	id <AFTransportLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithSignature:signature] autorelease];
 	return [self initWithLowerLayer:lowerLayer];
 }

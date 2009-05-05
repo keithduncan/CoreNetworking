@@ -10,7 +10,7 @@
 
 #import "CoreNetworking/AFTransportLayer.h"
 
-@class AFConnection;
+@class AFNetworkConnection;
 
 /*!
 	@class

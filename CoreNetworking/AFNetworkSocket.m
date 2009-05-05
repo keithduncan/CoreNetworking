@@ -6,7 +6,7 @@
 //  Copyright 2009 thirty-three. All rights reserved.
 //
 
-#import "AFSocket.h"
+#import "AFNetworkSocket.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -17,20 +17,20 @@
 #import "AFNetworkFunctions.h"
 #import "AFNetworkConstants.h"
 
-@implementation AFSocket
+@implementation AFNetworkSocket
 
 @dynamic lowerLayer, delegate;
 
 static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	
-	AFSocket *self = [[(AFSocket *)info retain] autorelease];
+	AFNetworkSocket *self = [[(AFNetworkSocket *)info retain] autorelease];
 	NSCParameterAssert(socket == self->_socket);
 	
 	switch (type) {
 		case kCFSocketAcceptCallBack:
 		{
-			AFSocket *newSocket = [[[[self class] alloc] init] autorelease];
+			AFNetworkSocket *newSocket = [[[[self class] alloc] init] autorelease];
 			
 			CFSocketContext context;
 			memset(&context, 0, sizeof(CFSocketContext));

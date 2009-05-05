@@ -11,22 +11,22 @@
 #import <sys/socket.h>
 #import <arpa/inet.h>
 
-const AFSocketTransportType AFSocketTransportTypeTCP = {
+const AFNetworkSocketSignature AFNetworkSocketSignatureTCP = {
 	.socketType = SOCK_STREAM,
 	.protocol = IPPROTO_TCP
 };
 
-const AFSocketTransportType AFSocketTransportTypeUDP = {
+const AFNetworkSocketSignature AFNetworkSocketSignatureUDP = {
 	.socketType = SOCK_DGRAM,
 	.protocol = IPPROTO_UDP
 };
 
-const AFSocketTransportSignature AFSocketTransportSignatureHTTP = {
-	.type = &AFSocketTransportTypeTCP,
+const AFNetworkTransportSignature AFNetworkTransportSignatureHTTP = {
+	.type = &AFNetworkSocketSignatureTCP,
 	.port = 80,
 };
 
-const AFSocketTransportSignature AFSocketTransportSignatureHTTPS = {
-	.type = &AFSocketTransportTypeTCP,
+const AFNetworkTransportSignature AFNetworkTransportSignatureHTTPS = {
+	.type = &AFNetworkSocketSignatureTCP,
 	.port = 443,
 };

@@ -79,7 +79,7 @@
 	@abstract	Shorthand for <tt>-openSockets:withType:addresses:</tt> where you already have an <tt>AFSocketTransportSignature</tt> preconfigured.
 	@discussion	See <tt>-openSockets:withType:addresses:</tt>
  */
-- (void)openSockets:(const AFSocketTransportSignature *)signature addresses:(NSSet *)sockAddrs;
+- (void)openSockets:(const AFNetworkTransportSignature *)signature addresses:(NSSet *)sockAddrs;
 
 /*!
 	@method
@@ -89,7 +89,7 @@
 				on the lowest layer of the stack.
 	@param		|port| is passed by reference so that if you pass 0 you get back the actual port
  */
-- (void)openSockets:(SInt32 *)port withType:(const AFSocketTransportType *)type addresses:(NSSet *)sockAddrs;
+- (void)openSockets:(SInt32 *)port withType:(const AFNetworkSocketSignature *)type addresses:(NSSet *)sockAddrs;
 
 /*!
 	@property

@@ -15,10 +15,10 @@
 #import "CoreNetworking/AFTransportLayer.h"
 #import "CoreNetworking/AFConnectionLayer.h"
 
-#import "CoreNetworking/AFNetworkObject.h"
-#import "CoreNetworking/AFSocket.h"
-#import "CoreNetworking/AFSocketTransport.h"
-#import "CoreNetworking/AFConnection.h"
+#import "CoreNetworking/AFNetworkLayer.h"
+#import "CoreNetworking/AFNetworkSocket.h"
+#import "CoreNetworking/AFNetworkTransport.h"
+#import "CoreNetworking/AFNetworkConnection.h"
 
 #import "CoreNetworking/AFConnectionServer.h"
 #import "CoreNetworking/AFConnectionPool.h"

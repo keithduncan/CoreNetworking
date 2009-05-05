@@ -12,8 +12,8 @@
 #import <arpa/inet.h>
 #import <objc/runtime.h>
 
-#import "AFSocket.h"
-#import "AFSocketTransport.h"
+#import "AFNetworkSocket.h"
+#import "AFNetworkTransport.h"
 
 #import	"AFNetworkTypes.h"
 #import "AFNetworkFunctions.h"
@@ -78,7 +78,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 + (id)server {
-	return [[[self alloc] initWithLowerLayer:nil encapsulationClass:[AFSocketTransport class]] autorelease];
+	return [[[self alloc] initWithLowerLayer:nil encapsulationClass:[AFNetworkTransport class]] autorelease];
 }
 
 - (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass {
@@ -118,12 +118,12 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[super dealloc];
 }
 
-- (void)openSockets:(const AFSocketTransportSignature *)signature addresses:(NSSet *)sockAddrs {
+- (void)openSockets:(const AFNetworkTransportSignature *)signature addresses:(NSSet *)sockAddrs {
 	SInt32 port = signature->port;
 	[self openSockets:&port withType:signature->type addresses:sockAddrs];
 }
 
-- (void)openSockets:(SInt32 *)port withType:(const AFSocketTransportType *)type addresses:(NSSet *)sockAddrs {
+- (void)openSockets:(SInt32 *)port withType:(const AFNetworkSocketSignature *)type addresses:(NSSet *)sockAddrs {
 	AFConnectionServer *lowestLayer = self;
 	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
 	self = lowestLayer;
@@ -140,7 +140,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 			.address = (CFDataRef)currentAddrData,
 		};
 		
-		AFSocket *socket = [[AFSocket alloc] initWithSignature:&currentSocketSignature callbacks:kCFSocketAcceptCallBack];
+		AFNetworkSocket *socket = [[AFNetworkSocket alloc] initWithSignature:&currentSocketSignature callbacks:kCFSocketAcceptCallBack];
 		if (socket == nil) continue;
 		
 		[self.hosts addConnectionsObject:socket];

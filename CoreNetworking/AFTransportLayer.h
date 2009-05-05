@@ -104,14 +104,14 @@
 /*!
 	@protocol
  */
-@protocol AFNetworkLayerHostDelegate <NSObject>
+@protocol AFTransportLayerHostDelegate <NSObject>
 
 @end
 
 /*!
 	@protocol
  */
-@protocol AFNetworkLayerControlDelegate <NSObject>
+@protocol AFTransportLayerControlDelegate <NSObject>
 
 /*!
 	@method
@@ -151,7 +151,7 @@
 /*!
 	@protocol
  */
-@protocol AFNetworkLayerDataDelegate <NSObject>
+@protocol AFTransportLayerDataDelegate <NSObject>
 
 /*!
 	@property

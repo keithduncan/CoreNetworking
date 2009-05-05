@@ -10,15 +10,15 @@
 #import "CoreNetworking/AFNetworkTypes.h"
 #import "CoreNetworking/AFConnectionLayer.h"
 
-@protocol AFSocketConnectionDataDelegate;
-@protocol AFSocketConnectionControlDelegate;
+@protocol AFNetworkTransportDataDelegate;
+@protocol AFNetworkTransportControlDelegate;
 
 /*!
     @class
     @abstract    Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the 'stream' suffix was dropped so not to imply the exclusive use of SOCK_STREAM
     @discussion  This class is a mix of two of the primary patterns. Internally, it acts an adaptor between the CFSocket and CFStream API. Externally, it bridges CFHost, CFNetService with CFSocket and CFStream. It provides a CFStream like API.
 */
-@interface AFSocketTransport : AFNetworkLayer <AFConnectionLayer> {	
+@interface AFNetworkTransport : AFNetworkLayer <AFConnectionLayer> {	
 	NSUInteger _connectionFlags;
 	NSUInteger _streamFlags;
 	
@@ -27,7 +27,7 @@
 			__strong CFNetServiceRef netService;
 		} _netServiceDestination;
 		
-		struct AFSocketPeerSignature _hostDestination;
+		struct AFNetworkTransportPeerSignature _hostDestination;
 	} _peer;
 	
 	__strong CFReadStreamRef readStream;
@@ -42,7 +42,7 @@
 /*!
 	@property
  */
-@property (assign) id <AFSocketConnectionControlDelegate, AFSocketConnectionDataDelegate> delegate;
+@property (assign) id <AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate> delegate;
 
 /*!
 	@property
@@ -65,7 +65,7 @@
 
 @end
 
-@protocol AFSocketConnectionControlDelegate <AFConnectionLayerControlDelegate>
+@protocol AFNetworkTransportControlDelegate <AFConnectionLayerControlDelegate>
 
  @optional
 
@@ -73,11 +73,11 @@
 	@method
 	@abstract	When the socket is closing you can keep it open until the writes are complete, but you'll have to ensure the object remains live
  */
-- (BOOL)socket:(AFSocketTransport *)socket shouldRemainOpenPendingWrites:(NSUInteger)count;
+- (BOOL)socket:(AFNetworkTransport *)socket shouldRemainOpenPendingWrites:(NSUInteger)count;
 
 @end
 
-@protocol AFSocketConnectionDataDelegate <AFNetworkLayerDataDelegate>
+@protocol AFNetworkTransportDataDelegate <AFTransportLayerDataDelegate>
 
  @optional
 
@@ -86,12 +86,12 @@
 	@abstract	instead of calling the <tt>-currentReadProgress:...</tt> on a timer, you can (optionally) implement this delegate method to be notified of read progress
 	@param		|total| will be NSUIntegerMax if the packet terminator is a data pattern.
  */
-- (void)socket:(AFSocketTransport *)socket didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
+- (void)socket:(AFNetworkTransport *)socket didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
 
 /*!
 	@method
 	@abstract	instead of calling the <tt>-currentWriteProgress:...</tt> on a timer, you can (optionally) implement this delegate method to be notified of write progress
  */
-- (void)socket:(AFSocketTransport *)socket didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
+- (void)socket:(AFNetworkTransport *)socket didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
 
 @end

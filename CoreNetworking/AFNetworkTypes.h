@@ -14,23 +14,23 @@
 	@field		|socketType| should be one of the socket types defined in <socket.h>
 	@field		|protocol| should typically be one of the IP protocols defined in RFC 1700 see http://www.faqs.org/rfcs/rfc1700.html - it is important that an appropriate |socketType| is also provided
  */
-struct AFSocketTransportType {
+struct AFNetworkSocketSignature {
 	SInt32 socketType;
 	SInt32 protocol;
 };
-typedef struct AFSocketTransportType AFSocketTransportType;
+typedef struct AFNetworkSocketSignature AFNetworkSocketSignature;
 
 /*!
     @const 
     @abstract   this is suitable for creating a TCP socket
 */
-extern const AFSocketTransportType AFSocketTransportTypeTCP;
+extern const AFNetworkSocketSignature AFNetworkSocketSignatureTCP;
 
 /*!
 	@const 
 	@abstract   this is suitable for creating a UDP socket
  */
-extern const AFSocketTransportType AFSocketTransportTypeUDP;
+extern const AFNetworkSocketSignature AFNetworkSocketSignatureUDP;
 
 /*!
 	@struct
@@ -38,21 +38,21 @@ extern const AFSocketTransportType AFSocketTransportTypeUDP;
 	@field		|type| see the documentation on <tt>AFSocketType</tt>
 	@field		|port| identifies the Transport Layer address to communicate using (see RFC 1122) in network byte order
  */
-struct AFSocketTransportSignature {
-	const AFSocketTransportType *type;
+struct AFNetworkTransportSignature {
+	const AFNetworkSocketSignature *type;
 	SInt32 port;
 };
-typedef struct AFSocketTransportSignature AFSocketTransportSignature;
+typedef struct AFNetworkTransportSignature AFNetworkTransportSignature;
 
 /*!
 	@const
  */
-const AFSocketTransportSignature AFSocketTransportSignatureHTTP;
+const AFNetworkTransportSignature AFNetworkTransportSignatureHTTP;
 
 /*!
 	@const
  */
-const AFSocketTransportSignature AFSocketTransportSignatureHTTPS;
+const AFNetworkTransportSignature AFNetworkTransportSignatureHTTPS;
 
 /*!
 	@struct 
@@ -61,7 +61,7 @@ const AFSocketTransportSignature AFSocketTransportSignatureHTTPS;
 	@field      |host| is copied using CFHostCreateCopy() the addresses property is resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap it won't be reclaimed
 	@field		|transport| see the documentation for <tt>AFSocketTransportLayer</tt> it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc) and the port
  */
-struct AFSocketPeerSignature {
+struct AFNetworkTransportPeerSignature {
 	/*
 	 *	This defines _where_ to communicate
 	 */
@@ -69,6 +69,6 @@ struct AFSocketPeerSignature {
 	/*
 	 *	This defines _how_ to communicate (and may allow for the return of a specific handler subclass from the creation methods)
 	 */	
-	AFSocketTransportSignature transport;
+	AFNetworkTransportSignature transport;
 };
-typedef struct AFSocketPeerSignature AFSocketPeerSignature;
+typedef struct AFNetworkTransportPeerSignature AFNetworkTransportPeerSignature;

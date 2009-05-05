@@ -15,7 +15,7 @@
 	@abstract	An simple object-oriented wrapper around CFSocket
 	@discussion	The current purpose of this class is to spawn more sockets upon revieving inbound connections
  */
-@interface AFSocket : AFNetworkLayer <AFConnectionLayer> {
+@interface AFNetworkSocket : AFNetworkLayer <AFConnectionLayer> {
  @private
 	__strong CFSocketSignature *_signature;
 	

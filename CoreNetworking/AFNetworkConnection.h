@@ -15,7 +15,7 @@
     @abstract	Will forward messages to the |lowerLayer|.
 	@discussion	Your subclass should encapsulate Application Layer data (as defined in RFC 1122) and pass it to the superclass for further processing.
 */
-@interface AFConnection : AFNetworkLayer <AFConnectionLayer>
+@interface AFNetworkConnection : AFNetworkLayer <AFConnectionLayer>
 
 /*!
 	@property

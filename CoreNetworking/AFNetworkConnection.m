@@ -6,9 +6,9 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "AFConnection.h"
+#import "AFNetworkConnection.h"
 
-@implementation AFConnection
+@implementation AFNetworkConnection
 
 @dynamic lowerLayer, delegate;
 

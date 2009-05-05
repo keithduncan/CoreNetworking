@@ -34,7 +34,7 @@
 /*!
 	@protocol
  */
-@protocol AFConnectionLayerHostDelegate <AFNetworkLayerHostDelegate>
+@protocol AFConnectionLayerHostDelegate <AFTransportLayerHostDelegate>
 /*!
 	@method
 	@abstract	|layer| could be the host that spawned it or an intermediate object
@@ -45,7 +45,7 @@
 /*!
 	@protocol
  */
-@protocol AFConnectionLayerControlDelegate <AFNetworkLayerControlDelegate>
+@protocol AFConnectionLayerControlDelegate <AFTransportLayerControlDelegate>
 
  @optional
 
