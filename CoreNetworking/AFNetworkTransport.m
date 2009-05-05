@@ -116,6 +116,9 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	NSMakeCollectable(readStream);
 	NSMakeCollectable(writeStream);
 	
+	CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
+	CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
+	
 	[self _configureStreams];
 	
 	return self;
@@ -667,8 +670,11 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	if (!packetComplete) return;
 	
-	[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
+	// Note: the current packet is ended before calling the delegate because they could dealloc us
+	[[packet retain] autorelease];
 	[self _endCurrentReadPacket];
+	
+	[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
 }
 
 - (void)_endCurrentReadPacket {
@@ -730,9 +736,12 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	}
 	
 	if (!packetComplete) return;
-		
-	[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
+	
+	// Note: the current packet is ended before calling the delegate because they could dealloc us
+	[[packet retain] autorelease];
 	[self _endCurrentWritePacket];
+	
+	[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
 }
 
 - (void)_endCurrentWritePacket {

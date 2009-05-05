@@ -180,13 +180,15 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	}
 	
 	id <AFConnectionLayer> newConnection = [self newApplicationLayerForNetworkLayer:newLayer];
-	
 	[self.clients addConnectionsObject:newConnection];
 	[newConnection open];
 }
 
 - (void)layerDidOpen:(id <AFTransportLayer>)layer {
+	if (![self.clients.connections containsObject:layer]) return;
 	
+	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
+		[self.delegate layer:self didAcceptConnection:layer];
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
@@ -195,7 +197,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	if (self.lowerLayer != nil) {
 		id <AFTransportLayer> lowerLayer = layer.lowerLayer;
 		lowerLayer.delegate = (id)self.lowerLayer;
-		[layer close];
+		[lowerLayer close];
 	}
 	
 	[self.clients removeConnectionsObject:layer];
