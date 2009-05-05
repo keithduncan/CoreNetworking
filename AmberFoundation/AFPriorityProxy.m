@@ -32,7 +32,7 @@
 	
 	[description appendString:@" {"];
 	
-	[description appendFormat:@"\n\tDispatch Order: %@", dispatchOrder, nil];
+	[description appendFormat:@"\n\tDispatch Order: %@", [dispatchOrder allObjects], nil];
 	
 	[description appendString:@"\n}"];
 	
