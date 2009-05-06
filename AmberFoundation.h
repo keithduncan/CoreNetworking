@@ -8,8 +8,8 @@
  */
 
 /*!
-    @header
-    @abstract	This framework reserves the (AFAdditions) category namespace, don't use it!
+	@header
+    @brief	This framework reserves the (AFAdditions) category namespace, don't use it!
 */
 
 //

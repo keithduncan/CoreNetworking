@@ -36,8 +36,7 @@
 }
 
 /*!
-	@function
-	@abstract	This is a recursive function to find a method signature in a protocol and its conformed protcols
+	@brief	This is a recursive function to find a method signature in a protocol and its conformed protcols
  */
 static NSMethodSignature *AFProtcolGetMethodSignature(SEL selector, Protocol *protocol) {
 	for (SInt8 mask = 0; mask < 4; mask++) {

@@ -12,8 +12,8 @@
 
 /*!
 	@class
-	@abstract    Allows for asynchronous DNSService API callbacks
-	@discussion  This class doesn't take ownership of the DNSServiceRef it is instantiated with, it is still the client's responsibility to deallocate the DNSServiceRef once it is no longer needed
+	@brief    Allows for asynchronous DNSService API callbacks
+	@detail  This class doesn't take ownership of the DNSServiceRef it is instantiated with, it is still the client's responsibility to deallocate the DNSServiceRef once it is no longer needed
 */
 @interface AFServiceDiscoveryRunLoopSource : NSObject {
 	DNSServiceRef _service;

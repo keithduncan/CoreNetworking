@@ -13,36 +13,20 @@
 @class AFNetworkConnection;
 
 /*!
-	@class
-	@abstract	The pool will automatically schedule added connections.
+	@brief	This class schedules added connections on a run loop. They should be prepared to the scheduled on a background run loop.
  */
 @interface AFConnectionPool : NSObject {
 	NSMutableSet *_connections;
 }
 
-/*!
-	@property
- */
 @property (readonly) NSSet *connections;
 
-/*!
-	@method
- */
 - (void)addConnectionsObject:(id <AFTransportLayer>)proxy;
 
-/*!
-	@method
- */
 - (void)removeConnectionsObject:(id <AFTransportLayer>)proxy;
 
-/*!
-	@method
- */
 - (id <AFTransportLayer>)connectionWithValue:(id)value forKey:(NSString *)key;
 
-/*!
-	@method
- */
-- (void)disconnect;
+- (void)close;
 
 @end

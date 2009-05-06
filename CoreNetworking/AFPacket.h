@@ -21,7 +21,7 @@ typedef NSInteger AFPacketError;
 
 /*!
 	@constant
-	@abstract	This is posted when a timeout occurs, the object is the packet
+	@brief	This is posted when a timeout occurs, the object is the packet
  */
 extern NSString *const AFPacketTimeoutNotificationName;
 
@@ -48,13 +48,13 @@ extern NSString *const AFPacketTimeoutNotificationName;
 
 /*!
 	@property
-	@abstract	This is a dynamic property for subclasses to implement
+	@brief	This is a dynamic property for subclasses to implement
  */
 @property (readonly) NSData *buffer;
 
 /*!
 	@method
-	@abstract	This is an override point
+	@brief	This is an override point
 	@result		Vaules in the range [0.0, 1.0], this method returns 0.0 by default
 	@param		|fraction| is required, calling with a NULL argument will raise an exception
  */

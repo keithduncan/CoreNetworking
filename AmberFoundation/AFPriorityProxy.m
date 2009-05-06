@@ -50,8 +50,7 @@
 }
 
 /*!
-	@method
-	@abstract	This increments the priority value of each target by one
+	@brief	This increments the priority value of each target by one
  */
 - (void)_slidePriorityAtIndex:(NSUInteger)index {
 	NSMapTable *newPriorityMap = [[NSMapTable mapTableWithWeakToStrongObjects] retain];
@@ -68,8 +67,7 @@
 }
 
 /*!
-	@method
-	@abstract	This regenerates the relative priority based dispatch table
+	@brief	This regenerates the relative priority based dispatch table
  */
 - (void)_reorderDispatchTable {
 	[dispatchOrder release];

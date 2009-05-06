@@ -11,20 +11,14 @@
 #import "CoreNetworking/AFConnectionLayer.h"
 
 /*!
-    @class
-    @abstract	Will forward messages to the |lowerLayer|.
-	@discussion	Your subclass should encapsulate Application Layer data (as defined in RFC 1122) and pass it to the superclass for further processing.
+	@brief	Your subclass should encapsulate Application Layer data (as defined in RFC 1122) and pass it to the superclass for further processing.
 */
 @interface AFNetworkConnection : AFNetworkLayer <AFConnectionLayer>
 
-/*!
-	@property
- */
+
 @property (readonly) id <AFConnectionLayer> lowerLayer;
 
-/*!
-	@property
- */
+
 @property (assign) id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> delegate;
 
 @end

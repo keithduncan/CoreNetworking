@@ -1605,6 +1605,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				DOXYGEN_PATH = /Developer/Applications/Doxygen.app/Contents/Resources/doxygen;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
@@ -1632,6 +1633,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DOXYGEN_PATH = /Developer/Applications/Doxygen.app/Contents/Resources/doxygen;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
@@ -1648,7 +1650,6 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = CoreNetworking;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};

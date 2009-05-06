@@ -116,6 +116,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	NSMakeCollectable(readStream);
 	NSMakeCollectable(writeStream);
 	
+	// Note: ensure this is done in the same method as setting the socket options to essentially balance a retain/release on the native socket
 	CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
 	CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
 	

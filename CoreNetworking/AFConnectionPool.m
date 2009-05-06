@@ -63,8 +63,8 @@
 	return connection;
 }
 
-- (void)disconnect {
-	[self.connections makeObjectsPerformSelector:@selector(disconnect)];
+- (void)close {
+	[self.connections makeObjectsPerformSelector:@selector(close)];
 }
 
 @end

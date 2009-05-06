@@ -34,7 +34,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 @dynamic lowerLayer, delegate;
 @synthesize clientClass=_clientClass;
-@synthesize hosts, clients;
+@synthesize hosts;
 
 + (NSSet *)localhostSocketAddresses {
 	CFHostRef localhost = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost")) autorelease];
@@ -87,16 +87,14 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	
 	hosts = [[AFConnectionPool alloc] init];
 	[hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
-	
-	clients = [[AFConnectionPool alloc] init];
-	
+		
 	_clientClass = clientClass;
 	
 	return self;
 }
 
 - (void)_close {
-	[self.clients disconnect];
+	[self.hosts close];
 }
 
 - (void)finalize {
@@ -108,11 +106,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (void)dealloc {
 	[self _close];
 	
-	[clients release];
-	
 	[hosts removeObserver:self forKeyPath:@"connections"];
-	[hosts disconnect];
-	
 	[hosts release];
 	
 	[super dealloc];
@@ -180,19 +174,19 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	}
 	
 	id <AFConnectionLayer> newConnection = [self newApplicationLayerForNetworkLayer:newLayer];
-	[self.clients addConnectionsObject:newConnection];
+	[self.hosts addConnectionsObject:newConnection];
 	[newConnection open];
 }
 
 - (void)layerDidOpen:(id <AFTransportLayer>)layer {
-	if (![self.clients.connections containsObject:layer]) return;
+	if (![self.hosts.connections containsObject:layer]) return;
 	
 	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
 		[self.delegate layer:self didAcceptConnection:layer];
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
-	if (![self.clients.connections containsObject:layer]) return;
+	if (![self.hosts.connections containsObject:layer]) return;
 	
 	if (self.lowerLayer != nil) {
 		id <AFTransportLayer> lowerLayer = layer.lowerLayer;
@@ -200,7 +194,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 		[lowerLayer close];
 	}
 	
-	[self.clients removeConnectionsObject:layer];
+	[self.hosts removeConnectionsObject:layer];
 }
 
 @end
