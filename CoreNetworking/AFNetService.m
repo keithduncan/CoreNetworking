@@ -87,7 +87,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 				
 	context.info = self;
 	
-	_service =  CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)domain, (CFStringRef)type, (CFStringRef)name, 0);
+	_service =  (CFNetServiceRef)CFMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)domain, (CFStringRef)type, (CFStringRef)name, 0));
 	Boolean client = CFNetServiceSetClient(_service, AFNetServiceClientCallBack, &context);
 	
 	if (!client) {
@@ -97,7 +97,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 		return nil;
 	}
 	
-	monitor = CFNetServiceMonitorCreate(kCFAllocatorDefault, _service, AFNetServiceMonitorClientCallBack, &context);
+	_monitor = (CFNetServiceMonitorRef)CFMakeCollectable(CFNetServiceMonitorCreate(kCFAllocatorDefault, _service, AFNetServiceMonitorClientCallBack, &context));
 	
 	return self;
 }
@@ -105,8 +105,8 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 - (void)dealloc {
 	[self stop];
 	
-	CFNetServiceMonitorInvalidate(monitor);
-	CFRelease(monitor);
+	CFNetServiceMonitorInvalidate(_monitor);
+	CFRelease(_monitor);
 	
 	CFRelease(_service);
 	
@@ -137,13 +137,13 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 }
 
 - (void)startMonitoring {
-	CFNetServiceMonitorScheduleWithRunLoop(monitor, CFRunLoopGetMain(), kCFRunLoopCommonModes);
-	CFNetServiceMonitorStart(monitor, kCFNetServiceMonitorTXT, NULL);
+	CFNetServiceMonitorScheduleWithRunLoop(_monitor, CFRunLoopGetMain(), kCFRunLoopCommonModes);
+	CFNetServiceMonitorStart(_monitor, kCFNetServiceMonitorTXT, NULL);
 }
 
 - (void)stopMonitoring {
-	CFNetServiceMonitorStop(monitor, NULL);
-	CFNetServiceMonitorUnscheduleFromRunLoop(monitor, CFRunLoopGetMain(), kCFRunLoopCommonModes);
+	CFNetServiceMonitorStop(_monitor, NULL);
+	CFNetServiceMonitorUnscheduleFromRunLoop(_monitor, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 }
 
 - (void)updatePresenceWithValuesForKeys:(NSDictionary *)newPresence {
@@ -165,7 +165,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	[self stopResolve];	
 }
 
-- (NSArray *)addresses {	
+- (NSArray *)addresses {
 	return (id)CFNetServiceGetAddressing(_service);
 }
 

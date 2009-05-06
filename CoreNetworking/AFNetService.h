@@ -55,8 +55,8 @@ extern NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData);
 			This cannot currently be used for publishing a service, the NSNetService API is generally sufficient for that.
 */
 @interface AFNetService : NSObject <AFNetServiceCommon> {
-	CFNetServiceRef _service;
-	CFNetServiceMonitorRef monitor;
+	__strong CFNetServiceRef _service;
+	__strong CFNetServiceMonitorRef _monitor;
 	
 	id <AFNetServiceDelegate> delegate;
 	NSMutableDictionary *presence;
