@@ -8,18 +8,17 @@
 
 #import "AFNetworkLayer.h"
 
-#import <objc/runtime.h>
+#import <objc/objc-runtime.h>
 
 #import "AmberFoundation/AFPriorityProxy.h"
 
 @interface AFNetworkLayer ()
-@property (readwrite, retain) id <AFTransportLayer> lowerLayer;
+- (void)setLowerLayer:(AFNetworkLayer *)layer;
 @property (readwrite, retain) NSMutableDictionary *transportInfo;
 @end
 
 @implementation AFNetworkLayer
 
-@synthesize lowerLayer=_lowerLayer;
 @synthesize delegate=_delegate;
 @synthesize transportInfo=_transportInfo;
 
@@ -58,10 +57,27 @@
 }
 
 - (void)dealloc {
-	self.lowerLayer = nil;
+	[_lowerLayer release];
 	self.transportInfo = nil;
 	
 	[super dealloc];
+}
+
+- (AFNetworkLayer *)lowerLayer {
+	id value = nil;
+	object_getInstanceVariable(self, "_lowerLayer", (void **)&value);
+	return value;
+}
+
+- (void)setLowerLayer:(AFNetworkLayer *)layer {	
+	id lowerLayer = nil;
+	Ivar lowerLayerIvar = object_getInstanceVariable(self, "_lowerLayer", (void **)&lowerLayer);
+	
+	[layer retain];
+	[lowerLayer release];
+	lowerLayer = layer;
+	
+	object_setIvar(self, lowerLayerIvar, lowerLayer);
 }
 
 - (id)forwardingTargetForSelector:(SEL)selector {
@@ -72,12 +88,14 @@
 	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
 }
 
-- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
-	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
-	
+- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {	
 	id delegate = nil;
 	object_getInstanceVariable(self, "_delegate", (void **)&delegate);
 	// Note: this intentionally doesn't use the accessor, I changed it before and left this comment here to warn me off next time.
+	if (delegate == nil) return proxy;
+	
+	
+	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
 	
 	if ([delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)delegate delegateProxy:proxy];
 	[proxy insertTarget:delegate atPriority:0];

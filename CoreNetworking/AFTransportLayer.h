@@ -25,7 +25,6 @@
 */
 @protocol AFTransportLayer <NSObject>
 
-
 @property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
 
 /*!
@@ -33,7 +32,6 @@
 	@detail	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound communication will probably have a more specific initialiser
  */
 - (id)initWithLowerLayer:(id <AFTransportLayer>)layer;
-
 
 @property (readonly) id <AFTransportLayer> lowerLayer;
 

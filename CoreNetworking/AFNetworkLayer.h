@@ -53,8 +53,10 @@
  */
 - (id <AFTransportLayer>)initWithNetService:(id <AFNetServiceCommon>)netService;
 
-
-@property (readonly) id <AFTransportLayer> lowerLayer;
+/*!
+	@brief	Data should be passed onto the lowerLayer for further processing.
+ */
+- (AFNetworkLayer *)lowerLayer;
 
 /*!
 	@brief	When accessing this property, you will not recieve the same object you passed in, this method returns a transparent proxy that allows a caller to forward messages up the delegate stack.

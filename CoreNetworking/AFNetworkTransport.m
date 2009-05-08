@@ -101,7 +101,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	self = [super initWithLowerLayer:layer];
 	if (self == nil) return nil;
 	
-	AFNetworkSocket *networkSocket = layer;
+	AFNetworkSocket *networkSocket = (AFNetworkSocket *)layer;
 	CFSocketRef socket = (CFSocketRef)[networkSocket socket];
 	
 	CFSocketSetSocketFlags(socket, CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate);
@@ -166,17 +166,22 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 }
 
 - (void)_close {
-	[NSObject cancelPreviousPerformRequestsWithTarget:self.delegate selector:@selector(layerDidClose:) object:self];
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 }
 
 - (void)finalize {
+	if (![self isClosed]) {
+		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot finalize a layer which isn't closed yet.", __PRETTY_FUNCTION__, nil];
+		return;
+	}
+	
 	[self _close];
 	
 	[super finalize];
 }
 
 - (void)dealloc {
+	[self close];
 	[self _close];
 	
 	// Note: this will also deallocate the netService if present
@@ -378,6 +383,8 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 		
 		CFReadStreamSetClient(readStream, kCFStreamEventNone, NULL, NULL);
 		CFReadStreamClose(readStream);
+		
+		self.streamFlags = (self.streamFlags | _kReadStreamDidClose);
 	}
 	
 	if (writeStream != NULL) {
@@ -386,6 +393,8 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 		
 		CFWriteStreamSetClient(writeStream, kCFStreamEventNone, NULL, NULL);
 		CFWriteStreamClose(writeStream);
+		
+		self.streamFlags = (self.streamFlags | _kWriteStreamDidClose);
 	}
 	
 	self.connectionFlags = 0;
@@ -452,9 +461,7 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 			break;
 		}
 		case kCFStreamEventEndEncountered:
-		{
-			self.streamFlags = (self.streamFlags | _kReadStreamDidClose);
-			
+		{			
 			[self close];
 			break;
 		}
@@ -520,9 +527,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 			break;
 		}
 		case kCFStreamEventEndEncountered:
-		{
-			self.streamFlags = (self.streamFlags | _kWriteStreamDidClose);
-			
+		{			
 			[self close];
 			break;
 		}

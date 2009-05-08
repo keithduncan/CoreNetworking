@@ -14,7 +14,6 @@
 @class AFConnectionPool;
 @class AFConnectionServer;
 
-
 @protocol AFConnectionServerDelegate <AFConnectionLayerHostDelegate>
  @optional
 - (BOOL)server:(AFConnectionServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection fromHost:(const CFHostRef)host;
