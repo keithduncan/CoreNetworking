@@ -45,7 +45,13 @@
 	@param	|TXTRecordData| should be the raw NSData object as returned by <tt>-[NSNetService TXTRecordData]</tt>.
 	@result	A dictionary of NSString key-value pairs.
 */
-extern NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData);
+extern NSDictionary *AFNetServicePropertyDictionaryFromTXTRecordData(NSData *TXTRecordData);
+
+/*!
+	@brief	Converts a key-value string pair dictionary into a data object that can be set as a TXT record.
+	@detail	The dictionary returned by the <tt>+[NSNetService dataFromTXTRecordDictionary:]</tt> only accepts a dictionary with data objects, this function converts the data objects as UTF-8 strings into data objects for you.
+ */
+extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary);
 
 @protocol AFNetServiceDelegate;
 

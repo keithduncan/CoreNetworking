@@ -16,7 +16,7 @@
 
 #import "AFNetworkConstants.h"
 
-NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData) {
+NSDictionary *AFNetServicePropertyDictionaryFromTXTRecordData(NSData *TXTRecordData) {
 	NSMutableDictionary *TXTDictionary = [[[NSNetService dictionaryFromTXTRecordData:TXTRecordData] mutableCopy] autorelease];
 	
 	for (NSString *currentKey in [TXTDictionary allKeys]) {
@@ -25,6 +25,19 @@ NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData) {
 	}
 	
 	return TXTDictionary;
+}
+
+NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary) {
+	NSMutableDictionary *dataDictionary = [NSMutableDictionary dictionaryWithCapacity:[TXTRecordDictionary count]];
+	
+	for (NSString *currentKey in [TXTRecordDictionary allKeys]) {
+		id currentValue = [TXTRecordDictionary objectForKey:currentKey];
+		currentValue = [currentValue dataUsingEncoding:NSUTF8StringEncoding];
+		
+		[dataDictionary setObject:currentValue forKey:currentKey];
+	}
+	
+	return [NSNetService dataFromTXTRecordDictionary:dataDictionary];
 }
 
 @interface AFNetService ()
@@ -51,8 +64,7 @@ NSDictionary *AFNetServiceProcessTXTRecordData(NSData *TXTRecordData) {
 static void AFNetServiceMonitorClientCallBack(CFNetServiceMonitorRef monitor, CFNetServiceRef service, CFNetServiceMonitorType typeInfo, CFDataRef rdata, CFStreamError *error, void *info) {
 	AFNetService *self = info;
 	
-	NSDictionary *values = AFNetServiceProcessTXTRecordData((NSData *)rdata);
-	
+	NSDictionary *values = AFNetServicePropertyDictionaryFromTXTRecordData((NSData *)rdata);
 	[self updatePresenceWithValuesForKeys:values];
 }
 
