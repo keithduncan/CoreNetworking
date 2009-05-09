@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+#if TARGET_OS_IPHONE
+#import <CFNetwork/CFNetwork.h>
+#endif
+
 /*!
 	@struct
 	@brief	common transport layer types can be defined using these two fields

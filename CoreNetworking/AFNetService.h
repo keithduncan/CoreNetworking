@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+#if TARGET_OS_IPHONE
+#import <CFNetwork/CFNetwork.h>
+#endif
+
 /*!
 	@brief	The defines the minimum required to create a service suitable for resolution
 	@detail	NSNetService doesn't need to support copying because once discovered, the name, type and service are sufficient to create other classes
@@ -16,7 +20,6 @@
 			Important: if a class is passed an (id <AFNetServiceCommon) to create a new service, you MUST use <tt>-valueForKey:</tt> allowing for a dictionary (or other serialized reference) to be used in place of an actual service object.
  */
 @protocol AFNetServiceCommon <NSObject>
-
 
 @property (readonly) NSString *name, *type, *domain;
 

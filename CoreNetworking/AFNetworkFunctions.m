@@ -12,6 +12,10 @@
 #import <sys/socket.h>
 #import <arpa/inet.h>
 
+#if TARGET_OS_IPHONE
+#import <CFNetwork/CFNetwork.h>
+#endif
+
 NS_INLINE bool sockaddr_is_ipv4_mapped(const struct sockaddr *addr) {
 	NSCParameterAssert(addr != NULL);
 	

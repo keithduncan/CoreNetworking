@@ -59,10 +59,9 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_signature = NSAllocateCollectable(sizeof(CFSocketSignature), NSScannedOption);
-	objc_memmove_collectable(_signature, signature, sizeof(CFSocketSignature));
-	// Note: this is to keep things tickety boo under GC and otherwise
-	NSMakeCollectable(CFRetain(_signature->address));
+	_signature = malloc(sizeof(CFSocketSignature));
+	memcpy(_signature, signature, sizeof(CFSocketSignature));
+	CFRetain(_signature->address);
 	
 	CFSocketContext context;
 	memset(&context, 0, sizeof(CFSocketContext));
@@ -81,6 +80,12 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 
 - (void)finalize {
 	[self close];
+	
+	if (_signature != NULL)
+		if (_signature->address != NULL)
+			CFRelease(_signature->address);
+	
+	free(_signature);
 	
 	[super finalize];
 }

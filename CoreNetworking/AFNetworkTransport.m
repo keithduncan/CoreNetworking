@@ -150,7 +150,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	self = [self init];
 	if (self == nil) return nil;
 	
-	objc_memmove_collectable(&_peer._hostDestination, signature, sizeof(AFNetworkTransportPeerSignature));
+	memcpy(&_peer._hostDestination, signature, sizeof(AFNetworkTransportPeerSignature));
 	
 	CFHostRef *host = &_peer._hostDestination.host;
 	*host = (CFHostRef)NSMakeCollectable(CFRetain(signature->host));

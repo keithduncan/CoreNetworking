@@ -8,7 +8,7 @@
 
 #import "AFNetworkLayer.h"
 
-#import <objc/objc-runtime.h>
+#import <objc/runtime.h>
 
 #import "AmberFoundation/AFPriorityProxy.h"
 
