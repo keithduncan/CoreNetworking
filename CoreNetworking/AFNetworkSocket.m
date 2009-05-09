@@ -125,6 +125,8 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 }
 
 - (void)close {
+	if ([self isClosed]) return;
+	
 	if (_socket != NULL) {
 		CFSocketInvalidate(_socket);
 		

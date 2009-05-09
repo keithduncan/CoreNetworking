@@ -316,6 +316,8 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 }
 
 - (void)open {
+	if ([self isOpen]) return;
+	
 	if (CFGetTypeID([self peer]) == CFHostGetTypeID()) {
 		CFHostRef host = (CFHostRef)self.peer;
 		
