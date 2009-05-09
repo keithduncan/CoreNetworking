@@ -54,7 +54,8 @@ NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordD
 }
 
 - (id)init {
-	[super init];
+	self = [super init];
+	if (self == nil) return nil;
 		
 	presence = [[NSMutableDictionary alloc] init];
 	
@@ -92,7 +93,8 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 }
 
 - (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name {
-	[self init];
+	self = [self init];
+	if (self == nil) return nil;
 	
 	CFNetServiceClientContext context;
 	memset(&context, 0, sizeof(CFNetServiceClientContext));
