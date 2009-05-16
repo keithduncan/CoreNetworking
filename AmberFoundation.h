@@ -18,6 +18,7 @@
 
 #import "AmberFoundation/AFRange.h"
 #import "AmberFoundation/AFGeometry.h"
+#import "AmberFoundation/AFMacro.h"
 
 //
 //	Objects
@@ -34,6 +35,7 @@
 
 #import "AmberFoundation/AFProtocolProxy.h"
 #import "AmberFoundation/AFPriorityProxy.h"
+#import "AmberFoundation/AFKeyPathProxy.h"
 
 //
 //	Protocols

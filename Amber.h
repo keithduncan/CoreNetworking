@@ -7,9 +7,14 @@
  *
  */
 
-// This framework reserves the AFAdditions and AKAdditions category namespaces for AmberFoundation and AmberKit respectively, don't use it!
+/*
+	@header
+ 
+	This framework reserves the AFAdditions and AKAdditions category namespaces for AmberFoundation and AmberKit respectively, don't use it!
+ */
 
 #import <Cocoa/Cocoa.h>
 
 #import "AmberKit/AmberKit.h"
 #import "AmberFoundation/AmberFoundation.h"
+#import "CoreNetworking/CoreNetworking.h"

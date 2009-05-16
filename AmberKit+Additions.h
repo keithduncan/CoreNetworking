@@ -13,3 +13,4 @@
 #import "AmberKit/NSBezierPath+Additions.h"
 #import "AmberKit/NSGradient+Additions.h"
 #import "AmberKit/NSTreeController+Additions.h"
+#import "AmberKit/NSControl+Additions.h"
