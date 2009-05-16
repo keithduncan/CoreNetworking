@@ -21,6 +21,10 @@
 		532F74FE0F0EB209004D6056 /* AmberFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A60DA0D269932001CD14A /* AmberFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5333F83C0F82CB7A00A9AF8A /* AFConnectionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5333F83E0F82CB7A00A9AF8A /* AFConnectionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		533F5BF70FBF52F500169C14 /* AFKeyPathProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5BF50FBF52F500169C14 /* AFKeyPathProxy.h */; };
+		533F5BF80FBF52F500169C14 /* AFKeyPathProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5BF60FBF52F500169C14 /* AFKeyPathProxy.m */; };
+		533F5BF90FBF52F500169C14 /* AFKeyPathProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5BF50FBF52F500169C14 /* AFKeyPathProxy.h */; };
+		533F5BFA0FBF52F500169C14 /* AFKeyPathProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5BF60FBF52F500169C14 /* AFKeyPathProxy.m */; };
 		535511ED0FAF4A27004F8FC5 /* AFTransportLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535511EE0FAF4A27004F8FC5 /* AFTransportLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535511F10FAF4A34004F8FC5 /* AFNetworkTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EF0FAF4A34004F8FC5 /* AFNetworkTransport.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -301,6 +305,8 @@
 		532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAmberFoundation.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		532F73E20F0EB1D7004D6056 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFConnectionLayer.h; path = CoreNetworking/AFConnectionLayer.h; sourceTree = "<group>"; };
+		533F5BF50FBF52F500169C14 /* AFKeyPathProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFKeyPathProxy.h; path = AmberFoundation/AFKeyPathProxy.h; sourceTree = "<group>"; };
+		533F5BF60FBF52F500169C14 /* AFKeyPathProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFKeyPathProxy.m; path = AmberFoundation/AFKeyPathProxy.m; sourceTree = "<group>"; };
 		5343E70E0C21FB4200B63E6E /* Amber.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Amber.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5343E7100C21FB4200B63E6E /* Amber-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Amber-Info.plist"; sourceTree = "<group>"; };
 		5343E7230C21FBEA00B63E6E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -826,6 +832,8 @@
 				539A441F0F782E1200564C73 /* AFPriorityProxy.m */,
 				539A44200F782E1200564C73 /* AFProtocolProxy.h */,
 				539A44210F782E1200564C73 /* AFProtocolProxy.m */,
+				533F5BF50FBF52F500169C14 /* AFKeyPathProxy.h */,
+				533F5BF60FBF52F500169C14 /* AFKeyPathProxy.m */,
 			);
 			name = General;
 			sourceTree = "<group>";
@@ -920,6 +928,7 @@
 				537772A50F89264D0042C727 /* AFKeyIndexedSet.h in Headers */,
 				537772C70F8934BC0042C727 /* NSSet+Additions.h in Headers */,
 				537772CD0F8935000042C727 /* NSDictionary+Additions.h in Headers */,
+				533F5BF90FBF52F500169C14 /* AFKeyPathProxy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -997,6 +1006,7 @@
 				537772A30F89264D0042C727 /* AFKeyIndexedSet.h in Headers */,
 				537772C50F8934BC0042C727 /* NSSet+Additions.h in Headers */,
 				537772CB0F8935000042C727 /* NSDictionary+Additions.h in Headers */,
+				533F5BF70FBF52F500169C14 /* AFKeyPathProxy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1293,6 +1303,7 @@
 				537772A60F89264D0042C727 /* AFKeyIndexedSet.m in Sources */,
 				537772C80F8934BC0042C727 /* NSSet+Additions.m in Sources */,
 				537772CE0F8935000042C727 /* NSDictionary+Additions.m in Sources */,
+				533F5BFA0FBF52F500169C14 /* AFKeyPathProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1356,6 +1367,7 @@
 				537772A40F89264D0042C727 /* AFKeyIndexedSet.m in Sources */,
 				537772C60F8934BC0042C727 /* NSSet+Additions.m in Sources */,
 				537772CC0F8935000042C727 /* NSDictionary+Additions.m in Sources */,
+				533F5BF80FBF52F500169C14 /* AFKeyPathProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
