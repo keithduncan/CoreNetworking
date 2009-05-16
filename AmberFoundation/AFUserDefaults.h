@@ -20,7 +20,6 @@
 	id _registration;
 }
 
-
 @property (readonly, copy) NSString *identifier;
 
 /*!
@@ -53,9 +52,7 @@
  */
 - (void)registerDefaults:(NSDictionary *)registrationDictionary;
 
-
 - (NSDictionary *)dictionaryValue;
-
 
 - (BOOL)synchronize;
 
