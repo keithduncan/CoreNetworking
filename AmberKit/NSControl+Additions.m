@@ -8,7 +8,7 @@
 
 #import "NSControl+Additions.h"
 
-@implementation NSControl (Additions)
+@implementation NSControl (AFAdditions)
 
 - (BOOL)shouldDrawKey {
 	return ([[NSApplication sharedApplication] isActive] && [[self window] isKeyWindow]);

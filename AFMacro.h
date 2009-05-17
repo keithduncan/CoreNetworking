@@ -8,4 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "AmberFoundation/NSString+Additions.h"
+
 #define NSSTRING_CONTEXT(var) static NSString *var = @#var
+
+NS_INLINE BOOL AFFileExistsAtPath(NSString *path) {
+	return (path != nil && ![path isEmpty] && [[NSFileManager defaultManager] fileExistsAtPath:[path stringByExpandingTildeInPath]]);
+}
