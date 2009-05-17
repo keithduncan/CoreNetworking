@@ -29,8 +29,6 @@
 		533F5C360FBF565900169C14 /* AFCalendarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C140FBF565900169C14 /* AFCalendarControl.m */; };
 		533F5C370FBF565900169C14 /* AFCalendarControlCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C150FBF565900169C14 /* AFCalendarControlCell.h */; };
 		533F5C380FBF565900169C14 /* AFCalendarControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C160FBF565900169C14 /* AFCalendarControlCell.m */; };
-		533F5C390FBF565900169C14 /* AFCalendarWeekCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C170FBF565900169C14 /* AFCalendarWeekCell.h */; };
-		533F5C3A0FBF565900169C14 /* AFCalendarWeekCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C180FBF565900169C14 /* AFCalendarWeekCell.m */; };
 		533F5C3B0FBF565900169C14 /* AFSegmentedWeekControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C190FBF565900169C14 /* AFSegmentedWeekControl.h */; };
 		533F5C3C0FBF565900169C14 /* AFSegmentedWeekControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C1A0FBF565900169C14 /* AFSegmentedWeekControl.m */; };
 		533F5C3D0FBF565900169C14 /* AFWeekSegmentCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C1B0FBF565900169C14 /* AFWeekSegmentCell.h */; };
@@ -60,7 +58,6 @@
 		533F5D470FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5D480FBF622700169C14 /* NSControl+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5D460FBF622700169C14 /* NSControl+Additions.m */; };
 		533F5D490FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		533F5D4A0FBF622700169C14 /* NSControl+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5D460FBF622700169C14 /* NSControl+Additions.m */; };
 		535511ED0FAF4A27004F8FC5 /* AFTransportLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535511EE0FAF4A27004F8FC5 /* AFTransportLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535511F10FAF4A34004F8FC5 /* AFNetworkTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 535511EF0FAF4A34004F8FC5 /* AFNetworkTransport.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -106,14 +103,10 @@
 		5370DEDF0F5AEE23008F5991 /* NSFileManager+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEC70F5AEE23008F5991 /* NSFileManager+Additions.m */; };
 		5370DEE20F5AEE23008F5991 /* NSObject+Metadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DECA0F5AEE23008F5991 /* NSObject+Metadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DEE30F5AEE23008F5991 /* NSObject+Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DECB0F5AEE23008F5991 /* NSObject+Metadata.m */; };
-		5370DEE40F5AEE23008F5991 /* NSProxy+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DECC0F5AEE23008F5991 /* NSProxy+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5370DEE50F5AEE23008F5991 /* NSProxy+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DECD0F5AEE23008F5991 /* NSProxy+Additions.m */; };
 		5370DEE60F5AEE23008F5991 /* NSSortDescriptor+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DECE0F5AEE23008F5991 /* NSSortDescriptor+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DEE70F5AEE23008F5991 /* NSSortDescriptor+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DECF0F5AEE23008F5991 /* NSSortDescriptor+Additions.m */; };
 		5370DEE80F5AEE23008F5991 /* NSString+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DED00F5AEE23008F5991 /* NSString+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DEE90F5AEE23008F5991 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DED10F5AEE23008F5991 /* NSString+Additions.m */; };
-		5370DEEC0F5AEE23008F5991 /* NSXMLElement+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DED40F5AEE23008F5991 /* NSXMLElement+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5370DEED0F5AEE23008F5991 /* NSXMLElement+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DED50F5AEE23008F5991 /* NSXMLElement+Additions.m */; };
 		5370DEEE0F5AEE23008F5991 /* NSArray+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEBE0F5AEE23008F5991 /* NSArray+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DEEF0F5AEE23008F5991 /* NSArray+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEBF0F5AEE23008F5991 /* NSArray+Additions.m */; };
 		5370DEF00F5AEE23008F5991 /* NSBundle+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEC00F5AEE23008F5991 /* NSBundle+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -126,14 +119,10 @@
 		5370DEF70F5AEE23008F5991 /* NSFileManager+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEC70F5AEE23008F5991 /* NSFileManager+Additions.m */; };
 		5370DEFA0F5AEE23008F5991 /* NSObject+Metadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DECA0F5AEE23008F5991 /* NSObject+Metadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DEFB0F5AEE23008F5991 /* NSObject+Metadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DECB0F5AEE23008F5991 /* NSObject+Metadata.m */; };
-		5370DEFC0F5AEE23008F5991 /* NSProxy+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DECC0F5AEE23008F5991 /* NSProxy+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5370DEFD0F5AEE23008F5991 /* NSProxy+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DECD0F5AEE23008F5991 /* NSProxy+Additions.m */; };
 		5370DEFE0F5AEE23008F5991 /* NSSortDescriptor+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DECE0F5AEE23008F5991 /* NSSortDescriptor+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DEFF0F5AEE23008F5991 /* NSSortDescriptor+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DECF0F5AEE23008F5991 /* NSSortDescriptor+Additions.m */; };
 		5370DF000F5AEE23008F5991 /* NSString+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DED00F5AEE23008F5991 /* NSString+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DF010F5AEE23008F5991 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DED10F5AEE23008F5991 /* NSString+Additions.m */; };
-		5370DF040F5AEE23008F5991 /* NSXMLElement+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DED40F5AEE23008F5991 /* NSXMLElement+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5370DF050F5AEE23008F5991 /* NSXMLElement+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DED50F5AEE23008F5991 /* NSXMLElement+Additions.m */; };
 		5370E0AC0F5B061D008F5991 /* AFNetworkConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0880F5B061D008F5991 /* AFNetworkConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370E0AD0F5B061D008F5991 /* AFNetworkConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0890F5B061D008F5991 /* AFNetworkConnection.m */; };
 		5370E0AE0F5B061D008F5991 /* AFConnectionPool.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E08A0F5B061D008F5991 /* AFConnectionPool.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -324,8 +313,6 @@
 		533F5C140FBF565900169C14 /* AFCalendarControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCalendarControl.m; sourceTree = "<group>"; };
 		533F5C150FBF565900169C14 /* AFCalendarControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFCalendarControlCell.h; sourceTree = "<group>"; };
 		533F5C160FBF565900169C14 /* AFCalendarControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCalendarControlCell.m; sourceTree = "<group>"; };
-		533F5C170FBF565900169C14 /* AFCalendarWeekCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFCalendarWeekCell.h; sourceTree = "<group>"; };
-		533F5C180FBF565900169C14 /* AFCalendarWeekCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFCalendarWeekCell.m; sourceTree = "<group>"; };
 		533F5C190FBF565900169C14 /* AFSegmentedWeekControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSegmentedWeekControl.h; sourceTree = "<group>"; };
 		533F5C1A0FBF565900169C14 /* AFSegmentedWeekControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSegmentedWeekControl.m; sourceTree = "<group>"; };
 		533F5C1B0FBF565900169C14 /* AFWeekSegmentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFWeekSegmentCell.h; sourceTree = "<group>"; };
@@ -402,14 +389,10 @@
 		5370DEC70F5AEE23008F5991 /* NSFileManager+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+Additions.m"; path = "AmberFoundation/NSFileManager+Additions.m"; sourceTree = "<group>"; };
 		5370DECA0F5AEE23008F5991 /* NSObject+Metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+Metadata.h"; path = "AmberFoundation/NSObject+Metadata.h"; sourceTree = "<group>"; };
 		5370DECB0F5AEE23008F5991 /* NSObject+Metadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+Metadata.m"; path = "AmberFoundation/NSObject+Metadata.m"; sourceTree = "<group>"; };
-		5370DECC0F5AEE23008F5991 /* NSProxy+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSProxy+Additions.h"; path = "AmberFoundation/NSProxy+Additions.h"; sourceTree = "<group>"; };
-		5370DECD0F5AEE23008F5991 /* NSProxy+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSProxy+Additions.m"; path = "AmberFoundation/NSProxy+Additions.m"; sourceTree = "<group>"; };
 		5370DECE0F5AEE23008F5991 /* NSSortDescriptor+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSSortDescriptor+Additions.h"; path = "AmberFoundation/NSSortDescriptor+Additions.h"; sourceTree = "<group>"; };
 		5370DECF0F5AEE23008F5991 /* NSSortDescriptor+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSSortDescriptor+Additions.m"; path = "AmberFoundation/NSSortDescriptor+Additions.m"; sourceTree = "<group>"; };
 		5370DED00F5AEE23008F5991 /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Additions.h"; path = "AmberFoundation/NSString+Additions.h"; sourceTree = "<group>"; };
 		5370DED10F5AEE23008F5991 /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Additions.m"; path = "AmberFoundation/NSString+Additions.m"; sourceTree = "<group>"; };
-		5370DED40F5AEE23008F5991 /* NSXMLElement+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSXMLElement+Additions.h"; path = "AmberFoundation/NSXMLElement+Additions.h"; sourceTree = "<group>"; };
-		5370DED50F5AEE23008F5991 /* NSXMLElement+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSXMLElement+Additions.m"; path = "AmberFoundation/NSXMLElement+Additions.m"; sourceTree = "<group>"; };
 		5370E0710F5B0571008F5991 /* CoreNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5370E0720F5B0571008F5991 /* CoreNetworking-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CoreNetworking-Info.plist"; sourceTree = "<group>"; };
 		5370E0880F5B061D008F5991 /* AFNetworkConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkConnection.h; path = CoreNetworking/AFNetworkConnection.h; sourceTree = "<group>"; };
@@ -551,8 +534,6 @@
 				533F5C140FBF565900169C14 /* AFCalendarControl.m */,
 				533F5C150FBF565900169C14 /* AFCalendarControlCell.h */,
 				533F5C160FBF565900169C14 /* AFCalendarControlCell.m */,
-				533F5C170FBF565900169C14 /* AFCalendarWeekCell.h */,
-				533F5C180FBF565900169C14 /* AFCalendarWeekCell.m */,
 				533F5C190FBF565900169C14 /* AFSegmentedWeekControl.h */,
 				533F5C1A0FBF565900169C14 /* AFSegmentedWeekControl.m */,
 				533F5C1B0FBF565900169C14 /* AFWeekSegmentCell.h */,
@@ -805,14 +786,10 @@
 				5370DEC70F5AEE23008F5991 /* NSFileManager+Additions.m */,
 				5370DECA0F5AEE23008F5991 /* NSObject+Metadata.h */,
 				5370DECB0F5AEE23008F5991 /* NSObject+Metadata.m */,
-				5370DECC0F5AEE23008F5991 /* NSProxy+Additions.h */,
-				5370DECD0F5AEE23008F5991 /* NSProxy+Additions.m */,
 				5370DECE0F5AEE23008F5991 /* NSSortDescriptor+Additions.h */,
 				5370DECF0F5AEE23008F5991 /* NSSortDescriptor+Additions.m */,
 				5370DED00F5AEE23008F5991 /* NSString+Additions.h */,
 				5370DED10F5AEE23008F5991 /* NSString+Additions.m */,
-				5370DED40F5AEE23008F5991 /* NSXMLElement+Additions.h */,
-				5370DED50F5AEE23008F5991 /* NSXMLElement+Additions.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -945,10 +922,8 @@
 				5370DEF40F5AEE23008F5991 /* NSDate+Additions.h in Headers */,
 				5370DEF60F5AEE23008F5991 /* NSFileManager+Additions.h in Headers */,
 				5370DEFA0F5AEE23008F5991 /* NSObject+Metadata.h in Headers */,
-				5370DEFC0F5AEE23008F5991 /* NSProxy+Additions.h in Headers */,
 				5370DEFE0F5AEE23008F5991 /* NSSortDescriptor+Additions.h in Headers */,
 				5370DF000F5AEE23008F5991 /* NSString+Additions.h in Headers */,
-				5370DF040F5AEE23008F5991 /* NSXMLElement+Additions.h in Headers */,
 				539A44190F782DF500564C73 /* NSObject+Additions.h in Headers */,
 				539A44300F782E1200564C73 /* AFPriorityProxy.h in Headers */,
 				539A44320F782E1200564C73 /* AFProtocolProxy.h in Headers */,
@@ -1024,10 +999,8 @@
 				5370DEDC0F5AEE23008F5991 /* NSDate+Additions.h in Headers */,
 				5370DEDE0F5AEE23008F5991 /* NSFileManager+Additions.h in Headers */,
 				5370DEE20F5AEE23008F5991 /* NSObject+Metadata.h in Headers */,
-				5370DEE40F5AEE23008F5991 /* NSProxy+Additions.h in Headers */,
 				5370DEE60F5AEE23008F5991 /* NSSortDescriptor+Additions.h in Headers */,
 				5370DEE80F5AEE23008F5991 /* NSString+Additions.h in Headers */,
-				5370DEEC0F5AEE23008F5991 /* NSXMLElement+Additions.h in Headers */,
 				539A44170F782DF500564C73 /* NSObject+Additions.h in Headers */,
 				539A442A0F782E1200564C73 /* AFPriorityProxy.h in Headers */,
 				539A442C0F782E1200564C73 /* AFProtocolProxy.h in Headers */,
@@ -1083,7 +1056,6 @@
 				533F5C330FBF565900169C14 /* AFCalendarButton.h in Headers */,
 				533F5C350FBF565900169C14 /* AFCalendarControl.h in Headers */,
 				533F5C370FBF565900169C14 /* AFCalendarControlCell.h in Headers */,
-				533F5C390FBF565900169C14 /* AFCalendarWeekCell.h in Headers */,
 				533F5C3B0FBF565900169C14 /* AFSegmentedWeekControl.h in Headers */,
 				533F5C3D0FBF565900169C14 /* AFWeekSegmentCell.h in Headers */,
 				533F5C3F0FBF565900169C14 /* AFGradientButton.h in Headers */,
@@ -1324,10 +1296,8 @@
 				5370DEF50F5AEE23008F5991 /* NSDate+Additions.m in Sources */,
 				5370DEF70F5AEE23008F5991 /* NSFileManager+Additions.m in Sources */,
 				5370DEFB0F5AEE23008F5991 /* NSObject+Metadata.m in Sources */,
-				5370DEFD0F5AEE23008F5991 /* NSProxy+Additions.m in Sources */,
 				5370DEFF0F5AEE23008F5991 /* NSSortDescriptor+Additions.m in Sources */,
 				5370DF010F5AEE23008F5991 /* NSString+Additions.m in Sources */,
-				5370DF050F5AEE23008F5991 /* NSXMLElement+Additions.m in Sources */,
 				539A44180F782DF500564C73 /* NSObject+Additions.m in Sources */,
 				539A44310F782E1200564C73 /* AFPriorityProxy.m in Sources */,
 				539A44330F782E1200564C73 /* AFProtocolProxy.m in Sources */,
@@ -1389,10 +1359,8 @@
 				5370DEDD0F5AEE23008F5991 /* NSDate+Additions.m in Sources */,
 				5370DEDF0F5AEE23008F5991 /* NSFileManager+Additions.m in Sources */,
 				5370DEE30F5AEE23008F5991 /* NSObject+Metadata.m in Sources */,
-				5370DEE50F5AEE23008F5991 /* NSProxy+Additions.m in Sources */,
 				5370DEE70F5AEE23008F5991 /* NSSortDescriptor+Additions.m in Sources */,
 				5370DEE90F5AEE23008F5991 /* NSString+Additions.m in Sources */,
-				5370DEED0F5AEE23008F5991 /* NSXMLElement+Additions.m in Sources */,
 				539A44160F782DF500564C73 /* NSObject+Additions.m in Sources */,
 				539A442B0F782E1200564C73 /* AFPriorityProxy.m in Sources */,
 				539A442D0F782E1200564C73 /* AFProtocolProxy.m in Sources */,
@@ -1444,7 +1412,6 @@
 				533F5C340FBF565900169C14 /* AFCalendarButton.m in Sources */,
 				533F5C360FBF565900169C14 /* AFCalendarControl.m in Sources */,
 				533F5C380FBF565900169C14 /* AFCalendarControlCell.m in Sources */,
-				533F5C3A0FBF565900169C14 /* AFCalendarWeekCell.m in Sources */,
 				533F5C3C0FBF565900169C14 /* AFSegmentedWeekControl.m in Sources */,
 				533F5C3E0FBF565900169C14 /* AFWeekSegmentCell.m in Sources */,
 				533F5C400FBF565900169C14 /* AFGradientButton.m in Sources */,
@@ -1457,7 +1424,6 @@
 				533F5C4E0FBF565900169C14 /* AFSourceList.m in Sources */,
 				533F5C500FBF565900169C14 /* AFSourceNode.m in Sources */,
 				533F5C520FBF565900169C14 /* AFTextFieldCell.m in Sources */,
-				533F5D4A0FBF622700169C14 /* NSControl+Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

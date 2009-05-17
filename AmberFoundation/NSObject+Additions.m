@@ -12,6 +12,26 @@
 
 #import "AFProtocolProxy.h"
 
+@interface _AFThread : NSThread
+
+@end
+
+@implementation _AFThread
+
+- (void)main {
+	do {
+		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+	} while (![self isCancelled]);
+}
+
+@end
+
+#pragma mark -
+
+/*
+	@brief
+	This proxy is private, as such it doesn't implement anything beyond NSProxy.
+ */
 @interface _AFThreadProxy : NSProxy {
  @public
 	id _target;
@@ -24,13 +44,15 @@
 
 - (void)dealloc {
 	[_target release];
+	
+	if ([_thread isKindOfClass:[_AFThread class]]) [_thread cancel];
 	[_thread release];
 	
 	[super dealloc];
 }
 
 - (void)forwardInvocation:(NSInvocation *)invocation {
-	[invocation performSelector:@selector(invokeWithTarget:) onThread:_thread withObject:_target waitUntilDone:([_thread isEqual:[NSThread mainThread]])];
+	[invocation performSelector:@selector(invokeWithTarget:) onThread:_thread withObject:_target waitUntilDone:[_thread isEqual:[NSThread mainThread]]];
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
@@ -48,13 +70,17 @@
 }
 
 - (id)backgroundThreadProxy {
-	return [self threadProxy:[[[NSThread alloc] init] autorelease]];
+	return [self threadProxy:[[[_AFThread alloc] init] autorelease]];
 }
 
 - (id)threadProxy:(NSThread *)thread {
 	_AFThreadProxy *proxy = [[_AFThreadProxy alloc] autorelease];
+	
 	proxy->_target = [self retain];
+	
 	proxy->_thread = [thread retain];
+	if ([thread isKindOfClass:[_AFThread class]]) [thread start];
+	
 	return proxy;
 }
 

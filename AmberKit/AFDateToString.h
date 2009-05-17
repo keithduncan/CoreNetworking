@@ -8,13 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+/*
+	@brief
+	This class is useful where you cannot insert an NSDateFormatter directly.
+ */
 @interface AFDateToString : NSValueTransformer {
-	NSString *dateFormat;
-	NSDateFormatter *formatter;
+	NSString *_dateFormat;
+	NSDateFormatter *_formatter;
 }
 
 - (id)initWithDateFormat:(NSString *)format;
 
-@property(copy) NSString *dateFormat;
+@property (copy) NSString *dateFormat;
 
 @end

@@ -11,19 +11,30 @@
 #if !TARGET_OS_IPHONE
 
 /*!
-	@brief	This class is NSUserDefaults for an arbitary bundle identifer, it doesn't restrict you to working with the current application identifer
-	@detail	It doesn't register for termination notifications nor does it save the values occasionally, this must be handled externally.
-			It does propogate synchronization notifications like NSUserDefaults does. This is particularly useful for plugin defaults used across process boundaries.
+	@brief
+	This class is essentailly NSUserDefaults for an arbitary bundle identifer, it doesn't
+	restrict you to working with the current application identifer.
+	
+	@detail
+	It doesn't register for termination notifications nor does it save the 
+	values occasionally, this must be handled externally. It does propogate 
+	synchronization notifications like NSUserDefaults does. This is particularly 
+	useful for plugin defaults, used across process boundaries.
 */
 @interface AFUserDefaults : NSObject {
 	NSString *_identifier;
 	id _registration;
 }
 
+/*
+	@brief
+	This is the bundle identifer provided at instantiation time.
+ */
 @property (readonly, copy) NSString *identifier;
 
 /*!
-	@brief	Designated Initialiser
+	@brief
+	Designated Initialiser.
  */
 - (id)initWithBundleIdentifier:(NSString *)identifier;
 
@@ -47,8 +58,11 @@
 - (void)setUnsignedInteger:(NSUInteger)value forKey:(NSString *)key;
 
 /*!
-	@brief	This is inserted at the lowest index of the search list, the values will only be returned if the default domains above it don't contain an object for requested key
-	@param	|regisrationDictionary| is copied
+	@brief
+	This is inserted at the lowest index of the search list, the values will
+	only be returned if the default domains above it don't contain an object for requested key.
+ 
+	@param	|regisrationDictionary| is copied.
  */
 - (void)registerDefaults:(NSDictionary *)registrationDictionary;
 
@@ -58,8 +72,9 @@
 
 @end
 
-/*!
-	@brief	These are simply strongly typed synonyms to <tt>-objectForKey:</tt>.
+/*
+	@brief
+	These are simply strongly typed synonyms to <tt>-objectForKey:</tt>.
  */
 @interface AFUserDefaults (TypedAccessors)
 - (NSString *)stringForKey:(NSString *)key;

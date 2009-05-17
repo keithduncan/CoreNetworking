@@ -9,12 +9,31 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (AFAdditions)
+
+/*
+	@result
+	A copy of the receiver, with CFStringTimeWhitespace applied.
+ */
 - (NSString *)stringByTrimmgWhiteSpace;
+
+/*
+	@brief
+	This method compares the receiver, after trimming whitespace, to @"".
+ */
 - (BOOL)isEmpty;
 
+/*
+	@brief
+	This method returns a substring from index after |count| characters and then appends @"..."
+ */
 - (NSString *)stringByAppendingElipsisAfterCharacters:(NSUInteger)count;
+
 @end
 
+/*
+	@brief
+	This category assists in manipulating KVC dotted paths.
+ */
 @interface NSString (AFKeyValueCoding)
 
 - (NSArray *)keyPathComponents;

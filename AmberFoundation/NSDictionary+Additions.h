@@ -8,11 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-
 @interface NSDictionary (AFAdditions)
 
 /*!
-	@brief	This enumerates the receiver and returns a dictionary of key-value pairs for each key where the object for key isn't equal to the |container|'s <tt>-valueForKey:</tt>
+	@brief
+	This enumerates the receiver and returns a dictionary of key-value pairs for
+	each key where the object for key isn't equal to the |container|'s <tt>-valueForKey:</tt>.
  */
 - (NSDictionary *)diff:(id)container;
 

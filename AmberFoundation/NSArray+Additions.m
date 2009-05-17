@@ -1,6 +1,6 @@
 //
-//  AFSet.m
-//  AFCalendarView
+//  NSArray+Additions.m
+//  Amber
 //
 //  Created by Keith Duncan on 27/03/2007.
 //  Copyright 2007 thirty-three. All rights reserved.

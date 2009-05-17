@@ -21,11 +21,13 @@
 - (NSString *)transformedValue:(id)value {
 	if (value == nil) return @"";
 	
-	if ([value isKindOfClass:[NSArray class]]) {
+	if ([value conformsToProtocol:@protocol(NSFastEnumeration)]) {
 		return ([value count] > 1 ? @"s" : @"");
 	} else if ([value isKindOfClass:[NSNumber class]]) {
 		return ([value integerValue] > 1 ? @"s" : @"");
-	} else return nil;
+	}
+	
+	return nil;
 }
 
 @end

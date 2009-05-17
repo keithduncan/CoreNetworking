@@ -1,8 +1,8 @@
 //
 //  AFPropertyListProtocol.m
-//  dawn
+//  AmberFoundation
 //
-//  Created by Keith Duncan on 14/03/2007.
+//  Created by Keith Duncan on 11/03/2007.
 //  Copyright 2007 thirty-three. All rights reserved.
 //
 

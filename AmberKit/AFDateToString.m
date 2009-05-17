@@ -8,9 +8,14 @@
 
 #import "AFDateToString.h"
 
+@interface AFDateToString ()
+@property (retain) NSDateFormatter *formatter;
+@end
+
 @implementation AFDateToString
 
-@synthesize dateFormat;
+@synthesize dateFormat_dateFormat;
+@synthesize formatter=_formatter;
 
 + (Class)transformedValueClass {
 	return [NSString class];
@@ -21,31 +26,36 @@
 }
 
 - (id)init {
-	return [self initWithDateFormat:@""];
+	self = [super init];
+	if (self == nil) return nil;
+	
+	self.formatter = [[[NSDateFormatter alloc] init] autorelease];
+	
+	return self;
 }
 
 - (id)initWithDateFormat:(NSString *)format {
-	[super init];
+	self = [self init];
+	if (self == nil) return nil;
 	
-	formatter = [[NSDateFormatter alloc] init];
 	self.dateFormat = format;
 	
 	return self;
 }
 
 - (void)dealloc {
-	[formatter release];
 	self.dateFormat = nil;
+	self.formatter = nil;
 	
 	[super dealloc];
 }
 
 - (NSString *)transformedValue:(NSDate *)value {
-	return [value descriptionWithCalendarFormat:dateFormat timeZone:nil locale:nil];
+	return [value descriptionWithCalendarFormat:self.dateFormat timeZone:nil locale:nil];
 }
 
 - (NSDate *)reverseTransformedValue:(NSString *)value {
-	return [formatter dateFromString:value];
+	return [self.formatter dateFromString:value];
 }
 
 @end

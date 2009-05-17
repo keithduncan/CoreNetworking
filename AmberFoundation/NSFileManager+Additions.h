@@ -9,10 +9,18 @@
 #import <Foundation/Foundation.h>
 
 @interface NSFileManager (AFAdditions)
-- (BOOL)validatePath:(NSString *)path withMD5Hash:(NSString *)hash;
 
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
-- (BOOL)validatePath:(NSString *)path withDSASignature:(NSString *)signature publicDSAKey:(NSString *)publicKey;
-#endif
+/*
+	@brief
+	Use <tt>-[NSFileManager validateURL:withMD5Hash:]</tt>.
+	This method assumes the hash is hex encoded, this too, is flawed.
+ */
+- (BOOL)validatePath:(NSString *)path withMD5Hash:(NSString *)hash DEPRECATED_ATTRIBUTE;
+
+/*
+	@brief
+	This method loads the URL into memory using NSData, hashes it, and compares it to the hash provided.
+ */
+- (BOOL)validateURL:(NSString *)location withMD5Hash:(NSData *)hash;
 
 @end
