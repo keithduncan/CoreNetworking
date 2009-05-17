@@ -30,6 +30,7 @@ NSData *AFBundleSectionData(NSBundle *bundle, const char *segmentName, const cha
 		// Note: since there's no mixed mode, every loaded bundle will be of the same word-width hence the function used can be word-width specific
 		
 #ifdef __LP64__
+		// This warning has been filed under rdar://problem/6825431
 		const struct mach_header_64 *header = _dyld_get_image_header(index);
 		
 		uint64_t size = 0;

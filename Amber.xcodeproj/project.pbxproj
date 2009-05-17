@@ -598,6 +598,22 @@
 			path = AmberKit/sourcelist;
 			sourceTree = "<group>";
 		};
+		533F61EF0FC0467E00169C14 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				539A60C40D2698B7001CD14A /* AmberFoundation-Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		533F61F00FC0468900169C14 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				53EE97480F190070008AD8C0 /* AmberKit-Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		5343E6FB0C21FB1000B63E6E = {
 			isa = PBXGroup;
 			children = (
@@ -606,7 +622,6 @@
 				53EE97620F1900A0008AD8C0 /* AmberKit */,
 				539A60F70D269B40001CD14A /* AmberFoundation */,
 				53692A780F1B7EE70051C367 /* CoreNetworking */,
-				539A60FD0D269B6C001CD14A /* Resources */,
 				537E52F10CFC89760084F920 /* Frameworks */,
 				5343E70F0C21FB4200B63E6E /* Products */,
 			);
@@ -754,6 +769,7 @@
 				537772830F89258A0042C727 /* Collections */,
 				539A610D0D269C02001CD14A /* Categories */,
 				539A610E0D269C7C001CD14A /* Other Sources */,
+				533F61EF0FC0467E00169C14 /* Resources */,
 			);
 			name = AmberFoundation;
 			sourceTree = "<group>";
@@ -763,17 +779,9 @@
 			children = (
 				537E53A00CFC8D400084F920 /* Amber.h */,
 				5302AC820F2121D200867A4A /* Amber.m */,
+				5343E7100C21FB4200B63E6E /* Amber-Info.plist */,
 			);
 			name = Amber;
-			sourceTree = "<group>";
-		};
-		539A60FD0D269B6C001CD14A /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				5343E7100C21FB4200B63E6E /* Amber-Info.plist */,
-				539A60C40D2698B7001CD14A /* AmberFoundation-Info.plist */,
-			);
-			name = Resources;
 			sourceTree = "<group>";
 		};
 		539A610D0D269C02001CD14A /* Categories */ = {
@@ -914,7 +922,7 @@
 				537917990F7FC8220064EB92 /* Value Transformers */,
 				53692A7A0F1B7EF90051C367 /* Externals */,
 				53692B960F1B85640051C367 /* Other Sources */,
-				53EE97480F190070008AD8C0 /* AmberKit-Info.plist */,
+				533F61F00FC0468900169C14 /* Resources */,
 			);
 			name = AmberKit;
 			sourceTree = "<group>";
@@ -1565,7 +1573,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CODE_SIGN_IDENTITY = "thirty-three";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -1573,7 +1580,6 @@
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
-				OTHER_CODE_SIGN_FLAGS = "-i com.thirty-three.amber";
 				SDKROOT = macosx10.5;
 			};
 			name = Release;
