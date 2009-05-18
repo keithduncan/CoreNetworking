@@ -14,7 +14,7 @@
 
 @implementation AFDateToString
 
-@synthesize dateFormat_dateFormat;
+@synthesize dateFormat=_dateFormat;
 @synthesize formatter=_formatter;
 
 + (Class)transformedValueClass {

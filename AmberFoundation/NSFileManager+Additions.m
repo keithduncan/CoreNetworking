@@ -18,7 +18,7 @@
 	return [self validateURL:[NSURL fileURLWithPath:path] withMD5Hash:[NSData dataWithHexString:hash]];
 }
 
-- (BOOL)validateURL:(NSString *)location withMD5Hash:(NSData *)hash {
+- (BOOL)validateURL:(NSURL *)location withMD5Hash:(NSData *)hash {
 	NSData *data = [NSData dataWithContentsOfURL:location];
 	if (data == nil) return NO;
 	

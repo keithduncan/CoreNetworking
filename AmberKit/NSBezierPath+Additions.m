@@ -6,9 +6,6 @@
 //  Copyright 2007 thirty-three. All rights reserved.
 //
 
-//  -applyInnerShadow: created by Sean Patrick O'Brien
-//  Copyright 2008 MolokoCacao. All rights reserved.
-
 #import "NSBezierPath+Additions.h"
 
 #import "AFGeometry.h"
@@ -49,54 +46,57 @@
 	CFRelease(line);
 }
 
-+ (NSBezierPath *)bezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius {
++ (NSBezierPath *)bezierPathWithRoundedRect:(NSRect)rect corners:(AFCornerOptions)corners radius:(CGFloat)radius {
 	NSBezierPath *path = [self bezierPath];
 	[path appendBezierPathWithRoundedRect:rect corners:corners radius:radius];
 	return path;
 }
 
-- (void)appendBezierPathWithRoundedRect:(NSRect)rect corners:(AFRoundedCornerOptions)corners radius:(CGFloat)radius {
+- (void)appendBezierPathWithRoundedRect:(NSRect)rect corners:(AFCornerOptions)corners radius:(CGFloat)radius {
 	BOOL flipped = [[NSGraphicsContext currentContext] isFlipped];
 	
 	if (flipped) {
-		NSUInteger upperCorners = (corners & (AFUpperLeftCorner | AFUpperRightCorner));
+		NSUInteger upperCorners = (corners & (AFCornerUpperLeft | AFCornerUpperRight));
 		
 		corners = corners << 2;
 		corners |= (upperCorners >> 2);
 		
-		corners &= (AFUpperLeftCorner | AFUpperRightCorner | AFLowerLeftCorner | AFLowerRightCorner);
+		corners &= (AFCornerUpperLeft | AFCornerUpperRight | AFCornerLowerLeft | AFCornerLowerRight);
 	}
 	
 	[self moveToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect))];
 	
 	radius = MIN(radius, MIN(NSWidth(rect), NSHeight(rect))/2.0);
 	
-	if (corners & AFLowerRightCorner)
+	if ((corners & AFCornerLowerRight) == AFCornerLowerRight)
 		[self appendBezierPathWithArcFromPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect)) toPoint:NSMakePoint(NSMaxX(rect), NSMidY(rect)) radius:radius];
 	else {
 		[self lineToPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))];
 		[self lineToPoint:NSMakePoint(NSMaxX(rect), NSMidY(rect))];
 	}
 	
-	if (corners & AFUpperRightCorner)
+	if ((corners & AFCornerUpperRight) == AFCornerUpperRight)
 		[self appendBezierPathWithArcFromPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect)) toPoint:NSMakePoint(NSMidX(rect), NSMaxY(rect)) radius:radius];
 	else {
 		[self lineToPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
 		[self lineToPoint:NSMakePoint(NSMidX(rect), NSMaxY(rect))];
 	}
 	
-	if (corners & AFUpperLeftCorner)
+	if ((corners & AFCornerUpperLeft) == AFCornerUpperLeft)
 		[self appendBezierPathWithArcFromPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect)) toPoint:NSMakePoint(NSMinX(rect), NSMidY(rect)) radius:radius];
 	else {
 		[self lineToPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))];
 		[self lineToPoint:NSMakePoint(NSMinX(rect), NSMidY(rect))];
 	}
 	
-	if (corners & AFLowerLeftCorner)
+	if ((corners & AFCornerLowerLeft) == AFCornerLowerLeft)
 		[self appendBezierPathWithArcFromPoint:NSMakePoint(NSMinX(rect), NSMinY(rect)) toPoint:NSMakePoint(NSMidX(rect), NSMinY(rect)) radius:radius];
 	else 
 		[self lineToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect))];
 }
+
+//  -applyInnerShadow: created by Sean Patrick O'Brien
+//  Copyright 2008 MolokoCacao. All rights reserved.
 
 - (void)applyInnerShadow:(NSShadow *)shadow {
 	[NSGraphicsContext saveGraphicsState];

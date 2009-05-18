@@ -56,5 +56,4 @@
 #import "AmberFoundation/NSDate+Additions.h"
 #import "AmberFoundation/NSSortDescriptor+Additions.h"
 #import "AmberFoundation/NSString+Additions.h"
-#import "AmberFoundation/NSXMLElement+Additions.h"
 #import "AmberFoundation/NSBundle+Additions.h"

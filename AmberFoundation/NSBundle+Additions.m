@@ -39,11 +39,11 @@ NSString *const AFCompanyNameKey = @"AFCompanyName";
 @implementation NSBundle (AFPathAdditions)
 
 - (NSString *)applicationSupportPath:(NSUInteger)searchDomain {
-	return [[self applicationSupportURL:domain] path];
+	return [[self applicationSupportURL:searchDomain] path];
 }
 
 - (NSURL *)applicationSupportURL:(NSUInteger)searchDomain {
-	NSString *path = [AFSafeObjectAtIndex(NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, domain, YES), 0) stringByAppendingPathComponent:[self name]];
+	NSString *path = [AFSafeObjectAtIndex(NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, searchDomain, YES), 0) stringByAppendingPathComponent:[self name]];
 	return [NSURL fileURLWithPath:path];
 }
 

@@ -12,7 +12,7 @@ NSString *const AFAlertIconFileKey = @"AFAlertIconFile";
 
 @implementation NSBundle (AKAdditions)
 
-static NSImage *AFCacheImageFromBundle(NSBundle *bundle, NSString *key) {
+static NSImage *_AFCacheImageFromBundle(NSBundle *bundle, NSString *key) {
 	NSImage *image = nil;
 	NSString *name = [bundle objectForInfoDictionaryKey:key];
 	
@@ -26,11 +26,11 @@ static NSImage *AFCacheImageFromBundle(NSBundle *bundle, NSString *key) {
 }
 
 - (NSImage *)icon {
-	return AFCacheImageFromBundle(self, @"CFBundleIconFile");
+	return _AFCacheImageFromBundle(self, @"CFBundleIconFile");
 }
 
 - (NSImage *)alertIcon {
-	return AFCacheImageFromBundle(self, AFAlertIconFileKey);
+	return _AFCacheImageFromBundle(self, AFAlertIconFileKey);
 }
 
 @end

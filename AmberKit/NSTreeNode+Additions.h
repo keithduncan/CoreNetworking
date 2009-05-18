@@ -10,10 +10,12 @@
 
 /*
 	@header
-	@brief	These functions should really be a category on NSTreeNode, however because of an implementation
-			detail in NSTreeController it returns an object conforming to the interface of NSTreeNode but
-			not actually decending from it. These functions will work for both the private class returned from
-			NSTreeController and your own NSTreeNode based structures.
+ 
+	@brief
+	These functions should really be a category on NSTreeNode, however because of an implementation
+	detail in NSTreeController it returns an object conforming to the interface of NSTreeNode but
+	not actually decending from it. These functions will work for both the private class returned from
+	NSTreeController and your own NSTreeNode based structures.
  */
 
 /*

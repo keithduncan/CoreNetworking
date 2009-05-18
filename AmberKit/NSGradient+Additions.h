@@ -9,6 +9,11 @@
 #import <Cocoa/Cocoa.h>
 
 @interface NSGradient (AFAdditions)
-// Draw at +90 degrees
+
+/*
+	@result
+	The source list gradient, this should be drawn at +90 degrees.
+ */
 + (NSGradient *)sourceListSelectionGradient:(BOOL)isKey;
+
 @end
