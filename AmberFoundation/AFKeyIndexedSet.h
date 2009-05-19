@@ -25,7 +25,7 @@
 	NSMutableDictionary *_index;
 }
 
-/*
+/*!
 	@brief
 	Designated Initialiser.
  

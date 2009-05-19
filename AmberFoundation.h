@@ -1,4 +1,4 @@
-/*
+/*!
  *  AmberFoundation.h
  *  AmberFoundation
  *

@@ -31,13 +31,13 @@ extern id af_class_getMetadataObjectForKey(Class classObject, const char *key);
 
 @interface NSObject (AFMetadata)
 
-/*
+/*!
 	@brief
 	This method returns the root metadata object for the receiver.
  */
 + (id)metadata;
 
-/*
+/*!
 	@brief
 	This method assumes the root metadata object for the reciever is an NSDictionary.
  

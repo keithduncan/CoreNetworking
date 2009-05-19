@@ -14,11 +14,12 @@
 @protocol AFNetworkTransportControlDelegate;
 
 /*!
-    @brief	Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the name was changed so not to imply the exclusive use of SOCK_STREAM.
-    @detail	This class is a mix of two of the primary patterns.
-			Internally, it acts an adaptor between the CFSocket and CFStream API.
-			Externally, it bridges CFHost, CFNetService with CFSocket and CFStream.
-			It provides a CFStream like API.
+    @brief
+	Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the name was changed so not to imply the exclusive use of SOCK_STREAM.
+ 
+    @detail
+	This class is a mix of two of the primary patterns. Internally, it acts an adaptor between the CFSocket and CFStream API.
+	Externally, it bridges CFHost, CFNetService with CFSocket and CFStream. It provides a CFStream like API.
 */
 @interface AFNetworkTransport : AFNetworkLayer <AFConnectionLayer> {	
 	NSUInteger _connectionFlags;

@@ -8,27 +8,27 @@
 
 #import <Foundation/Foundation.h>
 
-/*
+/*!
 	@brief
 	<b>Note: experimental interface, be prepared for it to break.</b>
  */
 @interface NSObject (AFAdditions)
 
-/*
+/*!
 	@brief
 	This simply calls <tt>-[NSObject threadProxy:]</tt> using [NSThread mainThread] as an argument.
 	Messages will be performed synchronously.
  */
 - (id)mainThreadProxy;
 
-/*
+/*!
 	@brief
 	This creates a background thread and associates the proxy with it.
 	Messages will be performed on it asynchronously.
  */
 - (id)backgroundThreadProxy;
 
-/*
+/*!
 	@brief
 	This method returns a private NSProxy subclass.
 	Caution: don't become overly confident with the thread proxy methods.
@@ -44,7 +44,7 @@
  */
 - (id)threadProxy:(NSThread *)object;
 
-/*
+/*!
 	@brief
 	This method returns an <tt>AFProtocolProxy</tt> with the receiver as the target.
 	Only selectors that the target returns true for <tt>-respondsToSelector:</tt> will be

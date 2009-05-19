@@ -22,9 +22,9 @@
 @synthesize delegate=_delegate;
 @synthesize transportInfo=_transportInfo;
 
-+ (Class)lowerLayerClass {
-	[self doesNotRecognizeSelector:_cmd];
-	return Nil;
++ (const AFNetworkTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
+	[NSException raise:NSInvalidArgumentException format:@"%s, cannot provide an AFNetworkTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme, nil];
+	return NULL;
 }
 
 - (id)init {
@@ -46,8 +46,22 @@
 	return self;
 }
 
-- (id <AFTransportLayer>)initWithSignature:(const AFNetworkTransportPeerSignature *)signature {	
-	id <AFTransportLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithSignature:signature] autorelease];
+- (id <AFTransportLayer>)initWithURL:(NSURL *)endpoint {
+	CFHostRef host = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)[endpoint host])) autorelease];
+	
+	const AFNetworkTransportSignature *transportSignature = [[self class] transportSignatureForScheme:[endpoint scheme]];
+	if ([endpoint port] != nil) transportSignature->port = [[endpoint port] intValue];
+	
+	const AFNetworkTransportPeerSignature peerSignature = {
+		.host = host,
+		.transport = transportSignature,
+	};
+	
+	return [self initWithPeerSignature:&peerSignature];
+}
+
+- (id <AFTransportLayer>)initWithPeerSignature:(const AFNetworkTransportPeerSignature *)signature {	
+	id <AFTransportLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithPeerSignature:signature] autorelease];
 	return [self initWithLowerLayer:lowerLayer];
 }
 
@@ -57,7 +71,7 @@
 }
 
 - (void)dealloc {
-	[_lowerLayer release];
+	self.lowerLayer = nil;
 	self.transportInfo = nil;
 	
 	[super dealloc];

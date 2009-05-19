@@ -28,7 +28,7 @@
 
 #pragma mark -
 
-/*
+/*!
 	@brief
 	This proxy is private, as such it doesn't implement anything beyond NSProxy.
  */

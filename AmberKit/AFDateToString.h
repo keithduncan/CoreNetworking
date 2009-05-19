@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-/*
+/*!
 	@brief
 	This class is useful where you cannot insert an NSDateFormatter directly.
  */

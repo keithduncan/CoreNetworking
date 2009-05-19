@@ -10,7 +10,7 @@
 
 @interface NSGradient (AFAdditions)
 
-/*
+/*!
 	@result
 	The source list gradient, this should be drawn at +90 degrees.
  */

@@ -18,7 +18,7 @@ typedef NSUInteger AFCornerOptions;
 
 @interface NSBezierPath (AFAdditions)
 
-/*
+/*!
 	@brief
 	This method draws the glyphs of the string argument into a path.
 	
@@ -29,7 +29,7 @@ typedef NSUInteger AFCornerOptions;
 
 - (void)appendBezierPathWithString:(NSString *)text inFont:(NSFont *)font;
 
-/*
+/*!
 	@brief
 	The corners argument respects the flipped orientation of the current graphics context.
 	That is to say that AFCornerLowerRight will always be drawn on the lower right.
@@ -42,7 +42,7 @@ typedef NSUInteger AFCornerOptions;
 
 @end
 
-/*
+/*!
 	@brief
 	This function draws resolution independent text aligned in the given frame.
 	It uses <tt>-[NSBezierPath bexierPathWithString:inFont:]</tt> to generate the path and

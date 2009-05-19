@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-/*
+/*!
 	@brief
 	This class converts between a boolean value and the appropriate control colour.
  */

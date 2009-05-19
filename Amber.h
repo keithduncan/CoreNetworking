@@ -1,4 +1,4 @@
-/*
+/*!
  *  Amber.h
  *  Amber
  *
@@ -7,7 +7,7 @@
  *
  */
 
-/*
+/*!
 	@header
  
 	This framework reserves the AFAdditions and AKAdditions category namespaces for AmberFoundation and AmberKit respectively, don't use it!

@@ -8,7 +8,7 @@
 
 #import "NSTreeNode+Additions.h"
 
-/*
+/*!
 	Note: this function doesn't handle recursive relationships
  */
 static void _AFTreeNodeAddChildrenToCollection(NSTreeNode *self, id <NSFastEnumeration> collection) {

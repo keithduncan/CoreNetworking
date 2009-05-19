@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-/*
+/*!
 	@brief
 	This constant is an Info.plist key for the company that produced a bundle.
  */
@@ -16,27 +16,27 @@ extern NSString *const AFCompanyNameKey;
 
 @interface NSBundle (AFAdditions)
 
-/*
+/*!
 	@result <tt>-objectForInfoDictionaryKey:</tt> CFBundleVersion.
  */
 - (NSString *)version;
 
-/*
+/*!
 	@result <tt>-objectForInfoDictionaryKey:</tt> CFBundleShortVersionString.
  */
 - (NSString *)displayVersion;
 
-/*
+/*!
 	@result <tt>-objectForInfoDictionaryKey:</tt> CFBundleName.
  */
 - (NSString *)name;
 
-/*
+/*!
 	@result <tt>-objectForInfoDictionaryKey:</tt> CFBundleDisplayName.
  */
 - (NSString *)displayName;
 
-/*
+/*!
 	@result <tt>-objectForInfoDictionaryKey:</tt> AFCompanyName.
  */
 - (NSString *)companyName;
@@ -46,7 +46,7 @@ extern NSString *const AFCompanyNameKey;
 
 - (NSString *)applicationSupportPath:(NSUInteger)searchDomain DEPRECATED_ATTRIBUTE;
 
-/*
+/*!
 	@brief
 	This returns the application support path for the receiver. You should pass a domain
 	suitable for <tt>NSSearchPathForDirectoriesInDomain</tt>. The full path is created by
@@ -56,7 +56,7 @@ extern NSString *const AFCompanyNameKey;
 
 @end
 
-/*
+/*!
 	@brief
 	This protocol allows classes to discover which bundle their resources have originated from.
 	It accomodates for cases where <tt>+[NSBundle bundleForClass:]</tt> may not return an appropriate value.

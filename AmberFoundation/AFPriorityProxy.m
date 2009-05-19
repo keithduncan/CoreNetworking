@@ -13,7 +13,7 @@
 - (id)init {
 	priorityMap = [[NSMapTable mapTableWithWeakToStrongObjects] retain];
 	
-	dispatchMap = [[NSMapTable alloc] initWithKeyOptions:(NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality) valueOptions:(NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality) capacity:/* Default CF collection capacity */ 3];
+	dispatchMap = [[NSMapTable alloc] initWithKeyOptions:(NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality) valueOptions:(NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality) capacity:/*! Default CF collection capacity */ 3];
 	
 	return self;
 }

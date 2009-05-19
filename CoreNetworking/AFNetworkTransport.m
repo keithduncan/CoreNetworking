@@ -125,7 +125,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	return self;
 }
 
-/*
+/*!
 	The layout of the _peer union members is important, we can cast the _peer instance variable to CFTypeRef and introspect using CFGetTypeID to determine the member in use
  */
 
@@ -146,7 +146,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	return self;
 }
 
-- (id <AFConnectionLayer>)initWithSignature:(const AFNetworkTransportPeerSignature *)signature {
+- (id <AFConnectionLayer>)initWithPeerSignature:(const AFNetworkTransportPeerSignature *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
@@ -155,7 +155,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	CFHostRef *host = &_peer._hostDestination.host;
 	*host = (CFHostRef)NSMakeCollectable(CFRetain(signature->host));
 	
-	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, _peer._hostDestination.transport.port, &readStream, &writeStream);
+	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, _peer._hostDestination.transport->port, &readStream, &writeStream);
 	
 	NSMakeCollectable(readStream);
 	NSMakeCollectable(writeStream);

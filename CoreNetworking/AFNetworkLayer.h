@@ -15,7 +15,7 @@
 /*!
 	@brief
 	This is the parent class for all the network stack objects. You are unlikely to use it directly.
- 
+	
 	@detail
 	This class configures a bidirectional proxying system. Unimplemented methods are forwarded to the |lowerLayer|, and the delegate accessor returns a proxy that forwards messages up the delegate chain.
 	CFHostRef and CFNetServiceRef are both first class citizens in CoreNetworking, and you can easily bring a stack online using either.
@@ -31,6 +31,15 @@
 
 /*!
 	@brief
+	The default implementation of this method raises an exception, if you don't handle scheme passed in you should defer to the superclass' implementation.
+ 
+	@detail
+	This is used by <tt>-initWithURL:</tt> to determine the socket type and port to use.
+ */
++ (const AFNetworkTransportSignature *)transportSignatureForScheme:(NSString *)scheme;
+
+/*!
+	@brief
 	Inbound Initialiser
 	This is used when you have an accept socket that has spawned a new connection.
  */
@@ -38,23 +47,28 @@
 
 /*!
 	@brief
-	You must override this method if you want to use the designated outbound initialisers.
-	The default implementation raises an exception.
+	Outbound Initialiser.
+	This initialiser is essentially a psudeonym for <tt>-initWithSignature:</tt> but using a well known scheme which implies a port number.
+ 
+	@detail
+	If the URL provides a port number that one is used instead of the scheme-implied port.
  */
-+ (Class)lowerLayerClass DEPRECATED_ATTRIBUTE;
+- (id <AFTransportLayer>)initWithURL:(NSURL *)endpoint;
 
 /*!
 	@brief
+	Outbound Initialiser.
 	This initialiser is a sibling to <tt>-initWithNetService:</tt>.
  
 	@detail
 	This doesn't use CFSocketSignature because the protocol family is determined by the CFHostRef address values.
 	The default implementation creates a lower-layer using <tt>+lowerLayerClass</tt> and calls the same initialiser on the new object.
  */
-- (id <AFTransportLayer>)initWithSignature:(const AFNetworkTransportPeerSignature *)signature;
+- (id <AFTransportLayer>)initWithPeerSignature:(const AFNetworkTransportPeerSignature *)signature;
 
 /*!
 	@brief
+	Outbound Initialiser.
 	This initialiser is a sibling to <tt>-initWithSignature:</tt>.
  
 	@detail

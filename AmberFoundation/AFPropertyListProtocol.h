@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-/*
+/*!
 	@brief
 	This protocol defines an <tt>NSCoding</tt> like method pair.
 	Unlike NSCoding it is designed to produce human-readable archives.
@@ -26,7 +26,7 @@
 
 @end
 
-/*
+/*!
 	@brief
 	This function returns a property list object which combines the <tt>-propertyListRepresentation</tt>
 	of |object| and the data required to reinstantiate it. The archive can be reinstantiated using
@@ -34,7 +34,7 @@
  */
 extern CFPropertyListRef AFPropertyListRepresentationArchive(id <AFPropertyList> object);
 
-/*
+/*!
 	@brief
 	This function unarchives a property list archive, returned from <tt>AFPropertyListRepresentationArchive()</tt>,
 	back into a live object.

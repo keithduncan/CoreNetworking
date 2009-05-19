@@ -10,7 +10,7 @@
 
 @interface NSSortDescriptor (AFAdditions)
 
-/*
+/*!
 	@brief
 	This method simplifies the creation of multiple sort descriptors, by creating them inline.
  */

@@ -118,12 +118,12 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[super dealloc];
 }
 
-- (void)openSockets:(const AFNetworkTransportSignature *)signature addresses:(NSSet *)sockAddrs {
+- (void)openSocketsWithTransportSignature:(const AFNetworkTransportSignature *)signature addresses:(NSSet *)sockAddrs {
 	SInt32 *port = (SInt32 *)&(signature->port);
-	[self openSockets:port withSignature:signature->type addresses:sockAddrs];
+	[self openSocketsWithSignature:signature->type port:port addresses:sockAddrs];
 }
 
-- (void)openSockets:(SInt32 *)port withSignature:(const AFNetworkSocketSignature *)signature addresses:(NSSet *)sockAddrs {
+- (void)openSocketsWithSignature:(const AFNetworkSocketSignature *)signature port:(SInt32 *)port addresses:(NSSet *)sockAddrs {
 	AFConnectionServer *lowestLayer = self;
 	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
 	self = lowestLayer;

@@ -9,13 +9,13 @@
 
 @interface NSTreeController (AFAdditions)
 
-/*
+/*!
 	@brief
 	This method takes an array of your model objects, and selects the nodes in the tree representing them.
  */
 - (void)setSelectedObjects:(NSArray *)newSelectedObjects;
 
-/*
+/*!
 	@result
 	The controller index path to your model object.
  */

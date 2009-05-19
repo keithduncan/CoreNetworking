@@ -65,19 +65,27 @@
 @property (assign) id <AFConnectionServerDelegate> delegate;
 
 /*!
-	@brief	Shorthand for <tt>-openSockets:withType:addresses:</tt> where you already have an <tt>AFSocketTransportSignature</tt> preconfigured.
-	@detail	See <tt>-openSockets:withType:addresses:</tt>
+	@brief
+	Shorthand for <tt>-openSocketsWithSignature:port:addresses:</tt> where you already have an <tt>AFSocketTransportSignature</tt> preconfigured.
+ 
+	@detail
+	See <tt>-openSocketsWithSignature:port:addresses:</tt>.
  */
-- (void)openSockets:(const AFNetworkTransportSignature *)signature addresses:(NSSet *)sockAddrs;
+- (void)openSocketsWithTransportSignature:(const AFNetworkTransportSignature *)signature addresses:(NSSet *)sockAddrs;
 
 /*!
-	@brief	Opens an AFSocket for each address and schedules it on the current run-loop.
-	@detail	This method is rarely applicable to higher-level servers, therefore this method contains 
-			its own forwarding code (because all instances respond to it) and the sockets are opened
-			on the lowest layer of the stack.
-	@param	|port| is passed by reference so that if you pass 0 you get back the actual port
+	@brief
+	Opens an AFSocket for each address and schedules it on the current run-loop.
+ 
+	@detail
+	This method is rarely applicable to higher-level servers, therefore this method contains 
+	its own forwarding code (because all instances respond to it) and the sockets are opened
+	on the lowest layer of the stack.
+	
+	@param
+	|port| is passed by reference so that if you pass 0 for a kernel allocated port, the variable will contain the actual port opened when this method returns.
  */
-- (void)openSockets:(SInt32 *)port withSignature:(const AFNetworkSocketSignature *)signature addresses:(NSSet *)sockAddrs;
+- (void)openSocketsWithSignature:(const AFNetworkSocketSignature *)signature port:(SInt32 *)port addresses:(NSSet *)sockAddrs;
 
 /*!
 	@brief	This class is used to instantiate a new higher-level layer when the server receives the <tt>-layer:didAcceptConnection:</tt> delegate callback

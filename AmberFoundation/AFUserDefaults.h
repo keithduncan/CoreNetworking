@@ -26,7 +26,7 @@
 	id _registration;
 }
 
-/*
+/*!
 	@brief
 	This is the bundle identifer provided at instantiation time.
  */
@@ -72,7 +72,7 @@
 
 @end
 
-/*
+/*!
 	@brief
 	These are simply strongly typed synonyms to <tt>-objectForKey:</tt>.
  */

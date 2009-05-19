@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-/*
+/*!
 	@brief
 	This proxy class uses the faux implementations in the protocol to allow message-to-nil
 	like behaviour for unimplemented selectors. It allows you to wrap a delegate in
@@ -19,7 +19,7 @@
 	Protocol *_protocol;
 }
 
-/*
+/*!
 	@brief
 	Designated Initialiser.
  */
