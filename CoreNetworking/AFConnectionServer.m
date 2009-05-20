@@ -195,7 +195,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	if (![self.clients.connections containsObject:layer]) return;
 	
 	if (self.lowerLayer != nil) {
-		id <AFTransportLayer> lowerLayer = layer.lowerLayer;
+		id <AFTransportLayer> lowerLayer = [layer lowerLayer];
 		lowerLayer.delegate = (id)self.lowerLayer;
 		[lowerLayer close];
 	}

@@ -19,10 +19,10 @@
 #pragma mark -
 
 /*!
-	@brief    An AFConnectionLayer should maintain a stateful connection between endpoints.
+	@brief
+	An AFConnectionLayer should maintain a stateful connection between endpoints.
  */
 @protocol AFConnectionLayer <AFTransportLayer>
-
 
 @property (assign) id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> delegate;
 

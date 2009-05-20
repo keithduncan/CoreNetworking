@@ -13,12 +13,13 @@
 #import "AmberFoundation/AFPriorityProxy.h"
 
 @interface AFNetworkLayer ()
-- (void)setLowerLayer:(AFNetworkLayer *)layer;
+@property (readwrite, retain) AFNetworkLayer *lowerLayer;
 @property (readwrite, retain) NSMutableDictionary *transportInfo;
 @end
 
 @implementation AFNetworkLayer
 
+@synthesize lowerLayer = _lowerLayer;
 @synthesize delegate=_delegate;
 @synthesize transportInfo=_transportInfo;
 
@@ -49,10 +50,13 @@
 - (id <AFTransportLayer>)initWithURL:(NSURL *)endpoint {
 	CFHostRef host = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)[endpoint host])) autorelease];
 	
-	const AFNetworkTransportSignature *transportSignature = [[self class] transportSignatureForScheme:[endpoint scheme]];
-	if ([endpoint port] != nil) transportSignature->port = [[endpoint port] intValue];
+	AFNetworkTransportSignature *transportSignature = [[self class] transportSignatureForScheme:[endpoint scheme]];
 	
-	const AFNetworkTransportPeerSignature peerSignature = {
+	if ([endpoint port] != nil) {
+		transportSignature->port = [[endpoint port] intValue];
+	}
+	
+	AFNetworkTransportPeerSignature peerSignature = {
 		.host = host,
 		.transport = transportSignature,
 	};
@@ -75,23 +79,6 @@
 	self.transportInfo = nil;
 	
 	[super dealloc];
-}
-
-- (AFNetworkLayer *)lowerLayer {
-	id value = nil;
-	object_getInstanceVariable(self, "_lowerLayer", (void **)&value);
-	return value;
-}
-
-- (void)setLowerLayer:(AFNetworkLayer *)layer {	
-	id lowerLayer = nil;
-	Ivar lowerLayerIvar = object_getInstanceVariable(self, "_lowerLayer", (void **)&lowerLayer);
-	
-	[layer retain];
-	[lowerLayer release];
-	lowerLayer = layer;
-	
-	object_setIvar(self, lowerLayerIvar, lowerLayer);
 }
 
 - (id)forwardingTargetForSelector:(SEL)selector {

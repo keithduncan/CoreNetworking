@@ -28,57 +28,76 @@
 @property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
 
 /*!
-	@brief	Designated Initialiser, with encapsulation in mind.
-	@detail	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound communication will probably have a more specific initialiser
+	@brief
+	Designated Initialiser.
+	
+	@detail
+	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound initialisers have a more specific signatures.
  */
 - (id)initWithLowerLayer:(id <AFTransportLayer>)layer;
 
-@property (readonly) id <AFTransportLayer> lowerLayer;
+/*!
+	@brief
+	This method is useful for accessing lower level properties.
+ */
+- (id <AFTransportLayer>)lowerLayer;
 
  @optional
 
 /*!
-	@brief	The delegate callbacks convey success/failure.
-	@detail	This is a good candidate for a block callback argument, allowing for asynchronous -open methods and eliminating the delegate callbacks.
+	@brief
+	The delegate callbacks will convey success or failure.
+ 
+	@detail
+	This is a good candidate for a block callback argument, allowing for asynchronous -open methods and eliminating the delegate callbacks.
  */
 - (void)open;
 
 /*!
-	@result		YES if the layer is currently open.
+	@result
+	YES if the layer is currently open.
  */
 - (BOOL)isOpen;
 
 /*!
-	@detail	A layer may elect to remain open, in which case you will not receive the -layerDidClose: delegate callback until it actually closes.
+	@detail
+	A layer may elect to remain open, in which case you will not receive the -layerDidClose: delegate callback until it actually closes.
  */
 - (void)close;
 
 /*!
-	@brief	Many layers are linear non-recurrant in nature, like a TCP stream; once closed it cannot be reopened.
+	@brief
+	Many layers are linear non-recurrant in nature, like a TCP stream; once closed it cannot be reopened.
  */
 - (BOOL)isClosed;
 
 /*!
-	@brief	Pass a dictionary with the SSL keys specified in CFSocketStream.h
+	@brief
+	Pass a dictionary with the SSL keys specified in CFSocketStream.h
  */
 - (void)startTLS:(NSDictionary *)options;
 
 /*!
-	@brief	The socket connection must be scheduled in at least one run loop to function.
+	@brief
+	The socket connection must be scheduled in at least one run loop to function.
  */
 - (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
 /*!
-	@brief	The socket connection must remain scheduled in at least one run loop to function.
+	@brief
+	The socket connection must remain scheduled in at least one run loop to function.
  */
 - (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
 /*!
-	@param	|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length, an NSData for bit pattern, or an AFPacketRead subclass for custom behaviour.
+	@param
+	|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length, an NSData for bit pattern, or an AFPacketRead subclass for custom behaviour.
  */
 - (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
 
-
+/*!
+ 
+ */
 - (void)performWrite:(id)dataBuffer forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
 
 @end
@@ -94,7 +113,6 @@
 
 - (void)layerDidOpen:(id <AFTransportLayer>)layer;
 
-
 - (void)layer:(id <AFTransportLayer>)layer didNotOpen:(NSError *)error;
 
 /*!
@@ -102,14 +120,11 @@
  */
 - (void)layer:(id <AFTransportLayer>)layer didReceiveError:(NSError *)error;
 
-
 - (void)layerDidClose:(id <AFTransportLayer>)layer;
 
  @optional
 
-
 - (void)layerDidStartTLS:(id <AFTransportLayer>)layer;
-
 
 - (void)layer:(id <AFTransportLayer>)layer didNotStartTLS:(NSError *)error;
 
@@ -118,9 +133,7 @@
 
 @protocol AFTransportLayerDataDelegate <NSObject>
 
-
 - (void)layer:(id <AFTransportLayer>)layer didRead:(id)data forTag:(NSUInteger)tag;
-
 
 - (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag;
 

@@ -83,7 +83,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 @implementation AFNetworkTransport
 
-@dynamic lowerLayer, delegate;
+@dynamic delegate;
 @synthesize connectionFlags=_connectionFlags, streamFlags=_streamFlags;
 @synthesize currentReadPacket=_currentReadPacket, currentWritePacket=_currentWritePacket;
 

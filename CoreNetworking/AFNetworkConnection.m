@@ -10,6 +10,6 @@
 
 @implementation AFNetworkConnection
 
-@dynamic lowerLayer, delegate;
+@dynamic delegate;
 
 @end

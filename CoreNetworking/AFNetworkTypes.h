@@ -22,8 +22,8 @@
 	|protocol| should typically be one of the IP protocols defined in RFC 1700 see http://www.faqs.org/rfcs/rfc1700.html - it is important that an appropriate |socketType| is also provided.
  */
 struct AFNetworkSocketSignature {
-	SInt32 socketType;
-	SInt32 protocol;
+	const SInt32 socketType;
+	const SInt32 protocol;
 };
 typedef struct AFNetworkSocketSignature AFNetworkSocketSignature;
 
@@ -60,8 +60,7 @@ extern const AFNetworkTransportSignature AFNetworkTransportSignatureHTTPS;
 /*!
 	@brief
 	Based on CFSocketSignature allowing for higher-level functionality.
-	The un-intuitive layout of the structure is very important; because the first pointer width bits are a CFTypeRef the structure
-	can be introspected using CFGetTypeID.
+	The un-intuitive layout of the structure is very important; because the first pointer width bits are a CFTypeRef the structure can be introspected using CFGetTypeID.
  
 	@detail
 	Doesn't include a |protocolFamily| field like CFSocketSignature because the |host| may resolve to a number of different protocol family addresses.

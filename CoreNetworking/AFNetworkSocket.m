@@ -19,7 +19,7 @@
 
 @implementation AFNetworkSocket
 
-@dynamic lowerLayer, delegate;
+@dynamic delegate;
 @synthesize socket=_socket;
 
 static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {

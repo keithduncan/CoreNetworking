@@ -15,7 +15,7 @@
 */
 @interface AFNetworkConnection : AFNetworkLayer <AFConnectionLayer>
 
-@property (readonly) id <AFConnectionLayer> lowerLayer;
+- (AFNetworkLayer <AFConnectionLayer> *)lowerLayer;
 
 @property (assign) id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> delegate;
 
