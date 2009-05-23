@@ -42,22 +42,24 @@
 	id _currentWritePacket;
 }
 
-
 @property (assign) id <AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate> delegate;
 
 /*!
-	@brief	Depending on how the object was instantiated it may be a <tt>CFNetServiceRef</tt> or a <tt>CFHostRef</tt>
-			If this is an inbound connection, it will always be a <tt>CFHostRef</tt>
+	@brief
+	Depending on how the object was instantiated it may be a <tt>CFNetServiceRef</tt> or a <tt>CFHostRef</tt>
+	If this is an inbound connection, it will always be a <tt>CFHostRef</tt>.
  */
 @property (readonly) CFTypeRef peer;
 
 /*!
-	@brief	All parameters are optional, allowing you to extract only the values you require.
+	@brief
+	All parameters are optional, allowing you to extract only the values you require.
  */
 - (float)currentReadProgressWithBytesDone:(NSUInteger *)done bytesTotal:(NSUInteger *)total forTag:(NSUInteger *)tag;
 
 /*!
-	@brief	All parameters are optional, allowing you to extract only the values you require.	
+	@brief
+	All parameters are optional, allowing you to extract only the values you require.	
  */
 - (float)currentWriteProgressWithBytesDone:(NSUInteger *)done bytesTotal:(NSUInteger *)total forTag:(NSUInteger *)tag;
 
@@ -79,13 +81,17 @@
  @optional
 
 /*!
-	@brief	Instead of calling <tt>-currentReadProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of read progress.
-	@param	|total| will be NSUIntegerMax if the packet terminator is a data pattern.
+	@brief
+	Instead of calling <tt>-currentReadProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of read progress.
+ 
+	@param
+	|total| will be NSUIntegerMax if the packet terminator is a data pattern.
  */
 - (void)socket:(AFNetworkTransport *)socket didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
 
 /*!
-	@brief	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
+	@brief
+	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
  */
 - (void)socket:(AFNetworkTransport *)socket didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
 

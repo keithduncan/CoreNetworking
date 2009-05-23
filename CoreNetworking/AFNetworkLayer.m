@@ -65,12 +65,12 @@
 }
 
 - (id <AFTransportLayer>)initWithPeerSignature:(const AFNetworkTransportPeerSignature *)signature {	
-	id <AFTransportLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithPeerSignature:signature] autorelease];
+	id <AFTransportLayer> lowerLayer = [[[(id)[[self class] lowerLayer] alloc] initWithPeerSignature:signature] autorelease];
 	return [self initWithLowerLayer:lowerLayer];
 }
 
 - (id <AFTransportLayer>)initWithNetService:(id <AFNetServiceCommon>)netService {
-	id <AFTransportLayer> lowerLayer = [[[[[self class] lowerLayerClass] alloc] initWithNetService:netService] autorelease];
+	id <AFTransportLayer> lowerLayer = [[[(id)[[self class] lowerLayer] alloc] initWithNetService:netService] autorelease];
 	return [self initWithLowerLayer:lowerLayer];
 }
 

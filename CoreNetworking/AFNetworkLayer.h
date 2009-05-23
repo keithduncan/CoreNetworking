@@ -31,6 +31,12 @@
 
 /*!
 	@brief
+	This method chains the layer classes.
+ */
++ (Class)lowerLayer;
+
+/*!
+	@brief
 	The default implementation of this method raises an exception, if you don't handle scheme passed in you should defer to the superclass' implementation.
  
 	@detail
