@@ -29,7 +29,7 @@
 		5333F83E0F82CB7A00A9AF8A /* AFConnectionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5BF70FBF52F500169C14 /* AFKeyPathProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5BF50FBF52F500169C14 /* AFKeyPathProxy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5BF80FBF52F500169C14 /* AFKeyPathProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5BF60FBF52F500169C14 /* AFKeyPathProxy.m */; };
-		533F5BF90FBF52F500169C14 /* AFKeyPathProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5BF50FBF52F500169C14 /* AFKeyPathProxy.h */; };
+		533F5BF90FBF52F500169C14 /* AFKeyPathProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5BF50FBF52F500169C14 /* AFKeyPathProxy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5BFA0FBF52F500169C14 /* AFKeyPathProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5BF60FBF52F500169C14 /* AFKeyPathProxy.m */; };
 		533F5C330FBF565900169C14 /* AFCalendarButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C110FBF565900169C14 /* AFCalendarButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5C340FBF565900169C14 /* AFCalendarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C120FBF565900169C14 /* AFCalendarButton.m */; };
@@ -62,7 +62,7 @@
 		533F5C510FBF565900169C14 /* AFTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C310FBF565900169C14 /* AFTextFieldCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5C520FBF565900169C14 /* AFTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C320FBF565900169C14 /* AFTextFieldCell.m */; };
 		533F5C7C0FBF5A1700169C14 /* AFMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C7A0FBF5A1700169C14 /* AFMacro.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		533F5C7E0FBF5A1700169C14 /* AFMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C7A0FBF5A1700169C14 /* AFMacro.h */; };
+		533F5C7E0FBF5A1700169C14 /* AFMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C7A0FBF5A1700169C14 /* AFMacro.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5D470FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5D480FBF622700169C14 /* NSControl+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5D460FBF622700169C14 /* NSControl+Additions.m */; };
 		533F5D490FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
