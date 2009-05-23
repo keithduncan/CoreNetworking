@@ -13,6 +13,8 @@
 @protocol AFNetworkTransportDataDelegate;
 @protocol AFNetworkTransportControlDelegate;
 
+@class AFPacketQueue;
+
 /*!
     @brief
 	Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the name was changed so not to imply the exclusive use of SOCK_STREAM.
@@ -33,13 +35,11 @@
 		struct AFNetworkTransportPeerSignature _hostDestination;
 	} _peer;
 	
-	__strong CFReadStreamRef readStream;
-	NSMutableArray *readQueue;
-	id _currentReadPacket;
+	__strong CFReadStreamRef _readStream;
+	AFPacketQueue *_readQueue;
 	
-	__strong CFWriteStreamRef writeStream;
-	NSMutableArray *writeQueue;
-	id _currentWritePacket;
+	__strong CFWriteStreamRef _writeStream;
+	AFPacketQueue *_writeQueue;
 }
 
 @property (assign) id <AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate> delegate;

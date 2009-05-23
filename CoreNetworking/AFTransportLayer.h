@@ -73,12 +73,6 @@
 
 /*!
 	@brief
-	Pass a dictionary with the SSL keys specified in CFSocketStream.h
- */
-- (void)startTLS:(NSDictionary *)options;
-
-/*!
-	@brief
 	The socket connection must be scheduled in at least one run loop to function.
  */
 - (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
@@ -96,7 +90,7 @@
 - (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
 
 /*!
- 
+	
  */
 - (void)performWrite:(id)dataBuffer forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
 

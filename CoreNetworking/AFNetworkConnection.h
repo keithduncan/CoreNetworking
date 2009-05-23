@@ -19,4 +19,11 @@
 
 @property (assign) id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> delegate;
 
+/*!
+	@brief
+	This method returns nil for an inbound connection.
+	Otherwise, this method returns the CFHostRef hostname, or the CFNetServiceRef fullname.
+ */
+- (NSURL *)peer;
+
 @end

@@ -1,5 +1,5 @@
 //
-//  AFNetworkObject.h
+//  AFNetworkLayer.h
 //  Amber
 //
 //  Created by Keith Duncan on 04/05/2009.

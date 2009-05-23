@@ -1,5 +1,5 @@
 //
-//  AFNetworkObject.m
+//  AFNetworkLayer.m
 //  Amber
 //
 //  Created by Keith Duncan on 04/05/2009.
@@ -22,6 +22,11 @@
 @synthesize lowerLayer = _lowerLayer;
 @synthesize delegate=_delegate;
 @synthesize transportInfo=_transportInfo;
+
++ (Class)lowerLayer {
+	[self doesNotRecognizeSelector:_cmd];
+	return Nil;
+}
 
 + (const AFNetworkTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
 	[NSException raise:NSInvalidArgumentException format:@"%s, cannot provide an AFNetworkTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme, nil];
@@ -92,7 +97,7 @@
 - (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {	
 	id delegate = nil;
 	object_getInstanceVariable(self, "_delegate", (void **)&delegate);
-	// Note: this intentionally doesn't use the accessor, I changed it before and left this comment here to warn me off next time.
+	// Note: this intentionally doesn't use the accessor, I accidentally changed it before and have left this comment here to warn me off next time.
 	if (delegate == nil) return proxy;
 	
 	
