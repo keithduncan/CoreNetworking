@@ -14,7 +14,7 @@
 	@result
 	A copy of the receiver, with CFStringTimeWhitespace applied.
  */
-- (NSString *)stringByTrimmgWhiteSpace;
+- (NSString *)stringByTrimmingWhiteSpace;
 
 /*!
 	@brief

@@ -11,8 +11,6 @@
 #import <objc/runtime.h>
 #import <CoreFoundation/CFPreferences.h>
 
-#import "AmberFoundation/NSString+Additions.h"
-
 #if !TARGET_OS_IPHONE
 
 NSString *const AFUserDefaultsDidChangeNotification = @"AFUserDefaultsDidChangeNotification";
