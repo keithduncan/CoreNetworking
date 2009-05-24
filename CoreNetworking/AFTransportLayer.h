@@ -20,8 +20,11 @@
 #pragma mark -
 
 /*!
-    @brief	An AFNetworkLayer object should encapsulate data (as defined in RFC 1122)
-	@detail	This implementation mandates that a layer pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a cluster-chain allowing for maximum flexiblity.
+    @brief
+	An AFTransportLayer object should encapsulate data (as defined in RFC 1122)
+ 
+	@detail
+	This implementation mandates that a layer pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a cluster-chain allowing for maximum flexiblity.
 */
 @protocol AFTransportLayer <NSObject>
 
@@ -110,7 +113,8 @@
 - (void)layer:(id <AFTransportLayer>)layer didNotOpen:(NSError *)error;
 
 /*!
-	@brief	This is called for connected-stream errors only.
+	@brief
+	This is called for connected-stream errors only.
  */
 - (void)layer:(id <AFTransportLayer>)layer didReceiveError:(NSError *)error;
 

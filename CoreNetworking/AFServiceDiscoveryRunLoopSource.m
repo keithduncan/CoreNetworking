@@ -39,6 +39,8 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 	
 	_source = (CFRunLoopSourceRef)NSMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, (CFIndex)0));
 	
+	[self scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopCommonModes];
+	
 	return self;
 }
 

@@ -11,9 +11,11 @@
 #import <dns_sd.h>
 
 /*!
-	@class
-	@brief    Allows for asynchronous DNSService API callbacks
-	@detail  This class doesn't take ownership of the DNSServiceRef it is instantiated with, it is still the client's responsibility to deallocate the DNSServiceRef once it is no longer needed
+	@brief
+	Allows for asynchronous DNSService API callbacks.
+ 
+	@detail
+	This class doesn't take ownership of the DNSServiceRef it is instantiated with, it is still the client's responsibility to deallocate the DNSServiceRef once it is no longer needed
 */
 @interface AFServiceDiscoveryRunLoopSource : NSObject {
 	DNSServiceRef _service;
@@ -23,28 +25,26 @@
 }
 
 /*!
-	@method
+	@brief
+	Because the DNS-SD doesn't provide a reference counting mechanism, you must ensure the service remains valid for the lifetime of this object.
+	The source is scheduled on the current run loop.
  */
 - (id)initWithService:(DNSServiceRef)service;
 
-/*!
-	@property
- */
 @property (readonly) DNSServiceRef service;
 
 /*!
-	@method
+	@brief
+	The source must be scheduled in at least one run loop to function.
  */
 - (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
 /*!
-	@method
+	@brief
+	The source must be scheduled in at least one run loop to function.
  */
 - (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
 
-/*!
-	@method
- */
 - (void)invalidate;
 
 @end

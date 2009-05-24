@@ -1,5 +1,9 @@
 //
-//  AFSocket.h
+//  AFNetworkTransport.h
+//	Amber
+//
+//	Originally based on AsyncSocket http://code.google.com/p/cocoaasyncsocket/
+//	Although the class is now much departed from the original codebase.
 //
 //  Created by Keith Duncan
 //  Copyright 2008 thirty-three software. All rights reserved.
