@@ -1,5 +1,5 @@
 //
-//  ANServer.h
+//  AFConnectionServer.h
 //  Amber
 //
 //  Created by Keith Duncan on 25/12/2008.
@@ -20,8 +20,11 @@
 @end
 
 /*!
-	@brief	This is a generic construct for spawning new client layers.
-	@detail	After instantiating the server you can use one of the convenience methods to open a collection of sockets
+	@brief
+	This is a generic construct for spawning new client layers.
+ 
+	@detail
+	After instantiating the server you can use one of the convenience methods to open a collection of sockets
  */
 @interface AFConnectionServer : AFNetworkLayer <AFConnectionServerDelegate, AFConnectionLayerHostDelegate> {	
 	Class _clientClass;
@@ -29,33 +32,45 @@
 }
 
 /*!
-	@detail	A collection of NSData objects containing a (struct sockaddr *)
-	@result	All the network socket addresses, these may be accessable from other network clients (ignoring firewalls).
+	@detail
+	A collection of NSData objects containing a (struct sockaddr *)
+ 
+	@result
+	All the network socket addresses, these may be accessable from other network clients (ignoring firewalls).
  */
 + (NSSet *)networkSocketAddresses;
 
 /*!
-	@detail	A collection of NSData objects containing a (struct sockaddr *)
-			This is likely only to be useful for testing your server, since it won't be accessable from another computer
-	@result	All the localhost socket addresses, these are only accessible from the local machine.
-			This allows you to create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to ::1).
+	@detail
+	A collection of NSData objects containing a (struct sockaddr *)
+	This is likely only to be useful for testing your server, since it won't be accessable from another computer
+ 
+	@result
+	All the localhost socket addresses, these are only accessible from the local machine.
+	This allows you to create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to ::1).
  */
 + (NSSet *)localhostSocketAddresses;
 
 /*!
-	@brief	Override Constructor
-	@detail	This should call the designated initialiser with an appropriate |lowerLayer| and encapsulation class.
-			By default this creates a server with no |lowerLayer| and <tt>AFSocketTransport</tt> as the encapsulation class.
+	@brief
+	Override Constructor
+ 
+	@detail
+	This should call the designated initialiser with an appropriate |lowerLayer| and encapsulation class.
+	By default this creates a server with no |lowerLayer| and <tt>AFSocketTransport</tt> as the encapsulation class.
  */
 + (id)server;
 
 /*!
-	@brief	Designated Initialiser
+	@brief
+	Designated Initialiser.
  */
 - (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass;
 
 /*!
-	@brief	The server that this one sits atop. The delegate of this object should be the upper-layer server.
+	@brief
+	The server that this one sits atop.
+	The lowerLayer delegate is set to this object.
  */
 @property (readonly) AFConnectionServer *lowerLayer;
 
@@ -93,17 +108,27 @@
 @property (readonly, assign) Class clientClass;
 
 /*!
-	@brief	You can add host sockets to this object, the server observes the |connections| property and sets itself as the delegate for any objects
-	@detail	The server expects <tt>-layer:didAcceptConnection:</tt> callbacks to spawn new layers, and subsequently spawn new application layers
+	@brief
+	You can add host sockets to this object, the server observes the |connections| property and sets itself as the delegate for any objects
+ 
+	@detail
+	The server expects <tt>-layer:didAcceptConnection:</tt> callbacks to spawn new layers, and subsequently spawn new application layers
  */
 @property (readonly, retain) AFConnectionPool *hosts;
 
 /*!
-	@brief	this method uses the <tt>+connectionClass</tt>
-	@detail	override point, if you need to customize your application layer before it is added to the connection pool, call super for creation and setup first
+	@brief
+	This method uses the <tt>+clientClass</tt>.
+ 
+	@detail
+	Override point, if you need to customize your application layer before it is added to the connection pool, call super for creation and setup first
  */
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)socket;
 
+/*!
+	@brief
+	This pool contains the instantiated clientClass objects this server has created.
+ */
 @property (readonly, retain) AFConnectionPool *clients;
 
 @end

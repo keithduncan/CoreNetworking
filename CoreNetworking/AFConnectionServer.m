@@ -1,5 +1,5 @@
 //
-//  ANServer.m
+//  AFConnectionServer.m
 //  Amber
 //
 //  Created by Keith Duncan on 25/12/2008.
