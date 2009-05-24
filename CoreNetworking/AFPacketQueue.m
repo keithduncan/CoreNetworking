@@ -47,8 +47,14 @@
 
 - (void)dequeuePacket {
 	if ([self.queue count] > 0) {
-		self.currentPacket = [self.queue objectAtIndex:0];
-		[self.queue removeObjectAtIndex:0];
+		const NSUInteger newPacketIndex = 0;
+		
+		id newPacket = [[self.queue objectAtIndex:newPacketIndex] retain];
+		[self.queue removeObjectAtIndex:newPacketIndex];
+		
+		self.currentPacket = newPacket;
+		
+		[newPacket release];
 	} else {
 		self.currentPacket = nil;
 	}
