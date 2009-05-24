@@ -216,7 +216,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketTimeoutNotificationName object:oldPacket];
 		
 		id newPacket = [change objectForKey:NSKeyValueChangeNewKey];
-		if (newPacket == nil) return;
+		if (newPacket == nil || [newPacket isEqual:[NSNull null]]) return;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetTimeoutNotification:) name:AFPacketTimeoutNotificationName object:newPacket];
 		[newPacket startTimeout];

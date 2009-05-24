@@ -1,6 +1,6 @@
 //
 //  AFNetService.h
-//  Bonjour
+//  Amber
 //
 //  Created by Keith Duncan on 03/02/2009.
 //  Copyright 2009 thirty-three software. All rights reserved.
@@ -132,7 +132,6 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 @protocol AFNetServiceDelegate <NSObject>
 
 - (void)netServiceDidResolveAddress:(AFNetService *)service;
-
 - (void)netService:(AFNetService *)service didNotResolveAddress:(NSError *)error;
 
 @end
