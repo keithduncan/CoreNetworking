@@ -27,8 +27,10 @@
 	After instantiating the server you can use one of the convenience methods to open a collection of sockets
  */
 @interface AFConnectionServer : AFNetworkLayer <AFConnectionServerDelegate, AFConnectionLayerHostDelegate> {	
+	AFConnectionPool *_hosts;
+	
+	AFConnectionPool *_clients;
 	Class _clientClass;
-	AFConnectionPool *hosts, *clients;
 }
 
 /*!

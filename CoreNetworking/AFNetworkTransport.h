@@ -22,6 +22,8 @@
     @detail
 	This class is a mix of two of the primary patterns. Internally, it acts an adaptor between the CFSocket and CFStream API.
 	Externally, it bridges CFHost, CFNetService with CFSocket and CFStream. It provides a CFStream like API.
+	
+	Note: The layout of the _peer union members is important, we can cast the _peer instance variable to CFTypeRef and introspect using CFGetTypeID to determine the struct in use.
 */
 @interface AFNetworkTransport : AFNetworkLayer <AFConnectionLayer> {	
 	NSUInteger _connectionFlags;

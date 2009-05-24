@@ -33,8 +33,10 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 @implementation AFConnectionServer
 
 @dynamic lowerLayer, delegate;
+@synthesize hosts=_hosts;
+
+@synthesize clients=_clients;
 @synthesize clientClass=_clientClass;
-@synthesize hosts, clients;
 
 + (NSSet *)localhostSocketAddresses {
 	CFHostRef localhost = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost")) autorelease];
@@ -85,11 +87,10 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	self = [self initWithLowerLayer:(id)server];
 	if (self == nil) return nil;
 	
-	hosts = [[AFConnectionPool alloc] init];
-	[hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
+	_hosts = [[AFConnectionPool alloc] init];
+	[_hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
 	
-	clients = [[AFConnectionPool alloc] init];
-	
+	_clients = [[AFConnectionPool alloc] init];
 	_clientClass = clientClass;
 	
 	return self;
@@ -97,6 +98,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 - (void)_close {
 	[self.clients close];
+	[self.hosts close];
 }
 
 - (void)finalize {
@@ -108,12 +110,10 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (void)dealloc {
 	[self _close];
 	
-	[clients release];
+	[_hosts removeObserver:self forKeyPath:@"connections"];
+	[_hosts release];
 	
-	[hosts removeObserver:self forKeyPath:@"connections"];
-	[hosts close];
-	
-	[hosts release];
+	[_clients release];
 	
 	[super dealloc];
 }
@@ -149,7 +149,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 		
 		// Note: get the port after setting the address i.e. opening
 		if (*port == 0) {
-			// Note: extract the *actual* port used and use that for future sockets allocations
+			// Note: extract the *actual* port used and use that for future sockets
 			CFHostRef addrHost = (CFHostRef)[socket peer];
 			CFDataRef actualAddrData = CFArrayGetValueAtIndex(CFHostGetAddressing(addrHost, NULL), 0);
 			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port);
@@ -175,12 +175,19 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 - (void)layer:(id)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
 	if ([self.delegate respondsToSelector:@selector(server:shouldAcceptConnection:fromHost:)]) {
+		// Note: for accepted sockets, the peer will always be a CFHostRef
 		CFHostRef host = (CFHostRef)[(id)newLayer peer];
+		
 		if (![self.delegate server:self shouldAcceptConnection:newLayer fromHost:host]) return;
 	}
 	
 	id <AFConnectionLayer> newConnection = [self newApplicationLayerForNetworkLayer:newLayer];
-	[self.clients addConnectionsObject:newConnection];
+	
+	if ([self.hosts.connections containsObject:layer])
+		[self.clients addConnectionsObject:newConnection];
+	else
+		[self.hosts addConnectionsObject:newConnection];
+	
 	[newConnection open];
 }
 
