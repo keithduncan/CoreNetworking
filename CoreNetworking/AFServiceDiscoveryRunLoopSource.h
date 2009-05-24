@@ -1,6 +1,6 @@
 //
-//  ServiceController.h
-//  Bonjour
+//  AFServiceDiscoveryRunLoopSource.h
+//  Amber
 //
 //  Created by Keith Duncan on 09/11/2008.
 //  Copyright 2008 thirty-three software. All rights reserved.

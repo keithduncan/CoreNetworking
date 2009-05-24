@@ -1,14 +1,20 @@
 //
-//  ServiceController.m
-//  Bonjour
+//  AFServiceDiscoveryRunLoopSource.m
+//  Amber
 //
 //  Created by Keith Duncan on 09/11/2008.
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-/*! ServiceController was taken from Apple's DNSServiceBrowser.m */
-/*! Adapted from Adium implementation, improved and simplified by Keith Duncan */
-/*! Modified to conform to a run loop source like API by Keith Duncan */
+/*
+	ServiceController was taken from Apple's DNSServiceBrowser.m
+ */
+
+/*
+	Adapted from Adium implementation, improved and simplified,
+	Modified to conform to a run loop source like API,
+	by Keith Duncan
+ */
 
 #import "AFServiceDiscoveryRunLoopSource.h"
 
@@ -26,7 +32,8 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 }
 
 - (id)initWithService:(DNSServiceRef)service {
-	[self init];
+	self = [self init];
+	if (self == nil) return nil;
 	
 	_service = service;
 	
