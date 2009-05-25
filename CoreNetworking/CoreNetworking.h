@@ -1,6 +1,6 @@
 //
 //  CoreNetworking.h
-//  Bonjour
+//  Amber
 //
 //  Created by Keith Duncan on 26/12/2008.
 //  Copyright 2008 thirty-three software. All rights reserved.

@@ -16,5 +16,7 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
+	<key>CFBundleName</key>
+	<string>Core Networking</string>
 </dict>
 </plist>

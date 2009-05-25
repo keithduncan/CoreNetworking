@@ -44,9 +44,14 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 @synthesize authenticationCredentials=_authenticationCredentials;
 @synthesize transactionQueue=_transactionQueue;
 
+static NSString *_AFHTTPConnectionUserAgentFromBundle(NSBundle *bundle) {
+	return [NSString stringWithFormat:@"%@/%@", [[bundle displayName] stringByReplacingOccurrencesOfString:@" " withString:@"-"], [[bundle displayVersion] stringByReplacingOccurrencesOfString:@" " withString:@"-"], nil];
+}
+
 + (void)initialize {
-	NSString *applicationUserAgent = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] displayName], [[NSBundle mainBundle] displayVersion], nil];
-	[self setUserAgent:applicationUserAgent];
+	NSBundle *application = [NSBundle mainBundle], *framework = [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier];
+	NSString *userAgent = [NSString stringWithFormat:@"%@ %@", _AFHTTPConnectionUserAgentFromBundle(application), _AFHTTPConnectionUserAgentFromBundle(framework), nil];
+	[self setUserAgent:userAgent];
 }
 
 + (const AFNetworkTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
