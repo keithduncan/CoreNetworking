@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		5300213A0F8819C00044D37F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532F73E20F0EB1D7004D6056 /* Foundation.framework */; };
 		5300213F0F8819E00044D37F /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
-		5302AC830F2121D200867A4A /* Amber.m in Sources */ = {isa = PBXBuildFile; fileRef = 5302AC820F2121D200867A4A /* Amber.m */; };
 		530911780F646BAA00525632 /* AFNetworkConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 530911760F646BAA00525632 /* AFNetworkConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		530911790F646BAA00525632 /* AFNetworkConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 530911770F646BAA00525632 /* AFNetworkConstants.m */; };
 		5309117C0F646BAA00525632 /* AFNetworkConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 530911760F646BAA00525632 /* AFNetworkConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -74,7 +73,6 @@
 		535514220FAF6A35004F8FC5 /* AFNetworkLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */; };
 		53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
-		53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
 		5370DE780F5AED47008F5991 /* AFPluralTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE720F5AED47008F5991 /* AFPluralTransformer.m */; };
 		5370DE790F5AED47008F5991 /* AFPluralTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE730F5AED47008F5991 /* AFPluralTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DE7A0F5AED47008F5991 /* AFDateToString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE740F5AED47008F5991 /* AFDateToString.m */; };
@@ -181,7 +179,6 @@
 		5379179F0F7FC8B10064EB92 /* NSTreeNode+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE880F5AED5D008F5991 /* NSTreeNode+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537917E00F7FC8D50064EB92 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5343E7230C21FBEA00B63E6E /* Cocoa.framework */; };
 		5379181F0F7FCAA30064EB92 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE030F1FE2AE003C1148 /* AmberKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		537E53A10CFC8D400084F920 /* Amber.h in Headers */ = {isa = PBXBuildFile; fileRef = 537E53A00CFC8D400084F920 /* Amber.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537E7A570F5477B100C8E3D4 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 537E7A560F5477B100C8E3D4 /* ApplicationServices.framework */; };
 		538AD2D50F8A81780031CFF7 /* AmberKit+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		539A44160F782DF500564C73 /* NSObject+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A44120F782DF500564C73 /* NSObject+Additions.m */; };
@@ -271,20 +268,6 @@
 			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
 			remoteInfo = AmberFoundation;
 		};
-		533F5C550FBF566500169C14 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5370E0700F5B0571008F5991;
-			remoteInfo = CoreNetworking;
-		};
-		53692A480F1B7E970051C367 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 53EE97460F190070008AD8C0;
-			remoteInfo = AmberKit;
-		};
 		53692B130F1B834E0051C367 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
@@ -299,17 +282,9 @@
 			remoteGlobalIDString = 537917740F7FC43B0064EB92;
 			remoteInfo = "AmberKit (Additions)";
 		};
-		539A60E90D269A7C001CD14A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
-			remoteInfo = FoundationAmber;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		5302AC820F2121D200867A4A /* Amber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Amber.m; sourceTree = "<group>"; };
 		530911760F646BAA00525632 /* AFNetworkConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkConstants.h; path = CoreNetworking/AFNetworkConstants.h; sourceTree = "<group>"; };
 		530911770F646BAA00525632 /* AFNetworkConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkConstants.m; path = CoreNetworking/AFNetworkConstants.m; sourceTree = "<group>"; };
 		532AA4840FC206C2000FCC3F /* AFHTTPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPConnection.h; path = CoreNetworking/AFHTTPConnection.h; sourceTree = "<group>"; };
@@ -350,8 +325,6 @@
 		533F5C7A0FBF5A1700169C14 /* AFMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFMacro.h; path = AmberFoundation/AFMacro.h; sourceTree = "<group>"; };
 		533F5D450FBF622700169C14 /* NSControl+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSControl+Additions.h"; path = "AmberKit/NSControl+Additions.h"; sourceTree = "<group>"; };
 		533F5D460FBF622700169C14 /* NSControl+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSControl+Additions.m"; path = "AmberKit/NSControl+Additions.m"; sourceTree = "<group>"; };
-		5343E70E0C21FB4200B63E6E /* Amber.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Amber.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5343E7100C21FB4200B63E6E /* Amber-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Amber-Info.plist"; sourceTree = "<group>"; };
 		5343E7230C21FBEA00B63E6E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFTransportLayer.h; path = CoreNetworking/AFTransportLayer.h; sourceTree = "<group>"; };
 		535511EF0FAF4A34004F8FC5 /* AFNetworkTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkTransport.h; path = CoreNetworking/AFNetworkTransport.h; sourceTree = "<group>"; };
@@ -428,7 +401,6 @@
 		537772CA0F8935000042C727 /* NSDictionary+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+Additions.m"; path = "AmberFoundation/NSDictionary+Additions.m"; sourceTree = "<group>"; };
 		5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AmberKit+Additions.h"; sourceTree = "<group>"; };
 		537917750F7FC43B0064EB92 /* libAmberKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAmberKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		537E53A00CFC8D400084F920 /* Amber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Amber.h; sourceTree = "<group>"; };
 		537E79710F54765000C8E3D4 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		537E7A560F5477B100C8E3D4 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		539A44120F782DF500564C73 /* NSObject+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+Additions.m"; path = "AmberFoundation/NSObject+Additions.m"; sourceTree = "<group>"; };
@@ -470,14 +442,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				532F73E30F0EB1D7004D6056 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5343E70C0C21FB4200B63E6E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				53692C950F1B8AF20051C367 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -628,7 +592,6 @@
 			isa = PBXGroup;
 			children = (
 				53C949B60E17CD7700E21E15 /* LICENSE */,
-				539A60FA0D269B54001CD14A /* Amber */,
 				53EE97620F1900A0008AD8C0 /* AmberKit */,
 				539A60F70D269B40001CD14A /* AmberFoundation */,
 				53692A780F1B7EE70051C367 /* CoreNetworking */,
@@ -640,7 +603,6 @@
 		5343E70F0C21FB4200B63E6E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5343E70E0C21FB4200B63E6E /* Amber.framework */,
 				53EE97470F190070008AD8C0 /* AmberKit.framework */,
 				537917750F7FC43B0064EB92 /* libAmberKit.a */,
 				539A60C30D2698B7001CD14A /* AmberFoundation.framework */,
@@ -785,16 +747,6 @@
 				533F61EF0FC0467E00169C14 /* Resources */,
 			);
 			name = AmberFoundation;
-			sourceTree = "<group>";
-		};
-		539A60FA0D269B54001CD14A /* Amber */ = {
-			isa = PBXGroup;
-			children = (
-				537E53A00CFC8D400084F920 /* Amber.h */,
-				5302AC820F2121D200867A4A /* Amber.m */,
-				5343E7100C21FB4200B63E6E /* Amber-Info.plist */,
-			);
-			name = Amber;
 			sourceTree = "<group>";
 		};
 		539A610D0D269C02001CD14A /* Categories */ = {
@@ -971,14 +923,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5343E7090C21FB4200B63E6E /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				537E53A10CFC8D400084F920 /* Amber.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		5370E06C0F5B0571008F5991 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1131,27 +1075,6 @@
 			productReference = 532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		5343E70D0C21FB4200B63E6E /* Amber */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5343E7120C21FB4300B63E6E /* Build configuration list for PBXNativeTarget "Amber" */;
-			buildPhases = (
-				5343E7090C21FB4200B63E6E /* Headers */,
-				539A68470D296D51001CD14A /* Sources */,
-				5343E70C0C21FB4200B63E6E /* Frameworks */,
-				531C3A480D44B2E80070DEBB /* Generate Bridge Metadata */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				539A60EA0D269A7C001CD14A /* PBXTargetDependency */,
-				53692A490F1B7E970051C367 /* PBXTargetDependency */,
-				533F5C560FBF566500169C14 /* PBXTargetDependency */,
-			);
-			name = Amber;
-			productName = KDKit;
-			productReference = 5343E70E0C21FB4200B63E6E /* Amber.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		5370E0700F5B0571008F5991 /* CoreNetworking */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5370E0750F5B0573008F5991 /* Build configuration list for PBXNativeTarget "CoreNetworking" */;
@@ -1261,7 +1184,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5343E70D0C21FB4200B63E6E /* Amber */,
 				53EE97460F190070008AD8C0 /* AmberKit */,
 				537917740F7FC43B0064EB92 /* AmberKit (Additions) */,
 				539A60C20D2698B7001CD14A /* AmberFoundation */,
@@ -1291,20 +1213,6 @@
 
 /* Begin PBXShellScriptBuildPhase section */
 		531C39EA0D44B0D80070DEBB /* Generate Bridge Metadata */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Generate Bridge Metadata";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" != \"Release\" ]; then\n\texit\nfi\n\nif [ -f \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Resources/BridgeSupport/${PRODUCT_NAME}.bridgesupport\" ]; then\n\texit\nfi\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Resources/BridgeSupport\"\ngen_bridge_metadata -f \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\" -o \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Resources/BridgeSupport/${PRODUCT_NAME}.bridgesupport\"";
-		};
-		531C3A480D44B2E80070DEBB /* Generate Bridge Metadata */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1415,14 +1323,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		539A68470D296D51001CD14A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5302AC830F2121D200867A4A /* Amber.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		53BEF69E0F5B6A2700063B8D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1484,16 +1384,6 @@
 			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
 			targetProxy = 530021420F881A000044D37F /* PBXContainerItemProxy */;
 		};
-		533F5C560FBF566500169C14 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5370E0700F5B0571008F5991 /* CoreNetworking */;
-			targetProxy = 533F5C550FBF566500169C14 /* PBXContainerItemProxy */;
-		};
-		53692A490F1B7E970051C367 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 53EE97460F190070008AD8C0 /* AmberKit */;
-			targetProxy = 53692A480F1B7E970051C367 /* PBXContainerItemProxy */;
-		};
 		53692B140F1B834E0051C367 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
@@ -1503,11 +1393,6 @@
 			isa = PBXTargetDependency;
 			target = 537917740F7FC43B0064EB92 /* AmberKit (Additions) */;
 			targetProxy = 537917900F7FC7C20064EB92 /* PBXContainerItemProxy */;
-		};
-		539A60EA0D269A7C001CD14A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 539A60C20D2698B7001CD14A /* AmberFoundation */;
-			targetProxy = 539A60E90D269A7C001CD14A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1591,70 +1476,6 @@
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
 				SDKROOT = macosx10.5;
-			};
-			name = Release;
-		};
-		5343E7130C21FB4300B63E6E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_PASCAL_STRINGS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
-				"GCC_MODEL_TUNING[arch=*]" = G4;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INFOPLIST_FILE = "Amber-Info.plist";
-				INSTALL_PATH = "@rpath";
-				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../../";
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"-reexport_framework",
-					"\"$CONFIGURATION_BUILD_DIR\"/AmberKit.framework/AmberKit",
-					"-reexport_framework",
-					"\"$CONFIGURATION_BUILD_DIR\"/AmberFoundation.framework/AmberFoundation",
-					"-lcrypto",
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = Amber;
-				newSetting = "";
-				"newSetting[arch=*]" = "";
-			};
-			name = Debug;
-		};
-		5343E7140C21FB4300B63E6E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_PASCAL_STRINGS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
-				"GCC_MODEL_TUNING[arch=*]" = G4;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INFOPLIST_FILE = "Amber-Info.plist";
-				INSTALL_PATH = "@rpath";
-				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../../";
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				OTHER_LDFLAGS = (
-					"-reexport_framework",
-					"\"$CONFIGURATION_BUILD_DIR\"/AmberKit.framework/AmberKit",
-					"-reexport_framework",
-					"\"$CONFIGURATION_BUILD_DIR\"/AmberFoundation.framework/AmberFoundation",
-					"-lcrypto",
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = Amber;
-				STRIP_INSTALLED_PRODUCT = YES;
-				newSetting = "";
-				"newSetting[arch=*]" = "";
 			};
 			name = Release;
 		};
@@ -1912,15 +1733,6 @@
 			buildConfigurations = (
 				5343E6FF0C21FB1000B63E6E /* Debug */,
 				5343E7000C21FB1000B63E6E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		5343E7120C21FB4300B63E6E /* Build configuration list for PBXNativeTarget "Amber" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				5343E7130C21FB4300B63E6E /* Debug */,
-				5343E7140C21FB4300B63E6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
