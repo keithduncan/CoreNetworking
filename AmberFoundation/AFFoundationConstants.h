@@ -6,6 +6,6 @@
 //  Copyright 2009 thirty-three. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 extern NSString *const AFAmberFoundationBundleIdentifier;

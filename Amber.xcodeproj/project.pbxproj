@@ -233,9 +233,9 @@
 		53F6E3740FCB3AF10009FF33 /* AFFoundationConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 53F6E3700FCB3AF10009FF33 /* AFFoundationConstants.m */; };
 		53F6E3770FCB3B350009FF33 /* AFKitConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 53F6E3750FCB3B350009FF33 /* AFKitConstants.h */; };
 		53F6E3780FCB3B350009FF33 /* AFKitConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 53F6E3760FCB3B350009FF33 /* AFKitConstants.m */; };
-		53FE19030F856A3200980D32 /* AFPacketQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FE19010F856A3200980D32 /* AFPacketQueue.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		53FE19030F856A3200980D32 /* AFPacketQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FE19010F856A3200980D32 /* AFPacketQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53FE19040F856A3200980D32 /* AFPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FE19020F856A3200980D32 /* AFPacketQueue.m */; };
-		53FE19050F856A3200980D32 /* AFPacketQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FE19010F856A3200980D32 /* AFPacketQueue.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		53FE19050F856A3200980D32 /* AFPacketQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FE19010F856A3200980D32 /* AFPacketQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53FE19060F856A3200980D32 /* AFPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FE19020F856A3200980D32 /* AFPacketQueue.m */; };
 /* End PBXBuildFile section */
 
