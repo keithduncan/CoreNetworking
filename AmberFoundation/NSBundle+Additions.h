@@ -17,27 +17,38 @@ extern NSString *const AFCompanyNameKey;
 @interface NSBundle (AFAdditions)
 
 /*!
-	@result <tt>-objectForInfoDictionaryKey:</tt> CFBundleVersion.
+	@result
+	<tt>-objectForInfoDictionaryKey:</tt> CFBundleVersion.
  */
 - (NSString *)version;
 
 /*!
-	@result <tt>-objectForInfoDictionaryKey:</tt> CFBundleShortVersionString.
+	@brief
+	This method will fallback on <tt>-version</tt> before returning nil.
+ 
+	@result
+	<tt>-objectForInfoDictionaryKey:</tt> CFBundleShortVersionString.
  */
 - (NSString *)displayVersion;
 
 /*!
-	@result <tt>-objectForInfoDictionaryKey:</tt> CFBundleName.
+	@result
+	<tt>-objectForInfoDictionaryKey:</tt> CFBundleName.
  */
 - (NSString *)name;
 
 /*!
-	@result <tt>-objectForInfoDictionaryKey:</tt> CFBundleDisplayName.
+	@brief
+	This method will fallback on <tt>-name</tt> before returning nil.
+ 
+	@result
+	<tt>-objectForInfoDictionaryKey:</tt> CFBundleDisplayName.
  */
 - (NSString *)displayName;
 
 /*!
-	@result <tt>-objectForInfoDictionaryKey:</tt> AFCompanyName.
+	@result
+	<tt>-objectForInfoDictionaryKey:</tt> AFCompanyName.
  */
 - (NSString *)companyName;
 @end

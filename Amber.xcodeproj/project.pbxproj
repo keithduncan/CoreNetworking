@@ -51,14 +51,10 @@
 		533F5C460FBF565900169C14 /* AFDisclosureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C260FBF565900169C14 /* AFDisclosureButton.m */; };
 		533F5C470FBF565900169C14 /* AFImageTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C270FBF565900169C14 /* AFImageTextCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5C480FBF565900169C14 /* AFImageTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C280FBF565900169C14 /* AFImageTextCell.m */; };
-		533F5C490FBF565900169C14 /* AFLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C290FBF565900169C14 /* AFLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		533F5C4A0FBF565900169C14 /* AFLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C2A0FBF565900169C14 /* AFLibrary.m */; };
 		533F5C4B0FBF565900169C14 /* AFLocateLibraryWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C2B0FBF565900169C14 /* AFLocateLibraryWindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5C4C0FBF565900169C14 /* AFLocateLibraryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C2C0FBF565900169C14 /* AFLocateLibraryWindowController.m */; };
 		533F5C4D0FBF565900169C14 /* AFSourceList.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C2D0FBF565900169C14 /* AFSourceList.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5C4E0FBF565900169C14 /* AFSourceList.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C2E0FBF565900169C14 /* AFSourceList.m */; };
-		533F5C4F0FBF565900169C14 /* AFSourceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C2F0FBF565900169C14 /* AFSourceNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		533F5C500FBF565900169C14 /* AFSourceNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C300FBF565900169C14 /* AFSourceNode.m */; };
 		533F5C510FBF565900169C14 /* AFTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C310FBF565900169C14 /* AFTextFieldCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5C520FBF565900169C14 /* AFTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C320FBF565900169C14 /* AFTextFieldCell.m */; };
 		533F5C7C0FBF5A1700169C14 /* AFMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C7A0FBF5A1700169C14 /* AFMacro.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -234,6 +230,12 @@
 		53DC5F070F655F9D00349623 /* AFServiceDiscoveryRunLoopSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0900F5B061D008F5991 /* AFServiceDiscoveryRunLoopSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53DC5F090F655F9E00349623 /* AFServiceDiscoveryRunLoopSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0910F5B061D008F5991 /* AFServiceDiscoveryRunLoopSource.m */; };
 		53DC5F0C0F655FA100349623 /* CoreNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0970F5B061D008F5991 /* CoreNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53F6E3710FCB3AF10009FF33 /* AFFoundationConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 53F6E36F0FCB3AF10009FF33 /* AFFoundationConstants.h */; };
+		53F6E3720FCB3AF10009FF33 /* AFFoundationConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 53F6E3700FCB3AF10009FF33 /* AFFoundationConstants.m */; };
+		53F6E3730FCB3AF10009FF33 /* AFFoundationConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 53F6E36F0FCB3AF10009FF33 /* AFFoundationConstants.h */; };
+		53F6E3740FCB3AF10009FF33 /* AFFoundationConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 53F6E3700FCB3AF10009FF33 /* AFFoundationConstants.m */; };
+		53F6E3770FCB3B350009FF33 /* AFKitConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 53F6E3750FCB3B350009FF33 /* AFKitConstants.h */; };
+		53F6E3780FCB3B350009FF33 /* AFKitConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 53F6E3760FCB3B350009FF33 /* AFKitConstants.m */; };
 		53FE19030F856A3200980D32 /* AFPacketQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FE19010F856A3200980D32 /* AFPacketQueue.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		53FE19040F856A3200980D32 /* AFPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FE19020F856A3200980D32 /* AFPacketQueue.m */; };
 		53FE19050F856A3200980D32 /* AFPacketQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FE19010F856A3200980D32 /* AFPacketQueue.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -339,14 +341,10 @@
 		533F5C260FBF565900169C14 /* AFDisclosureButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFDisclosureButton.m; sourceTree = "<group>"; };
 		533F5C270FBF565900169C14 /* AFImageTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFImageTextCell.h; sourceTree = "<group>"; };
 		533F5C280FBF565900169C14 /* AFImageTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageTextCell.m; sourceTree = "<group>"; };
-		533F5C290FBF565900169C14 /* AFLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFLibrary.h; sourceTree = "<group>"; };
-		533F5C2A0FBF565900169C14 /* AFLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFLibrary.m; sourceTree = "<group>"; };
 		533F5C2B0FBF565900169C14 /* AFLocateLibraryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFLocateLibraryWindowController.h; sourceTree = "<group>"; };
 		533F5C2C0FBF565900169C14 /* AFLocateLibraryWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFLocateLibraryWindowController.m; sourceTree = "<group>"; };
 		533F5C2D0FBF565900169C14 /* AFSourceList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSourceList.h; sourceTree = "<group>"; };
 		533F5C2E0FBF565900169C14 /* AFSourceList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSourceList.m; sourceTree = "<group>"; };
-		533F5C2F0FBF565900169C14 /* AFSourceNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSourceNode.h; sourceTree = "<group>"; };
-		533F5C300FBF565900169C14 /* AFSourceNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSourceNode.m; sourceTree = "<group>"; };
 		533F5C310FBF565900169C14 /* AFTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTextFieldCell.h; sourceTree = "<group>"; };
 		533F5C320FBF565900169C14 /* AFTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTextFieldCell.m; sourceTree = "<group>"; };
 		533F5C7A0FBF5A1700169C14 /* AFMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFMacro.h; path = AmberFoundation/AFMacro.h; sourceTree = "<group>"; };
@@ -458,6 +456,10 @@
 		53C949B60E17CD7700E21E15 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		53EE97470F190070008AD8C0 /* AmberKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmberKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53EE97480F190070008AD8C0 /* AmberKit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AmberKit-Info.plist"; sourceTree = "<group>"; };
+		53F6E36F0FCB3AF10009FF33 /* AFFoundationConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFFoundationConstants.h; path = AmberFoundation/AFFoundationConstants.h; sourceTree = "<group>"; };
+		53F6E3700FCB3AF10009FF33 /* AFFoundationConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFFoundationConstants.m; path = AmberFoundation/AFFoundationConstants.m; sourceTree = "<group>"; };
+		53F6E3750FCB3B350009FF33 /* AFKitConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFKitConstants.h; path = AmberKit/AFKitConstants.h; sourceTree = "<group>"; };
+		53F6E3760FCB3B350009FF33 /* AFKitConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFKitConstants.m; path = AmberKit/AFKitConstants.m; sourceTree = "<group>"; };
 		53FE19010F856A3200980D32 /* AFPacketQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFPacketQueue.h; path = CoreNetworking/AFPacketQueue.h; sourceTree = "<group>"; };
 		53FE19020F856A3200980D32 /* AFPacketQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFPacketQueue.m; path = CoreNetworking/AFPacketQueue.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -595,14 +597,10 @@
 				533F5C260FBF565900169C14 /* AFDisclosureButton.m */,
 				533F5C270FBF565900169C14 /* AFImageTextCell.h */,
 				533F5C280FBF565900169C14 /* AFImageTextCell.m */,
-				533F5C290FBF565900169C14 /* AFLibrary.h */,
-				533F5C2A0FBF565900169C14 /* AFLibrary.m */,
 				533F5C2B0FBF565900169C14 /* AFLocateLibraryWindowController.h */,
 				533F5C2C0FBF565900169C14 /* AFLocateLibraryWindowController.m */,
 				533F5C2D0FBF565900169C14 /* AFSourceList.h */,
 				533F5C2E0FBF565900169C14 /* AFSourceList.m */,
-				533F5C2F0FBF565900169C14 /* AFSourceNode.h */,
-				533F5C300FBF565900169C14 /* AFSourceNode.m */,
 				533F5C310FBF565900169C14 /* AFTextFieldCell.h */,
 				533F5C320FBF565900169C14 /* AFTextFieldCell.m */,
 			);
@@ -713,6 +711,8 @@
 			isa = PBXGroup;
 			children = (
 				53692BA60F1B85B10051C367 /* AmberKit_Prefix.pch */,
+				53F6E3750FCB3B350009FF33 /* AFKitConstants.h */,
+				53F6E3760FCB3B350009FF33 /* AFKitConstants.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -830,6 +830,8 @@
 			isa = PBXGroup;
 			children = (
 				533F5C7A0FBF5A1700169C14 /* AFMacro.h */,
+				53F6E36F0FCB3AF10009FF33 /* AFFoundationConstants.h */,
+				53F6E3700FCB3AF10009FF33 /* AFFoundationConstants.m */,
 				53692BA50F1B85A90051C367 /* AmberFoundation_Prefix.pch */,
 			);
 			name = "Other Sources";
@@ -965,6 +967,7 @@
 				537772CD0F8935000042C727 /* NSDictionary+Additions.h in Headers */,
 				533F5BF90FBF52F500169C14 /* AFKeyPathProxy.h in Headers */,
 				533F5C7E0FBF5A1700169C14 /* AFMacro.h in Headers */,
+				53F6E3710FCB3AF10009FF33 /* AFFoundationConstants.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1044,6 +1047,7 @@
 				537772CB0F8935000042C727 /* NSDictionary+Additions.h in Headers */,
 				533F5BF70FBF52F500169C14 /* AFKeyPathProxy.h in Headers */,
 				533F5C7C0FBF5A1700169C14 /* AFMacro.h in Headers */,
+				53F6E3730FCB3AF10009FF33 /* AFFoundationConstants.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1099,12 +1103,11 @@
 				533F5C430FBF565900169C14 /* AFSwitchControl.h in Headers */,
 				533F5C450FBF565900169C14 /* AFDisclosureButton.h in Headers */,
 				533F5C470FBF565900169C14 /* AFImageTextCell.h in Headers */,
-				533F5C490FBF565900169C14 /* AFLibrary.h in Headers */,
 				533F5C4B0FBF565900169C14 /* AFLocateLibraryWindowController.h in Headers */,
 				533F5C4D0FBF565900169C14 /* AFSourceList.h in Headers */,
-				533F5C4F0FBF565900169C14 /* AFSourceNode.h in Headers */,
 				533F5C510FBF565900169C14 /* AFTextFieldCell.h in Headers */,
 				533F5D490FBF622700169C14 /* NSControl+Additions.h in Headers */,
+				53F6E3770FCB3B350009FF33 /* AFKitConstants.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1342,6 +1345,7 @@
 				537772C80F8934BC0042C727 /* NSSet+Additions.m in Sources */,
 				537772CE0F8935000042C727 /* NSDictionary+Additions.m in Sources */,
 				533F5BFA0FBF52F500169C14 /* AFKeyPathProxy.m in Sources */,
+				53F6E3720FCB3AF10009FF33 /* AFFoundationConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1407,6 +1411,7 @@
 				537772C60F8934BC0042C727 /* NSSet+Additions.m in Sources */,
 				537772CC0F8935000042C727 /* NSDictionary+Additions.m in Sources */,
 				533F5BF80FBF52F500169C14 /* AFKeyPathProxy.m in Sources */,
+				53F6E3740FCB3AF10009FF33 /* AFFoundationConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1459,11 +1464,10 @@
 				533F5C440FBF565900169C14 /* AFSwitchControl.m in Sources */,
 				533F5C460FBF565900169C14 /* AFDisclosureButton.m in Sources */,
 				533F5C480FBF565900169C14 /* AFImageTextCell.m in Sources */,
-				533F5C4A0FBF565900169C14 /* AFLibrary.m in Sources */,
 				533F5C4C0FBF565900169C14 /* AFLocateLibraryWindowController.m in Sources */,
 				533F5C4E0FBF565900169C14 /* AFSourceList.m in Sources */,
-				533F5C500FBF565900169C14 /* AFSourceNode.m in Sources */,
 				533F5C520FBF565900169C14 /* AFTextFieldCell.m in Sources */,
+				53F6E3780FCB3B350009FF33 /* AFKitConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

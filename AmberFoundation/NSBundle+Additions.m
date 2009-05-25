@@ -19,7 +19,9 @@ NSString *const AFCompanyNameKey = @"AFCompanyName";
 }
 
 - (NSString *)displayVersion {
-	return [self objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+	id value = [self objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+	if (value == nil) value = [self version];
+	return value;
 }
 
 - (NSString *)name {
@@ -27,7 +29,9 @@ NSString *const AFCompanyNameKey = @"AFCompanyName";
 }
 
 - (NSString *)displayName {
-	return [self objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+	id value = [self objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+	if (value == nil) value = [self name];
+	return value;
 }
 
 - (NSString *)companyName {
