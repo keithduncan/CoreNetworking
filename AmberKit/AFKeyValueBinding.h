@@ -12,6 +12,7 @@
 
 extern NSString *const AFObservedKeyPathKey;
 extern NSString *const AFObservedObjectKey;
+extern NSString *const AFOptionsKey;
 
 #else
 
@@ -91,8 +92,25 @@ extern NSString *const AFUnboundValueKey;
 @end
 
 /*!
-	These are common additional bindings
+	@header
+ 
+	@brief
+	These are common additional bindings.
  */
+
+#if TARGET_OS_IPHONE
+
+/*
+	These are only delcared when compling for the iPhone because they exist in AppKit already.
+ */
+
+/*!
+	@brief
+	This binding should represent a singular object.
+ */
+extern NSString *const AFContentObject;
+
+#endif
 
 /*!
 	@brief

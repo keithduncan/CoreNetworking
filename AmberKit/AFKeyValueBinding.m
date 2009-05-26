@@ -8,9 +8,10 @@
 
 #import "AFKeyValueBinding.h"
 
-#if !TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
 NSString *const AFObservedKeyPathKey = @"keyPath";
 NSString *const AFObservedObjectKey = @"object";
+NSString *const AFOptionsKey = @"options";
 #endif
 
 NSString *const AFUnboundValueKey = @"AFUnboundValue";
@@ -74,6 +75,12 @@ NSString *const AFUnboundValueKey = @"AFUnboundValue";
 #endif
 
 @end
+
+#if TARGET_OS_IPHONE
+
+NSString *const AFContentObject = @"contentObject";
+
+#endif
 
 NSString *const AFCurrentMonthBinding = @"currentMonth";
 NSString *const AFSelectionIndexPathBinding = @"selectionIndexPath";
