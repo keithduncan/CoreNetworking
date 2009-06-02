@@ -28,6 +28,20 @@ extern NSString *const HTTPMethodDELETE;
 extern NSString *const AFNetworkSchemeHTTP;
 extern NSString *const AFNetworkSchemeHTTPS;
 
+/*
+	AFHTTPConnection Message Headers
+ */
+
+extern NSString *const AFHTTPMessageUserAgentHeader;
+extern NSString *const AFHTTPMessageContentLengthHeader;
+extern NSString *const AFHTTPMessageHostHeader;
+
+/*!
+	@brief
+	This function returns the expected body length of the provided CFHTTPMessageRef
+ */
+extern NSInteger AFHTTPMessageHeaderLength(CFHTTPMessageRef message);
+
 /*!
 	@brief
 	This class is indended to sit on top of AFNetworkTransport and provides HTTP messaging semantics.
@@ -56,11 +70,17 @@ extern NSString *const AFNetworkSchemeHTTPS;
 /*!
 	@brief
 	This method enqueues a transaction, which pairs a request with it's response.
+	You will be notified via the delegate method <tt>-layer:didRead:forTag:</tt> when the response has been read.
 	
 	@result
 	The data written to the socket, complete with the headers added internally.
  */
 - (NSData *)performMethod:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body;
+
+/*!
+	@brief
+ */
+- (void)performReadRequest;
 
 @end
 

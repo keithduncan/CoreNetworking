@@ -115,7 +115,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	_peer._hostDestination.host = (CFHostRef)NSMakeCollectable(CFRetain([(id)layer peer]));
 	
 	CFSocketNativeHandle nativeSocket = CFSocketGetNative(socket);
-	CFSocketInvalidate(socket); // Note: the underlying CFSocket must be invalidated for the CFStreams to capture the events
+	CFSocketInvalidate(socket); // Note: the CFSocket must be invalidated for the CFStreams to capture the events
 	
 	CFStreamCreatePairWithSocket(kCFAllocatorDefault, nativeSocket, &_readStream, &_writeStream);
 	NSMakeCollectable(_readStream);

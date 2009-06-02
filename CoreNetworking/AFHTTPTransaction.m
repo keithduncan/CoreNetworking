@@ -16,8 +16,12 @@
 	self = [super init];
 	if (self == nil) return nil;
 	
-	_request = (CFHTTPMessageRef)NSMakeCollectable(CFRetain(request));
-	_response = (CFHTTPMessageRef)NSMakeCollectable(CFHTTPMessageCreateEmpty(kCFAllocatorDefault, false));
+	if (request == NULL) {
+		_request = (CFHTTPMessageRef)NSMakeCollectable(CFHTTPMessageCreateEmpty(kCFAllocatorDefault, true));
+	} else {
+		_request = (CFHTTPMessageRef)NSMakeCollectable(CFRetain(request));
+		_response = (CFHTTPMessageRef)NSMakeCollectable(CFHTTPMessageCreateEmpty(kCFAllocatorDefault, false));
+	}
 	
 	return self;
 }
@@ -34,19 +38,6 @@
 	}
 	
 	[super dealloc];
-}
-
-- (NSInteger)responseBodyLength {
-	if (!CFHTTPMessageIsHeaderComplete(self.response)) {
-		return -1;
-	}
-	
-	NSString *contentLengthHeaderValue = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(self.response, CFSTR("Content-Length"))) autorelease];
-	
-	NSInteger contentLength = 0;
-	[[NSScanner scannerWithString:contentLengthHeaderValue] scanInteger:&contentLength];
-	
-	return contentLength;
 }
 
 @end

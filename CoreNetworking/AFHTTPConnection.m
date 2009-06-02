@@ -21,6 +21,25 @@ NSString *const kHTTPMethodDELETE = @"DELETE";
 NSString *const AFNetworkSchemeHTTP = @"http";
 NSString *const AFNetworkSchemeHTTPS = @"https";
 
+NSString *const AFHTTPMessageUserAgentHeader = @"User-Agent";
+NSString *const AFHTTPMessageContentLengthHeader = @"Content-Length";
+NSString *const AFHTTPMessageHostHeader = @"Host";
+
+NSInteger AFHTTPMessageHeaderLength(CFHTTPMessageRef message) {
+	if (!CFHTTPMessageIsHeaderComplete(message)) {
+		return -1;
+	}
+	
+	NSString *contentLengthHeaderValue = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease];
+	
+	if (contentLengthHeaderValue == nil) {
+		return -1;
+	}
+	
+	NSInteger contentLength = [contentLengthHeaderValue integerValue];
+	return contentLength;
+}
+
 NSSTRING_CONTEXT(AFHTTPConnectionCurrentTransactionObservationContext);
 
 enum {
@@ -113,7 +132,11 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 		AFHTTPTransaction *newPacket = [change objectForKey:NSKeyValueChangeNewKey];
 		if (newPacket == nil || [newPacket isEqual:[NSNull null]]) return;
 		
-		[self performWrite:newPacket.request forTag:0 withTimeout:-1];
+		if (newPacket.response == NULL) {
+			[self layer:self.lowerLayer didRead:[NSData data] forTag:_kHTTPConnectionReadHeaders];
+		} else {
+			[self performWrite:newPacket.request forTag:0 withTimeout:-1];
+		}
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
@@ -135,13 +158,13 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 }
 
 - (void)performWrite:(CFHTTPMessageRef)message forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
-	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, CFSTR("Content-Length"))) autorelease] == nil) {
-		CFHTTPMessageSetHeaderFieldValue(message, CFSTR("Content-Length"), (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease] length]] stringValue]);
+	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
+		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease] length]] stringValue]);
 	}
 	
 	NSString *agent = [[self class] userAgent];
 	if (agent != nil) {
-		CFHTTPMessageSetHeaderFieldValue(message, CFSTR("User-Agent"), (CFStringRef)agent);
+		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageUserAgentHeader, (CFStringRef)agent);
 	}
 	
 	CFDataRef messageData = CFHTTPMessageCopySerializedMessage(message);
@@ -154,7 +177,7 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	NSURL *resourcePath = [NSURL URLWithString:([resource isEmpty] ? @"/" : resource) relativeToURL:endpoint];
 	
 	CFHTTPMessageRef request = CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)HTTPMethod, (CFURLRef)resourcePath, kCFHTTPVersion1_1);
-	CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Host"), (CFStringRef)[endpoint absoluteString]);
+	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
 	
 	for (NSString *currentKey in headers) {
 		NSString *currentValue = [headers objectForKey:currentKey];
@@ -172,11 +195,16 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequest:request] autorelease];
 	[self.transactionQueue enqueuePacket:transaction];
 	
-	NSData *messageData = (id)[(id)NSMakeCollectable(CFHTTPMessageCopySerializedMessage(request)) autorelease];
+	NSData *messageData = [NSMakeCollectable(CFHTTPMessageCopySerializedMessage(request)) autorelease];
 	
 	CFRelease(request);
 	
 	return messageData;
+}
+
+- (void)performReadRequest {
+	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequest:NULL] autorelease];
+	[self.transactionQueue enqueuePacket:transaction];
 }
 
 @end
@@ -199,21 +227,27 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	[(id)self layer:layer didRead:[NSData data] forTag:_kHTTPConnectionReadHeaders];
 }
 
-- (void)layer:(id <AFTransportLayer>)layer didRead:(id)data forTag:(NSUInteger)tag {	
-	CFHTTPMessageAppendBytes(self.currentTransaction.response, [data bytes], [data length]);
+- (void)layer:(id <AFTransportLayer>)layer didRead:(id)data forTag:(NSUInteger)tag {
+	CFHTTPMessageRef currentMessage = (self.currentTransaction.response == NULL ? self.currentTransaction.request : self.currentTransaction.response);
+	CFHTTPMessageAppendBytes(currentMessage, [data bytes], [data length]);
 	
 	if (tag == _kHTTPConnectionReadBody) {
-		[(id)self.delegate layer:self didRead:(id)self.currentTransaction.response forTag:0];
+		[(id)self.delegate layer:self didRead:(id)currentMessage forTag:0];
 		
 		[self.transactionQueue dequeuePacket];
 		return;
 	}
 	
-	if (!CFHTTPMessageIsHeaderComplete(self.currentTransaction.response)) {
+	if (!CFHTTPMessageIsHeaderComplete(currentMessage)) {
 		[super performRead:[NSData CRLF] forTag:_kHTTPConnectionReadHeaders withTimeout:-1];
 	} else {
-		NSInteger contentLength = [self.currentTransaction responseBodyLength];
-		[super performRead:[NSNumber numberWithInteger:contentLength] forTag:_kHTTPConnectionReadBody withTimeout:-1];
+		NSInteger contentLength = AFHTTPMessageHeaderLength(currentMessage);
+		
+		if (contentLength != -1) {
+			[super performRead:[NSNumber numberWithInteger:contentLength] forTag:_kHTTPConnectionReadBody withTimeout:-1];
+		} else {
+			[self layer:layer didRead:[NSData data] forTag:_kHTTPConnectionReadBody];
+		}
 	}
 }
 

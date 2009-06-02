@@ -23,15 +23,17 @@
 /*!
 	@brief
 	This method retains the request and creates an empty response.
+	A NULL request, will result in an empty request being allocated.
  */
 - (id)initWithRequest:(CFHTTPMessageRef)request;
 
-@property (readonly) CFHTTPMessageRef request, response;
+@property (readonly) CFHTTPMessageRef request;
+@property (readonly) CFHTTPMessageRef response;
 
 /*!
 	@brief
-	This method uses the "Content-Length" header to determine how much more a client should read.
-	If CFHTTPMessageIsHeaderComplete() returns false this method returns -1.
+	This method uses the "Content-Length" header of the response to determine how much more a client should read.
+	If CFHTTPMessageIsHeaderComplete(self.response) returns false, this method returns -1.
  */
 - (NSInteger)responseBodyLength;
 
