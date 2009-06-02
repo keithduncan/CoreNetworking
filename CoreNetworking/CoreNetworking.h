@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+/*
+	Core Classes
+ */
+
 #import "CoreNetworking/AFNetworkTypes.h"
 #import "CoreNetworking/AFNetworkFunctions.h"
 #import "CoreNetworking/AFNetworkConstants.h"
@@ -27,3 +31,12 @@
 
 #import "CoreNetworking/AFNetService.h"
 #import "CoreNetworking/AFServiceDiscoveryRunLoopSource.h"
+
+/*
+	Network Protocols
+ */
+
+/* HTTP */
+
+#import "CoreNetworking/AFHTTPConnection.h"
+#import "CoreNetworking/AFHTTPTransaction.h"

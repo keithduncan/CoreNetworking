@@ -29,6 +29,7 @@
 }
 
 + (const AFNetworkTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
+#warning this method should parse /etc/services to determine the default port mappings
 	[NSException raise:NSInvalidArgumentException format:@"%s, cannot provide an AFNetworkTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme, nil];
 	return NULL;
 }

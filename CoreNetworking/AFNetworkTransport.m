@@ -109,7 +109,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	AFNetworkSocket *networkSocket = (AFNetworkSocket *)layer;
 	CFSocketRef socket = (CFSocketRef)[networkSocket socket];
 	
-	CFSocketSetSocketFlags(socket, CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate);
+	BOOL shouldCloseUnderlyingSocket = ((CFSocketGetSocketFlags(socket) & kCFSocketCloseOnInvalidate) == kCFSocketCloseOnInvalidate);
+	if (shouldCloseUnderlyingSocket) CFSocketSetSocketFlags(socket, CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate);
 	
 	_peer._hostDestination.host = (CFHostRef)NSMakeCollectable(CFRetain([(id)layer peer]));
 	
@@ -121,8 +122,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	NSMakeCollectable(_writeStream);
 	
 	// Note: ensure this is done in the same method as setting the socket options to essentially balance a retain/release on the native socket
-	CFReadStreamSetProperty(_readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
-	CFWriteStreamSetProperty(_writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
+	if (shouldCloseUnderlyingSocket) {
+		CFReadStreamSetProperty(_readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
+		CFWriteStreamSetProperty(_writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
+	}
 	
 	[self _configureStreams];
 	
