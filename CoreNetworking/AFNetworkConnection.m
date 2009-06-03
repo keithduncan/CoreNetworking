@@ -24,10 +24,20 @@
 	CFTypeRef peer = [(id)super peer];
 	
 	if (CFGetTypeID(peer) == CFHostGetTypeID()) {
-		NSArray *hostnames = (NSArray *)CFHostGetNames((CFHostRef)peer, NULL);
+		CFHostRef host = (CFHostRef)peer;
+		
+		NSArray *hostnames = (NSArray *)CFHostGetNames(host, NULL);
 		NSParameterAssert([hostnames count] == 1);
 		
 		return [NSURL URLWithString:[hostnames objectAtIndex:0]];
+	} else if (CFGetTypeID(peer) == CFNetServiceGetTypeID()) {
+		CFNetServiceRef service = (CFNetServiceRef)peer;
+		
+		// Note: this is assuming that the service has already been resolved
+		CFStringRef host = CFNetServiceGetTargetHost(service);
+		SInt32 port = CFNetServiceGetPortNumber(service);
+		
+		return [NSURL URLWithString:[NSString stringWithFormat:@"%@:%ld", host, port]]; 
 	}
 	
 	[NSException raise:NSInternalInconsistencyException format:@"%s, cannot determine the peer name.", __PRETTY_FUNCTION__, nil];

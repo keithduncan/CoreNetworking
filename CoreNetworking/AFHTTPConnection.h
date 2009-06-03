@@ -35,10 +35,14 @@ extern NSString *const AFNetworkSchemeHTTPS;
 extern NSString *const AFHTTPMessageUserAgentHeader;
 extern NSString *const AFHTTPMessageContentLengthHeader;
 extern NSString *const AFHTTPMessageHostHeader;
+extern NSString *const AFHTTPMessageConnectionHeader;
 
 /*!
 	@brief
-	This function returns the expected body length of the provided CFHTTPMessageRef
+	This function returns the expected body length of the provided CFHTTPMessageRef.
+ 
+	This method uses the "Content-Length" header of the response to determine how much more a client should read to complete the packet.
+	If CFHTTPMessageIsHeaderComplete(self.response) returns false, this method returns -1.
  */
 extern NSInteger AFHTTPMessageHeaderLength(CFHTTPMessageRef message);
 
@@ -46,20 +50,9 @@ extern NSInteger AFHTTPMessageHeaderLength(CFHTTPMessageRef message);
 	@brief
 	This class is indended to sit on top of AFNetworkTransport and provides HTTP messaging semantics.
  */
-@interface AFHTTPConnection : AFNetworkConnection <AFConnectionLayer> {
-	CFHTTPAuthenticationRef _authentication;
-	NSDictionary *_authenticationCredentials;
-	
+@interface AFHTTPConnection : AFNetworkConnection <AFConnectionLayer> {	
 	AFPacketQueue *_transactionQueue;
 }
-
-+ (NSString *)userAgent;
-+ (void)setUserAgent:(NSString *)userAgent;
-
-- (CFHTTPAuthenticationRef)authentication;
-- (void)setAuthentication:(CFHTTPAuthenticationRef)authentication;
-
-@property (copy) NSDictionary *authenticationCredentials;
 
 /*!
 	@brief
@@ -79,8 +72,16 @@ extern NSInteger AFHTTPMessageHeaderLength(CFHTTPMessageRef message);
 
 /*!
 	@brief
+	This is a funnel method allowing you to catch the outgoing message before it's sent.
+	This is called for all writing methods, call super in your implementation.
  */
-- (void)performReadRequest;
+- (void)connectionWillPerformRequest:(CFHTTPMessageRef)request;
+
+/*!
+	@brief
+	This enqueues a read transaction, it is shorthand for [connection performRead:nil forTag:0 withTimeout:-1]
+ */
+- (void)performRead;
 
 @end
 

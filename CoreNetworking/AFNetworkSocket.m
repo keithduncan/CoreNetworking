@@ -70,6 +70,13 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	_socket = CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, options, AFSocketCallback, &context);
 	_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0);
 	
+#if DEBUGFULL
+	int reuseAddr = 1;
+	
+	int sockoptError = 0;
+	sockoptError = setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_REUSEADDR, &reuseAddr, sizeof(reuseAddr));
+#endif
+	
 	if (_socket == NULL) {
 		[self release];
 		return nil;

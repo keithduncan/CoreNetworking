@@ -24,6 +24,7 @@ NSString *const AFNetworkSchemeHTTPS = @"https";
 NSString *const AFHTTPMessageUserAgentHeader = @"User-Agent";
 NSString *const AFHTTPMessageContentLengthHeader = @"Content-Length";
 NSString *const AFHTTPMessageHostHeader = @"Host";
+NSString *const AFHTTPMessageConnectionHeader = @"Connection";
 
 NSInteger AFHTTPMessageHeaderLength(CFHTTPMessageRef message) {
 	if (!CFHTTPMessageIsHeaderComplete(message)) {
@@ -60,42 +61,7 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 @implementation AFHTTPConnection
 
 @dynamic delegate;
-@synthesize authenticationCredentials=_authenticationCredentials;
 @synthesize transactionQueue=_transactionQueue;
-
-static NSString *_AFHTTPConnectionUserAgentFromBundle(NSBundle *bundle) {
-	return [NSString stringWithFormat:@"%@/%@", [[bundle displayName] stringByReplacingOccurrencesOfString:@" " withString:@"-"], [[bundle displayVersion] stringByReplacingOccurrencesOfString:@" " withString:@"-"], nil];
-}
-
-+ (void)initialize {
-	NSBundle *application = [NSBundle mainBundle], *framework = [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier];
-	NSString *userAgent = [NSString stringWithFormat:@"%@ %@", _AFHTTPConnectionUserAgentFromBundle(application), _AFHTTPConnectionUserAgentFromBundle(framework), nil];
-	[self setUserAgent:userAgent];
-}
-
-+ (const AFNetworkTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
-	scheme = [scheme lowercaseString];
-	if ([scheme isEqualToString:AFNetworkSchemeHTTP]) return &AFNetworkTransportSignatureHTTP;
-	if ([scheme isEqualToString:AFNetworkSchemeHTTPS]) return &AFNetworkTransportSignatureHTTPS;
-	return [super transportSignatureForScheme:scheme];
-}
-
-static NSString *_AFHTTPConnectionUserAgent = nil;
-
-+ (NSString *)userAgent {
-	NSString *agent = nil;
-	@synchronized ([AFHTTPConnection class]) {
-		agent = [[_AFHTTPConnectionUserAgent retain] autorelease];
-	}
-	return agent;
-}
-
-+ (void)setUserAgent:(NSString *)userAgent {
-	@synchronized ([AFHTTPConnection class]) {
-		[_AFHTTPConnectionUserAgent release];
-		_AFHTTPConnectionUserAgent = [userAgent copy];
-	}
-}
 
 + (Class)lowerLayer {
 	return [AFNetworkTransport class];
@@ -111,16 +77,7 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	return self;
 }
 
-- (void)finalize {
-	[self setAuthentication:NULL];
-	
-	[super finalize];
-}
-
-- (void)dealloc {
-	[self setAuthentication:NULL];
-	[_authenticationCredentials release];
-	
+- (void)dealloc {	
 	[_transactionQueue removeObserver:self forKeyPath:@"currentPacket"];
 	[_transactionQueue release];
 	
@@ -135,22 +92,10 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 		if (newPacket.response == NULL) {
 			[self layer:self.lowerLayer didRead:[NSData data] forTag:_kHTTPConnectionReadHeaders];
 		} else {
+			[self connectionWillPerformRequest:newPacket.request];
 			[self performWrite:newPacket.request forTag:0 withTimeout:-1];
 		}
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-}
-
-- (CFHTTPAuthenticationRef)authentication {
-	return _authentication;
-}
-
-- (void)setAuthentication:(CFHTTPAuthenticationRef)authentication {
-	if (_authentication != NULL) CFRelease(_authentication);
-	
-	_authentication = authentication;
-	if (authentication == NULL) return;
-	
-	_authentication = (CFHTTPAuthenticationRef)CFRetain(authentication);
 }
 
 - (AFHTTPTransaction *)currentTransaction {
@@ -158,15 +103,6 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 }
 
 - (void)performWrite:(CFHTTPMessageRef)message forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
-	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
-		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease] length]] stringValue]);
-	}
-	
-	NSString *agent = [[self class] userAgent];
-	if (agent != nil) {
-		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageUserAgentHeader, (CFStringRef)agent);
-	}
-	
 	CFDataRef messageData = CFHTTPMessageCopySerializedMessage(message);
 	[super performWrite:(id)messageData forTag:tag withTimeout:duration];
 	CFRelease(messageData);
@@ -176,18 +112,13 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	NSURL *endpoint = [self peer];
 	NSURL *resourcePath = [NSURL URLWithString:([resource isEmpty] ? @"/" : resource) relativeToURL:endpoint];
 	
-	CFHTTPMessageRef request = CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)HTTPMethod, (CFURLRef)resourcePath, kCFHTTPVersion1_1);
+	CFHTTPMessageRef request = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)HTTPMethod, (CFURLRef)resourcePath, kCFHTTPVersion1_1)) autorelease];
+	
 	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
 	
 	for (NSString *currentKey in headers) {
 		NSString *currentValue = [headers objectForKey:currentKey];
 		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)currentKey, (CFStringRef)currentValue);
-	}
-	
-	if (self.authentication != NULL) {
-		CFStreamError error;
-		Boolean authenticated = CFHTTPMessageApplyCredentialDictionary(request, self.authentication, (CFDictionaryRef)self.authenticationCredentials, &error);
-#pragma unused (authenticated)
 	}
 	
 	CFHTTPMessageSetBody(request, (CFDataRef)body);
@@ -196,13 +127,20 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	[self.transactionQueue enqueuePacket:transaction];
 	
 	NSData *messageData = [NSMakeCollectable(CFHTTPMessageCopySerializedMessage(request)) autorelease];
-	
-	CFRelease(request);
-	
 	return messageData;
 }
 
-- (void)performReadRequest {
+- (void)connectionWillPerformRequest:(CFHTTPMessageRef)request {
+	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
+		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(request)) autorelease] length]] stringValue]);
+	}
+}
+
+- (void)performRead {
+	[self performRead:nil forTag:0 withTimeout:-1];
+}
+
+- (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
 	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequest:NULL] autorelease];
 	[self.transactionQueue enqueuePacket:transaction];
 }
@@ -211,24 +149,17 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 
 @implementation AFHTTPConnection (_Delegate)
 
-- (void)layerDidOpen:(id <AFConnectionLayer>)layer {
-	if ([self _shouldStartTLS]) {
-		NSDictionary *securityOptions = [NSDictionary dictionaryWithObjectsAndKeys:
-										 (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
-										 nil];
-		
-		[self startTLS:securityOptions];
-	}
-	
-	[self.delegate layerDidOpen:self];
-}
-
 - (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag {
+	if (self.currentTransaction.response == NULL) return;
 	[(id)self layer:layer didRead:[NSData data] forTag:_kHTTPConnectionReadHeaders];
 }
 
 - (void)layer:(id <AFTransportLayer>)layer didRead:(id)data forTag:(NSUInteger)tag {
 	CFHTTPMessageRef currentMessage = (self.currentTransaction.response == NULL ? self.currentTransaction.request : self.currentTransaction.response);
+	
+	NSParameterAssert(currentMessage != NULL);
+	NSParameterAssert(data != nil);
+	
 	CFHTTPMessageAppendBytes(currentMessage, [data bytes], [data length]);
 	
 	if (tag == _kHTTPConnectionReadBody) {
@@ -249,21 +180,6 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 			[self layer:layer didRead:[NSData data] forTag:_kHTTPConnectionReadBody];
 		}
 	}
-}
-
-@end
-
-@implementation AFHTTPConnection (Private)
-
-- (BOOL)_shouldStartTLS {
-	NSURL *peer = [self peer];
-	
-	if (CFGetTypeID([(id)self.lowerLayer peer]) == CFHostGetTypeID()) {
-		return [[[peer scheme] lowercaseString] isEqualToString:AFNetworkSchemeHTTPS];
-	}
-	
-	[NSException raise:NSInternalInconsistencyException format:@"%s, cannot determine wether to start TLS.", __PRETTY_FUNCTION__, nil];
-	return NO;
 }
 
 @end

@@ -17,7 +17,8 @@
 	This class encapsulates a request/response pair.
  */
 @interface AFHTTPTransaction : NSObject {
-	CFHTTPMessageRef _request, _response;
+	__strong CFHTTPMessageRef _request;
+	__strong CFHTTPMessageRef _response;
 }
 
 /*!
@@ -29,12 +30,5 @@
 
 @property (readonly) CFHTTPMessageRef request;
 @property (readonly) CFHTTPMessageRef response;
-
-/*!
-	@brief
-	This method uses the "Content-Length" header of the response to determine how much more a client should read.
-	If CFHTTPMessageIsHeaderComplete(self.response) returns false, this method returns -1.
- */
-- (NSInteger)responseBodyLength;
 
 @end

@@ -662,13 +662,19 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if (!packetComplete) return;
 	
 	// Note: the current packet is retained before calling the delegate so that it's still live even if we're not
-	[[packet retain] autorelease];
-	[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
-	[self _endCurrentReadPacket];
+	[packet retain];
+	
+	{
+		[self _endCurrentReadPacket];
+		
+		[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
+	}
+	
+	[packet release];
 }
 
 - (void)_endCurrentReadPacket {	
-	AFPacketRead *packet = [self.readQueue currentPacket];
+	AFPacketRead *packet = self.readQueue.currentPacket;
 	NSAssert(packet != nil, @"cannot complete a nil read packet");
 	
 	[self.readQueue dequeuePacket];
@@ -703,13 +709,19 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if (!packetComplete) return;
 	
 	// Note: the current packet is retained before calling the delegate so that it's still live even if we're not
-	[[packet retain] autorelease];
-	[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
-	[self _endCurrentWritePacket];
+	[packet retain];
+	
+	{
+		[self _endCurrentWritePacket];
+		
+		[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
+	}
+	
+	[packet release];
 }
 
 - (void)_endCurrentWritePacket {	
-	AFPacketWrite *packet = [self.writeQueue currentPacket];
+	AFPacketWrite *packet = self.writeQueue.currentPacket;
 	NSAssert(packet != nil, @"cannot complete a nil write packet");
 	
 	[self.writeQueue dequeuePacket];
