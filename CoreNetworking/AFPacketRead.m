@@ -104,12 +104,10 @@
 	
 	while (!packetComplete && CFReadStreamHasBytesAvailable(readStream)) {
 		NSUInteger maximumReadLength = [self _maximumReadLength];
-		NSUInteger bufferIncrement = (maximumReadLength - ([self.buffer length] - _bytesRead));
-		[_buffer increaseLengthBy:bufferIncrement];
+		[_buffer increaseLengthBy:maximumReadLength];
 		
-		CFIndex bytesToRead = ([self.buffer length] - _bytesRead);
 		UInt8 *readBuffer = (UInt8 *)([_buffer mutableBytes] + _bytesRead);
-		CFIndex bytesRead = CFReadStreamRead(readStream, readBuffer, bytesToRead);
+		CFIndex bytesRead = CFReadStreamRead(readStream, readBuffer, maximumReadLength);
 		
 		if (bytesRead < 0) {
 			if (errorRef != NULL)

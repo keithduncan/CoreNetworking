@@ -37,7 +37,7 @@
 		CFStringRef host = CFNetServiceGetTargetHost(service);
 		SInt32 port = CFNetServiceGetPortNumber(service);
 		
-		return [NSURL URLWithString:[NSString stringWithFormat:@"%@:%ld", host, port]]; 
+		return [NSURL URLWithString:[NSString stringWithFormat:@"%@:%ld", host, port, nil]];
 	}
 	
 	[NSException raise:NSInternalInconsistencyException format:@"%s, cannot determine the peer name.", __PRETTY_FUNCTION__, nil];

@@ -156,16 +156,13 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 
 - (void)layer:(id <AFTransportLayer>)layer didRead:(id)data forTag:(NSUInteger)tag {
 	CFHTTPMessageRef currentMessage = (self.currentTransaction.response == NULL ? self.currentTransaction.request : self.currentTransaction.response);
-	
-	NSParameterAssert(currentMessage != NULL);
-	NSParameterAssert(data != nil);
-	
 	CFHTTPMessageAppendBytes(currentMessage, [data bytes], [data length]);
 	
 	if (tag == _kHTTPConnectionReadBody) {
 		[(id)self.delegate layer:self didRead:(id)currentMessage forTag:0];
+		[self.transactionQueue dequeued];
 		
-		[self.transactionQueue dequeuePacket];
+		[self.transactionQueue tryDequeue];
 		return;
 	}
 	

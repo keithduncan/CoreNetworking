@@ -31,9 +31,19 @@
 
 /*!
 	@brief
-	Call this method to shift a packet out of the queue into the currentPacket position. If the queue is empty, the currentPacket will be set to nil.
+	Call this method to shift a packet out of the queue into the currentPacket position.
+	If the queue is empty, or there is already a |currentPacket| this method returns false. 
+	
+	@result
+	(self.currentPacket != nil)
  */
-- (void)dequeuePacket;
+- (BOOL)tryDequeue;
+
+/*!
+	@brief
+	This method should be called once you have processed the |currentPacket| to allow another to be shifted into the |currentPacket| position.
+ */
+- (void)dequeued;
 
 /*!
 	@brief

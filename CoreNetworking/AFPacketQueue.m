@@ -40,29 +40,32 @@
 
 - (void)enqueuePacket:(id)packet {
 	[self.queue addObject:packet];
-	
-	if (self.currentPacket != nil) return;
-	[self dequeuePacket];
+	[self tryDequeue];
 }
 
-- (void)dequeuePacket {
-	if ([self.queue count] > 0) {
-		const NSUInteger newPacketIndex = 0;
-		
-		id newPacket = [[self.queue objectAtIndex:newPacketIndex] retain];
-		[self.queue removeObjectAtIndex:newPacketIndex];
-		
-		self.currentPacket = newPacket;
-		
-		[newPacket release];
-	} else {
-		self.currentPacket = nil;
-	}
+- (BOOL)tryDequeue {
+	if (self.currentPacket != nil) return NO;
+	if ([self.queue count] == 0) return NO;
+	
+	const NSUInteger newPacketIndex = 0;
+	
+	id newPacket = [[self.queue objectAtIndex:newPacketIndex] retain];
+	
+	[self.queue removeObjectAtIndex:newPacketIndex];
+	self.currentPacket = newPacket;
+	
+	[newPacket release];
+	
+	return YES;
+}
+
+- (void)dequeued {
+	self.currentPacket = nil;
 }
 
 - (void)emptyQueue {
 	[self.queue removeAllObjects];
-	[self dequeuePacket];
+	[self dequeued];
 }
 
 @end

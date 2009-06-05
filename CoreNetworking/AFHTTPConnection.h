@@ -56,7 +56,8 @@ extern NSInteger AFHTTPMessageHeaderLength(CFHTTPMessageRef message);
 
 /*!
 	@brief
-	This method doesn't start a transation. It simply passes the data on to the |lowerLayer| for writing.
+	This method doesn't enqueue a transaction; it simply passes the data on to the |lowerLayer| for writing.
+	This method allows for raw HTTP messaging without the implied request/response model.
  */
 - (void)performWrite:(CFHTTPMessageRef)message forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
 
@@ -73,7 +74,7 @@ extern NSInteger AFHTTPMessageHeaderLength(CFHTTPMessageRef message);
 /*!
 	@brief
 	This is a funnel method allowing you to catch the outgoing message before it's sent.
-	This is called for all writing methods, call super in your implementation.
+	This is called for all enqueued writing methods, call super in your implementation.
  */
 - (void)connectionWillPerformRequest:(CFHTTPMessageRef)request;
 
