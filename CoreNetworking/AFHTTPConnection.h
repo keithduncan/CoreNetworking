@@ -16,10 +16,10 @@
 	HTTP verbs required for REST access
  */
 
-extern NSString *const HTTPMethodGET;
-extern NSString *const HTTPMethodPOST;
-extern NSString *const HTTPMethodPUT;
-extern NSString *const HTTPMethodDELETE;
+extern NSString *const AFHTTPMethodGET;
+extern NSString *const AFHTTPMethodPOST;
+extern NSString *const AFHTTPMethodPUT;
+extern NSString *const AFHTTPMethodDELETE;
 
 /*
 	AFHTTPConnection Schemes

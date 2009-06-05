@@ -13,10 +13,10 @@
 
 #import "AFHTTPTransaction.h"
 
-NSString *const kHTTPMethodGET = @"GET";
-NSString *const kHTTPMethodPOST = @"POST";
-NSString *const kHTTPMethodPUT = @"PUT";
-NSString *const kHTTPMethodDELETE = @"DELETE";
+NSString *const AFHTTPMethodGET = @"GET";
+NSString *const AFHTTPMethodPOST = @"POST";
+NSString *const AFHTTPMethodPUT = @"PUT";
+NSString *const AFHTTPMethodDELETE = @"DELETE";
 
 NSString *const AFNetworkSchemeHTTP = @"http";
 NSString *const AFNetworkSchemeHTTPS = @"https";
