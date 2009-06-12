@@ -17,7 +17,7 @@
 	Common transport layer types can be defined using these two fields.
  
 	@field
-	|socketType| should be one of the socket types defined in <socket.h>.
+	|socketType| should be one of the socket types defined in socket.h
 	@field
 	|protocol| should typically be one of the IP protocols defined in RFC 1700 see http://www.faqs.org/rfcs/rfc1700.html - it is important that an appropriate |socketType| is also provided.
  */
@@ -61,12 +61,12 @@ extern const AFNetworkTransportSignature AFNetworkTransportSignatureHTTPS;
 	@brief
 	Based on CFSocketSignature allowing for higher-level functionality.
 	The un-intuitive layout of the structure is very important; because the first pointer width bits are a CFTypeRef the structure can be introspected using CFGetTypeID.
- 
+	
 	@detail
 	Doesn't include a |protocolFamily| field like CFSocketSignature because the |host| may resolve to a number of different protocol family addresses.
 	
 	@field
-	|host| is copied using CFHostCreateCopy() the addresses property is resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap it won't be reclaimed.
+	|host| is copied using CFHostCreateCopy() the addresses property is resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap or as an instance variable, it won't be reclaimed.
 	@field
 	|transport| see the documentation for <tt>AFNetworkTransportLayer</tt>, it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc) and the port.
  */

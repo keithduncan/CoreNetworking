@@ -34,7 +34,7 @@
 	NSUInteger _streamFlags;
 	
 	union {
-		struct {
+		struct AFNetworkTransportServiceSignature {
 			__strong CFNetServiceRef netService;
 		} _netServiceDestination;
 		

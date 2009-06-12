@@ -67,11 +67,12 @@ NSSTRING_CONTEXT(AFNetworkTransportPacketQueueObservationContext);
 
 @interface AFNetworkTransport (PacketQueue)
 - (void)_emptyQueues;
-- (void)_dequeuePackets;
 
+- (void)_tryDequeueReadPackets;
 - (BOOL)_canDequeueReadPacket;
 - (void)_readBytes;
 
+- (void)_tryDequeueWritePackets;
 - (BOOL)_canDequeueWritePacket;
 - (void)_sendBytes;
 @end
@@ -216,8 +217,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		
 		id newPacket = [change objectForKey:NSKeyValueChangeNewKey];
 		if (newPacket == nil || [newPacket isEqual:[NSNull null]]) {
+			
 			if (object == self.writeQueue) {
-				// Note: it is important that this comes after the dequeue so that the current packet can be nil for comparison
 				BOOL shouldClose = YES;
 				shouldClose &= ((self.connectionFlags & _kCloseSoon) == _kCloseSoon);
 				shouldClose &= ([self.writeQueue count] == 0);
@@ -229,6 +230,11 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetTimeoutNotification:) name:AFPacketTimeoutNotificationName object:newPacket];
 		[newPacket startTimeout];
+
+		if (oldPacket == nil || [oldPacket isEqual:[NSNull null]]) {
+			[self _tryDequeueWritePackets];
+			[self _tryDequeueReadPackets];
+		}
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
@@ -454,12 +460,12 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 		}
 		case kCFStreamEventHasBytesAvailable:
 		{
+			NSLog(@"%s", __PRETTY_FUNCTION__, nil);
+			
 			if ((self.streamFlags & _kReadStreamWillStartTLS) == _kReadStreamWillStartTLS && (self.streamFlags & _kReadStreamDidStartTLS) != _kReadStreamDidStartTLS) {
 				self.streamFlags = (self.streamFlags | _kReadStreamDidStartTLS);
 				[self _streamDidStartTLS];
-			} else do {
-				[self _readBytes];
-			} while ([self.readQueue tryDequeue]);
+			} else [self _tryDequeueReadPackets];
 			
 			break;
 		}
@@ -471,7 +477,7 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 			break;
 		}
 		case kCFStreamEventEndEncountered:
-		{			
+		{
 			[self close];
 			break;
 		}
@@ -520,9 +526,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 			if ((self.streamFlags & _kWriteStreamWillStartTLS) == _kWriteStreamWillStartTLS && (self.streamFlags & _kWriteStreamDidStartTLS) != _kWriteStreamDidStartTLS) {
 				self.streamFlags = (self.streamFlags | _kWriteStreamDidStartTLS);
 				[self _streamDidStartTLS];
-			} else do {
-				[self _sendBytes];
-			} while ([self.writeQueue tryDequeue]);
+			} else [self _tryDequeueWritePackets];
 			
 			break;
 		}
@@ -579,7 +583,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if ([self.delegate respondsToSelector:@selector(layer:didConnectToPeer:)])
 		[self.delegate layer:self didConnectToPeer:(id)[self peer]];
 	
-	[self _dequeuePackets];
+	[self _tryDequeueWritePackets];
+	[self _tryDequeueReadPackets];
 }
 
 - (void)_streamDidStartTLS {
@@ -589,7 +594,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if ([self.delegate respondsToSelector:@selector(layerDidStartTLS:)])
 		[self.delegate layerDidStartTLS:self];
 	
-	[self _dequeuePackets];
+	[self _tryDequeueWritePackets];
+	[self _tryDequeueReadPackets];
 }
 
 @end
@@ -599,16 +605,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 @implementation AFNetworkTransport (PacketQueue)
 
 - (void)_emptyQueues {
-	[self.readQueue emptyQueue];
 	[self.writeQueue emptyQueue];
-}
-
-- (void)_dequeuePackets {
-	if ([self _canDequeueReadPacket])
-		[self.readQueue tryDequeue];
-	
-	if ([self _canDequeueWritePacket])
-		[self.writeQueue tryDequeue];
+	[self.readQueue emptyQueue];
 }
 
 - (void)_packetTimeoutNotification:(NSNotification *)notification {
@@ -632,6 +630,14 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 }
 
 #pragma mark -
+
+- (void)_tryDequeueReadPackets {
+	if (![self _canDequeueReadPacket]) return;
+	
+	do {
+		[self _readBytes];
+	} while ([self.readQueue tryDequeue]);
+}
 
 - (BOOL)_canDequeueReadPacket {
 	if (_readStream == NULL) return NO;
@@ -664,6 +670,14 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 }
 
 #pragma mark -
+
+- (void)_tryDequeueWritePackets {
+	if (![self _canDequeueWritePacket]) return;
+	
+	do {
+		[self _sendBytes];
+	} while ([self.writeQueue tryDequeue]);
+}
 
 - (BOOL)_canDequeueWritePacket {
 	if (_writeStream == NULL) return NO;
