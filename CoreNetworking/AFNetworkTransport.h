@@ -19,6 +19,12 @@
 
 @class AFPacketQueue;
 
+struct _AFNetworkTransportStreamInfo {
+	__strong id stream;
+	NSUInteger flags;
+	AFPacketQueue *queue;
+};
+
 /*!
     @brief
 	Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the name was changed so not to imply the exclusive use of SOCK_STREAM.
@@ -27,11 +33,10 @@
 	This class is a mix of two of the primary patterns. Internally, it acts an adaptor between the CFSocket and CFStream API.
 	Externally, it bridges CFHost, CFNetService with CFSocket and CFStream. It provides a CFStream like API.
 	
-	Note: The layout of the _peer union members is important, we can cast the _peer instance variable to CFTypeRef and introspect using CFGetTypeID to determine the struct in use.
+	Note: The layout of the _peer union is important, we can cast the _peer instance variable to CFTypeRef and introspect using CFGetTypeID to determine the struct in use.
 */
 @interface AFNetworkTransport : AFNetworkLayer <AFConnectionLayer> {	
 	NSUInteger _connectionFlags;
-	NSUInteger _streamFlags;
 	
 	union {
 		struct AFNetworkTransportServiceSignature {
@@ -41,11 +46,8 @@
 		struct AFNetworkTransportPeerSignature _hostDestination;
 	} _peer;
 	
-	__strong CFReadStreamRef _readStream;
-	AFPacketQueue *_readQueue;
-	
-	__strong CFWriteStreamRef _writeStream;
-	AFPacketQueue *_writeQueue;
+	struct _AFNetworkTransportStreamInfo _writeInfo;
+	struct _AFNetworkTransportStreamInfo _readInfo;
 }
 
 @property (assign) id <AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate> delegate;
