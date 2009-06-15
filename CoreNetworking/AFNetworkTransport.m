@@ -43,7 +43,8 @@ enum {
 	_kStreamDidOpen			= 1UL << 0,
 	_kStreamWillStartTLS	= 1UL << 1,
 	_kStreamDidStartTLS		= 1UL << 2,
-	_kStreamDidClose		= 1UL << 3,
+	_kStreamDequeuing		= 1UL << 3,
+	_kStreamDidClose		= 1UL << 4,
 };
 typedef NSUInteger AFSocketConnectionStreamFlags;
 
@@ -260,8 +261,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		[newPacket startTimeout];
 		
 		if (oldPacket == nil || [oldPacket isEqual:[NSNull null]]) {
-			[self _tryDequeueWritePackets];
-			[self _tryDequeueReadPackets];
+			if (object == self.writeQueue) [self _tryDequeueWritePackets];
+			if (object == self.readQueue) [self _tryDequeueReadPackets];
 		}
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
@@ -660,26 +661,23 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[self.delegate layer:self didReceiveError:error];
 }
 
-- (void)_dequeueConditionsDidChange:(AFPacketQueue *)queue {
-	if (queue == self.writeQueue)
-		[self _tryDequeueWritePackets];
-	else if (queue == self.readQueue)
-		[self _tryDequeueReadPackets];
-	else [NSException raise:NSInvalidArgumentException format:@"%s, %p is not one of this object's queues.", __PRETTY_FUNCTION__, queue, nil];
-}
-
 #pragma mark -
 
 - (void)_tryDequeueReadPackets {
 	if (![self _canDequeueReadPacket]) return;
 	
+	self.readFlags = (self.readFlags | _kStreamDequeuing);
+	
 	do {
 		[self _readBytes];
 	} while ([self.readQueue tryDequeue]);
+	
+	self.readFlags = (self.readFlags & ~_kStreamDequeuing);
 }
 
 - (BOOL)_canDequeueReadPacket {
 	if (self.readStream == NULL) return NO;
+	if ((self.readFlags & _kStreamDequeuing) == _kStreamDequeuing) return NO;
 	if (((self.readFlags & _kStreamWillStartTLS) == _kStreamWillStartTLS) && ((self.readFlags & _kStreamDidStartTLS) != _kStreamDidStartTLS)) return NO;
 	return YES;
 }
@@ -712,14 +710,19 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (void)_tryDequeueWritePackets {
 	if (![self _canDequeueWritePacket]) return;
-
+	
+	self.writeFlags = (self.writeFlags | _kStreamDequeuing);
+	
 	do {
 		[self _sendBytes];
 	} while ([self.writeQueue tryDequeue]);
+	
+	self.writeFlags = (self.writeFlags & ~_kStreamDequeuing);
 }
 
 - (BOOL)_canDequeueWritePacket {
 	if (self.writeStream == NULL) return NO;
+	if ((self.writeFlags & _kStreamDequeuing) == _kStreamDequeuing) return NO;
 	if (((self.writeFlags & _kStreamWillStartTLS) == _kStreamWillStartTLS) && ((self.writeFlags & _kStreamDidStartTLS) != _kStreamDidStartTLS)) return NO;
 	return YES;
 }
