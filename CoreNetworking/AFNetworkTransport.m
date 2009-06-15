@@ -43,8 +43,7 @@ enum {
 	_kStreamDidOpen			= 1UL << 0,
 	_kStreamWillStartTLS	= 1UL << 1,
 	_kStreamDidStartTLS		= 1UL << 2,
-	_kStreamBufferAvailable	= 1UL << 3,
-	_kStreamDidClose		= 1UL << 4,
+	_kStreamDidClose		= 1UL << 3,
 };
 typedef NSUInteger AFSocketConnectionStreamFlags;
 
@@ -247,7 +246,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		
 		id newPacket = [change objectForKey:NSKeyValueChangeNewKey];
 		if (newPacket == nil || [newPacket isEqual:[NSNull null]]) {
-			
 			if (object == self.writeQueue) {
 				BOOL shouldClose = YES;
 				shouldClose &= ((self.connectionFlags & _kCloseSoon) == _kCloseSoon);
@@ -260,7 +258,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetTimeoutNotification:) name:AFPacketTimeoutNotificationName object:newPacket];
 		[newPacket startTimeout];
-
+		
 		if (oldPacket == nil || [oldPacket isEqual:[NSNull null]]) {
 			[self _tryDequeueWritePackets];
 			[self _tryDequeueReadPackets];
@@ -361,7 +359,12 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 }
 
 - (void)open {
-	if ([self isOpen]) return;
+	if ([self isOpen]) {
+		if ((self.connectionFlags & _kDidCallConnectDelegate) == _kDidCallConnectDelegate) return;
+		
+		[self.delegate layerDidOpen:self];
+		return;
+	}
 	
 	if (CFGetTypeID([self peer]) == CFHostGetTypeID()) {
 		CFHostRef host = (CFHostRef)self.peer;
@@ -494,10 +497,7 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 			if ((self.readFlags & _kStreamWillStartTLS) == _kStreamWillStartTLS && (self.readFlags & _kStreamDidStartTLS) != _kStreamDidStartTLS) {
 				self.readFlags = (self.readFlags | _kStreamDidStartTLS);
 				[self _streamDidStartTLS];
-			}
-			
-			self.readFlags = (self.readFlags | _kStreamBufferAvailable);
-			[self _tryDequeueReadPackets];
+			} else [self _tryDequeueReadPackets];
 			
 			break;
 		}
@@ -558,10 +558,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 			if ((self.writeFlags & _kStreamWillStartTLS) == _kStreamWillStartTLS && (self.writeFlags & _kStreamDidStartTLS) != _kStreamDidStartTLS) {
 				self.writeFlags = (self.writeFlags | _kStreamDidStartTLS);
 				[self _streamDidStartTLS];
-			}
-			
-			self.writeFlags = (self.writeFlags | _kStreamBufferAvailable);
-			[self _tryDequeueWritePackets];
+			} else [self _tryDequeueWritePackets];
 			
 			break;
 		}
@@ -663,6 +660,14 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	[self.delegate layer:self didReceiveError:error];
 }
 
+- (void)_dequeueConditionsDidChange:(AFPacketQueue *)queue {
+	if (queue == self.writeQueue)
+		[self _tryDequeueWritePackets];
+	else if (queue == self.readQueue)
+		[self _tryDequeueReadPackets];
+	else [NSException raise:NSInvalidArgumentException format:@"%s, %p is not one of this object's queues.", __PRETTY_FUNCTION__, queue, nil];
+}
+
 #pragma mark -
 
 - (void)_tryDequeueReadPackets {
@@ -671,9 +676,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	do {
 		[self _readBytes];
 	} while ([self.readQueue tryDequeue]);
-	
-	if (!CFReadStreamHasBytesAvailable(self.readStream))
-		self.readFlags = (self.readFlags & ~_kStreamBufferAvailable);
 }
 
 - (BOOL)_canDequeueReadPacket {
@@ -695,7 +697,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:total:forTag:)]) {
 		NSUInteger bytesRead = 0, bytesTotal = 0;
-		float percent = [packet currentProgressWithBytesDone:&bytesRead bytesTotal:&bytesTotal];
+		[packet currentProgressWithBytesDone:&bytesRead bytesTotal:&bytesTotal];
 		
 		[self.delegate socket:self didReadPartialDataOfLength:bytesRead total:bytesTotal forTag:packet.tag];
 	}
@@ -710,13 +712,10 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (void)_tryDequeueWritePackets {
 	if (![self _canDequeueWritePacket]) return;
-	
+
 	do {
 		[self _sendBytes];
 	} while ([self.writeQueue tryDequeue]);
-	
-	if (!CFWriteStreamCanAcceptBytes(self.writeStream))
-		self.writeFlags = (self.writeFlags & ~_kStreamBufferAvailable);
 }
 
 - (BOOL)_canDequeueWritePacket {
@@ -738,7 +737,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:total:forTag:)]) {
 		NSUInteger bytesWritten = 0, totalBytes = 0;
-		float percent =	[packet currentProgressWithBytesDone:&bytesWritten bytesTotal:&totalBytes];
+		[packet currentProgressWithBytesDone:&bytesWritten bytesTotal:&totalBytes];
 		
 		[self.delegate socket:self didWritePartialDataOfLength:bytesWritten total:totalBytes forTag:packet.tag];
 	}

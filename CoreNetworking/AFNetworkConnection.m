@@ -16,10 +16,6 @@
 	return [super lowerLayer];
 }
 
-- (void)open {
-	[self.delegate layerDidOpen:self];
-}
-
 - (NSURL *)peer {
 	CFTypeRef peer = [(id)super peer];
 	
