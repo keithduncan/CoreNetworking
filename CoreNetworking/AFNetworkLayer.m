@@ -38,7 +38,7 @@
 	self = [super init];
 	if (self == nil) return nil;
 	
-	self.transportInfo = [NSMutableDictionary dictionary];
+	_transportInfo = [[NSMutableDictionary alloc] init];
 	
 	return self;
 }
@@ -47,8 +47,8 @@
 	self = [self init];
 	if (self == nil) return nil;
 	
-	self.lowerLayer = layer;
-	self.lowerLayer.delegate = (id)self;
+	_lowerLayer = [layer retain];
+	_lowerLayer.delegate = (id)self;
 	
 	return self;
 }
@@ -81,8 +81,8 @@
 }
 
 - (void)dealloc {
-	self.lowerLayer = nil;
-	self.transportInfo = nil;
+	[_lowerLayer release];
+	[_transportInfo release];
 	
 	[super dealloc];
 }
