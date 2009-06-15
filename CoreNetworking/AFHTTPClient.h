@@ -11,6 +11,8 @@
 @interface AFHTTPClient : AFHTTPConnection {
 	__strong CFHTTPAuthenticationRef _authentication;
 	NSDictionary *_authenticationCredentials;
+	
+	BOOL _shouldStartTLS;
 }
 
 + (NSString *)userAgent;

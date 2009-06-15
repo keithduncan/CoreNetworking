@@ -102,7 +102,9 @@
 - (NSUInteger)_increaseBuffer {
 	NSUInteger maximumReadLength = [self _maximumReadLength];
 	
-	if ([_terminator isKindOfClass:[NSNumber class]]) return maximumReadLength;
+	if ([_terminator isKindOfClass:[NSNumber class]]) {
+		return maximumReadLength;
+	}
 	
 	if ([_terminator isKindOfClass:[NSData class]]) {
 		[_buffer increaseLengthBy:maximumReadLength];
