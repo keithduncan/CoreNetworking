@@ -67,6 +67,12 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 	return [AFNetworkTransport class];
 }
 
++ (const AFNetworkTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
+	if ([scheme compare:AFNetworkSchemeHTTP options:NSCaseInsensitiveSearch] == NSOrderedSame) return &AFNetworkTransportSignatureHTTP;
+	if ([scheme compare:AFNetworkSchemeHTTPS options:NSCaseInsensitiveSearch] == NSOrderedSame) return &AFNetworkTransportSignatureHTTPS;
+	return [super transportSignatureForScheme:scheme];
+}
+
 - (id)init {
 	self = [super init];
 	if (self == nil) return nil;
