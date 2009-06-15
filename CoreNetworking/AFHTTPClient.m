@@ -54,7 +54,6 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	[super dealloc];
 }
 
-
 - (void)finalize {
 	[self setAuthentication:NULL];
 	
@@ -110,7 +109,7 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	NSURL *peer = [self peer];
 	
 	if (CFGetTypeID([(id)self.lowerLayer peer]) == CFHostGetTypeID()) {
-		return [[[peer scheme] lowercaseString] isEqualToString:AFNetworkSchemeHTTPS];
+		return ([AFNetworkSchemeHTTPS compare:[peer scheme] options:NSCaseInsensitiveSearch] == NSOrderedSame);
 	}
 	
 	[NSException raise:NSInternalInconsistencyException format:@"%s, cannot determine wether to start TLS.", __PRETTY_FUNCTION__, nil];

@@ -9,7 +9,7 @@
 #import "CoreNetworking/AFHTTPConnection.h"
 
 @interface AFHTTPClient : AFHTTPConnection {
-	CFHTTPAuthenticationRef _authentication;
+	__strong CFHTTPAuthenticationRef _authentication;
 	NSDictionary *_authenticationCredentials;
 }
 
