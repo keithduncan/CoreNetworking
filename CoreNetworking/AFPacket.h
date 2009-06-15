@@ -11,7 +11,7 @@
 @protocol AFPacketDelegate;
 
 /*!
-	@enum
+
  */
 enum {
 	AFPacketNoError			= 0,
@@ -20,13 +20,13 @@ enum {
 typedef NSInteger AFPacketError;
 
 /*!
-	@constant
-	@brief	This is posted when a timeout occurs, the object is the packet
+	@brief
+	This is posted when a timeout occurs, the object is the packet
  */
 extern NSString *const AFPacketTimeoutNotificationName;
 
 /*!
-	@class
+
  */
 @interface AFPacket : NSObject {
  @private
@@ -36,38 +36,29 @@ extern NSString *const AFPacketTimeoutNotificationName;
 	NSTimeInterval _duration;
 }
 
-/*!
-	@property
- */
 @property (readonly) NSUInteger tag;
 
-/*!
-	@method
- */
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration;
 
 /*!
-	@property
-	@brief	This is a dynamic property for subclasses to implement
+	@brief
+	This is a dynamic property for subclasses to implement.
+	This property is returned to the delegate in the -...didRead: and -...didWrite: callbacks.
  */
 @property (readonly) NSData *buffer;
 
 /*!
-	@method
-	@brief	This is an override point
-	@result		Vaules in the range [0.0, 1.0], this method returns 0.0 by default
-	@param		|fraction| is required, calling with a NULL argument will raise an exception
+	@brief
+	This is an override point
+	@result
+	Values in the range [0.0, 1.0], this method returns 0.0 by default
+ 
+	@param
+	|fraction| is required, calling with a NULL argument will raise an exception
  */
 - (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal;
 
-/*!
-	@method
- */
 - (void)startTimeout;
-
-/*!
-	@method
- */
 - (void)cancelTimeout;
 
 @end
