@@ -95,16 +95,29 @@
 		return result;
 	}
 	
-	[NSException raise:NSInternalInconsistencyException format:@"Cannot determine the maximum read length.", nil];
+	[NSException raise:NSInternalInconsistencyException format:@"%s, cannot determine the maximum read length for an unknown terminator.", __PRETTY_FUNCTION__, nil];
+	return 0;
+}
+
+- (NSUInteger)_increaseBuffer {
+	NSUInteger maximumReadLength = [self _maximumReadLength];
+	
+	if ([_terminator isKindOfClass:[NSNumber class]]) return maximumReadLength;
+	
+	if ([_terminator isKindOfClass:[NSData class]]) {
+		[_buffer increaseLengthBy:maximumReadLength];
+		return maximumReadLength;
+	}
+	
+	[NSException raise:NSInternalInconsistencyException format:@"%s, cannot increase the buffer for an unknown terminator.", __PRETTY_FUNCTION__, nil];
 	return 0;
 }
 
 - (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)errorRef {
 	BOOL packetComplete = NO;
 	
-	while (!packetComplete && CFReadStreamHasBytesAvailable(readStream)) {
-		NSUInteger maximumReadLength = [self _maximumReadLength];
-		[_buffer increaseLengthBy:maximumReadLength];
+	while (!packetComplete && CFReadStreamHasBytesAvailable(readStream)) {		
+		NSUInteger maximumReadLength = [self _increaseBuffer];
 		
 		UInt8 *readBuffer = (UInt8 *)([_buffer mutableBytes] + _bytesRead);
 		CFIndex bytesRead = CFReadStreamRead(readStream, readBuffer, maximumReadLength);

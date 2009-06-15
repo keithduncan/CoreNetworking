@@ -19,8 +19,8 @@
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration terminator:(id)terminator;
 
 /*!
-	@method	
-	@result	true if the packet is complete
+	@result
+	true if the packet is complete
  */
 - (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef;
 
