@@ -51,11 +51,16 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 NSSTRING_CONTEXT(AFNetworkTransportPacketQueueObservationContext);
 
 @interface AFNetworkTransport ()
+
+- (void)_open;
+- (void)_close;
+
 @property (assign) NSUInteger connectionFlags;
 @property (readonly) CFReadStreamRef readStream;
 @property (readonly) CFWriteStreamRef writeStream;
 @property (assign) NSUInteger readFlags, writeFlags;
 @property (readonly) AFPacketQueue *readQueue, *writeQueue;
+
 @end
 
 @interface AFNetworkTransport (Streams)
@@ -91,10 +96,7 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	if (self == nil) return nil;
 	
 	_readInfo.queue = [[AFPacketQueue alloc] init];
-	[_readInfo.queue addObserver:self forKeyPath:@"currentPacket" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&AFNetworkTransportPacketQueueObservationContext];
-	
 	_writeInfo.queue = [[AFPacketQueue alloc] init];
-	[_writeInfo.queue addObserver:self forKeyPath:@"currentPacket" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&AFNetworkTransportPacketQueueObservationContext];
 	
 	return self;
 }
@@ -163,10 +165,6 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	return self;
 }
 
-- (void)_close {
-	[NSObject cancelPreviousPerformRequestsWithTarget:self];
-}
-
 - (void)finalize {
 	if (![self isClosed]) {
 		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot finalize a layer which isn't closed yet.", __PRETTY_FUNCTION__, nil];
@@ -179,9 +177,13 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 }
 
 - (void)dealloc {
+	if (![self isClosed]) {
+		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot dealloc a layer which isn't closed yet.", __PRETTY_FUNCTION__, nil];
+		return;
+	}
+	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-	[self close];
 	[self _close];
 	
 	// Note: this will also release the netService if present
@@ -195,14 +197,12 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		CFRelease(_readInfo.stream);
 		_readInfo.stream = NULL;
 	}
-	[_readInfo.queue removeObserver:self forKeyPath:@"currentPacket"];
 	[_readInfo.queue release];
 	
 	if (_writeInfo.stream != NULL) {
 		CFRelease(_writeInfo.stream);
 		_writeInfo.stream = NULL;
 	}
-	[_writeInfo.queue removeObserver:self forKeyPath:@"currentPacket"];
 	[_writeInfo.queue release];
 	
 	[super dealloc];
@@ -402,13 +402,16 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	[self.delegate layer:self didNotOpen:nil];
 }
 
+- (void)_open {
+	[self.writeQueue addObserver:self forKeyPath:@"currentPacket" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&AFNetworkTransportPacketQueueObservationContext];
+	[self.readQueue addObserver:self forKeyPath:@"currentPacket" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&AFNetworkTransportPacketQueueObservationContext];
+}
+
 - (BOOL)isOpen {
 	return (((self.readFlags & _kStreamDidOpen) == _kStreamDidOpen) && ((self.writeFlags & _kStreamDidOpen) == _kStreamDidOpen));
 }
 
 - (void)close {
-	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(close) object:nil];
-	
 	// Note: you can only prevent a local close, if the streams were closed remotely there's nothing we can do
 	if ((self.readFlags & _kStreamDidClose) != _kStreamDidClose && (self.writeFlags & _kStreamDidClose) != _kStreamDidClose) {
 		// Note: if there are pending writes then the control delegate can keep the streams open
@@ -459,6 +462,10 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	[self.delegate layerDidClose:self];
 }
 
+- (void)_close {
+	[NSObject cancelPreviousPerformRequestsWithTarget:self];
+}
+
 - (BOOL)isClosed {
 	return (((self.readFlags & _kStreamDidClose) == _kStreamDidClose) && ((self.writeFlags & _kStreamDidClose) == _kStreamDidClose));
 }
@@ -470,7 +477,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	NSParameterAssert(terminator != nil);
 	
 	AFPacketRead *packet = nil;
-	if ([terminator isKindOfClass:[AFPacketRead class]]) {
+	if ([terminator isKindOfClass:[AFPacket class]]) {
 		packet = terminator;
 	} else {
 		packet = [[[AFPacketRead alloc] initWithTag:tag timeout:duration terminator:terminator] autorelease];
@@ -531,7 +538,7 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 	if (data == nil || [data length] == 0) return;
 	
 	AFPacketWrite *packet = nil;
-	if ([data isKindOfClass:[AFPacketWrite class]]) {
+	if ([data isKindOfClass:[AFPacket class]]) {
 		packet = data;
 	} else {
 		packet = [[[AFPacketWrite alloc] initWithTag:tag timeout:duration data:data] autorelease];
@@ -606,6 +613,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (void)_streamDidOpen {
 	if ((self.readFlags & _kStreamDidOpen) != _kStreamDidOpen || (self.writeFlags & _kStreamDidOpen) != _kStreamDidOpen) return;
+	
+	[self _open];
 	
 	if ((self.connectionFlags & _kDidCallConnectDelegate) == _kDidCallConnectDelegate) return;
 	self.connectionFlags = (self.connectionFlags | _kDidCallConnectDelegate);
