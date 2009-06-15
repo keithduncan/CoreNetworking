@@ -209,7 +209,7 @@
 		bytesLen -= 5;
 	}
 	
-	return [NSString stringWithCString:chars length:sizeof(chars)];
+	return [NSString stringWithCString:chars encoding:NSASCIIStringEncoding];
 }
 
 //
