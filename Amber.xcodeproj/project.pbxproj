@@ -54,8 +54,6 @@
 		533F5C460FBF565900169C14 /* AFDisclosureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C260FBF565900169C14 /* AFDisclosureButton.m */; };
 		533F5C470FBF565900169C14 /* AFImageTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C270FBF565900169C14 /* AFImageTextCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5C480FBF565900169C14 /* AFImageTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C280FBF565900169C14 /* AFImageTextCell.m */; };
-		533F5C4B0FBF565900169C14 /* AFLocateLibraryWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C2B0FBF565900169C14 /* AFLocateLibraryWindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		533F5C4C0FBF565900169C14 /* AFLocateLibraryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C2C0FBF565900169C14 /* AFLocateLibraryWindowController.m */; };
 		533F5C4D0FBF565900169C14 /* AFSourceList.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C2D0FBF565900169C14 /* AFSourceList.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5C4E0FBF565900169C14 /* AFSourceList.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5C2E0FBF565900169C14 /* AFSourceList.m */; };
 		533F5C510FBF565900169C14 /* AFTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5C310FBF565900169C14 /* AFTextFieldCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -322,8 +320,6 @@
 		533F5C260FBF565900169C14 /* AFDisclosureButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFDisclosureButton.m; sourceTree = "<group>"; };
 		533F5C270FBF565900169C14 /* AFImageTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFImageTextCell.h; sourceTree = "<group>"; };
 		533F5C280FBF565900169C14 /* AFImageTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageTextCell.m; sourceTree = "<group>"; };
-		533F5C2B0FBF565900169C14 /* AFLocateLibraryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFLocateLibraryWindowController.h; sourceTree = "<group>"; };
-		533F5C2C0FBF565900169C14 /* AFLocateLibraryWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFLocateLibraryWindowController.m; sourceTree = "<group>"; };
 		533F5C2D0FBF565900169C14 /* AFSourceList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSourceList.h; sourceTree = "<group>"; };
 		533F5C2E0FBF565900169C14 /* AFSourceList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSourceList.m; sourceTree = "<group>"; };
 		533F5C310FBF565900169C14 /* AFTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFTextFieldCell.h; sourceTree = "<group>"; };
@@ -524,8 +520,8 @@
 			children = (
 				5355141D0FAF6A35004F8FC5 /* AFNetworkLayer.h */,
 				5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */,
-				535511F70FAF4C18004F8FC5 /* Protocols */,
-				535511F80FAF4C1F004F8FC5 /* Classes */,
+				535511F70FAF4C18004F8FC5 /* Prototypes */,
+				535511F80FAF4C1F004F8FC5 /* Implementations */,
 			);
 			name = Layers;
 			sourceTree = "<group>";
@@ -569,8 +565,6 @@
 				533F5C260FBF565900169C14 /* AFDisclosureButton.m */,
 				533F5C270FBF565900169C14 /* AFImageTextCell.h */,
 				533F5C280FBF565900169C14 /* AFImageTextCell.m */,
-				533F5C2B0FBF565900169C14 /* AFLocateLibraryWindowController.h */,
-				533F5C2C0FBF565900169C14 /* AFLocateLibraryWindowController.m */,
 				533F5C2D0FBF565900169C14 /* AFSourceList.h */,
 				533F5C2E0FBF565900169C14 /* AFSourceList.m */,
 				533F5C310FBF565900169C14 /* AFTextFieldCell.h */,
@@ -621,16 +615,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		535511F70FAF4C18004F8FC5 /* Protocols */ = {
+		535511F70FAF4C18004F8FC5 /* Prototypes */ = {
 			isa = PBXGroup;
 			children = (
 				535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */,
 				5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */,
 			);
-			name = Protocols;
+			name = Prototypes;
 			sourceTree = "<group>";
 		};
-		535511F80FAF4C1F004F8FC5 /* Classes */ = {
+		535511F80FAF4C1F004F8FC5 /* Implementations */ = {
 			isa = PBXGroup;
 			children = (
 				53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */,
@@ -640,7 +634,7 @@
 				5370E0880F5B061D008F5991 /* AFNetworkConnection.h */,
 				5370E0890F5B061D008F5991 /* AFNetworkConnection.m */,
 			);
-			name = Classes;
+			name = Implementations;
 			sourceTree = "<group>";
 		};
 		53692A780F1B7EE70051C367 /* CoreNetworking */ = {
@@ -1057,7 +1051,6 @@
 				533F5C430FBF565900169C14 /* AFSwitchControl.h in Headers */,
 				533F5C450FBF565900169C14 /* AFDisclosureButton.h in Headers */,
 				533F5C470FBF565900169C14 /* AFImageTextCell.h in Headers */,
-				533F5C4B0FBF565900169C14 /* AFLocateLibraryWindowController.h in Headers */,
 				533F5C4D0FBF565900169C14 /* AFSourceList.h in Headers */,
 				533F5C510FBF565900169C14 /* AFTextFieldCell.h in Headers */,
 				533F5D490FBF622700169C14 /* NSControl+Additions.h in Headers */,
@@ -1376,7 +1369,6 @@
 				533F5C440FBF565900169C14 /* AFSwitchControl.m in Sources */,
 				533F5C460FBF565900169C14 /* AFDisclosureButton.m in Sources */,
 				533F5C480FBF565900169C14 /* AFImageTextCell.m in Sources */,
-				533F5C4C0FBF565900169C14 /* AFLocateLibraryWindowController.m in Sources */,
 				533F5C4E0FBF565900169C14 /* AFSourceList.m in Sources */,
 				533F5C520FBF565900169C14 /* AFTextFieldCell.m in Sources */,
 				53F6E3780FCB3B350009FF33 /* AFKitConstants.m in Sources */,
