@@ -24,6 +24,9 @@
 #import "CoreNetworking/AFNetworkTransport.h"
 #import "CoreNetworking/AFNetworkConnection.h"
 
+#import "CoreNetworking/AFPacket.h"
+#import "CoreNetworking/AFPacketRead.h"
+#import "CoreNetworking/AFPacketWrite.h"
 #import "CoreNetworking/AFPacketQueue.h"
 
 #import "CoreNetworking/AFConnectionPool.h"
