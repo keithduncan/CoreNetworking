@@ -328,6 +328,8 @@
 		533F5D450FBF622700169C14 /* NSControl+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSControl+Additions.h"; path = "AmberKit/NSControl+Additions.h"; sourceTree = "<group>"; };
 		533F5D460FBF622700169C14 /* NSControl+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSControl+Additions.m"; path = "AmberKit/NSControl+Additions.m"; sourceTree = "<group>"; };
 		5343E7230C21FBEA00B63E6E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		5354C6980FE661FE0003621D /* AFHTTPMessagePacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPMessagePacket.h; path = CoreNetworking/AFHTTPMessagePacket.h; sourceTree = "<group>"; };
+		5354C6990FE661FE0003621D /* AFHTTPMessagePacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPMessagePacket.m; path = CoreNetworking/AFHTTPMessagePacket.m; sourceTree = "<group>"; };
 		535511EC0FAF4A27004F8FC5 /* AFTransportLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFTransportLayer.h; path = CoreNetworking/AFTransportLayer.h; sourceTree = "<group>"; };
 		535511EF0FAF4A34004F8FC5 /* AFNetworkTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkTransport.h; path = CoreNetworking/AFNetworkTransport.h; sourceTree = "<group>"; };
 		535511F00FAF4A34004F8FC5 /* AFNetworkTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkTransport.m; path = CoreNetworking/AFNetworkTransport.m; sourceTree = "<group>"; };
@@ -511,6 +513,8 @@
 				532AA48B0FC206FD000FCC3F /* AFHTTPTransaction.m */,
 				533508240FD6FC4E004FFF97 /* AFHTTPClient.h */,
 				533508250FD6FC4E004FFF97 /* AFHTTPClient.m */,
+				5354C6980FE661FE0003621D /* AFHTTPMessagePacket.h */,
+				5354C6990FE661FE0003621D /* AFHTTPMessagePacket.m */,
 			);
 			name = HTTP;
 			sourceTree = "<group>";
@@ -521,7 +525,7 @@
 				5355141D0FAF6A35004F8FC5 /* AFNetworkLayer.h */,
 				5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */,
 				535511F70FAF4C18004F8FC5 /* Prototypes */,
-				535511F80FAF4C1F004F8FC5 /* Implementations */,
+				535511F80FAF4C1F004F8FC5 /* Classes */,
 			);
 			name = Layers;
 			sourceTree = "<group>";
@@ -624,7 +628,7 @@
 			name = Prototypes;
 			sourceTree = "<group>";
 		};
-		535511F80FAF4C1F004F8FC5 /* Implementations */ = {
+		535511F80FAF4C1F004F8FC5 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
 				53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */,
@@ -634,7 +638,7 @@
 				5370E0880F5B061D008F5991 /* AFNetworkConnection.h */,
 				5370E0890F5B061D008F5991 /* AFNetworkConnection.m */,
 			);
-			name = Implementations;
+			name = Classes;
 			sourceTree = "<group>";
 		};
 		53692A780F1B7EE70051C367 /* CoreNetworking */ = {
