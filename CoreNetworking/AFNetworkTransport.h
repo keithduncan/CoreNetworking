@@ -18,6 +18,8 @@
 @protocol AFNetworkTransportControlDelegate;
 
 @class AFPacketQueue;
+@class AFPacketWrite;
+@class AFPacketRead;
 
 struct _AFNetworkTransportStreamInfo {
 	__strong id stream;
@@ -90,12 +92,25 @@ struct _AFNetworkTransportStreamInfo {
 
 /*!
 	@brief
+	This method is called before a packet is actually enqueued.
+ */
+- (void)socket:(AFNetworkTransport *)socket willEnqueueReadPacket:(AFPacketRead *)packet;
+
+/*!
+	@brief
 	Instead of calling <tt>-currentReadProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of read progress.
- 
+	
 	@param
 	|total| will be NSUIntegerMax if the packet terminator is a data pattern.
  */
 - (void)socket:(AFNetworkTransport *)socket didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
+
+/*!
+	@brief
+	This method is called before a packet is actually enqueued.
+	It allows you to tweak the chunk size for instance.
+ */
+- (void)socket:(AFNetworkTransport *)socket willEnqueueWritePacket:(AFPacketWrite *)packet;
 
 /*!
 	@brief

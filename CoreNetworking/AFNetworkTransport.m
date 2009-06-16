@@ -481,6 +481,9 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 		packet = terminator;
 	} else {
 		packet = [[[AFPacketRead alloc] initWithTag:tag timeout:duration terminator:terminator] autorelease];
+		
+		if ([self.delegate respondsToSelector:@selector(socket:willEnqueueReadPacket:)])
+			[self.delegate socket:self willEnqueueReadPacket:packet];
 	}
 	
 	[self.readQueue enqueuePacket:packet];
@@ -535,13 +538,16 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 
 - (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration; {
 	if ((self.connectionFlags & _kForbidStreamReadWrite) == _kForbidStreamReadWrite) return;
-	if (data == nil || [data length] == 0) return;
+	NSParameterAssert(data != nil);
 	
 	AFPacketWrite *packet = nil;
 	if ([data isKindOfClass:[AFPacket class]]) {
 		packet = data;
 	} else {
 		packet = [[[AFPacketWrite alloc] initWithTag:tag timeout:duration data:data] autorelease];
+		
+		if ([self.delegate respondsToSelector:@selector(socket:willEnqueueWritePacket:)])
+			[self.delegate socket:self willEnqueueWritePacket:packet];
 	}
 	
 	[self.writeQueue enqueuePacket:packet];
