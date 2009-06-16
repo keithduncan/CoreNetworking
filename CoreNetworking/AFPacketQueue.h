@@ -15,7 +15,7 @@
 	Then call <tt>-dequeuePacket</tt> once you've finished processing the <tt>currentPacket</tt>.
  */
 @interface AFPacketQueue : NSObject {	
-	NSMutableArray *_queue;
+	NSMutableArray *_packets;
 	id _currentPacket;
 }
 

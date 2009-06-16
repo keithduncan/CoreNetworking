@@ -9,49 +9,49 @@
 #import "AFPacketQueue.h"
 
 @interface AFPacketQueue ()
-@property (retain) NSMutableArray *queue;
+@property (retain) NSMutableArray *packets;
 @property (readwrite, retain) id currentPacket;
 @end
 
 @implementation AFPacketQueue
 
-@synthesize queue=_queue;
+@synthesize packets=_packets;
 @synthesize currentPacket=_currentPacket;
 
 - (id)init {
 	self = [super init];
 	if (self == nil) return nil;
 	
-	self.queue = [NSMutableArray array];
+	_packets = [[NSMutableArray alloc] init];
 	
 	return self;
 }
 
 - (void)dealloc {
-	self.queue = nil;
-	self.currentPacket = nil;
+	[_packets release];
+	[_currentPacket release];
 	
 	[super dealloc];
 }
 
 - (NSUInteger)count {
-	return [self.queue count];
+	return [self.packets count];
 }
 
 - (void)enqueuePacket:(id)packet {
-	[self.queue addObject:packet];
+	[self.packets addObject:packet];
 	[self tryDequeue];
 }
 
 - (BOOL)tryDequeue {
 	if (self.currentPacket != nil) return NO;
-	if ([self.queue count] == 0) return NO;
+	if ([self.packets count] == 0) return NO;
 	
 	const NSUInteger newPacketIndex = 0;
 	
-	id newPacket = [[self.queue objectAtIndex:newPacketIndex] retain];
+	id newPacket = [[self.packets objectAtIndex:newPacketIndex] retain];
 	
-	[self.queue removeObjectAtIndex:newPacketIndex];
+	[self.packets removeObjectAtIndex:newPacketIndex];
 	self.currentPacket = newPacket;
 	
 	[newPacket release];
@@ -64,7 +64,7 @@
 }
 
 - (void)emptyQueue {
-	[self.queue removeAllObjects];
+	[self.packets removeAllObjects];
 	[self dequeued];
 }
 
