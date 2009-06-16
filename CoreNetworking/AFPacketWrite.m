@@ -13,9 +13,20 @@
 @implementation AFPacketWrite
 
 @synthesize buffer=_buffer;
+@synthesize chunkSize=_chunkSize;
+
+- (id)init {
+	self = [super init];
+	if (self == nil) return nil;
+	
+	_chunkSize = -1;
+	
+	return self;
+}
 
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration data:(NSData *)buffer {
-	[self initWithTag:tag timeout:duration];
+	self = [self initWithTag:tag timeout:duration];
+	if (self == nil) return self;
 	
 	_buffer = [buffer retain];
 	
@@ -43,6 +54,7 @@
 	
 	while (!packetComplete && CFWriteStreamCanAcceptBytes(writeStream)) {
 		NSUInteger bytesRemaining = ([self.buffer length] - _bytesWritten);
+		if (self.chunkSize > 0 && bytesRemaining > self.chunkSize) bytesRemaining = self.chunkSize;
 		
 		UInt8 *writeStart = (UInt8 *)([self.buffer bytes] + _bytesWritten);
 		CFIndex actualBytesWritten = CFWriteStreamWrite(writeStream, writeStart, bytesRemaining);
@@ -55,6 +67,7 @@
 		
 		_bytesWritten += actualBytesWritten;
 		packetComplete = (_bytesWritten == [self.buffer length]);
+		if (self.chunkSize > 0) break;
 	}
 	
 	return packetComplete;
