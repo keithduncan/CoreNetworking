@@ -26,14 +26,15 @@ typedef NSInteger AFPacketError;
 extern NSString *const AFPacketTimeoutNotificationName;
 
 /*!
-
+	@brief
+	This is an abstract packet superclass. It provides simple functionality such as tagging and timeouts.
  */
 @interface AFPacket : NSObject {
- @private
+ @package
 	NSUInteger _tag;
-	
-	NSTimer *timeoutTimer;
 	NSTimeInterval _duration;
+ @private
+	NSTimer *timeoutTimer;
 }
 
 @property (readonly) NSUInteger tag;
@@ -45,7 +46,7 @@ extern NSString *const AFPacketTimeoutNotificationName;
 	This is a dynamic property for subclasses to implement.
 	This property is returned to the delegate in the -...didRead: and -...didWrite: callbacks.
  */
-@property (readonly) NSData *buffer;
+@property (readonly) id buffer;
 
 /*!
 	@brief
@@ -58,7 +59,50 @@ extern NSString *const AFPacketTimeoutNotificationName;
  */
 - (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal;
 
+/*!
+	@brief
+	This method will start an NSTimer (it will be scheduled in the current run loop) if the duration the packet was created with is >0.
+ */
 - (void)startTimeout;
+
+/*!
+	@brief
+	This method simply balances <tt>-startTimeout</tt>
+ */
 - (void)cancelTimeout;
+
+@end
+
+/*!
+	@brief
+	Any read packet you enqueue must conform to this protocol.
+ */
+@protocol AFPacketReading <NSObject>
+
+/*!
+	@brief
+	This method is called to perform the read once the stream has signalled that it has bytes available.
+ 
+	@result
+	Return TRUE to indicate that the packet is complete. Once your packet is complete the <tt>buffer</tt> property should contain the read results.
+ */
+- (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef;
+
+@end
+
+/*!
+	@brief
+	Any write packet you enqueue must conform to this protocol.
+ */
+@protocol AFPacketWriting <NSObject>
+
+/*!
+	@brief
+	This method is called to perform the write once the stream has signalled it has space available.
+ 
+	@result
+	Return TRUE to indicate that the packet is complete. Once your packet is complete the <tt>buffer</tt> property should contain the written data.
+ */
+- (BOOL)performWrite:(CFWriteStreamRef)writeStream error:(NSError **)errorRef;
 
 @end

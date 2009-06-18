@@ -479,6 +479,9 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	AFPacketRead *packet = nil;
 	if ([terminator isKindOfClass:[AFPacket class]]) {
 		packet = terminator;
+		
+		packet->_tag = tag;
+		packet->_duration = duration;
 	} else {
 		packet = [[[AFPacketRead alloc] initWithTag:tag timeout:duration terminator:terminator] autorelease];
 		

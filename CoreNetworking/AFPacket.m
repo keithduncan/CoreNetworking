@@ -22,7 +22,8 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 @synthesize duration=_duration;
 
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration {
-	[self init];
+	self = [self init];
+	if (self == nil) return nil;
 	
 	_tag = tag;
 	_duration = duration;

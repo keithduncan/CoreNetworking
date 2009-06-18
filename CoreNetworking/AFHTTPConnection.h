@@ -39,15 +39,6 @@ extern NSString *const AFHTTPMessageConnectionHeader;
 
 /*!
 	@brief
-	This function returns the expected body length of the provided CFHTTPMessageRef.
- 
-	This method uses the "Content-Length" header of the response to determine how much more a client should read to complete the packet.
-	If CFHTTPMessageIsHeaderComplete(self.response) returns false, this method returns -1.
- */
-extern NSInteger AFHTTPMessageHeaderLength(CFHTTPMessageRef message);
-
-/*!
-	@brief
 	This class is indended to sit on top of AFNetworkTransport and provides HTTP messaging semantics.
  */
 @interface AFHTTPConnection : AFNetworkConnection <AFConnectionLayer> {	

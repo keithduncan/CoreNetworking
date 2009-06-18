@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CoreNetworking/AFPacket.h"
+
 /*!
  *	Network Layers
  *		Transport + Internetwork
@@ -88,12 +90,14 @@
 
 /*!
 	@param
-	|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length, an NSData for bit pattern, or an AFPacketRead subclass for custom behaviour.
+	|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length or an NSData for bit pattern.
+	This method accepts an AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
  */
 - (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
 
 /*!
-	
+	@brief
+	This method is currently only expected to handle an (NSData) object.
  */
 - (void)performWrite:(id)dataBuffer forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
 

@@ -8,7 +8,7 @@
 
 #import "CoreNetworking/AFPacket.h"
 
-@interface AFPacketWrite : AFPacket {
+@interface AFPacketWrite : AFPacket <AFPacketWriting> {
  @private
 	NSData *_buffer;
 	NSUInteger _bytesWritten;
@@ -26,11 +26,5 @@
 	The default value of this property is -1 which limits each write to the maximum size of the kernel buffer.
  */
 @property (assign) NSInteger chunkSize;
-
-/*!
-	@result
-	true if the packet is complete
- */
-- (BOOL)performWrite:(CFWriteStreamRef)writeStream error:(NSError **)errorRef;
 
 @end

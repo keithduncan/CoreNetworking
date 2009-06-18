@@ -12,6 +12,7 @@
 #import "AmberFoundation/AmberFoundation.h"
 
 #import "AFHTTPTransaction.h"
+#import "AFHTTPMessagePacket.h"
 
 NSString *const AFHTTPMethodGET = @"GET";
 NSString *const AFHTTPMethodPOST = @"POST";
@@ -25,21 +26,6 @@ NSString *const AFHTTPMessageUserAgentHeader = @"User-Agent";
 NSString *const AFHTTPMessageContentLengthHeader = @"Content-Length";
 NSString *const AFHTTPMessageHostHeader = @"Host";
 NSString *const AFHTTPMessageConnectionHeader = @"Connection";
-
-NSInteger AFHTTPMessageHeaderLength(CFHTTPMessageRef message) {
-	if (!CFHTTPMessageIsHeaderComplete(message)) {
-		return -1;
-	}
-	
-	NSString *contentLengthHeaderValue = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease];
-	
-	if (contentLengthHeaderValue == nil) {
-		return -1;
-	}
-	
-	NSInteger contentLength = [contentLengthHeaderValue integerValue];
-	return contentLength;
-}
 
 NSSTRING_CONTEXT(AFHTTPConnectionCurrentTransactionObservationContext);
 
@@ -157,32 +143,15 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 
 - (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag {
 	if (self.currentTransaction.response == NULL) return;
-	[(id)self layer:layer didRead:[NSData data] forTag:_kHTTPConnectionReadHeaders];
+	
+	[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease] forTag:0 withTimeout:-1];
 }
 
 - (void)layer:(id <AFTransportLayer>)layer didRead:(id)data forTag:(NSUInteger)tag {
-	CFHTTPMessageRef currentMessage = (self.currentTransaction.response == NULL ? self.currentTransaction.request : self.currentTransaction.response);
-	CFHTTPMessageAppendBytes(currentMessage, [data bytes], [data length]);
+	[(id)self.delegate layer:self didRead:data forTag:0];
 	
-	if (tag == _kHTTPConnectionReadBody) {
-		[(id)self.delegate layer:self didRead:(id)currentMessage forTag:0];
-		[self.transactionQueue dequeued];
-		
-		[self.transactionQueue tryDequeue];
-		return;
-	}
-	
-	if (!CFHTTPMessageIsHeaderComplete(currentMessage)) {
-		[super performRead:[NSData CRLF] forTag:_kHTTPConnectionReadHeaders withTimeout:-1];
-	} else {
-		NSInteger contentLength = AFHTTPMessageHeaderLength(currentMessage);
-		
-		if (contentLength != -1) {
-			[super performRead:[NSNumber numberWithInteger:contentLength] forTag:_kHTTPConnectionReadBody withTimeout:-1];
-		} else {
-			[self layer:layer didRead:[NSData data] forTag:_kHTTPConnectionReadBody];
-		}
-	}
+	[self.transactionQueue dequeued];
+	[self.transactionQueue tryDequeue];
 }
 
 @end

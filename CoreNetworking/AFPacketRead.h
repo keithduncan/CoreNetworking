@@ -8,7 +8,7 @@
 
 #import "CoreNetworking/AFPacket.h"
 
-@interface AFPacketRead : AFPacket {
+@interface AFPacketRead : AFPacket <AFPacketReading> {
  @private
 	CFIndex _bytesRead;
 	NSMutableData *_buffer;
@@ -17,11 +17,5 @@
 }
 
 - (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration terminator:(id)terminator;
-
-/*!
-	@result
-	true if the packet is complete
- */
-- (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef;
 
 @end

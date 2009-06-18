@@ -216,6 +216,10 @@
 		53B2015F0F6D7739001DC8E7 /* AFPacketWrite.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B2014F0F6D7739001DC8E7 /* AFPacketWrite.m */; };
 		53B201600F6D7739001DC8E7 /* AFNetworkSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53B201610F6D7739001DC8E7 /* AFNetworkSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B201510F6D7739001DC8E7 /* AFNetworkSocket.m */; };
+		53D25F670FEAFED200490AA8 /* AFHTTPMessagePacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5354C6980FE661FE0003621D /* AFHTTPMessagePacket.h */; };
+		53D25F680FEAFED200490AA8 /* AFHTTPMessagePacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5354C6990FE661FE0003621D /* AFHTTPMessagePacket.m */; };
+		53D25F690FEAFED600490AA8 /* AFHTTPMessagePacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5354C6980FE661FE0003621D /* AFHTTPMessagePacket.h */; };
+		53D25F6A0FEAFED700490AA8 /* AFHTTPMessagePacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5354C6990FE661FE0003621D /* AFHTTPMessagePacket.m */; };
 		53DC5EFD0F655F9800349623 /* AFNetworkConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0880F5B061D008F5991 /* AFNetworkConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53DC5EFE0F655F9900349623 /* AFNetworkConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0890F5B061D008F5991 /* AFNetworkConnection.m */; };
 		53DC5EFF0F655F9900349623 /* AFConnectionPool.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E08A0F5B061D008F5991 /* AFConnectionPool.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -954,6 +958,7 @@
 				53151A430FC49A2B0026E2F1 /* AFHTTPConnection.h in Headers */,
 				53151A440FC49A300026E2F1 /* AFHTTPTransaction.h in Headers */,
 				533508260FD6FC4E004FFF97 /* AFHTTPClient.h in Headers */,
+				53D25F670FEAFED200490AA8 /* AFHTTPMessagePacket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1027,6 +1032,7 @@
 				53151A410FC49A280026E2F1 /* AFHTTPConnection.h in Headers */,
 				53151A470FC49A350026E2F1 /* AFHTTPTransaction.h in Headers */,
 				533508280FD6FC4E004FFF97 /* AFHTTPClient.h in Headers */,
+				53D25F690FEAFED600490AA8 /* AFHTTPMessagePacket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1286,6 +1292,7 @@
 				53151A420FC49A2B0026E2F1 /* AFHTTPConnection.m in Sources */,
 				53151A450FC49A300026E2F1 /* AFHTTPTransaction.m in Sources */,
 				533508270FD6FC4E004FFF97 /* AFHTTPClient.m in Sources */,
+				53D25F680FEAFED200490AA8 /* AFHTTPMessagePacket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1353,6 +1360,7 @@
 				53151A400FC49A270026E2F1 /* AFHTTPConnection.m in Sources */,
 				53151A460FC49A340026E2F1 /* AFHTTPTransaction.m in Sources */,
 				533508290FD6FC4E004FFF97 /* AFHTTPClient.m in Sources */,
+				53D25F6A0FEAFED700490AA8 /* AFHTTPMessagePacket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
