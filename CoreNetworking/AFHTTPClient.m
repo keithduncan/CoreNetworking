@@ -82,20 +82,20 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	_authentication = (CFHTTPAuthenticationRef)CFRetain(authentication);
 }
 
-- (void)connectionWillPerformRequest:(CFHTTPMessageRef)request {
-	[super connectionWillPerformRequest:request];
-	
+- (void)performWrite:(CFHTTPMessageRef)message forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
 	NSString *agent = [[self class] userAgent];
 	if (agent != nil) {
-		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageUserAgentHeader, (CFStringRef)agent);
+		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageUserAgentHeader, (CFStringRef)agent);
 	}
 	
 	if (self.authentication != NULL) {
 		CFStreamError error;
 		
 		Boolean authenticated = NO;
-		authenticated = CFHTTPMessageApplyCredentialDictionary(request, self.authentication, (CFDictionaryRef)self.authenticationCredentials, &error);
+		authenticated = CFHTTPMessageApplyCredentialDictionary(message, self.authentication, (CFDictionaryRef)self.authenticationCredentials, &error);
 	}
+	
+	[super performWrite:message forTag:tag withTimeout:duration];
 }
 
 - (void)layerDidOpen:(id <AFConnectionLayer>)layer {

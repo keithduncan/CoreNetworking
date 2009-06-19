@@ -10,6 +10,7 @@
 
 @implementation AFHTTPTransaction
 
+@synthesize emptyRequest=_emptyRequest;
 @synthesize request=_request, response=_response;
 
 - (id)initWithRequest:(CFHTTPMessageRef)request {
@@ -17,6 +18,7 @@
 	if (self == nil) return nil;
 	
 	if (request == NULL) {
+		_emptyRequest = YES;
 		_request = (CFHTTPMessageRef)NSMakeCollectable(CFHTTPMessageCreateEmpty(kCFAllocatorDefault, true));
 	} else {
 		_request = (CFHTTPMessageRef)NSMakeCollectable(CFRetain(request));

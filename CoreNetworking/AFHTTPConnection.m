@@ -81,10 +81,9 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 		AFHTTPTransaction *newPacket = [change objectForKey:NSKeyValueChangeNewKey];
 		if (newPacket == nil || [newPacket isEqual:[NSNull null]]) return;
 		
-		if (newPacket.response == NULL) {
-			[self layer:self.lowerLayer didRead:[NSData data] forTag:_kHTTPConnectionReadHeaders];
+		if (newPacket.emptyRequest) {
+			[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:YES] autorelease] forTag:0 withTimeout:-1];
 		} else {
-			[self connectionWillPerformRequest:newPacket.request];
 			[self performWrite:newPacket.request forTag:0 withTimeout:-1];
 		}
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -94,7 +93,20 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 	return self.transactionQueue.currentPacket;
 }
 
+- (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
+	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequest:NULL] autorelease];
+	[self.transactionQueue enqueuePacket:transaction];
+}
+
+- (void)performRead {
+	[self performRead:nil forTag:0 withTimeout:-1];
+}
+
 - (void)performWrite:(CFHTTPMessageRef)message forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
+	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
+		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease] length]] stringValue]);
+	}
+	
 	CFDataRef messageData = CFHTTPMessageCopySerializedMessage(message);
 	[super performWrite:(id)messageData forTag:tag withTimeout:duration];
 	CFRelease(messageData);
@@ -120,21 +132,6 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 	
 	NSData *messageData = [NSMakeCollectable(CFHTTPMessageCopySerializedMessage(request)) autorelease];
 	return messageData;
-}
-
-- (void)connectionWillPerformRequest:(CFHTTPMessageRef)request {
-	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
-		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(request)) autorelease] length]] stringValue]);
-	}
-}
-
-- (void)performRead {
-	[self performRead:nil forTag:0 withTimeout:-1];
-}
-
-- (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
-	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequest:NULL] autorelease];
-	[self.transactionQueue enqueuePacket:transaction];
 }
 
 @end

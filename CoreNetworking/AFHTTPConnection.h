@@ -64,13 +64,6 @@ extern NSString *const AFHTTPMessageConnectionHeader;
 
 /*!
 	@brief
-	This is a funnel method allowing you to catch the outgoing message before it's sent.
-	This is called for all enqueued writing methods, call super in your implementation.
- */
-- (void)connectionWillPerformRequest:(CFHTTPMessageRef)request;
-
-/*!
-	@brief
 	This enqueues a read transaction, it is shorthand for [connection performRead:nil forTag:0 withTimeout:-1]
  */
 - (void)performRead;

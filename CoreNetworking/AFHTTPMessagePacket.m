@@ -84,7 +84,12 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 - (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef {
 	BOOL shouldContinue = NO;
 	do {
-		if (self.currentRead == nil) self.currentRead = [self _nextReadPacket];
+		if (self.currentRead == nil) {
+			self.currentRead = [self _nextReadPacket];
+			
+			// Note: this covers reading a request where there's no body
+			if (self.currentRead == nil) return YES;
+		}
 		
 		shouldContinue = [self.currentRead performRead:stream error:errorRef];
 		
