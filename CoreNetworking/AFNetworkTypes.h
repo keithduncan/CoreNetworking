@@ -15,47 +15,53 @@
 /*!
 	@brief
 	Common transport layer types can be defined using these two fields.
- 
-	@field
-	|socketType| should be one of the socket types defined in socket.h
-	@field
-	|protocol| should typically be one of the IP protocols defined in RFC 1700 see http://www.faqs.org/rfcs/rfc1700.html - it is important that an appropriate |socketType| is also provided.
+	
+	@field |socketType|
+	Should be one of the socket types defined in <sys/socket.h>
+	@field |protocol|
+	Should typically be one of the IP protocols defined in RFC 1700 see http://www.faqs.org/rfcs/rfc1700.html - it is important that an appropriate |socketType| is also provided.
  */
-struct AFNetworkSocketSignature {
+struct AFSocketSignature {
 	const SInt32 socketType;
 	const SInt32 protocol;
 };
-typedef struct AFNetworkSocketSignature AFNetworkSocketSignature;
+typedef struct AFSocketSignature AFSocketSignature;
 
 /*!
     @brief
-	This is suitable for creating a TCP socket.
+	This is suitable for creating a network TCP socket.
 */
-extern const AFNetworkSocketSignature AFNetworkSocketSignatureTCP;
+extern const AFSocketSignature AFNetworkSocketSignatureTCP;
 
 /*!
 	@brief
-	This is suitable for creating a UDP socket.
+	This is suitable for creating a network UDP socket.
  */
-extern const AFNetworkSocketSignature AFNetworkSocketSignatureUDP;
+extern const AFSocketSignature AFNetworkSocketSignatureUDP;
+
+/*!
+	@brief
+	This is suitable for creating a local UNIX socket.
+ */
+extern const AFSocketSignature AFLocalSocketSignature;
 
 /*!
 	@brief
 	A transport layer struct simply includes the post number too, the port number isn't included in the <tt>AFSocketType</tt> because it is useful without it.
  
-	@field
-	|type| see the documentation on <tt>AFSocketType</tt>.
-	@field
-	|port| identifies the Transport Layer address to communicate using (see RFC 1122) in network byte order.
+	@field |type|
+	See the documentation on <tt>AFSocketType</tt>.
+	@field |port|
+	Identifies the Transport Layer address to communicate using (see RFC 1122) in network byte order.
  */
-struct AFNetworkTransportSignature {
-	const AFNetworkSocketSignature *type;
+struct AFInternetTransportSignature {
+	const AFSocketSignature *type;
 	SInt32 port;
 };
-typedef struct AFNetworkTransportSignature AFNetworkTransportSignature;
+typedef struct AFInternetTransportSignature AFInternetTransportSignature;
 
-extern const AFNetworkTransportSignature AFNetworkTransportSignatureHTTP;
-extern const AFNetworkTransportSignature AFNetworkTransportSignatureHTTPS;
+extern const AFInternetTransportSignature AFInternetTransportSignatureHTTP;
+extern const AFInternetTransportSignature AFInternetTransportSignatureHTTPS;
 
 /*!
 	@brief
@@ -78,6 +84,6 @@ struct AFNetworkTransportPeerSignature {
 	/*
 	 *	This defines _how_ to communicate (and may allow for the return of a specific handler subclass from the creation methods)
 	 */
-	const AFNetworkTransportSignature *transport;
+	const AFInternetTransportSignature *transport;
 };
 typedef struct AFNetworkTransportPeerSignature AFNetworkTransportPeerSignature;

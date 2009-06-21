@@ -359,12 +359,13 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	return reachable;
 }
 
-- (void)open {
+- (BOOL)open {
 	if ([self isOpen]) {
-		if ((self.connectionFlags & _kDidCallConnectDelegate) == _kDidCallConnectDelegate) return;
+		if ((self.connectionFlags & _kDidCallConnectDelegate) != _kDidCallConnectDelegate) {		
+			[self.delegate layerDidOpen:self];
+		}
 		
-		[self.delegate layerDidOpen:self];
-		return;
+		return YES;
 	}
 	
 	if (CFGetTypeID([self peer]) == CFHostGetTypeID()) {
@@ -389,17 +390,18 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 			NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionReachabilityError userInfo:userInfo];
 			[self.delegate layer:self didNotOpen:error];
 			
-			return;
+			return NO;
 		}
 	}
 	
 	Boolean result = true;
 	result &= CFWriteStreamOpen(self.writeStream);
 	result &= CFReadStreamOpen(self.readStream);
-	if (result) return;
+	if (result) return YES;
 	
 	[self close];
 	[self.delegate layer:self didNotOpen:nil];
+	return NO;
 }
 
 - (void)_open {

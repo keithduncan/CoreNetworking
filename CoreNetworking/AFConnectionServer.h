@@ -11,6 +11,7 @@
 #import "CoreNetworking/AFNetworkTypes.h"
 #import "CoreNetworking/AFConnectionLayer.h"
 
+@class AFNetworkSocket;
 @class AFConnectionPool;
 @class AFConnectionServer;
 
@@ -35,23 +36,23 @@
 
 /*!
 	@detail
-	A collection of NSData objects containing a (struct sockaddr *)
- 
+	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6).
+	
 	@result
-	All the network socket addresses, these may be accessable from other network clients (ignoring firewalls).
+	All the network socket addresses, these may be accessable from other network clients (ignoring firewall restrictions).
  */
-+ (NSSet *)networkSocketAddresses;
++ (NSSet *)networkInternetSocketAddresses;
 
 /*!
 	@detail
-	A collection of NSData objects containing a (struct sockaddr *)
-	This is likely only to be useful for testing your server, since it won't be accessable from another computer
- 
+	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6), however you shouldn't <em>need</em> to know this.
+	This is likely only to be useful for testing your server, since it won't be accessable from another computer.
+	
 	@result
 	All the localhost socket addresses, these are only accessible from the local machine.
-	This allows you to create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to ::1).
+	This allows you to create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to 127.0.0.1 and ::1).
  */
-+ (NSSet *)localhostSocketAddresses;
++ (NSSet *)localhostInternetSocketAddresses;
 
 /*!
 	@brief
@@ -59,7 +60,7 @@
  
 	@detail
 	This should call the designated initialiser with an appropriate |lowerLayer| and encapsulation class.
-	By default this creates a server with no |lowerLayer| and <tt>AFSocketTransport</tt> as the encapsulation class.
+	By default this creates a server with no |lowerLayer| and <tt>AFNetworkTransport</tt> as the encapsulation class.
  */
 + (id)server;
 
@@ -83,26 +84,41 @@
 
 /*!
 	@brief
-	Shorthand for <tt>-openSocketsWithSignature:port:addresses:</tt> where you already have an <tt>AFSocketTransportSignature</tt> preconfigured.
+	This method will open IP sockets, the addresses passed in |sockaddrs| should be either (struct sockaddr_in) or (struct sockaddr_in6)
+	
+	@param |signature|
+	Is an in-out parameter allowing you to pass 0 for a kernel allocated port, the variable will contain the actual port opened when this method returns.
  
-	@detail
-	See <tt>-openSocketsWithSignature:port:addresses:</tt>.
+	@result
+	NO if any of the sockets couldn't be created, this will be expanded in future to allow delegate interaction to determine failure
  */
-- (void)openSocketsWithTransportSignature:(const AFNetworkTransportSignature *)signature addresses:(NSSet *)sockAddrs;
+- (BOOL)openInternetSocketsWithTransportSignature:(AFInternetTransportSignature *)signature addresses:(NSSet *)sockaddrs;
 
 /*!
 	@brief
-	Opens an AFSocket for each address and schedules it on the current run-loop.
+	This method opens a UNIX socket at the specified path.
+ 
+	@detail
+	This method makes no provisions for deleting an existing socket should it exist, and will fail if one does.
+ 
+	@param |location|
+	Only file:// URLs are supported.
+ 
+	@result
+	NO if the socket couldn't be created
+ */
+- (BOOL)openPathSocketWithLocation:(NSURL *)location;
+
+/*!
+	@brief
+	This is the call-through method, all the other socket opening methods call down to this one.
  
 	@detail
 	This method is rarely applicable to higher-level servers, therefore this method contains 
 	its own forwarding code (because all instances respond to it) and the sockets are opened
 	on the lowest layer of the stack.
-	
-	@param
-	|port| is passed by reference so that if you pass 0 for a kernel allocated port, the variable will contain the actual port opened when this method returns.
  */
-- (void)openSocketsWithSignature:(const AFNetworkSocketSignature *)signature port:(SInt32 *)port addresses:(NSSet *)sockAddrs;
+- (AFNetworkSocket *)openSocketWithSignature:(AFSocketSignature *)signature address:(NSData *)address;
 
 /*!
 	@brief	This class is used to instantiate a new higher-level layer when the server receives the <tt>-layer:didAcceptConnection:</tt> delegate callback

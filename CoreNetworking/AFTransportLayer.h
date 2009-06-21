@@ -55,8 +55,11 @@
  
 	@detail
 	This is a good candidate for a block callback argument, allowing for asynchronous -open methods and eliminating the delegate callbacks.
+	
+	@result
+	TRUE if no immediate error occured
  */
-- (void)open;
+- (BOOL)open;
 
 /*!
 	@result

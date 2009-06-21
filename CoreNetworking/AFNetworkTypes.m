@@ -11,22 +11,29 @@
 #import <sys/socket.h>
 #import <arpa/inet.h>
 
-const AFNetworkSocketSignature AFNetworkSocketSignatureTCP = {
+// Note: for internetwork sockets, the address family is determined through resolution
+
+const AFSocketSignature AFNetworkSocketSignatureTCP = {
 	.socketType = SOCK_STREAM,
 	.protocol = IPPROTO_TCP
 };
 
-const AFNetworkSocketSignature AFNetworkSocketSignatureUDP = {
+const AFSocketSignature AFNetworkSocketSignatureUDP = {
 	.socketType = SOCK_DGRAM,
 	.protocol = IPPROTO_UDP
 };
 
-const AFNetworkTransportSignature AFNetworkTransportSignatureHTTP = {
+const AFSocketSignature AFLocalSocketSignature = {
+	.socketType = SOCK_STREAM,
+	.protocol = 0,
+};
+
+const AFInternetTransportSignature AFInternetTransportSignatureHTTP = {
 	.type = &AFNetworkSocketSignatureTCP,
 	.port = 80,
 };
 
-const AFNetworkTransportSignature AFNetworkTransportSignatureHTTPS = {
+const AFInternetTransportSignature AFInternetTransportSignatureHTTPS = {
 	.type = &AFNetworkSocketSignatureTCP,
 	.port = 443,
 };

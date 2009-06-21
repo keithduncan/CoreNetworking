@@ -110,7 +110,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	[super dealloc];
 }
 
-- (void)open {
+- (BOOL)open {
 	CFSocketError socketError = kCFSocketError;
 	
 	if (_signature != NULL) {
@@ -118,7 +118,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 		
 		if (socketError == kCFSocketSuccess) {
 			[self.delegate layerDidOpen:self];
-			return;
+			return YES;
 		}
 	}
 	
@@ -131,6 +131,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	
 	NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:errorCode userInfo:userInfo];
 	[self.delegate layer:self didNotOpen:error];
+	return NO;
 }
 
 - (BOOL)isOpen {

@@ -22,8 +22,9 @@
 		_request = (CFHTTPMessageRef)NSMakeCollectable(CFHTTPMessageCreateEmpty(kCFAllocatorDefault, true));
 	} else {
 		_request = (CFHTTPMessageRef)NSMakeCollectable(CFRetain(request));
-		_response = (CFHTTPMessageRef)NSMakeCollectable(CFHTTPMessageCreateEmpty(kCFAllocatorDefault, false));
 	}
+	
+	_response = (CFHTTPMessageRef)NSMakeCollectable(CFHTTPMessageCreateEmpty(kCFAllocatorDefault, false));
 	
 	return self;
 }

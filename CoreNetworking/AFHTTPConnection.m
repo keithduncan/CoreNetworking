@@ -53,9 +53,9 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 	return [AFNetworkTransport class];
 }
 
-+ (const AFNetworkTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
-	if ([scheme compare:AFNetworkSchemeHTTP options:NSCaseInsensitiveSearch] == NSOrderedSame) return &AFNetworkTransportSignatureHTTP;
-	if ([scheme compare:AFNetworkSchemeHTTPS options:NSCaseInsensitiveSearch] == NSOrderedSame) return &AFNetworkTransportSignatureHTTPS;
++ (const AFInternetTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
+	if ([scheme compare:AFNetworkSchemeHTTP options:NSCaseInsensitiveSearch] == NSOrderedSame) return &AFInternetTransportSignatureHTTP;
+	if ([scheme compare:AFNetworkSchemeHTTPS options:NSCaseInsensitiveSearch] == NSOrderedSame) return &AFInternetTransportSignatureHTTPS;
 	return [super transportSignatureForScheme:scheme];
 }
 

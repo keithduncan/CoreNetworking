@@ -9,6 +9,7 @@
 #import "AFConnectionServer.h"
 
 #import <sys/socket.h>
+#import <sys/un.h>
 #import <arpa/inet.h>
 #import <objc/runtime.h>
 
@@ -38,21 +39,9 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 @synthesize clients=_clients;
 @synthesize clientClass=_clientClass;
 
-+ (NSSet *)localhostSocketAddresses {
-	CFHostRef localhost = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost")) autorelease];
-	
-	CFStreamError error;
-	memset(&error, 0, sizeof(CFStreamError));
-	
-	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
-	if (!resolved) return nil;
-	
-	return [NSSet setWithArray:(NSArray *)CFHostGetAddressing(localhost, NULL)];
-}
-
-+ (NSSet *)networkSocketAddresses {
++ (NSSet *)networkInternetSocketAddresses {
 	NSMutableSet *networkAddresses = [NSMutableSet set];
-	NSSet *localhostAddresses = [[self class] localhostSocketAddresses];
+	NSSet *localhostAddresses = [self localhostInternetSocketAddresses];
 	
 	struct ifaddrs *addrs = NULL;
 	int error = getifaddrs(&addrs);
@@ -77,6 +66,18 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	freeifaddrs(addrs);
 	
 	return networkAddresses;
+}
+
++ (NSSet *)localhostInternetSocketAddresses {
+	CFHostRef localhost = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost")) autorelease];
+	
+	CFStreamError error;
+	memset(&error, 0, sizeof(CFStreamError));
+	
+	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
+	if (!resolved) return nil;
+	
+	return [NSSet setWithArray:(NSArray *)CFHostGetAddressing(localhost, NULL)];
 }
 
 + (id)server {
@@ -118,45 +119,78 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[super dealloc];
 }
 
-- (void)openSocketsWithTransportSignature:(const AFNetworkTransportSignature *)signature addresses:(NSSet *)sockAddrs {
-	SInt32 *port = (SInt32 *)&(signature->port);
-	[self openSocketsWithSignature:signature->type port:port addresses:sockAddrs];
-}
-
-- (void)openSocketsWithSignature:(const AFNetworkSocketSignature *)signature port:(SInt32 *)port addresses:(NSSet *)sockAddrs {
-	AFConnectionServer *lowestLayer = self;
-	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
-	self = lowestLayer;
+- (BOOL)openInternetSocketsWithTransportSignature:(AFInternetTransportSignature *)signature addresses:(NSSet *)sockaddrs {
+	BOOL completeSuccess = YES;
 	
-	for (NSData *currentAddrData in sockAddrs) {
-		currentAddrData = [[currentAddrData mutableCopy] autorelease];
-		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddrData))->sin_port = htons(*port);
+	SInt32 *port = (SInt32 *)&(signature->port);
+	
+	for (NSData *currentAddress in sockaddrs) {
+		currentAddress = [[currentAddress mutableCopy] autorelease];
+		
 		// FIXME: #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddress))->sin_port = htons(*port);
 		
-		CFSocketSignature currentSocketSignature = {
-			.protocolFamily = ((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)currentAddrData))->sa_family,
-			.socketType = signature->socketType,
-			.protocol = signature->protocol,
-			.address = (CFDataRef)currentAddrData,
-		};
+		AFNetworkSocket *socket = [self openSocketWithSignature:(AFSocketSignature *)signature->type address:currentAddress];
 		
-		AFNetworkSocket *socket = [[AFNetworkSocket alloc] initWithSignature:&currentSocketSignature callbacks:kCFSocketAcceptCallBack];
-		if (socket == nil) continue;
-		
-		[self.hosts addConnectionsObject:socket];
-		
-		[socket open];
+		if (socket == nil) {
+			completeSuccess = NO;
+			continue;
+		}
 		
 		// Note: get the port after setting the address i.e. opening
 		if (*port == 0) {
 			// Note: extract the *actual* port used and use that for future sockets
-			CFHostRef addrHost = (CFHostRef)[socket peer];
-			CFDataRef actualAddrData = CFArrayGetValueAtIndex(CFHostGetAddressing(addrHost, NULL), 0);
-			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddrData))->sin_port);
+			CFHostRef addressPeer = (CFHostRef)[socket peer];
+			CFDataRef actualAddress = CFArrayGetValueAtIndex(CFHostGetAddressing(addressPeer, NULL), 0);
+			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddress))->sin_port);
 		}
-		
-		[socket release];
 	}
+	
+	return completeSuccess;
+}
+
+- (BOOL)openPathSocketWithLocation:(NSURL *)location {
+	if (![location isFileURL]) {
+		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) is not a file: scheme URL", __PRETTY_FUNCTION__, location, nil];
+		return;
+	}
+	
+	if (strlen([[location path] fileSystemRepresentation]) >= 104) {
+		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) must be < 104 characters including the NULL terminator", __PRETTY_FUNCTION__, [location path], nil];
+		return;
+	}
+	
+	struct sockaddr_un address;
+	bzero(&address, sizeof(struct sockaddr_un));
+	
+	address.sun_family = AF_UNIX;
+	strcpy(address.sun_path, [[location path] fileSystemRepresentation]);
+	address.sun_len = SUN_LEN(&address);
+	
+	return ([self openSocketWithSignature:(AFSocketSignature *)&AFLocalSocketSignature address:[NSData dataWithBytes:&address length:address.sun_len]] != nil);
+}
+
+- (AFNetworkSocket *)openSocketWithSignature:(AFSocketSignature *)signature address:(NSData *)address {
+	AFConnectionServer *lowestLayer = self;
+	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
+	self = lowestLayer;
+	
+	struct sockaddr addr;
+	[address getBytes:&addr length:sizeof(struct sockaddr)];
+	
+	CFSocketSignature socketSignature = {
+		.protocolFamily = addr.sa_family,
+		.address = (CFDataRef)address,
+		
+		.socketType = signature->socketType,
+		.protocol = signature->protocol,
+	};
+	
+	AFNetworkSocket *socket = [[[AFNetworkSocket alloc] initWithSignature:&socketSignature callbacks:kCFSocketAcceptCallBack] autorelease];
+	if (socket == nil) return nil;
+	
+	[self.hosts addConnectionsObject:socket];
+	return ([socket open]) ? socket : nil;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {

@@ -28,7 +28,7 @@
 	return Nil;
 }
 
-+ (const AFNetworkTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
++ (const AFInternetTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
 #warning this method should parse /etc/services to determine the default port mappings
 	[NSException raise:NSInvalidArgumentException format:@"%s, cannot provide an AFNetworkTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme, nil];
 	return NULL;
@@ -56,7 +56,7 @@
 - (id <AFTransportLayer>)initWithURL:(NSURL *)endpoint {
 	CFHostRef host = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)[endpoint host])) autorelease];
 	
-	AFNetworkTransportSignature *transportSignature = [[self class] transportSignatureForScheme:[endpoint scheme]];
+	AFInternetTransportSignature *transportSignature = [[self class] transportSignatureForScheme:[endpoint scheme]];
 	
 	if ([endpoint port] != nil) {
 		transportSignature->port = [[endpoint port] intValue];

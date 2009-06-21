@@ -42,7 +42,7 @@
 	@detail
 	This is used by <tt>-initWithURL:</tt> to determine the socket type and port to use.
  */
-+ (AFNetworkTransportSignature *)transportSignatureForScheme:(NSString *)scheme;
++ (AFInternetTransportSignature *)transportSignatureForScheme:(NSString *)scheme;
 
 /*!
 	@brief
