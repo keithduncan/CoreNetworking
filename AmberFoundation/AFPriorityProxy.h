@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+@class NSMapTable;
+@class NSPointerArray;
+
 /*!
 	@brief
 	This proxy class allows for more complex message routing. It can be used to
