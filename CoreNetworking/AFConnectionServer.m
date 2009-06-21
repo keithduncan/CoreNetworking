@@ -152,12 +152,12 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 - (BOOL)openPathSocketWithLocation:(NSURL *)location {
 	if (![location isFileURL]) {
 		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) is not a file: scheme URL", __PRETTY_FUNCTION__, location, nil];
-		return;
+		return NO;
 	}
 	
 	if (strlen([[location path] fileSystemRepresentation]) >= 104) {
 		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) must be < 104 characters including the NULL terminator", __PRETTY_FUNCTION__, [location path], nil];
-		return;
+		return NO;
 	}
 	
 	struct sockaddr_un address;
