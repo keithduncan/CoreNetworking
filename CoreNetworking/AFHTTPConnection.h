@@ -10,6 +10,10 @@
 
 #import "CoreNetworking/AFConnectionLayer.h"
 
+#if TARGET_OS_IPHONE
+#import <CFNetwork/CFNetwork.h>
+#endif
+
 @class AFPacketQueue;
 
 /*

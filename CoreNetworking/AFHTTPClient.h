@@ -8,6 +8,10 @@
 
 #import "CoreNetworking/AFHTTPConnection.h"
 
+#if TARGET_OS_IPHONE
+#import <CFNetwork/CFNetwork.h>
+#endif
+
 @interface AFHTTPClient : AFHTTPConnection {
 	__strong CFHTTPAuthenticationRef _authentication;
 	NSDictionary *_authenticationCredentials;
