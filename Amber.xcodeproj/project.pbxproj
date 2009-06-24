@@ -216,6 +216,12 @@
 		53B2015F0F6D7739001DC8E7 /* AFPacketWrite.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B2014F0F6D7739001DC8E7 /* AFPacketWrite.m */; };
 		53B201600F6D7739001DC8E7 /* AFNetworkSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53B201610F6D7739001DC8E7 /* AFNetworkSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B201510F6D7739001DC8E7 /* AFNetworkSocket.m */; };
+		53C518630FF2BD8F003BFCE0 /* AFLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C5185F0FF2BD8F003BFCE0 /* AFLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53C518640FF2BD8F003BFCE0 /* AFLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C518600FF2BD8F003BFCE0 /* AFLibrary.m */; };
+		53C518650FF2BD8F003BFCE0 /* AFSourceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C518610FF2BD8F003BFCE0 /* AFSourceNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53C518660FF2BD8F003BFCE0 /* AFSourceNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C518620FF2BD8F003BFCE0 /* AFSourceNode.m */; };
+		53C518670FF2BD8F003BFCE0 /* AFLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C5185F0FF2BD8F003BFCE0 /* AFLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53C518690FF2BD8F003BFCE0 /* AFSourceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C518610FF2BD8F003BFCE0 /* AFSourceNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53D25F670FEAFED200490AA8 /* AFHTTPMessagePacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5354C6980FE661FE0003621D /* AFHTTPMessagePacket.h */; };
 		53D25F680FEAFED200490AA8 /* AFHTTPMessagePacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5354C6990FE661FE0003621D /* AFHTTPMessagePacket.m */; };
 		53D25F690FEAFED600490AA8 /* AFHTTPMessagePacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5354C6980FE661FE0003621D /* AFHTTPMessagePacket.h */; };
@@ -433,6 +439,10 @@
 		53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkSocket.h; path = CoreNetworking/AFNetworkSocket.h; sourceTree = "<group>"; };
 		53B201510F6D7739001DC8E7 /* AFNetworkSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkSocket.m; path = CoreNetworking/AFNetworkSocket.m; sourceTree = "<group>"; };
 		53BEF6A10F5B6A2700063B8D /* libCoreNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCoreNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		53C5185F0FF2BD8F003BFCE0 /* AFLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFLibrary.h; path = AmberKit/AFLibrary.h; sourceTree = "<group>"; };
+		53C518600FF2BD8F003BFCE0 /* AFLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFLibrary.m; path = AmberKit/AFLibrary.m; sourceTree = "<group>"; };
+		53C518610FF2BD8F003BFCE0 /* AFSourceNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFSourceNode.h; path = AmberKit/AFSourceNode.h; sourceTree = "<group>"; };
+		53C518620FF2BD8F003BFCE0 /* AFSourceNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFSourceNode.m; path = AmberKit/AFSourceNode.m; sourceTree = "<group>"; };
 		53C949B60E17CD7700E21E15 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		53EE97470F190070008AD8C0 /* AmberKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmberKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53EE97480F190070008AD8C0 /* AmberKit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AmberKit-Info.plist"; sourceTree = "<group>"; };
@@ -886,11 +896,23 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		53C5184E0FF2B5A4003BFCE0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				53C5185F0FF2BD8F003BFCE0 /* AFLibrary.h */,
+				53C518600FF2BD8F003BFCE0 /* AFLibrary.m */,
+				53C518610FF2BD8F003BFCE0 /* AFSourceNode.h */,
+				53C518620FF2BD8F003BFCE0 /* AFSourceNode.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		53EE97620F1900A0008AD8C0 /* AmberKit */ = {
 			isa = PBXGroup;
 			children = (
 				539BFE030F1FE2AE003C1148 /* AmberKit.h */,
 				5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */,
+				53C5184E0FF2B5A4003BFCE0 /* Model */,
 				53692CD00F1B8F2F0051C367 /* Additions */,
 				537917990F7FC8220064EB92 /* Value Transformers */,
 				53692A7A0F1B7EF90051C367 /* Externals */,
@@ -974,6 +996,8 @@
 				5379178C0F7FC4C60064EB92 /* NSTreeNode+Additions.h in Headers */,
 				538AD2D50F8A81780031CFF7 /* AmberKit+Additions.h in Headers */,
 				533F5D470FBF622700169C14 /* NSControl+Additions.h in Headers */,
+				53C518630FF2BD8F003BFCE0 /* AFLibrary.h in Headers */,
+				53C518650FF2BD8F003BFCE0 /* AFSourceNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1065,6 +1089,8 @@
 				533F5C510FBF565900169C14 /* AFTextFieldCell.h in Headers */,
 				533F5D490FBF622700169C14 /* NSControl+Additions.h in Headers */,
 				53F6E3770FCB3B350009FF33 /* AFKitConstants.h in Headers */,
+				53C518670FF2BD8F003BFCE0 /* AFLibrary.h in Headers */,
+				53C518690FF2BD8F003BFCE0 /* AFSourceNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1307,6 +1333,8 @@
 				5379178B0F7FC4C50064EB92 /* NSTreeController+Additions.m in Sources */,
 				5379178D0F7FC4C60064EB92 /* NSTreeNode+Additions.m in Sources */,
 				533F5D480FBF622700169C14 /* NSControl+Additions.m in Sources */,
+				53C518640FF2BD8F003BFCE0 /* AFLibrary.m in Sources */,
+				53C518660FF2BD8F003BFCE0 /* AFSourceNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
