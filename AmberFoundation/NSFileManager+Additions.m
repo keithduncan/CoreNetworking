@@ -14,10 +14,6 @@
 
 @implementation NSFileManager (AFVerificationAdditions)
 
-- (BOOL)validatePath:(NSString *)path withMD5Hash:(NSString *)hash {
-	return [self validateURL:[NSURL fileURLWithPath:path] withMD5Hash:[NSData dataWithHexString:hash]];
-}
-
 - (BOOL)validateURL:(NSURL *)location withMD5Hash:(NSData *)hash {
 	NSData *data = [NSData dataWithContentsOfURL:location];
 	if (data == nil) return NO;
