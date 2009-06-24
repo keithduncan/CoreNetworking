@@ -12,6 +12,6 @@
 
 #define NSSTRING_CONTEXT(var) static NSString *var = @#var
 
-NS_INLINE BOOL AFFileExistsAtPath(NSString *path) {
-	return (path != nil && ![path isEmpty] && [[NSFileManager defaultManager] fileExistsAtPath:[path stringByExpandingTildeInPath]]);
+NS_INLINE BOOL AFFileExistsAtLocation(NSURL *location) {
+	return (location != nil && ![[location path] isEmpty] && [[NSFileManager defaultManager] fileExistsAtPath:[location path]]);
 }
