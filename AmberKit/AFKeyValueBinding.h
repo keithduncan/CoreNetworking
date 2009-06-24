@@ -76,18 +76,16 @@ extern NSString *const AFUnboundValueKey;
  */
 - (NSString *)keyPathForBinding:(NSString *)binding;
 
-#if !TARGET_OS_IPHONE
 /*!
 	@brief
-	This method first checks the NSValueTransformerBindingOption key for a provided instance,
-	secondly it attempts to retrieve one from <tt>+[NSValueTransformer valueTransformerForName:]</tt>
-	using NSValueTransformerNameBindingOption. If neither succeed it returns nil.
+	This method first checks the NSValueTransformerBindingOption key for a provided instance.
+	Secondly it attempts to retrieve one from <tt>+[NSValueTransformer valueTransformerForName:]</tt> using NSValueTransformerNameBindingOption.
+	If neither succeed it returns nil.
  
 	@result
-	The value transformer specified in the NSOptionsKey for the binding.
+	The value transformer specified in the NSOptionsKey for the binding or nil.
  */
 - (NSValueTransformer *)valueTransformerForBinding:(NSString *)binding;
-#endif
 
 @end
 

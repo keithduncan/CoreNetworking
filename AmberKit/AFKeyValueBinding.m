@@ -24,19 +24,15 @@ NSString *const AFUnboundValueKey = @"AFUnboundValue";
 	
 	id value = [controller valueForKeyPath:[self keyPathForBinding:binding]];
 	
-#if !TARGET_OS_IPHONE
 	NSValueTransformer *transformer = [self valueTransformerForBinding:binding];
 	if (transformer != nil) value = [transformer transformedValue:value];
-#endif
 	
 	return value;
 }
 
 - (void)setValue:(id)value forBinding:(NSString *)binding {
-#if !TARGET_OS_IPHONE
 	NSValueTransformer *transformer = [self valueTransformerForBinding:binding];
 	if (transformer != nil && [[transformer class] allowsReverseTransformation]) value = [transformer reverseTransformedValue:value];
-#endif
 	
 	id controller = [self controllerForBinding:binding];
 	
@@ -65,14 +61,12 @@ NSString *const AFUnboundValueKey = @"AFUnboundValue";
 #endif
 }
 
-#if !TARGET_OS_IPHONE
 - (NSValueTransformer *)valueTransformerForBinding:(NSString *)binding {
 	NSDictionary *bindingOptions = [[self infoForBinding:binding] objectForKey:NSOptionsKey];
 	
 	NSValueTransformer *valueTransformer = [bindingOptions objectForKey:NSValueTransformerBindingOption];
 	return (valueTransformer != nil ? valueTransformer : [NSValueTransformer valueTransformerForName:[bindingOptions objectForKey:NSValueTransformerNameBindingOption]]);
 }
-#endif
 
 @end
 
