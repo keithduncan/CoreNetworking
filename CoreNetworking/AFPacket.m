@@ -32,7 +32,7 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 }
 
 - (void)dealloc {
-	[self cancelTimeout];
+	[self stopTimeout];
 	
 	[super dealloc];
 }
@@ -66,7 +66,7 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 	timeoutTimer = [[NSTimer scheduledTimerWithTimeInterval:_duration target:self selector:@selector(_timeout:) userInfo:nil repeats:NO] retain];
 }
 
-- (void)cancelTimeout {
+- (void)stopTimeout {
 	[timeoutTimer invalidate];
 	[timeoutTimer release];
 }

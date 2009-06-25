@@ -69,7 +69,7 @@ extern NSString *const AFPacketTimeoutNotificationName;
 	@brief
 	This method simply balances <tt>-startTimeout</tt>
  */
-- (void)cancelTimeout;
+- (void)stopTimeout;
 
 @end
 
