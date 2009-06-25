@@ -249,6 +249,10 @@
 		53FE19040F856A3200980D32 /* AFPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FE19020F856A3200980D32 /* AFPacketQueue.m */; };
 		53FE19050F856A3200980D32 /* AFPacketQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FE19010F856A3200980D32 /* AFPacketQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53FE19060F856A3200980D32 /* AFPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FE19020F856A3200980D32 /* AFPacketQueue.m */; };
+		53FE80500FF3F12C000BC998 /* AFStreamPacketQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FE804E0FF3F12C000BC998 /* AFStreamPacketQueue.h */; };
+		53FE80510FF3F12C000BC998 /* AFStreamPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FE804F0FF3F12C000BC998 /* AFStreamPacketQueue.m */; };
+		53FE80520FF3F12C000BC998 /* AFStreamPacketQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53FE804E0FF3F12C000BC998 /* AFStreamPacketQueue.h */; };
+		53FE80530FF3F12C000BC998 /* AFStreamPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FE804F0FF3F12C000BC998 /* AFStreamPacketQueue.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -452,6 +456,8 @@
 		53F6E3760FCB3B350009FF33 /* AFKitConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFKitConstants.m; path = AmberKit/AFKitConstants.m; sourceTree = "<group>"; };
 		53FE19010F856A3200980D32 /* AFPacketQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFPacketQueue.h; path = CoreNetworking/AFPacketQueue.h; sourceTree = "<group>"; };
 		53FE19020F856A3200980D32 /* AFPacketQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFPacketQueue.m; path = CoreNetworking/AFPacketQueue.m; sourceTree = "<group>"; };
+		53FE804E0FF3F12C000BC998 /* AFStreamPacketQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFStreamPacketQueue.h; path = CoreNetworking/AFStreamPacketQueue.h; sourceTree = "<group>"; };
+		53FE804F0FF3F12C000BC998 /* AFStreamPacketQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFStreamPacketQueue.m; path = CoreNetworking/AFStreamPacketQueue.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -860,6 +866,8 @@
 				53B2014F0F6D7739001DC8E7 /* AFPacketWrite.m */,
 				53FE19010F856A3200980D32 /* AFPacketQueue.h */,
 				53FE19020F856A3200980D32 /* AFPacketQueue.m */,
+				53FE804E0FF3F12C000BC998 /* AFStreamPacketQueue.h */,
+				53FE804F0FF3F12C000BC998 /* AFStreamPacketQueue.m */,
 			);
 			name = Packets;
 			sourceTree = "<group>";
@@ -981,6 +989,7 @@
 				53151A440FC49A300026E2F1 /* AFHTTPTransaction.h in Headers */,
 				533508260FD6FC4E004FFF97 /* AFHTTPClient.h in Headers */,
 				53D25F670FEAFED200490AA8 /* AFHTTPMessagePacket.h in Headers */,
+				53FE80520FF3F12C000BC998 /* AFStreamPacketQueue.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1057,6 +1066,7 @@
 				53151A470FC49A350026E2F1 /* AFHTTPTransaction.h in Headers */,
 				533508280FD6FC4E004FFF97 /* AFHTTPClient.h in Headers */,
 				53D25F690FEAFED600490AA8 /* AFHTTPMessagePacket.h in Headers */,
+				53FE80500FF3F12C000BC998 /* AFStreamPacketQueue.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1319,6 +1329,7 @@
 				53151A450FC49A300026E2F1 /* AFHTTPTransaction.m in Sources */,
 				533508270FD6FC4E004FFF97 /* AFHTTPClient.m in Sources */,
 				53D25F680FEAFED200490AA8 /* AFHTTPMessagePacket.m in Sources */,
+				53FE80530FF3F12C000BC998 /* AFStreamPacketQueue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1389,6 +1400,7 @@
 				53151A460FC49A340026E2F1 /* AFHTTPTransaction.m in Sources */,
 				533508290FD6FC4E004FFF97 /* AFHTTPClient.m in Sources */,
 				53D25F6A0FEAFED700490AA8 /* AFHTTPMessagePacket.m in Sources */,
+				53FE80510FF3F12C000BC998 /* AFStreamPacketQueue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
