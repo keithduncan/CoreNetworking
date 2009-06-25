@@ -58,7 +58,7 @@
 	If you use this method, you are required to override <tt>+transportSignatureForScheme:</tt> to provide the <tt>AFNetworkSocketSignature</tt> even if a port number is provided in the URL.
 	
 	@detail
-	If the URL provides a port number that one is used instead of the scheme-implied port.
+	If the URL provides a port number that one is used instead of the scheme-implied port. Scheme implied ports are looked up in /etc/services.
  */
 - (id <AFTransportLayer>)initWithURL:(NSURL *)endpoint;
 
