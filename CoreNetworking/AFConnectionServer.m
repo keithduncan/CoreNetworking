@@ -39,9 +39,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 @synthesize clients=_clients;
 @synthesize clientClass=_clientClass;
 
-+ (NSSet *)networkInternetSocketAddresses {
++ (NSSet *)allInternetSocketAddresses {
 	NSMutableSet *networkAddresses = [NSMutableSet set];
-	NSSet *localhostAddresses = [self localhostInternetSocketAddresses];
 	
 	struct ifaddrs *addrs = NULL;
 	int error = getifaddrs(&addrs);
@@ -51,13 +50,6 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	for (; currentInterfaceAddress != NULL; currentInterfaceAddress = currentInterfaceAddress->ifa_next) {
 		struct sockaddr *currentAddr = currentInterfaceAddress->ifa_addr;
 		if (currentAddr->sa_family == AF_LINK) continue;
-		
-		BOOL shouldSkipNetworkAddress = NO;
-		for (NSData *currentLocalhostAddress in localhostAddresses) {
-			struct sockaddr *currentLocalhostAddr = (struct sockaddr *)[currentLocalhostAddress bytes];
-			shouldSkipNetworkAddress = sockaddr_compare(currentAddr, currentLocalhostAddr);
-			if (shouldSkipNetworkAddress) break;
-		} if (shouldSkipNetworkAddress) continue;
 		
 		NSData *currentNetworkAddress = [NSData dataWithBytes:((void *)currentAddr) length:(currentAddr->sa_len)];
 		[networkAddresses addObject:currentNetworkAddress];
@@ -120,9 +112,11 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (BOOL)openInternetSocketsWithTransportSignature:(AFInternetTransportSignature *)signature addresses:(NSSet *)sockaddrs {
-	BOOL completeSuccess = YES;
+	return [self openInternetSocketsWithSocketSignature:signature->type port:&signature->port addresses:sockaddrs];
+}
 	
-	SInt32 *port = (SInt32 *)&(signature->port);
+- (BOOL)openInternetSocketsWithSocketSignature:(const AFSocketSignature *)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs {
+	BOOL completeSuccess = YES;
 	
 	for (NSData *currentAddress in sockaddrs) {
 		currentAddress = [[currentAddress mutableCopy] autorelease];
@@ -130,7 +124,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 		// FIXME: #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddress))->sin_port = htons(*port);
 		
-		AFNetworkSocket *socket = [self openSocketWithSignature:(AFSocketSignature *)signature->type address:currentAddress];
+		AFNetworkSocket *socket = [self openSocketWithSignature:signature address:currentAddress];
 		
 		if (socket == nil) {
 			completeSuccess = NO;
@@ -170,7 +164,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	return ([self openSocketWithSignature:(AFSocketSignature *)&AFLocalSocketSignature address:[NSData dataWithBytes:&address length:address.sun_len]] != nil);
 }
 
-- (AFNetworkSocket *)openSocketWithSignature:(AFSocketSignature *)signature address:(NSData *)address {
+- (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature *)signature address:(NSData *)address {
 	AFConnectionServer *lowestLayer = self;
 	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
 	self = lowestLayer;
@@ -179,11 +173,11 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	[address getBytes:&addr length:sizeof(struct sockaddr)];
 	
 	CFSocketSignature socketSignature = {
-		.protocolFamily = addr.sa_family,
-		.address = (CFDataRef)address,
-		
 		.socketType = signature->socketType,
 		.protocol = signature->protocol,
+		
+		.protocolFamily = addr.sa_family,
+		.address = (CFDataRef)address,
 	};
 	
 	AFNetworkSocket *socket = [[[AFNetworkSocket alloc] initWithSignature:&socketSignature callbacks:kCFSocketAcceptCallBack] autorelease];

@@ -41,7 +41,7 @@
 	@result
 	All the network socket addresses, these may be accessable from other network clients (ignoring firewall restrictions).
  */
-+ (NSSet *)networkInternetSocketAddresses;
++ (NSSet *)allInternetSocketAddresses;
 
 /*!
 	@detail
@@ -84,15 +84,21 @@
 
 /*!
 	@brief
-	This method will open IP sockets, the addresses passed in |sockaddrs| should be either (struct sockaddr_in) or (struct sockaddr_in6)
+	See <tt>-openInternetSocketsWithSocketSignature:port:addresses:</tt>.
+ */
+- (BOOL)openInternetSocketsWithTransportSignature:(const AFInternetTransportSignature *)signature addresses:(NSSet *)sockaddrs;
+
+/*!
+	@brief
+	This method will open IP sockets, the addresses passed in |sockaddrs| should be either (struct sockaddr_in) or (struct sockaddr_in6) or another future IP socket address, so long as there's a sixteen bit port number at an offset of (((uint8_t)(struct sockaddr_sa *))+16)
 	
-	@param |signature|
-	Is an in-out parameter allowing you to pass 0 for a kernel allocated port, the variable will contain the actual port opened when this method returns.
+	@param |port|
+	This is an in-out parameter, passing zero in by reference will have the kernel allocate a port number, the location you provide will contain that number on return
  
 	@result
-	NO if any of the sockets couldn't be created, this will be expanded in future to allow delegate interaction to determine failure
+	NO if any of the sockets couldn't be created, this will be expanded in future to allow delegate interaction to determine failure.
  */
-- (BOOL)openInternetSocketsWithTransportSignature:(AFInternetTransportSignature *)signature addresses:(NSSet *)sockaddrs;
+- (BOOL)openInternetSocketsWithSocketSignature:(const AFSocketSignature *)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs;
 
 /*!
 	@brief
@@ -118,7 +124,7 @@
 	its own forwarding code (because all instances respond to it) and the sockets are opened
 	on the lowest layer of the stack.
  */
-- (AFNetworkSocket *)openSocketWithSignature:(AFSocketSignature *)signature address:(NSData *)address;
+- (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature *)signature address:(NSData *)address;
 
 /*!
 	@brief	This class is used to instantiate a new higher-level layer when the server receives the <tt>-layer:didAcceptConnection:</tt> delegate callback
