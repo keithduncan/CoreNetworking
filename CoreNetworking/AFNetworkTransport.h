@@ -17,15 +17,9 @@
 @protocol AFNetworkTransportDataDelegate;
 @protocol AFNetworkTransportControlDelegate;
 
-@class AFPacketQueue;
+@class AFStreamPacketQueue;
 @class AFPacketWrite;
 @class AFPacketRead;
-
-struct _AFNetworkTransportStreamInfo {
-	__strong id stream;
-	NSUInteger flags;
-	AFPacketQueue *queue;
-};
 
 /*!
     @brief
@@ -48,8 +42,8 @@ struct _AFNetworkTransportStreamInfo {
 		struct AFNetworkTransportPeerSignature _hostDestination;
 	} _peer;
 	
-	struct _AFNetworkTransportStreamInfo _writeInfo;
-	struct _AFNetworkTransportStreamInfo _readInfo;
+	AFStreamPacketQueue *_writeQueue;
+	AFStreamPacketQueue *_readQueue;
 }
 
 @property (assign) id <AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate> delegate;
