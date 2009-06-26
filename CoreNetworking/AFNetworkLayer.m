@@ -96,16 +96,12 @@
 }
 
 - (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {	
-	id delegate = nil;
-	object_getInstanceVariable(self, "_delegate", (void **)&delegate);
-	// Note: this intentionally doesn't use the accessor, I accidentally changed it before and have left this comment here to warn me off next time.
-	if (delegate == nil) return proxy;
-	
+	if (_delegate == nil) return proxy;
 	
 	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
 	
-	if ([delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)delegate delegateProxy:proxy];
-	[proxy insertTarget:delegate atPriority:0];
+	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
+	[proxy insertTarget:_delegate];
 	
 	return proxy;
 }

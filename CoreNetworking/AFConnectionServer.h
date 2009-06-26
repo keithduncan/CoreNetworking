@@ -142,7 +142,7 @@
 
 /*!
 	@brief
-	This method uses the <tt>+clientClass</tt>.
+	This method uses the <tt>+clientClass</tt>. This returns an object with +1 retain count, don't return an autoreleased object.
  
 	@detail
 	Override point, if you need to customize your application layer before it is added to the connection pool, call super for creation and setup first

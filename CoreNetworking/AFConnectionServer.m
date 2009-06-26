@@ -196,7 +196,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)newLayer {
-	id <AFConnectionLayer> connection = [[[[self clientClass] alloc] initWithLowerLayer:newLayer] autorelease];
+	id <AFConnectionLayer> connection = [[[self clientClass] alloc] initWithLowerLayer:newLayer];
 	[connection setDelegate:(id)self];
 	return connection;
 }
@@ -209,7 +209,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 		if (![self.delegate server:self shouldAcceptConnection:newLayer fromHost:host]) return;
 	}
 	
-	id <AFConnectionLayer> newConnection = [self newApplicationLayerForNetworkLayer:newLayer];
+	id <AFConnectionLayer> newConnection = [[self newApplicationLayerForNetworkLayer:newLayer] autorelease];
 	
 	if ([self.hosts.connections containsObject:layer])
 		[self.clients addConnectionsObject:newConnection];
