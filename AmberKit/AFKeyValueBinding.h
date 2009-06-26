@@ -7,18 +7,26 @@
 //
 
 #if TARGET_OS_IPHONE
-
 #import <Foundation/Foundation.h>
-
-extern NSString *const AFObservedKeyPathKey;
-extern NSString *const AFObservedObjectKey;
-extern NSString *const AFOptionsKey;
-
 #else
-
 #import <Cocoa/Cocoa.h>
-
 #endif
+
+#if !TARGET_OS_IPHONE
+#define AFObservedKeyPathKey NSObservedKeyPathKey
+#define AFObservedObjectKey NSObservedObjectKey
+#define AFOptionsKey NSOptionsKey
+
+#define AFValueTransformerBindingOption NSValueTransformerBindingOption
+#define AFValueTransformerNameBindingOption NSValueTransformerNameBindingOption
+#endif
+
+extern NSString *AFObservedKeyPathKey;
+extern NSString *AFObservedObjectKey;
+extern NSString *AFOptionsKey;
+
+extern NSString *AFValueTransformerBindingOption;
+extern NSString *AFValueTransformerNameBindingOption;
 
 /*!
 	@header

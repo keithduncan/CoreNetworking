@@ -9,9 +9,14 @@
 #import "AFKeyValueBinding.h"
 
 #if TARGET_OS_IPHONE
-NSString *const AFObservedKeyPathKey = @"keyPath";
-NSString *const AFObservedObjectKey = @"object";
-NSString *const AFOptionsKey = @"options";
+
+NSString *AFObservedKeyPathKey = @"keyPath";
+NSString *AFObservedObjectKey = @"object";
+NSString *AFOptionsKey = @"options";
+
+NSString *AFValueTransformerBindingOption = @"valueTransformer";
+NSString *AFValueTransformerNameBindingOption = @"valueTransformerName";
+
 #endif
 
 NSString *const AFUnboundValueKey = @"AFUnboundValue";
@@ -46,26 +51,18 @@ NSString *const AFUnboundValueKey = @"AFUnboundValue";
 }
 
 - (id)controllerForBinding:(NSString *)binding {
-#if TARGET_OS_IPHONE
 	return [[(id <AFKeyValueBinding>)self infoForBinding:binding] objectForKey:AFObservedObjectKey];
-#else
-	return [[(id <AFKeyValueBinding>)self infoForBinding:binding] objectForKey:NSObservedObjectKey];
-#endif
 }
 
 - (NSString *)keyPathForBinding:(NSString *)binding {
-#if TARGET_OS_IPHONE
 	return [[(id <AFKeyValueBinding>)self infoForBinding:binding] objectForKey:AFObservedKeyPathKey];
-#else
-	return [[(id <AFKeyValueBinding>)self infoForBinding:binding] objectForKey:NSObservedKeyPathKey];
-#endif
 }
 
 - (NSValueTransformer *)valueTransformerForBinding:(NSString *)binding {
-	NSDictionary *bindingOptions = [[self infoForBinding:binding] objectForKey:NSOptionsKey];
+	NSDictionary *bindingOptions = [[self infoForBinding:binding] objectForKey:AFOptionsKey];
 	
-	NSValueTransformer *valueTransformer = [bindingOptions objectForKey:NSValueTransformerBindingOption];
-	return (valueTransformer != nil ? valueTransformer : [NSValueTransformer valueTransformerForName:[bindingOptions objectForKey:NSValueTransformerNameBindingOption]]);
+	NSValueTransformer *valueTransformer = [bindingOptions objectForKey:AFValueTransformerBindingOption];
+	return (valueTransformer != nil ? valueTransformer : [NSValueTransformer valueTransformerForName:[bindingOptions objectForKey:AFValueTransformerNameBindingOption]]);
 }
 
 @end
