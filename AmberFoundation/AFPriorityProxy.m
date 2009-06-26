@@ -11,7 +11,7 @@
 @implementation AFPriorityProxy
 
 - (id)init {
-	priorityMap = [[NSMapTable mapTableWithWeakToStrongObjects] retain];
+	dispatchOrder = [[NSMutableArray alloc] init];
 	
 	dispatchMap = [[NSMapTable alloc] initWithKeyOptions:(NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality) valueOptions:(NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality) capacity:/* Default CF collection capacity */ 3];
 	
@@ -19,9 +19,7 @@
 }
 
 - (void)dealloc {
-	[priorityMap release];
 	[dispatchOrder release];
-	
 	[dispatchMap release];
 	
 	[super dealloc];
@@ -31,60 +29,26 @@
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	
 	[description appendString:@" {"];
-	
-	[description appendFormat:@"\n\tDispatch Order: %@", [dispatchOrder allObjects], nil];
-	
+	[description appendFormat:@"\n\tDispatch Order: %@", dispatchOrder, nil];
 	[description appendString:@"\n}"];
 	
 	return description;
 }
 
 - (BOOL)respondsToSelector:(SEL)selector {
-	for (id currentDispatchTarget in dispatchOrder) {
-		if (![currentDispatchTarget respondsToSelector:selector]) continue;
-		
-		return YES;
-	}
+	for (id currentDispatchTarget in dispatchOrder)
+		if ([currentDispatchTarget respondsToSelector:selector])
+			return YES;
 	
 	return NO;
 }
 
-/*!
-	@brief	This increments the priority value of each target by one
- */
-- (void)_slidePriorityAtIndex:(NSUInteger)index {
-	NSMapTable *newPriorityMap = [[NSMapTable mapTableWithWeakToStrongObjects] retain];
-	
-	for (id currentPriorityTarget in priorityMap) {
-		NSNumber *currentPriorityIndex = NSMapGet(priorityMap, currentPriorityTarget);
-		if ([currentPriorityIndex unsignedIntegerValue] < index) continue;
-		
-		NSMapInsert(newPriorityMap, currentPriorityTarget, [NSNumber numberWithUnsignedInteger:([currentPriorityIndex unsignedIntegerValue]+1)]);
-	}
-	
-	[priorityMap release];
-	priorityMap = newPriorityMap;
+- (void)insertTarget:(id)sender {
+	[dispatchOrder insertObject:sender atIndex:0];
 }
 
-/*!
-	@brief	This regenerates the relative priority based dispatch table
- */
-- (void)_reorderDispatchTable {
-	[dispatchOrder release];
-	dispatchOrder = [[NSPointerArray pointerArrayWithWeakObjects] retain];
-	[dispatchOrder setCount:[priorityMap count]];
-	
-	for (id currentPriorityKey in priorityMap) {
-		[dispatchOrder replacePointerAtIndex:[(NSNumber *)NSMapGet(priorityMap, currentPriorityKey) unsignedIntegerValue] withPointer:currentPriorityKey];
-	}
-}
-
-- (void)insertTarget:(id)target atPriority:(NSUInteger)index {
-	if (target == nil) return;
-	
-	[self _slidePriorityAtIndex:index];
-	NSMapInsert(priorityMap, target, [NSNumber numberWithUnsignedInteger:index]);
-	[self _reorderDispatchTable];
+- (void)appendTarget:(id)sender {
+	[dispatchOrder addObject:sender];
 }
 
 - (void)_setDispatchedTargets:(NSMutableArray *)targets forSelector:(SEL)selector {
@@ -108,23 +72,15 @@
 - (id)_dispatchTargetForSelector:(SEL)selector {
 	id dispatchTarget = nil;
 	for (NSUInteger index = 0; index < [dispatchOrder count]; index++) {
-		id currentDispatchTarget = [dispatchOrder pointerAtIndex:index];
+		id currentDispatchTarget = [dispatchOrder objectAtIndex:index];
+		
 		if (![currentDispatchTarget respondsToSelector:selector]) continue;
+		if ([[self _dispatchedTargetsForSelector:selector] containsObject:currentDispatchTarget]) continue;
 		
-		BOOL currentDispatchTargetBeenMessaged = NO;
-		for (id currentDispatchedTarget in [self _dispatchedTargetsForSelector:selector]) {
-			if (currentDispatchedTarget == nil) continue;
-			
-			currentDispatchTargetBeenMessaged = (currentDispatchTarget == currentDispatchedTarget);
-			if (!currentDispatchTargetBeenMessaged) break;
-		}
-		if (currentDispatchTargetBeenMessaged) continue;
-		
-		dispatchTarget = currentDispatchTarget;
-		break;
+		return currentDispatchTarget;
 	}
 	
-	return dispatchTarget;
+	return nil;
 }
 
 - (void)_addDispatchedTarget:(id)target forSelector:(SEL)selector {
@@ -140,7 +96,11 @@
 - (void)forwardInvocation:(NSInvocation *)invocation {
 	SEL selector = [invocation selector];
 	id dispatchTarget = [self _dispatchTargetForSelector:selector];
-	if (dispatchTarget == nil) return; // Note: this probably won't be nil as the -methodSignatureForSelector: caller will crash if it returns nil
+	
+	if (dispatchTarget == nil) {
+		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot dispatch to a nil target", __PRETTY_FUNCTION__, nil];
+		return;
+	}
 	
 	[self _addDispatchedTarget:dispatchTarget forSelector:selector];
 	[invocation invokeWithTarget:dispatchTarget];
