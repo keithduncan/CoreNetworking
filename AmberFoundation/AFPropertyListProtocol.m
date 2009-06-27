@@ -54,8 +54,9 @@ id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresent
 
 - (id)initWithPropertyListRepresentation:(id)propertyListRepresentation {
 	[self autorelease];
+	self = nil;
 	
-	NSMutableArray *newArray = [NSMutableArray arrayWithCapacity:[propertyListRepresentation count]];
+	NSMutableArray *newArray = [[NSMutableArray alloc] initWithCapacity:[propertyListRepresentation count]];
 	
 	for (id currentObject in propertyListRepresentation) {
 		if (!isPlistRepresentation(currentObject)) {
@@ -67,8 +68,7 @@ id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresent
 		[newArray addObject:newObject];
 	}
 	
-	// Note: this allows us to return a subclass
-	return [[[self class] alloc] initWithArray:newArray];
+	return newArray;
 }
 
 - (id)propertyListRepresentation {
@@ -93,8 +93,9 @@ id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresent
 
 - (id)initWithPropertyListRepresentation:(id)propertyListRepresentation {
 	[self autorelease];
+	self = nil;
 	
-	NSMutableDictionary *newDictionary = [NSMutableDictionary dictionaryWithCapacity:[propertyListRepresentation count]];
+	NSMutableDictionary *newDictionary = [[NSMutableDictionary alloc] initWithCapacity:[propertyListRepresentation count]];
 	
 	for (NSString *currentKey in propertyListRepresentation) {
 		id currentObject = [propertyListRepresentation objectForKey:currentKey];
@@ -107,8 +108,7 @@ id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresent
 		[newDictionary setObject:AFPropertyListRepresentationUnarchive(currentObject) forKey:currentKey];
 	}
 	
-	// Note: this allows us to return a subclass
-	return [[[self class] alloc] initWithDictionary:newDictionary];
+	return newDictionary;
 }
 
 - (id)propertyListRepresentation {	
