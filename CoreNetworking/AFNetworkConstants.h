@@ -25,8 +25,8 @@ enum {
 	AFNetworkingErrorNone					= 0,
 	
 	// AFNetworkSocketError					[100, 299]
-	AFSocketErrorUnknown					= 101,
-	AFSocketErrorTimeout					= 102,
+	AFNetworkSocketErrorUnknown				= 101,
+	AFNetworkSocketErrorTimeout				= 102,
 	
 	// AFNetworkTransportError				[300, 499]
 	AFNetworkTransportErrorUnknown			= 301,

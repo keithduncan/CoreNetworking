@@ -125,8 +125,8 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 							  NSLocalizedStringWithDefaultValue(@"AFSocketError", @"AFSocket", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Couldn't open socket.", nil), NSLocalizedDescriptionKey,
 							  nil];
 	
-	AFNetworkingErrorCode errorCode = AFSocketErrorUnknown;
-	if (socketError == kCFSocketTimeout) errorCode = AFSocketErrorTimeout;
+	AFNetworkingErrorCode errorCode = AFNetworkSocketErrorUnknown;
+	if (socketError == kCFSocketTimeout) errorCode = AFNetworkSocketErrorTimeout;
 	
 	NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:errorCode userInfo:userInfo];
 	[self.delegate layer:self didNotOpen:error];
