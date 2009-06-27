@@ -29,10 +29,10 @@ enum {
 	AFSocketErrorTimeout					= 102,
 	
 	// AFNetworkTransportError				[300, 499]
-	AFSocketConnectionErrorUnknown			= 301,
-	AFSocketConnectionReachabilityError		= 302,
-	AFSocketConnectionReadTimeoutError		= 304,
-	AFSocketConnectionWriteTimeoutError		= 305,
-	AFSocketConnectionTLSError				= 306,
+	AFNetworkTransportErrorUnknown			= 301,
+	AFNetworkTransportReachabilityError		= 302,
+	AFNetworkTransportReadTimeoutError		= 304,
+	AFNetworkTransportWriteTimeoutError		= 305,
+	AFNetworkTransportTLSError				= 306,
 };
 typedef NSInteger AFNetworkingErrorCode;

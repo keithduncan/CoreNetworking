@@ -326,7 +326,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 									  (error.domain != 0 ? AFErrorFromCFStreamError(error) : nil), NSUnderlyingErrorKey, // Note: this key-value pair must come last, it contains a conditional nil sentinel
 									  nil];
 			
-			NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionReachabilityError userInfo:userInfo];
+			NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFNetworkTransportReachabilityError userInfo:userInfo];
 			[self.delegate layer:self didNotOpen:error];
 			
 			return NO;
@@ -425,7 +425,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 								  NSLocalizedStringWithDefaultValue(@"AFSocketConnectionTLSError", @"AFSocketConnection", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Couldn't start TLS, the connection will remain unsecure.", nil), NSLocalizedDescriptionKey,
 								  nil];
 		
-		NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionTLSError userInfo:userInfo];
+		NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFNetworkTransportTLSError userInfo:userInfo];
 		[self.delegate layer:self didNotStartTLS:error];
 	}
 }
@@ -635,13 +635,13 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 							  NSLocalizedStringWithDefaultValue(@"AFSocketConnectionReadTimeoutError", @"AFSocketConnection", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Read operation timeout.", nil), NSLocalizedDescriptionKey,
 							  nil];
 		
-		error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionReadTimeoutError userInfo:info];
+		error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFNetworkTransportReadTimeoutError userInfo:info];
 	} else if ([[notification object] isEqual:[self.writeQueue currentPacket]]) {
 		NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
 							  NSLocalizedStringWithDefaultValue(@"AFSocketConnectionWriteTimeoutError", @"AFSocketConnection", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Write operation timeout.", nil), NSLocalizedDescriptionKey,
 							  nil];
 		
-		error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFSocketConnectionWriteTimeoutError userInfo:info];
+		error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFNetworkTransportWriteTimeoutError userInfo:info];
 	}
 	
 	[self.delegate layer:self didReceiveError:error];
