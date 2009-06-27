@@ -6,15 +6,15 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "AFConnectionPool.h"
+#import "AFNetworkPool.h"
 
 #import "AFConnectionLayer.h"
 
-@interface AFConnectionPool ()
+@interface AFNetworkPool ()
 @property (retain) NSMutableSet *mutableConnections;
 @end
 
-@implementation AFConnectionPool
+@implementation AFNetworkPool
 
 @synthesize mutableConnections=_connections;
 
@@ -49,7 +49,7 @@
 	[self.mutableConnections removeObject:connection];
 }
 
-- (id <AFTransportLayer>)connectionWithValue:(id)value forKey:(NSString *)key {
+- (id <AFTransportLayer>)layerWithValue:(id)value forKey:(NSString *)key {
 	id <AFConnectionLayer> connection = nil;
 	
 	for (id <AFConnectionLayer> currentConnection in self.connections) {

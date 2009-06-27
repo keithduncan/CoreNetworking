@@ -6,7 +6,7 @@
 //  Copyright 2008 thirty-three software. All rights reserved.
 //
 
-#import "AFConnectionServer.h"
+#import "AFNetworkServer.h"
 
 #import <sys/socket.h>
 #import <sys/un.h>
@@ -18,7 +18,7 @@
 
 #import	"AFNetworkTypes.h"
 #import "AFNetworkFunctions.h"
-#import "AFConnectionPool.h"
+#import "AFNetworkPool.h"
 
 #import "AFPriorityProxy.h"
 
@@ -27,11 +27,11 @@
 
 static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerHostConnectionsPropertyObservationContext";
 
-@interface AFConnectionServer () <AFConnectionLayerControlDelegate>
+@interface AFNetworkServer () <AFConnectionLayerControlDelegate>
 @property (readwrite, assign) Class clientClass;
 @end
 
-@implementation AFConnectionServer
+@implementation AFNetworkServer
 
 @dynamic lowerLayer, delegate;
 @synthesize hosts=_hosts;
@@ -76,14 +76,14 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	return [[[self alloc] initWithLowerLayer:nil encapsulationClass:[AFNetworkTransport class]] autorelease];
 }
 
-- (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass {
+- (id)initWithLowerLayer:(AFNetworkServer *)server encapsulationClass:(Class)clientClass {
 	self = [self initWithLowerLayer:(id)server];
 	if (self == nil) return nil;
 	
-	_hosts = [[AFConnectionPool alloc] init];
+	_hosts = [[AFNetworkPool alloc] init];
 	[_hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
 	
-	_clients = [[AFConnectionPool alloc] init];
+	_clients = [[AFNetworkPool alloc] init];
 	_clientClass = clientClass;
 	
 	return self;
@@ -165,7 +165,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature *)signature address:(NSData *)address {
-	AFConnectionServer *lowestLayer = self;
+	AFNetworkServer *lowestLayer = self;
 	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
 	self = lowestLayer;
 	

@@ -13,19 +13,19 @@
 @class AFNetworkConnection;
 
 /*!
-	@brief	This class schedules added connections on a run loop. They should be prepared to the scheduled on a background run loop.
+	@brief
+	This class schedules added connections on a run loop. They should be prepared to the scheduled on a background run loop.
  */
-@interface AFConnectionPool : NSObject {
+@interface AFNetworkPool : NSObject {
 	NSMutableSet *_connections;
 }
 
 @property (readonly) NSSet *connections;
 
 - (void)addConnectionsObject:(id <AFTransportLayer>)proxy;
-
 - (void)removeConnectionsObject:(id <AFTransportLayer>)proxy;
 
-- (id <AFTransportLayer>)connectionWithValue:(id)value forKey:(NSString *)key;
+- (id <AFTransportLayer>)layerWithValue:(id)value forKey:(NSString *)key;
 
 - (void)close;
 

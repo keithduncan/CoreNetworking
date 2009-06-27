@@ -24,11 +24,11 @@ extern NSString *const AFNetworkingErrorDomain;
 enum {
 	AFNetworkingErrorNone					= 0,
 	
-	// AFSocketError [100, 299]
+	// AFNetworkSocketError					[100, 299]
 	AFSocketErrorUnknown					= 101,
 	AFSocketErrorTimeout					= 102,
 	
-	// AFSocketConnectionError [300, 499]
+	// AFNetworkTransportError				[300, 499]
 	AFSocketConnectionErrorUnknown			= 301,
 	AFSocketConnectionReachabilityError		= 302,
 	AFSocketConnectionReadTimeoutError		= 304,

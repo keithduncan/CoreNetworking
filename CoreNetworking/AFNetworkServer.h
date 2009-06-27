@@ -12,12 +12,12 @@
 #import "CoreNetworking/AFConnectionLayer.h"
 
 @class AFNetworkSocket;
-@class AFConnectionPool;
-@class AFConnectionServer;
+@class AFNetworkPool;
+@class AFNetworkServer;
 
-@protocol AFConnectionServerDelegate <AFConnectionLayerHostDelegate>
+@protocol AFNetworkServerDelegate <AFConnectionLayerHostDelegate>
  @optional
-- (BOOL)server:(AFConnectionServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection fromHost:(const CFHostRef)host;
+- (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection fromHost:(const CFHostRef)host;
 @end
 
 /*!
@@ -27,10 +27,10 @@
 	@detail
 	After instantiating the server you can use one of the convenience methods to open a collection of sockets
  */
-@interface AFConnectionServer : AFNetworkLayer <AFConnectionServerDelegate, AFConnectionLayerHostDelegate> {	
-	AFConnectionPool *_hosts;
+@interface AFNetworkServer : AFNetworkLayer <AFNetworkServerDelegate, AFConnectionLayerHostDelegate> {	
+	AFNetworkPool *_hosts;
 	
-	AFConnectionPool *_clients;
+	AFNetworkPool *_clients;
 	Class _clientClass;
 }
 
@@ -68,19 +68,19 @@
 	@brief
 	Designated Initialiser.
  */
-- (id)initWithLowerLayer:(AFConnectionServer *)server encapsulationClass:(Class)clientClass;
+- (id)initWithLowerLayer:(AFNetworkServer *)server encapsulationClass:(Class)clientClass;
 
 /*!
 	@brief
-	The server that this one sits atop.
-	The lowerLayer delegate is set to this object.
+	The server that this one sits atop. The lowerLayer delegate is set to this object.
  */
-@property (readonly) AFConnectionServer *lowerLayer;
+@property (readonly) AFNetworkServer *lowerLayer;
 
 /*!
-	@brief	The delegate is optional in this class, most servers should function without one
+	@brief
+	The delegate is optional in this class, most servers should function without one
  */
-@property (assign) id <AFConnectionServerDelegate> delegate;
+@property (assign) id <AFNetworkServerDelegate> delegate;
 
 /*!
 	@brief
@@ -138,7 +138,7 @@
 	@detail
 	The server expects <tt>-layer:didAcceptConnection:</tt> callbacks to spawn new layers, and subsequently spawn new application layers
  */
-@property (readonly, retain) AFConnectionPool *hosts;
+@property (readonly, retain) AFNetworkPool *hosts;
 
 /*!
 	@brief
@@ -153,6 +153,6 @@
 	@brief
 	This pool contains the instantiated clientClass objects this server has created.
  */
-@property (readonly, retain) AFConnectionPool *clients;
+@property (readonly, retain) AFNetworkPool *clients;
 
 @end

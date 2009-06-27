@@ -29,8 +29,8 @@
 #import "CoreNetworking/AFPacketWrite.h"
 #import "CoreNetworking/AFPacketQueue.h"
 
-#import "CoreNetworking/AFConnectionPool.h"
-#import "CoreNetworking/AFConnectionServer.h"
+#import "CoreNetworking/AFNetworkServer.h"
+#import "CoreNetworking/AFNetworkPool.h"
 
 #import "CoreNetworking/AFNetService.h"
 #import "CoreNetworking/AFServiceDiscoveryRunLoopSource.h"
@@ -44,3 +44,15 @@
 #import "CoreNetworking/AFHTTPClient.h"
 #import "CoreNetworking/AFHTTPConnection.h"
 #import "CoreNetworking/AFHTTPTransaction.h"
+
+/* XMPP */
+
+// Not Yet Public
+
+/* SMTP */
+
+// Not Yet Implemented
+
+/* IMAP */
+
+// Not Yet Implemented
