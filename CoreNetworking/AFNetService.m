@@ -53,15 +53,6 @@ NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordD
 	return [self initWithDomain:[(id)service valueForKey:@"domain"] type:[(id)service valueForKey:@"type"] name:[(id)service valueForKey:@"name"]];
 }
 
-- (id)init {
-	self = [super init];
-	if (self == nil) return nil;
-		
-	presence = [[NSMutableDictionary alloc] init];
-	
-	return self;
-}
-
 static void AFNetServiceMonitorClientCallBack(CFNetServiceMonitorRef monitor, CFNetServiceRef service, CFNetServiceMonitorType typeInfo, CFDataRef rdata, CFStreamError *error, void *info) {
 	AFNetService *self = info;
 	
@@ -87,9 +78,8 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 		return;
 	}
 	
-	if ([self->delegate respondsToSelector:@selector(netServiceDidResolveAddress:)]) {
+	if ([self->delegate respondsToSelector:@selector(netServiceDidResolveAddress:)])
 		[self->delegate netServiceDidResolveAddress:self];
-	}
 }
 
 - (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name {

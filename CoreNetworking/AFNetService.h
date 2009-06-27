@@ -87,7 +87,7 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 	__strong CFNetServiceMonitorRef _monitor;
 	
 	id <AFNetServiceDelegate> delegate;
-	NSMutableDictionary *presence;
+	NSDictionary *presence;
 }
 
 
