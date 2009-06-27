@@ -160,8 +160,8 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	CFNetServiceMonitorUnscheduleFromRunLoop(_monitor, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 }
 
-- (void)updatePresenceWithValuesForKeys:(NSDictionary *)newPresence {
-	[presence setDictionary:newPresence];
+- (void)updatePresenceWithValuesForKeys:(NSDictionary *)newPresence {	
+	self.presence = newPresence;
 }
 
 - (void)resolveWithTimeout:(NSTimeInterval)delta {
