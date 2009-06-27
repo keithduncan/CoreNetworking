@@ -68,7 +68,9 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 
 - (void)stopTimeout {
 	[timeoutTimer invalidate];
+	
 	[timeoutTimer release];
+	timeoutTimer = nil;
 }
 
 @end

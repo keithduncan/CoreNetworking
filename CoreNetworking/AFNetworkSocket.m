@@ -67,8 +67,8 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	memset(&context, 0, sizeof(CFSocketContext));
 	context.info = self;
 	
-	_socket = CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, options, AFSocketCallback, &context);
-	_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0);
+	_socket = (CFSocketRef)CFMakeCollectable(CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, options, AFSocketCallback, &context));
+	_socketRunLoopSource = (CFRunLoopSourceRef)CFMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0));
 	
 #if DEBUGFULL
 	int reuseAddr = 1;
@@ -86,12 +86,9 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	return self;
 }
 
-- (void)finalize {
-	[self close];
-	
-	if (_signature != NULL)
-		if (_signature->address != NULL)
-			CFRelease(_signature->address);
+- (void)finalize {	
+	if (_signature->address != NULL)
+		CFRelease(_signature->address);
 	
 	free(_signature);
 	
@@ -101,11 +98,13 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 - (void)dealloc {
 	[self close];
 	
-	if (_signature != NULL)
-		if (_signature->address != NULL)
-			CFRelease(_signature->address);
+	if (_signature->address != NULL)
+		CFRelease(_signature->address);
 	
 	free(_signature);
+	
+	CFRelease(_socket);
+	CFRelease(_socketRunLoopSource);
 	
 	[super dealloc];
 }
@@ -141,15 +140,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 - (void)close {
 	if ([self isClosed]) return;
 	
-	if (_socket != NULL) {
-		CFSocketInvalidate(_socket);
-		
-		CFRelease(_socket);
-		_socket = NULL;
-	}
-	
-	CFRelease(_socketRunLoopSource);
-	_socketRunLoopSource = NULL;
+	CFSocketInvalidate(_socket);
 }
 
 - (BOOL)isClosed {
@@ -183,7 +174,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 
 - (CFHostRef)peer {
 	CFDataRef addr = (CFDataRef)[NSMakeCollectable(CFSocketCopyAddress(_socket)) autorelease];
-	CFHostRef peer = (CFHostRef)[NSMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, addr)) autorelease];
+	CFHostRef peer = (CFHostRef)[NSMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, (CFDataRef)addr)) autorelease];
 	return peer;
 }
 

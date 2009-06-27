@@ -40,17 +40,14 @@
 }
 
 - (void)tryDequeuePackets {
-	if (self.dequeuing)
-		return;
-		
+	if (self.dequeuing) return;
+	
 	if (![self.delegate streamQueueCanDequeuePackets:self]) return;
 	
 	self.dequeuing = YES;
 	
 	do {
-		if ([self.delegate streamQueue:self shouldTryDequeuePacket:self.currentPacket]) {
-			[self dequeued];
-		}
+		if ([self.delegate streamQueue:self shouldTryDequeuePacket:self.currentPacket]) [self dequeued];
 	} while ([self tryDequeue]);
 	
 	self.dequeuing = NO;
