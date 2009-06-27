@@ -1153,6 +1153,7 @@
 			);
 			buildRules = (
 			);
+			comments = "This target exists purely for the controls to be implemented in a separate project, but still access the AppKit additions.";
 			dependencies = (
 			);
 			name = "AmberKit (Additions)";

@@ -93,6 +93,7 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 		
 		Boolean authenticated = NO;
 		authenticated = CFHTTPMessageApplyCredentialDictionary(message, self.authentication, (CFDictionaryRef)self.authenticationCredentials, &error);
+#pragma unused (authenticated)
 	}
 	
 	[super performWrite:message forTag:tag withTimeout:duration];

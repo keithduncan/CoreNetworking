@@ -73,8 +73,8 @@ NSSTRING_CONTEXT(AFNetworkTransportPacketQueueObservationContext);
 - (void)_emptyQueues;
 @end
 
-static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *pInfo);
-static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *pInfo);
+static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *pInfo);
+static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *pInfo);
 
 #pragma mark -
 
@@ -453,7 +453,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	[self.readQueue tryDequeuePackets];
 }
 
-static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *pInfo) {
+static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	AFNetworkTransport *self = [[(AFNetworkTransport *)pInfo retain] autorelease];
@@ -518,7 +518,7 @@ static void AFSocketConnectionReadStreamCallback(CFReadStreamRef stream, CFStrea
 	[self.writeQueue tryDequeuePackets];
 }
 
-static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *pInfo) {
+static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *pInfo) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	AFNetworkTransport *self = [[(AFNetworkTransport *)pInfo retain] autorelease];
@@ -580,8 +580,8 @@ static void AFSocketConnectionWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	CFStreamEventType sharedTypes = (kCFStreamEventOpenCompleted | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered);
 	
 	Boolean result = false;
-	if (self.readStream != NULL) result |= CFReadStreamSetClient(self.readStream, (sharedTypes | kCFStreamEventHasBytesAvailable), AFSocketConnectionReadStreamCallback, &context);
-	if (self.writeStream != NULL) result |= CFWriteStreamSetClient(self.writeStream, (sharedTypes | kCFStreamEventCanAcceptBytes), AFSocketConnectionWriteStreamCallback, &context);
+	if (self.readStream != NULL) result |= CFReadStreamSetClient(self.readStream, (sharedTypes | kCFStreamEventHasBytesAvailable), AFNetworkTransportReadStreamCallback, &context);
+	if (self.writeStream != NULL) result |= CFWriteStreamSetClient(self.writeStream, (sharedTypes | kCFStreamEventCanAcceptBytes), AFNetworkTransportWriteStreamCallback, &context);
 	return result;
 }
 
