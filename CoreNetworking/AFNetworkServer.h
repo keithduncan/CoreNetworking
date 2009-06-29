@@ -25,11 +25,9 @@
 	This is a generic construct for spawning new client layers.
  
 	@detail
-	After instantiating the server you can use one of the convenience methods to open a collection of sockets
+	After instantiating the server you can use one of the convenience methods to open socket(s)
  */
-@interface AFNetworkServer : AFNetworkLayer <AFNetworkServerDelegate, AFConnectionLayerHostDelegate> {	
-	AFNetworkPool *_hosts;
-	
+@interface AFNetworkServer : AFNetworkLayer <AFNetworkServerDelegate, AFConnectionLayerHostDelegate> {
 	AFNetworkPool *_clients;
 	Class _clientClass;
 }
@@ -127,18 +125,10 @@
 - (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature *)signature address:(NSData *)address;
 
 /*!
-	@brief	This class is used to instantiate a new higher-level layer when the server receives the <tt>-layer:didAcceptConnection:</tt> delegate callback
+	@brief
+	This class is used to instantiate a new higher-level layer when the server receives the <tt>-layer:didAcceptConnection:</tt> delegate callback
  */
 @property (readonly, assign) Class clientClass;
-
-/*!
-	@brief
-	You can add host sockets to this object, the server observes the |connections| property and sets itself as the delegate for any objects
- 
-	@detail
-	The server expects <tt>-layer:didAcceptConnection:</tt> callbacks to spawn new layers, and subsequently spawn new application layers
- */
-@property (readonly, retain) AFNetworkPool *hosts;
 
 /*!
 	@brief

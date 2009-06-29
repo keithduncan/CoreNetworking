@@ -34,7 +34,6 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 @implementation AFNetworkServer
 
 @dynamic lowerLayer, delegate;
-@synthesize hosts=_hosts;
 
 @synthesize clients=_clients;
 @synthesize clientClass=_clientClass;
@@ -73,39 +72,31 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 + (id)server {
-	return [[[self alloc] initWithLowerLayer:nil encapsulationClass:[AFNetworkTransport class]] autorelease];
+	return [[[self alloc] initWithLowerLayer:[[[AFNetworkServer alloc] initWithLowerLayer:nil encapsulationClass:[AFNetworkSocket class]] autorelease] encapsulationClass:[AFNetworkTransport class]] autorelease];
 }
 
 - (id)initWithLowerLayer:(AFNetworkServer *)server encapsulationClass:(Class)clientClass {
 	self = [self initWithLowerLayer:(id)server];
 	if (self == nil) return nil;
 	
-	_hosts = [[AFNetworkPool alloc] init];
-	[_hosts addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
-	
 	_clients = [[AFNetworkPool alloc] init];
+	[_clients addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
+	
 	_clientClass = clientClass;
 	
 	return self;
 }
 
-- (void)_close {
-	[self.clients close];
-	[self.hosts close];
-}
-
 - (void)finalize {
-	[self _close];
+	[self.clients close];
 	
 	[super finalize];
 }
 
 - (void)dealloc {
-	[self _close];
+	[self.clients close];
 	
-	[_hosts removeObserver:self forKeyPath:@"connections"];
-	[_hosts release];
-	
+	[_clients removeObserver:self forKeyPath:@"connections"];
 	[_clients release];
 	
 	[super dealloc];
@@ -121,7 +112,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	for (NSData *currentAddress in sockaddrs) {
 		currentAddress = [[currentAddress mutableCopy] autorelease];
 		
-		// FIXME: #warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+//#warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddress))->sin_port = htons(*port);
 		
 		AFNetworkSocket *socket = [self openSocketWithSignature:signature address:currentAddress];
@@ -183,7 +174,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	AFNetworkSocket *socket = [[[AFNetworkSocket alloc] initWithSignature:&socketSignature callbacks:kCFSocketAcceptCallBack] autorelease];
 	if (socket == nil) return nil;
 	
-	[self.hosts addConnectionsObject:socket];
+	[self.clients addConnectionsObject:socket];
 	return ([socket open]) ? socket : nil;
 }
 
@@ -197,11 +188,19 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 - (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)newLayer {
 	id <AFConnectionLayer> connection = [[[self clientClass] alloc] initWithLowerLayer:newLayer];
-	[connection setDelegate:(id)self];
 	return connection;
 }
 
+- (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection fromHost:(const CFHostRef)host {
+	return YES; // the default implementation has no reason to turn anyone away
+}
+
 - (void)layer:(id)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
+	if ([self.clients.connections containsObject:layer]) {
+		[self.delegate layer:self didAcceptConnection:newLayer];
+		return;
+	}
+	
 	if ([self.delegate respondsToSelector:@selector(server:shouldAcceptConnection:fromHost:)]) {
 		// Note: for accepted sockets, the peer will always be a CFHostRef
 		CFHostRef host = (CFHostRef)[(id)newLayer peer];
@@ -211,19 +210,15 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	
 	id <AFConnectionLayer> newConnection = [[self newApplicationLayerForNetworkLayer:newLayer] autorelease];
 	
-	if ([self.hosts.connections containsObject:layer])
-		[self.clients addConnectionsObject:newConnection];
-	else
-		[self.hosts addConnectionsObject:newConnection];
-	
+	[self.clients addConnectionsObject:newConnection];
 	[newConnection open];
 }
 
 - (void)layerDidOpen:(id <AFTransportLayer>)layer {
 	if (![self.clients.connections containsObject:layer]) return;
+	if (self.lowerLayer == nil) return;
 	
-	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
-		[self.delegate layer:self didAcceptConnection:layer];
+	[self.delegate layer:self didAcceptConnection:layer];
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
