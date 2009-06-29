@@ -17,8 +17,10 @@
 @class AFPacketQueue;
 
 /*
-	HTTP verbs required for REST access
+	HTTP verbs
  */
+
+extern NSString *const AFHTTPMethodHEAD;
 
 extern NSString *const AFHTTPMethodGET;
 extern NSString *const AFHTTPMethodPOST;

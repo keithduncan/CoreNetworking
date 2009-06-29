@@ -14,6 +14,8 @@
 #import "AFHTTPTransaction.h"
 #import "AFHTTPMessagePacket.h"
 
+NSString *const AFHTTPMethodHEAD = @"HEAD";
+
 NSString *const AFHTTPMethodGET = @"GET";
 NSString *const AFHTTPMethodPOST = @"POST";
 NSString *const AFHTTPMethodPUT = @"PUT";
@@ -28,12 +30,6 @@ NSString *const AFHTTPMessageHostHeader = @"Host";
 NSString *const AFHTTPMessageConnectionHeader = @"Connection";
 
 NSSTRING_CONTEXT(AFHTTPConnectionCurrentTransactionObservationContext);
-
-enum {
-	_kHTTPConnectionReadHeaders = 0,
-	_kHTTPConnectionReadBody = 1,
-};
-typedef NSUInteger AFHTTPConnectionReadTag;
 
 @interface AFHTTPConnection ()
 @property (retain) AFPacketQueue *transactionQueue;
@@ -139,7 +135,7 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 @implementation AFHTTPConnection (_Delegate)
 
 - (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag {
-	if (self.currentTransaction.response == NULL) return;
+	if (self.currentTransaction.response != NULL) return;
 	
 	[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease] forTag:0 withTimeout:-1];
 }
