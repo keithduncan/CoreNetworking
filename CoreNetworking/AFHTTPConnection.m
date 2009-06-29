@@ -81,6 +81,7 @@ NSSTRING_CONTEXT(AFHTTPConnectionCurrentTransactionObservationContext);
 			[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:YES] autorelease] forTag:0 withTimeout:-1];
 		} else {
 			[self performWrite:newPacket.request forTag:0 withTimeout:-1];
+			[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease] forTag:0 withTimeout:-1];
 		}
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
@@ -135,9 +136,7 @@ NSSTRING_CONTEXT(AFHTTPConnectionCurrentTransactionObservationContext);
 @implementation AFHTTPConnection (_Delegate)
 
 - (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag {
-	if (self.currentTransaction.response != NULL) return;
 	
-	[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease] forTag:0 withTimeout:-1];
 }
 
 - (void)layer:(id <AFTransportLayer>)layer didRead:(id)data forTag:(NSUInteger)tag {
