@@ -55,6 +55,10 @@ NSSTRING_CONTEXT(AFHTTPConnectionCurrentTransactionObservationContext);
 	return [super transportSignatureForScheme:scheme];
 }
 
++ (NSString *)serviceDiscoveryType {
+	return @"_http._tcp";
+}
+
 - (id)init {
 	self = [super init];
 	if (self == nil) return nil;

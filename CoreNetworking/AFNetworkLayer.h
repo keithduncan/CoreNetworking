@@ -37,15 +37,6 @@
 
 /*!
 	@brief
-	The default implementation of this method raises an exception, if you don't handle scheme passed in you should defer to the superclass' implementation.
- 
-	@detail
-	This is used by <tt>-initWithURL:</tt> to determine the socket type and port to use.
- */
-+ (AFInternetTransportSignature *)transportSignatureForScheme:(NSString *)scheme;
-
-/*!
-	@brief
 	Inbound Initialiser
 	This is used when you have an accept socket that has spawned a new connection.
  */

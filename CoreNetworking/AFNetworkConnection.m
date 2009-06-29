@@ -12,6 +12,17 @@
 
 @dynamic delegate;
 
++ (const AFInternetTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
+#warning this method should parse /etc/services to determine the default port mappings
+	[NSException raise:NSInvalidArgumentException format:@"%s, cannot provide an AFNetworkTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme, nil];
+	return NULL;
+}
+
++ (NSString *)serviceDiscoveryType {
+	[NSException raise:NSInternalInconsistencyException format:@"%s, connot provide a service discovery type", __PRETTY_FUNCTION__, nil];
+	return nil;
+}
+
 - (AFNetworkLayer <AFConnectionLayer> *)lowerLayer {
 	return [super lowerLayer];
 }
