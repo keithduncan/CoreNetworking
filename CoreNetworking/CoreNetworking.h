@@ -47,6 +47,8 @@
 
 /* XMPP */
 
+#import "CoreNetworking/AFXMLElementPacket.h"
+
 // Not Yet Public
 
 /* SMTP */

@@ -33,7 +33,7 @@
 
 enum {
 	_kEnablePreBuffering		= 1UL << 0,   // pre-buffering is enabled
-	_kDidCallConnectDelegate	= 1UL << 1,   // connect delegate has been called
+	_kDidConnectionOpen			= 1UL << 1,   // connection has been established
 	_kDidPassConnectMethod		= 1UL << 2,   // disconnection results in delegate call
 	_kForbidStreamReadWrite		= 1UL << 3,   // no new reads or writes are allowed
 	_kCloseSoon					= 1UL << 4,   // disconnect as soon as nothing is queued
@@ -300,10 +300,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 
 - (BOOL)open {
 	if ([self isOpen]) {
-		if ((self.connectionFlags & _kDidCallConnectDelegate) != _kDidCallConnectDelegate) {		
-			[self.delegate layerDidOpen:self];
-		}
-		
+		[self.delegate layerDidOpen:self];
 		return YES;
 	}
 	
@@ -444,10 +441,10 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 		packet->_duration = duration;
 	} else {
 		packet = [[[AFPacketRead alloc] initWithTag:tag timeout:duration terminator:terminator] autorelease];
-		
-		if ([self.delegate respondsToSelector:@selector(socket:willEnqueueReadPacket:)])
-			[self.delegate socket:self willEnqueueReadPacket:packet];
 	}
+	
+	if ([self.delegate respondsToSelector:@selector(socket:willEnqueueReadPacket:)])
+		[self.delegate socket:self willEnqueueReadPacket:packet];
 	
 	[self.readQueue enqueuePacket:packet];
 	[self.readQueue tryDequeuePackets];
@@ -588,10 +585,10 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 - (void)_streamDidOpen {
 	if ((self.readQueue.flags & _kStreamDidOpen) != _kStreamDidOpen || (self.writeQueue.flags & _kStreamDidOpen) != _kStreamDidOpen) return;
 	
-	[self _open];
+	if ((self.connectionFlags & _kDidConnectionOpen) == _kDidConnectionOpen) return;
+	self.connectionFlags = (self.connectionFlags | _kDidConnectionOpen);
 	
-	if ((self.connectionFlags & _kDidCallConnectDelegate) == _kDidCallConnectDelegate) return;
-	self.connectionFlags = (self.connectionFlags | _kDidCallConnectDelegate);
+	[self _open];
 	
 	[self.delegate layerDidOpen:self];
 	

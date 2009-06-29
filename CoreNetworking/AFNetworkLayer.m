@@ -110,4 +110,9 @@
 	return [self delegateProxy:nil];
 }
 
+- (void)layerDidOpen:(id)layer {
+	if (layer == self.lowerLayer) layer = self;
+	[self.delegate layerDidOpen:layer];
+}
+
 @end

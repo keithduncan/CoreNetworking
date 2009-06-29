@@ -55,7 +55,7 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 
 - (void)dealloc {
 	if (_message != NULL) {
-		CFRetain(_message);
+		CFRelease(_message);
 		_message = NULL;
 	}
 	
@@ -81,7 +81,9 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 	return nil;
 }
 
-- (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef {
+// Note: this is a compound packet, the stream bytes availability is checked in the subpackets
+
+- (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef {	
 	BOOL shouldContinue = NO;
 	do {
 		if (self.currentRead == nil) {
