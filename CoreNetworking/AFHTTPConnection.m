@@ -15,6 +15,8 @@
 #import "AFHTTPMessagePacket.h"
 
 NSString *const AFHTTPMethodHEAD = @"HEAD";
+NSString *const AFHTTPMethodTRACE = @"TRACE";
+NSString *const AFHTTPMethodOPTIONS = @"OPTIONS";
 
 NSString *const AFHTTPMethodGET = @"GET";
 NSString *const AFHTTPMethodPOST = @"POST";

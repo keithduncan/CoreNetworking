@@ -21,6 +21,8 @@
  */
 
 extern NSString *const AFHTTPMethodHEAD;
+extern NSString *const AFHTTPMethodTRACE;
+extern NSString *const AFHTTPMethodOPTIONS;
 
 extern NSString *const AFHTTPMethodGET;
 extern NSString *const AFHTTPMethodPOST;
