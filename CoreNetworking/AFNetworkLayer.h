@@ -44,14 +44,9 @@
 
 /*!
 	@brief
-	Outbound Initialiser.
-	This initialiser is essentially a psudeonym for <tt>-initWithSignature:</tt> but using either scheme-implied port number, or one provided in the URL.
-	If you use this method, you are required to override <tt>+transportSignatureForScheme:</tt> to provide the <tt>AFNetworkSocketSignature</tt> even if a port number is provided in the URL.
-	
-	@detail
-	If the URL provides a port number that one is used instead of the scheme-implied port. Scheme implied ports are looked up in /etc/services.
+	Data should be passed onto the lowerLayer for further processing.
  */
-- (id <AFTransportLayer>)initWithURL:(NSURL *)endpoint;
+- (AFNetworkLayer *)lowerLayer;
 
 /*!
 	@brief
@@ -68,21 +63,15 @@
 	@brief
 	Outbound Initialiser.
 	This initialiser is a sibling to <tt>-initWithSignature:</tt>.
-	
+ 
 	@detail
 	A net service - once resolved - encapsulates all the data from <tt>AFSocketPeerSignature</tt>.
 	The default implementation creates a lower-layer using <tt>+lowerLayerClass</tt> and calls the same initialiser on the new object.
  
-	@param
-	|netService| will be used to create a CFNetService internally.
+	@param |netService|
+	Will be used to create a CFNetService internally.
  */
 - (id <AFTransportLayer>)initWithNetService:(id <AFNetServiceCommon>)netService;
-
-/*!
-	@brief
-	Data should be passed onto the lowerLayer for further processing.
- */
-- (AFNetworkLayer *)lowerLayer;
 
 /*!
 	@brief

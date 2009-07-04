@@ -23,6 +23,23 @@
 	return nil;
 }
 
+- (id <AFTransportLayer>)initWithURL:(NSURL *)endpoint {
+	CFHostRef host = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)[endpoint host])) autorelease];
+	
+	AFInternetTransportSignature *transportSignature = [[self class] transportSignatureForScheme:[endpoint scheme]];
+	
+	if ([endpoint port] != nil) {
+		transportSignature->port = [[endpoint port] intValue];
+	}
+	
+	AFNetworkTransportPeerSignature peerSignature = {
+		.host = host,
+		.transport = transportSignature,
+	};
+	
+	return [self initWithPeerSignature:&peerSignature];
+}
+
 - (AFNetworkLayer <AFConnectionLayer> *)lowerLayer {
 	return [super lowerLayer];
 }

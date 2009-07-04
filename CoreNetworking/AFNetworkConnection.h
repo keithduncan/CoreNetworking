@@ -36,8 +36,25 @@
  */
 + (NSString *)serviceDiscoveryType;
 
+/*!
+	@brief
+	Outbound Initialiser.
+	This initialiser is essentially a psudeonym for <tt>-initWithSignature:</tt> but using either scheme-implied port number, or one provided in the URL.
+	If you use this method, you are required to override <tt>+transportSignatureForScheme:</tt> to provide the <tt>AFNetworkSocketSignature</tt> even if a port number is provided in the URL.
+ 
+	@detail
+	If the URL provides a port number that one is used instead of the scheme-implied port. Scheme implied ports are looked up in /etc/services.
+ */
+- (id <AFConnectionLayer>)initWithURL:(NSURL *)endpoint;
+
+/*!
+ 
+ */
 - (AFNetworkLayer <AFConnectionLayer> *)lowerLayer;
 
+/*!
+ 
+ */
 @property (assign) id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> delegate;
 
 /*!
