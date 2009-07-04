@@ -12,6 +12,7 @@
 #import <sys/un.h>
 #import <arpa/inet.h>
 #import <objc/runtime.h>
+#import "AmberFoundation/AmberFoundation.h"
 
 #import "AFNetworkSocket.h"
 #import "AFNetworkTransport.h"
@@ -20,12 +21,10 @@
 #import "AFNetworkFunctions.h"
 #import "AFNetworkPool.h"
 
-#import "AFPriorityProxy.h"
-
 // Note: import this header last, allowing for any of the previous headers to import <net/if.h> see the getifaddrs man page for details
 #import <ifaddrs.h>
 
-static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerHostConnectionsPropertyObservationContext";
+static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"ServerHostConnectionsPropertyObservationContext";
 
 @interface AFNetworkServer () <AFConnectionLayerControlDelegate>
 @property (readwrite, assign) Class clientClass;
@@ -33,7 +32,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 
 @implementation AFNetworkServer
 
-@dynamic lowerLayer, delegate;
+@synthesize lowerLayer=_lowerLayer, delegate=_delegate;
 
 @synthesize clients=_clients;
 @synthesize clientClass=_clientClass;
@@ -75,12 +74,22 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	return [[[self alloc] initWithLowerLayer:[[[AFNetworkServer alloc] initWithLowerLayer:nil encapsulationClass:[AFNetworkSocket class]] autorelease] encapsulationClass:[AFNetworkTransport class]] autorelease];
 }
 
+- (id)initWithLowerLayer:(AFNetworkServer *)server {
+	self = [self init];
+	if (self == nil) return nil;
+	
+	_lowerLayer = [server retain];
+	_lowerLayer.delegate = self;
+	
+	return self;
+}
+
 - (id)initWithLowerLayer:(AFNetworkServer *)server encapsulationClass:(Class)clientClass {
 	self = [self initWithLowerLayer:(id)server];
 	if (self == nil) return nil;
 	
 	_clients = [[AFNetworkPool alloc] init];
-	[_clients addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&ServerHostConnectionsPropertyObservationContext];
+	[_clients addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&AFNetworkServerHostConnectionsPropertyObservationContext];
 	
 	_clientClass = clientClass;
 	
@@ -88,18 +97,43 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (void)finalize {
-	[self.clients close];
+	[_clients close];
 	
 	[super finalize];
 }
 
 - (void)dealloc {
-	[self.clients close];
+	[_lowerLayer release];
+	
+	[_clients close];
 	
 	[_clients removeObserver:self forKeyPath:@"connections"];
 	[_clients release];
 	
 	[super dealloc];
+}
+
+- (id)forwardingTargetForSelector:(SEL)selector {
+	return self.lowerLayer;
+}
+
+- (BOOL)respondsToSelector:(SEL)selector {
+	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
+}
+
+- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {	
+	if (_delegate == nil) return proxy;
+	
+	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
+	
+	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
+	[proxy insertTarget:_delegate];
+	
+	return proxy;
+}
+
+- (id)delegate {
+	return [self delegateProxy:nil];
 }
 
 - (BOOL)openInternetSocketsWithTransportSignature:(AFInternetTransportSignature *)signature addresses:(NSSet *)sockaddrs {
@@ -179,7 +213,7 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &ServerHostConnectionsPropertyObservationContext) {
+    if (context == &AFNetworkServerHostConnectionsPropertyObservationContext) {
 		if (![[change objectForKey:NSKeyValueChangeKindKey] unsignedIntegerValue] == NSKeyValueChangeInsertion) return;
 		
 		[[change valueForKey:NSKeyValueChangeNewKey] makeObjectsPerformSelector:@selector(setDelegate:) withObject:self];
@@ -218,7 +252,8 @@ static void *ServerHostConnectionsPropertyObservationContext = (void *)@"ServerH
 	if (![self.clients.connections containsObject:layer]) return;
 	if (self.lowerLayer == nil) return;
 	
-	[self.delegate layer:self didAcceptConnection:layer];
+	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
+		[self.delegate layer:self didAcceptConnection:layer];
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {

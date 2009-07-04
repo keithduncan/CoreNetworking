@@ -27,7 +27,10 @@
 	@detail
 	After instantiating the server you can use one of the convenience methods to open socket(s)
  */
-@interface AFNetworkServer : AFNetworkLayer <AFNetworkServerDelegate, AFConnectionLayerHostDelegate> {
+@interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFConnectionLayerHostDelegate> {
+	id <AFNetworkServerDelegate> _delegate;
+	AFNetworkServer *_lowerLayer;
+	
 	AFNetworkPool *_clients;
 	Class _clientClass;
 }
@@ -61,6 +64,12 @@
 	By default this creates a server with no |lowerLayer| and <tt>AFNetworkTransport</tt> as the encapsulation class.
  */
 + (id)server;
+
+/*!
+	@brief
+	This method is called by the designated initialiser.
+ */
+- (id)initWithLowerLayer:(AFNetworkServer *)server;
 
 /*!
 	@brief
