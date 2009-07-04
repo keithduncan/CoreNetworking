@@ -72,9 +72,9 @@
 			
 			self.currentRead = nil;
 			
-			
-			if ([xmlString hasPrefix:@"</"]) _depth--;
-			else if ([xmlString hasSuffix:@"/>"]) _depth;
+		
+			if (!NSEqualRanges([xmlString rangeOfString:@"</"], NSMakeRange(NSNotFound, 0))) _depth--;
+			else if (!NSEqualRanges([xmlString rangeOfString:@"/>"], NSMakeRange(NSNotFound, 0))) _depth;
 			else _depth++;
 			
 			if (_depth <= 0) return YES;
