@@ -44,7 +44,7 @@
 	@brief
 	This is the expanded form of <tt>-initWithNetService:</tt> taking explict arguments.
  */
-- (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name;
+- (id)initWithName:(NSString *)name type:(NSString *)type domain:(NSString *)domain;
 
 @end
 
