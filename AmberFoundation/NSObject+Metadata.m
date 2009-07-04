@@ -31,7 +31,7 @@ NSData *AFBundleSectionData(NSBundle *bundle, const char *segmentName, const cha
 		
 #ifdef __LP64__
 		// This warning has been filed under rdar://problem/6825431
-		const struct mach_header_64 *header = _dyld_get_image_header(index);
+		const struct mach_header_64 *header = (const struct mach_header_64 *)_dyld_get_image_header(index);
 		
 		uint64_t size = 0;
 		void *data = (void *)((intptr_t)getsectdatafromheader_64(header, segmentName, sectionName, &size) + slide);
