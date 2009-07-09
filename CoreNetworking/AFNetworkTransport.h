@@ -55,18 +55,6 @@
  */
 @property (readonly) CFTypeRef peer;
 
-/*!
-	@brief
-	All parameters are optional, allowing you to extract only the values you require.
- */
-- (float)currentReadProgressWithBytesDone:(NSUInteger *)done bytesTotal:(NSUInteger *)total forTag:(NSUInteger *)tag;
-
-/*!
-	@brief
-	All parameters are optional, allowing you to extract only the values you require.	
- */
-- (float)currentWriteProgressWithBytesDone:(NSUInteger *)done bytesTotal:(NSUInteger *)total forTag:(NSUInteger *)tag;
-
 @end
 
 @protocol AFNetworkTransportControlDelegate <AFConnectionLayerControlDelegate>
