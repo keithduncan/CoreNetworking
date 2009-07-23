@@ -131,7 +131,7 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	CFRelease(writeStream);
 	CFRelease(readStream);
-		
+	
 	return self;
 }
 
@@ -627,7 +627,10 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		NSError *error = nil;
 		BOOL packetComplete = [(id)packet performRead:(CFReadStreamRef)queue.stream error:&error];
 		
-		if (error != nil) [self.delegate layer:self didReceiveError:error];
+		if (error != nil) {
+			[self.delegate layer:self didReceiveError:error];
+			return YES;
+		}
 		
 		if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:total:forTag:)]) {
 			NSUInteger bytesRead = 0, bytesTotal = 0;
@@ -636,14 +639,18 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 			[self.delegate socket:self didReadPartialDataOfLength:bytesRead total:bytesTotal forTag:packet.tag];
 		}
 		
-		if (!packetComplete) return NO;
-		
-		[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
+		if (packetComplete) {
+			[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
+			return YES;
+		}
 	} else if (queue == self.writeQueue) {
 		NSError *error = nil;
 		BOOL packetComplete = [(id)packet performWrite:(CFWriteStreamRef)queue.stream error:&error];
 		
-		if (error != nil) [self.delegate layer:self didReceiveError:error];
+		if (error != nil) {
+			[self.delegate layer:self didReceiveError:error];
+			return YES;
+		}
 		
 		if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:total:forTag:)]) {
 			NSUInteger bytesWritten = 0, totalBytes = 0;
@@ -652,12 +659,13 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 			[self.delegate socket:self didWritePartialDataOfLength:bytesWritten total:totalBytes forTag:packet.tag];
 		}
 		
-		if (!packetComplete) return NO;
-		
-		[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
+		if (packetComplete) {
+			[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
+			return YES;
+		}
 	}
 	
-	return YES;
+	return NO;
 }
 
 @end

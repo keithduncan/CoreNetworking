@@ -16,35 +16,6 @@
 
 @class AFPacketQueue;
 
-/*
-	HTTP verbs
- */
-
-extern NSString *const AFHTTPMethodHEAD;
-extern NSString *const AFHTTPMethodTRACE;
-extern NSString *const AFHTTPMethodOPTIONS;
-
-extern NSString *const AFHTTPMethodGET;
-extern NSString *const AFHTTPMethodPOST;
-extern NSString *const AFHTTPMethodPUT;
-extern NSString *const AFHTTPMethodDELETE;
-
-/*
-	AFHTTPConnection Schemes
- */
-
-extern NSString *const AFNetworkSchemeHTTP;
-extern NSString *const AFNetworkSchemeHTTPS;
-
-/*
-	AFHTTPConnection Message Headers
- */
-
-extern NSString *const AFHTTPMessageUserAgentHeader;
-extern NSString *const AFHTTPMessageContentLengthHeader;
-extern NSString *const AFHTTPMessageHostHeader;
-extern NSString *const AFHTTPMessageConnectionHeader;
-
 /*!
 	@brief
 	This class is indended to sit on top of AFNetworkTransport and provides HTTP messaging semantics.

@@ -34,5 +34,8 @@ enum {
 	AFNetworkTransportReadTimeoutError		= 304,
 	AFNetworkTransportWriteTimeoutError		= 305,
 	AFNetworkTransportTLSError				= 306,
+	
+	// AFPacketError						[500, 699]
+	AFNetworkPacketParseError				= 500,
 };
 typedef NSInteger AFNetworkingErrorCode;

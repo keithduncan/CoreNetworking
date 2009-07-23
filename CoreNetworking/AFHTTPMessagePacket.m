@@ -9,7 +9,8 @@
 #import "AFHTTPMessagePacket.h"
 
 #import "AFPacketRead.h"
-#import "AFHTTPConnection.h"
+#import "AFHTTPConstants.h"
+#import "AFNetworkConstants.h"
 
 #import "NSData+Additions.h"
 
@@ -96,7 +97,17 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 		shouldContinue = [self.currentRead performRead:stream error:errorRef];
 		
 		if (shouldContinue) {
-			CFHTTPMessageAppendBytes(self.message, [self.currentRead.buffer bytes], [self.currentRead.buffer length]);
+			shouldContinue = CFHTTPMessageAppendBytes(self.message, [self.currentRead.buffer bytes], [self.currentRead.buffer length]);
+			
+			if (!shouldContinue) {
+				CFRelease(_message);
+				_message = NULL;
+				
+				if (errorRef != NULL)
+					*errorRef = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFNetworkPacketParseError userInfo:nil];
+				
+				return YES;
+			}
 			
 			if (self.currentRead.tag == _kHTTPConnectionReadBody) return YES;
 			self.currentRead = nil;
