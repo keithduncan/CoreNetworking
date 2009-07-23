@@ -12,8 +12,7 @@
 
 - (id)init {
 	dispatchOrder = [[NSMutableArray alloc] init];
-	
-	dispatchMap = [[NSMapTable alloc] initWithKeyOptions:(NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality) valueOptions:(NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality) capacity:/* Default CF collection capacity */ 3];
+	dispatchMap = [[NSMutableDictionary alloc] init];
 	
 	return self;
 }
@@ -36,9 +35,10 @@
 }
 
 - (BOOL)respondsToSelector:(SEL)selector {
-	for (id currentDispatchTarget in dispatchOrder)
-		if ([currentDispatchTarget respondsToSelector:selector])
-			return YES;
+	for (id currentDispatchTarget in dispatchOrder) {
+		if (![currentDispatchTarget respondsToSelector:selector]) continue;
+		return YES;
+	}
 	
 	return NO;
 }
@@ -52,14 +52,11 @@
 }
 
 - (void)_setDispatchedTargets:(NSMutableArray *)targets forSelector:(SEL)selector {
-	if (targets != nil)
-		NSMapInsert(dispatchMap, selector, targets);
-	else
-		NSMapRemove(dispatchMap, selector);
+	[dispatchMap setValue:targets forKey:NSStringFromSelector(selector)];
 }
 
 - (NSMutableArray *)_dispatchedTargetsForSelector:(SEL)selector {
-	NSMutableArray *dispatchedTargets = NSMapGet(dispatchMap, selector);
+	NSMutableArray *dispatchedTargets = [dispatchMap objectForKey:NSStringFromSelector(selector)];
 	
 	if (dispatchedTargets == nil) {
 		dispatchedTargets = [NSMutableArray array];

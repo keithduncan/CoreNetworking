@@ -8,9 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class NSMapTable;
-@class NSPointerArray;
-
 /*!
 	@brief
 	This proxy class allows for more complex message routing. It can be used to create a delegate-chain, or an improved responder chain which may be useful for a view controller architecture.
@@ -21,7 +18,7 @@
  */
 @interface AFPriorityProxy : NSProxy {
 	NSMutableArray *dispatchOrder; // this is generated from the map and is relative whereas the priorityMap is absolute
-	NSMapTable *dispatchMap; // keyed by selector to a pointer array of dispatch targets
+	NSMutableDictionary *dispatchMap; // keyed by selector to a pointer array of dispatch targets
 }
 
 /*!
