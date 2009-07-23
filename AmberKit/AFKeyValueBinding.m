@@ -30,14 +30,14 @@ NSString *const AFUnboundValueKey = @"AFUnboundValue";
 	id value = [controller valueForKeyPath:[self keyPathForBinding:binding]];
 	
 	NSValueTransformer *transformer = [self valueTransformerForBinding:binding];
-	if (transformer != nil) value = [transformer transformedValue:value];
+	if (transformer != nil && ![transformer isEqual:[NSNull null]]) value = [transformer transformedValue:value];
 	
 	return value;
 }
 
 - (void)setValue:(id)value forBinding:(NSString *)binding {
 	NSValueTransformer *transformer = [self valueTransformerForBinding:binding];
-	if (transformer != nil && [[transformer class] allowsReverseTransformation]) value = [transformer reverseTransformedValue:value];
+	if (transformer != nil && ![transformer isEqual:[NSNull null]]) value = [transformer reverseTransformedValue:value];
 	
 	id controller = [self controllerForBinding:binding];
 	
