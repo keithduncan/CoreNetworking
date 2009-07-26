@@ -159,9 +159,9 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 		// Note: get the port after setting the address i.e. opening
 		if (*port == 0) {
 			// Note: extract the *actual* port used and use that for future sockets
-			CFHostRef addressPeer = (CFHostRef)[socket peer];
-			CFDataRef actualAddress = CFArrayGetValueAtIndex(CFHostGetAddressing(addressPeer, NULL), 0);
+			CFDataRef actualAddress = CFSocketCopyAddress([socket socket]);
 			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddress))->sin_port);
+			CFRelease(actualAddress);
 		}
 	}
 	
