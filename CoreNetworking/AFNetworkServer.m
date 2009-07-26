@@ -209,7 +209,9 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 	if (socket == nil) return nil;
 	
 	[self.clients addConnectionsObject:socket];
-	return ([socket open]) ? socket : nil;
+	[socket open];
+	
+	return socket;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -239,7 +241,10 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 		// Note: for accepted sockets, the peer will always be a CFHostRef
 		CFHostRef host = (CFHostRef)[(id)newLayer peer];
 		
-		if (![self.delegate server:self shouldAcceptConnection:newLayer fromHost:host]) return;
+		if (![self.delegate server:self shouldAcceptConnection:newLayer fromHost:host]) {
+			[newLayer close];
+			return;
+		}
 	}
 	
 	id <AFConnectionLayer> newConnection = [[self newApplicationLayerForNetworkLayer:newLayer] autorelease];

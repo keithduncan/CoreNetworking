@@ -98,10 +98,10 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 - (void)dealloc {
 	[self close];
 	
-	if (_signature->address != NULL)
-		CFRelease(_signature->address);
-	
-	free(_signature);
+	if (_signature != NULL) {
+		if (_signature->address != NULL) CFRelease(_signature->address);
+		free(_signature);
+	}
 	
 	CFRelease(_socket);
 	CFRelease(_socketRunLoopSource);
@@ -109,16 +109,15 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	[super dealloc];
 }
 
-- (BOOL)open {
-	CFSocketError socketError = kCFSocketError;
+- (void)open {
+	NSParameterAssert(_signature != NULL);
 	
-	if (_signature != NULL) {
-		socketError = CFSocketSetAddress(_socket, _signature->address);
-		
-		if (socketError == kCFSocketSuccess) {
-			[self.delegate layerDidOpen:self];
-			return YES;
-		}
+	CFSocketError socketError = kCFSocketError;
+	socketError = CFSocketSetAddress(_socket, _signature->address);
+	
+	if (socketError == kCFSocketSuccess) {
+		[self.delegate layerDidOpen:self];
+		return;
 	}
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -130,7 +129,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	
 	NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:errorCode userInfo:userInfo];
 	[self.delegate layer:self didNotOpen:error];
-	return NO;
 }
 
 - (BOOL)isOpen {
