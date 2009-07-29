@@ -63,12 +63,14 @@
 	return [self.objects objectEnumerator];
 }
 
-- (void)addObject:(id)object {
-	[self.objects addObject:object];
-	
+- (void)addObject:(id)object {	
 	id key = [object valueForKeyPath:self.keyPath];
+	NSParameterAssert(key != nil);
+	
 	NSAssert([self.index objectForKey:key] == nil, ([NSString stringWithFormat:@"%s, adding another object for key %@", __PRETTY_FUNCTION__, key, nil]));
+	
 	[self.index setObject:object forKey:key];
+	[self.objects addObject:object];
 }
 
 - (void)removeObject:(id)object {
