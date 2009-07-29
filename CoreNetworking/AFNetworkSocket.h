@@ -46,9 +46,15 @@
 
 /*!
 	@brief
-	This returns the <tt>-[AFNetworkSocket socket]</tt> peer address wrapped in a CFHostRef.
+	This returns the <tt>-[AFNetworkSocket socket]</tt> local address.
+ */
+@property (readonly) id localAddress;
+
+/*!
+	@brief
+	This returns the <tt>-[AFNetworkSocket socket]</tt> peer address.
 	This is likely to be of most use when determining the reachbility of an endpoint.
  */
-@property (readonly) CFHostRef peer;
+@property (readonly) id peerAddress;
 
 @end

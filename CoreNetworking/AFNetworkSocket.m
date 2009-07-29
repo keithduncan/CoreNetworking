@@ -170,10 +170,14 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	CFRunLoopRemoveSource(loop, _socketRunLoopSource, mode);
 }
 
-- (CFHostRef)peer {
+- (id)localAddress {
+	CFDataRef addr = (CFDataRef)[NSMakeCollectable(CFSocketCopyAddress(_socket)) autorelease];
+	return (id)addr;
+}
+
+- (id)peerAddress {
 	CFDataRef addr = (CFDataRef)[NSMakeCollectable(CFSocketCopyPeerAddress(_socket)) autorelease];
-	CFHostRef peer = (CFHostRef)[NSMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, (CFDataRef)addr)) autorelease];
-	return peer;
+	return (id)addr;
 }
 
 @end
