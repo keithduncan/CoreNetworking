@@ -62,6 +62,6 @@
 	This method returns nil for an inbound connection.
 	Otherwise, this method returns the CFHostRef hostname, or the CFNetServiceRef fullname.
  */
-- (NSURL *)peer;
+@property (readonly) NSURL *peer;
 
 @end

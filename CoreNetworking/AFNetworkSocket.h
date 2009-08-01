@@ -52,6 +52,12 @@
 
 /*!
 	@brief
+	This creates a CFHostRef wrapping the <tt>-peerAddress</tt>.
+ */
+@property (readonly) id peer;
+
+/*!
+	@brief
 	This returns the <tt>-[AFNetworkSocket socket]</tt> peer address.
 	This is likely to be of most use when determining the reachbility of an endpoint.
  */

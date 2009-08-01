@@ -45,7 +45,7 @@
 }
 
 - (NSURL *)peer {
-	CFTypeRef peer = [(id)super peer];
+	CFTypeRef peer = [(id)self.lowerLayer peer];
 	
 	if (CFGetTypeID(peer) == CFHostGetTypeID()) {
 		CFHostRef host = (CFHostRef)peer;

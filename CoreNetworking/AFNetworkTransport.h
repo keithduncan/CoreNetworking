@@ -50,10 +50,22 @@
 
 /*!
 	@brief
+	This returns the local address of the connected stream.
+ */
+@property (readonly) id localAddress;
+
+/*!
+	@brief
 	Depending on how the object was instantiated it may be a <tt>CFNetServiceRef</tt> or a <tt>CFHostRef</tt>
-	If this is an inbound connection, it will always be a <tt>CFHostRef</tt>.
+	For a remote-initiated steam, it will always be a <tt>CFHostRef</tt>.
  */
 @property (readonly) CFTypeRef peer;
+
+/*!
+	@brief
+	This returns the remote address of the connected stream.
+ */
+@property (readonly) id peerAddress;
 
 @end
 

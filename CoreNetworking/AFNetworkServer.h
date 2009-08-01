@@ -17,7 +17,7 @@
 
 @protocol AFNetworkServerDelegate <AFConnectionLayerHostDelegate>
  @optional
-- (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection fromHost:(const CFHostRef)host;
+- (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection;
 @end
 
 /*!

@@ -226,7 +226,7 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 	return connection;
 }
 
-- (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection fromHost:(const CFHostRef)host {
+- (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection {
 	return YES; // the default implementation has no reason to turn anyone away
 }
 
@@ -236,11 +236,8 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 		return;
 	}
 	
-	if ([self.delegate respondsToSelector:@selector(server:shouldAcceptConnection:fromHost:)]) {
-		// Note: for accepted sockets, the peer will always be a CFHostRef
-		CFHostRef host = (CFHostRef)[(id)newLayer peer];
-		
-		if (![self.delegate server:self shouldAcceptConnection:newLayer fromHost:host]) {
+	if ([self.delegate respondsToSelector:@selector(server:shouldAcceptConnection:)]) {
+		if (![self.delegate server:self shouldAcceptConnection:newLayer]) {
 			[newLayer close];
 			return;
 		}

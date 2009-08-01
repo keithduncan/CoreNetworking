@@ -175,6 +175,11 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	return (id)addr;
 }
 
+- (id)peer {
+	id peer = [NSMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, (CFDataRef)[self peerAddress])) autorelease];
+	return peer;
+}
+
 - (id)peerAddress {
 	CFDataRef addr = (CFDataRef)[NSMakeCollectable(CFSocketCopyPeerAddress(_socket)) autorelease];
 	return (id)addr;

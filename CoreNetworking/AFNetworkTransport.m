@@ -91,7 +91,8 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	BOOL shouldCloseUnderlyingSocket = ((CFSocketGetSocketFlags(socket) & kCFSocketCloseOnInvalidate) == kCFSocketCloseOnInvalidate);
 	if (shouldCloseUnderlyingSocket) CFSocketSetSocketFlags(socket, CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate);
 	
-	_peer._hostDestination.host = (CFHostRef)CFMakeCollectable(CFRetain([(id)layer peer]));
+	CFDataRef peer = (CFDataRef)[networkSocket peer];
+	_peer._hostDestination.host = (CFHostRef)CFMakeCollectable(CFRetain(peer));
 	
 	CFSocketNativeHandle nativeSocket = CFSocketGetNative(socket);
 	CFSocketInvalidate(socket); // Note: the CFSocket must be invalidated for the CFStreams to capture the events
@@ -222,8 +223,20 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
+- (id)localAddress {
+	[self doesNotRecognizeSelector:_cmd];
+	return nil;
+}
+
 - (CFTypeRef)peer {
 	return _peer._hostDestination.host; // Note: this will also return the netService
+}
+
+- (id)peerAddress {
+	NSParameterAssert(CFGetTypeID([self peer]) == CFHostGetTypeID());
+	
+	CFHostRef host = (CFHostRef)[self peer];
+	return [(id)CFHostGetAddressing(host, NULL) objectAtIndex:0];
 }
 
 - (NSString *)description {
