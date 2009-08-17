@@ -107,32 +107,32 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 	CFRelease(messageData);
 }
 
+- (void)_performRequest:(CFHTTPMessageRef)request {
+	NSURL *endpoint = [self peer];
+	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
+	
+	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequest:request] autorelease];
+	[self.transactionQueue enqueuePacket:transaction];
+}
+
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body {
 	NSURL *endpoint = [self peer];
 	NSURL *resourcePath = [NSURL URLWithString:([resource isEmpty] ? @"/" : resource) relativeToURL:endpoint];
 	
-	CFHTTPMessageRef message = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)HTTPMethod, (CFURLRef)resourcePath, kCFHTTPVersion1_1)) autorelease];
-	
-	CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
+	CFHTTPMessageRef request = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)HTTPMethod, (CFURLRef)resourcePath, kCFHTTPVersion1_1)) autorelease];
 	
 	for (NSString *currentKey in headers) {
 		NSString *currentValue = [headers objectForKey:currentKey];
-		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)currentKey, (CFStringRef)currentValue);
+		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)currentKey, (CFStringRef)currentValue);
 	}
 	
-	CFHTTPMessageSetBody(message, (CFDataRef)body);
+	CFHTTPMessageSetBody(request, (CFDataRef)body);
 	
-	
-	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequest:message] autorelease];
-	[self.transactionQueue enqueuePacket:transaction];
+	[self _performRequest:request];
 }
 
 - (void)performRequest:(NSURLRequest *)request {
-	CFHTTPMessageRef message = AFHTTPMessageForRequest(request);
-	
-	
-	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequest:message] autorelease];
-	[self.transactionQueue enqueuePacket:transaction];
+	[self _performRequest:AFHTTPMessageForRequest(request)];
 }
 
 - (void)readRequest {
