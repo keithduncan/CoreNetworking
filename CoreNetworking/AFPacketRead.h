@@ -16,6 +16,6 @@
 	id _terminator;
 }
 
-- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration terminator:(id)terminator;
+- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration terminator:(id)terminator;
 
 @end

@@ -50,7 +50,7 @@
 
 - (AFPacketRead *)_nextReadPacket {
 	id terminator = [@">" dataUsingEncoding:_encoding];
-	return [[[AFPacketRead alloc] initWithTag:0 timeout:-1 terminator:terminator] autorelease];
+	return [[[AFPacketRead alloc] initWithContext:NULL timeout:-1 terminator:terminator] autorelease];
 }
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets

@@ -8,8 +8,10 @@
 
 #import "AFHTTPMessagePacket.h"
 
+#import "AmberFoundation/AmberFoundation.h"
+
 #import "AFPacketRead.h"
-#import "AFHTTPConstants.h"
+#import "AFHTTPMessage.h"
 #import "AFNetworkConstants.h"
 
 #import "NSData+Additions.h"
@@ -29,11 +31,8 @@ NSInteger AFHTTPMessageGetHeaderLength(CFHTTPMessageRef message) {
 	return contentLength;
 }
 
-enum {
-	_kHTTPConnectionReadHeaders = 0,
-	_kHTTPConnectionReadBody = 1,
-};
-typedef NSUInteger AFHTTPConnectionReadTag;
+NSSTRING_CONTEXT(AFHTTPMessagePacketHeadersContext);
+NSSTRING_CONTEXT(AFHTTPMessagePacketBodyContext);
 
 @interface AFHTTPMessagePacket ()
 @property (readonly) CFHTTPMessageRef message;
@@ -71,12 +70,12 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 
 - (AFPacketRead *)_nextReadPacket {
 	if (!CFHTTPMessageIsHeaderComplete(self.message)) {
-		return [[[AFPacketRead alloc] initWithTag:_kHTTPConnectionReadHeaders timeout:-1 terminator:[NSData CRLF]] autorelease];
+		return [[[AFPacketRead alloc] initWithContext:&AFHTTPMessagePacketHeadersContext timeout:-1 terminator:[NSData CRLF]] autorelease];
 	}
 	
 	NSInteger contentLength = AFHTTPMessageGetHeaderLength(self.message);
 	if (contentLength != -1) {
-		return [[[AFPacketRead alloc] initWithTag:_kHTTPConnectionReadBody timeout:-1 terminator:[NSNumber numberWithInteger:contentLength]] autorelease];
+		return [[[AFPacketRead alloc] initWithContext:&AFHTTPMessagePacketBodyContext timeout:-1 terminator:[NSNumber numberWithInteger:contentLength]] autorelease];
 	}
 	
 	return nil;
@@ -109,7 +108,7 @@ typedef NSUInteger AFHTTPConnectionReadTag;
 				return YES;
 			}
 			
-			if (self.currentRead.tag == _kHTTPConnectionReadBody) return YES;
+			if (self.currentRead.context == &AFHTTPMessagePacketBodyContext) return YES;
 			self.currentRead = nil;
 		}
 	} while (shouldContinue && self.currentRead == nil);

@@ -47,7 +47,8 @@
 	self.dequeuing = YES;
 	
 	do {
-		if ([self.delegate streamQueue:self shouldTryDequeuePacket:self.currentPacket]) [self dequeued];
+		AFPacket *currentPacket = self.currentPacket;
+		if (currentPacket != nil && [self.delegate streamQueue:self shouldTryDequeuePacket:currentPacket]) [self dequeued];
 	} while ([self tryDequeue]);
 	
 	self.dequeuing = NO;

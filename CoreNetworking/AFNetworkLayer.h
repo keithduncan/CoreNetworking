@@ -57,7 +57,7 @@
 	This doesn't use CFSocketSignature because the protocol family is determined by the CFHostRef address values.
 	The default implementation creates a lower-layer using <tt>+lowerLayerClass</tt> and calls the same initialiser on the new object.
  */
-- (id <AFTransportLayer>)initWithPeerSignature:(const AFNetworkTransportPeerSignature *)signature;
+- (id <AFTransportLayer>)initWithPeerSignature:(const AFNetworkTransportHostSignature *)signature;
 
 /*!
 	@brief

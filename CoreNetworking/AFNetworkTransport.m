@@ -136,11 +136,11 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	return self;
 }
 
-- (id <AFConnectionLayer>)initWithPeerSignature:(const AFNetworkTransportPeerSignature *)signature {
+- (id <AFConnectionLayer>)initWithPeerSignature:(const AFNetworkTransportHostSignature *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
-	memcpy(&_peer._hostDestination, signature, sizeof(AFNetworkTransportPeerSignature));
+	memcpy(&_peer._hostDestination, signature, sizeof(AFNetworkTransportHostSignature));
 	
 	CFHostRef *host = &_peer._hostDestination.host;
 	*host = (CFHostRef)NSMakeCollectable(CFRetain(signature->host));
@@ -414,7 +414,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 
 #pragma mark Reading
 
-- (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
+- (void)performRead:(id)terminator withTimeout:(NSTimeInterval)duration context:(void *)context {
 	if ((self.connectionFlags & _kForbidStreamReadWrite) == _kForbidStreamReadWrite) return;
 	NSParameterAssert(terminator != nil);
 	
@@ -422,10 +422,10 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	if ([terminator isKindOfClass:[AFPacket class]]) {
 		packet = terminator;
 		
-		packet->_tag = tag;
+		packet->_context = context;
 		packet->_duration = duration;
 	} else {
-		packet = [[[AFPacketRead alloc] initWithTag:tag timeout:duration terminator:terminator] autorelease];
+		packet = [[[AFPacketRead alloc] initWithContext:context timeout:duration terminator:terminator] autorelease];
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(socket:willEnqueueReadPacket:)])
@@ -482,7 +482,7 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 
 #pragma mark Writing
 
-- (void)performWrite:(id)data forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration; {
+- (void)performWrite:(id)data withTimeout:(NSTimeInterval)duration context:(void *)context {
 	if ((self.connectionFlags & _kForbidStreamReadWrite) == _kForbidStreamReadWrite) return;
 	NSParameterAssert(data != nil);
 	
@@ -490,7 +490,7 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 	if ([data isKindOfClass:[AFPacket class]]) {
 		packet = data;
 	} else {
-		packet = [[[AFPacketWrite alloc] initWithTag:tag timeout:duration data:data] autorelease];
+		packet = [[[AFPacketWrite alloc] initWithContext:context timeout:duration data:data] autorelease];
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(socket:willEnqueueWritePacket:)])
@@ -553,10 +553,10 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 
 - (BOOL)_configureReadStream:(CFReadStreamRef)readStream writeStream:(CFWriteStreamRef)writeStream {
 	if (writeStream != NULL) _writeQueue = [[AFStreamPacketQueue alloc] initWithStream:(id)writeStream delegate:self];
-	[_writeQueue addObserver:self forKeyPath:@"currentPacket" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&AFNetworkTransportPacketQueueObservationContext];
-	
 	if (readStream != NULL) _readQueue = [[AFStreamPacketQueue alloc] initWithStream:(id)readStream delegate:self];
-	[_readQueue addObserver:self forKeyPath:@"currentPacket" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&AFNetworkTransportPacketQueueObservationContext];
+	
+	[self.writeQueue addObserver:self forKeyPath:@"currentPacket" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&AFNetworkTransportPacketQueueObservationContext];
+	[self.readQueue addObserver:self forKeyPath:@"currentPacket" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&AFNetworkTransportPacketQueueObservationContext];
 	
 	CFStreamClientContext context;
 	memset(&context, 0, sizeof(CFStreamClientContext));
@@ -580,8 +580,6 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	if ([self.delegate respondsToSelector:@selector(layer:didConnectToPeer:)])
 		[self.delegate layer:self didConnectToPeer:(id)[self peer]];
-	
-	[self _tryDequeuePackets];
 }
 
 - (void)_streamDidStartTLS {
@@ -590,8 +588,6 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	
 	if ([self.delegate respondsToSelector:@selector(layerDidStartTLS:)])
 		[self.delegate layerDidStartTLS:self];
-	
-	[self _tryDequeuePackets];
 }
 
 @end
@@ -644,15 +640,15 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 			return YES;
 		}
 		
-		if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:total:forTag:)]) {
+		if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:total:context:)]) {
 			NSUInteger bytesRead = 0, bytesTotal = 0;
 			[packet currentProgressWithBytesDone:&bytesRead bytesTotal:&bytesTotal];
 			
-			[self.delegate socket:self didReadPartialDataOfLength:bytesRead total:bytesTotal forTag:packet.tag];
+			[self.delegate socket:self didReadPartialDataOfLength:bytesRead total:bytesTotal context:packet.context];
 		}
 		
 		if (packetComplete) {
-			[self.delegate layer:self didRead:packet.buffer forTag:packet.tag];
+			[self.delegate layer:self didRead:packet.buffer context:packet.context];
 			return YES;
 		}
 	} else if (queue == self.writeQueue) {
@@ -664,15 +660,15 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 			return YES;
 		}
 		
-		if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:total:forTag:)]) {
+		if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:total:context:)]) {
 			NSUInteger bytesWritten = 0, totalBytes = 0;
 			[packet currentProgressWithBytesDone:&bytesWritten bytesTotal:&totalBytes];
 			
-			[self.delegate socket:self didWritePartialDataOfLength:bytesWritten total:totalBytes forTag:packet.tag];
+			[self.delegate socket:self didWritePartialDataOfLength:bytesWritten total:totalBytes context:packet.context];
 		}
 		
 		if (packetComplete) {
-			[self.delegate layer:self didWrite:packet.buffer forTag:packet.tag];
+			[self.delegate layer:self didWrite:packet.buffer context:packet.context];
 			return YES;
 		}
 	}

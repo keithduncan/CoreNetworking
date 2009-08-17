@@ -9,7 +9,7 @@
 #import "AFHTTPClient.h"
 
 #import "AFNetworkConstants.h"
-#import "AFHTTPConstants.h"
+#import "AFHTTPMessage.h"
 
 #import "AmberFoundation/AmberFoundation.h"
 
@@ -83,7 +83,7 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	_authentication = (CFHTTPAuthenticationRef)CFRetain(authentication);
 }
 
-- (void)performWrite:(CFHTTPMessageRef)message forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration {
+- (void)performWrite:(CFHTTPMessageRef)message withTimeout:(NSTimeInterval)duration context:(void *)context {
 	NSString *agent = [[self class] userAgent];
 	if (agent != nil) {
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageUserAgentHeader, (CFStringRef)agent);
@@ -97,7 +97,7 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 #pragma unused (authenticated)
 	}
 	
-	[super performWrite:message forTag:tag withTimeout:duration];
+	[super performWrite:message withTimeout:duration context:context];
 }
 
 - (void)layerDidOpen:(id <AFConnectionLayer>)layer {
@@ -109,7 +109,8 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 		[self startTLS:securityOptions];
 	}
 	
-	[self.delegate layerDidOpen:self];
+	if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])
+		[self.delegate layerDidOpen:self];
 }
 
 @end

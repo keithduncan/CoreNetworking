@@ -18,14 +18,14 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 
 @dynamic buffer;
 
-@synthesize tag=_tag;
+@synthesize context=_context;
 @synthesize duration=_duration;
 
-- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration {
+- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration {
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_tag = tag;
+	_context = context;
 	_duration = duration;
 	
 	return self;
@@ -44,7 +44,7 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 	NSUInteger done = 0, total = 0;
 	float fraction = [self currentProgressWithBytesDone:&done bytesTotal:&total];
 	
-	[description appendFormat:@"current progress %ld bytes of %ld total. %d%% done.", done, total, fraction, nil];
+	[description appendFormat:@"current progress %ld bytes of %ld total. %f%% done.", done, total, fraction, nil];
 	
 	return description;	
 }

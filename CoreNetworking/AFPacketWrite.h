@@ -16,7 +16,7 @@
 	NSInteger _chunkSize;
 }
 
-- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration data:(NSData *)buffer;
+- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration data:(NSData *)buffer;
 
 /*!
 	@brief

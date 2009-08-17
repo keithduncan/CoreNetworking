@@ -69,14 +69,14 @@ extern const AFInternetTransportSignature AFInternetTransportSignatureHTTPS;
 	The un-intuitive layout of the structure is very important; because the first pointer width bits are a CFTypeRef the structure can be introspected using CFGetTypeID.
 	
 	@detail
-	Doesn't include a |protocolFamily| field like CFSocketSignature because the |host| may resolve to a number of different protocol family addresses.
+	Doesn't include a |protocolFamily| field like CFSocketSignature because the |host| may resolve to a number of addresses each with a different protocol family.
 	
-	@field
-	|host| is copied using CFHostCreateCopy() the addresses property is resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap or as an instance variable, it won't be reclaimed.
-	@field
-	|transport| see the documentation for <tt>AFNetworkTransportLayer</tt>, it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc) and the port.
+	@field |host|
+	This should be copied using CFHostCreateCopy(). The addresses property should be resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap or as an instance variable, it won't be reclaimed.
+	@field |transport|
+	See the documentation for <tt>AFNetworkTransportLayer</tt>, it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc) and the port.
  */
-struct AFNetworkTransportPeerSignature {
+struct AFNetworkTransportHostSignature {
 	/*
 	 *	This defines _where_ to communicate
 	 */
@@ -86,4 +86,16 @@ struct AFNetworkTransportPeerSignature {
 	 */
 	const AFInternetTransportSignature *transport;
 };
-typedef struct AFNetworkTransportPeerSignature AFNetworkTransportPeerSignature;
+typedef struct AFNetworkTransportHostSignature AFNetworkTransportHostSignature;
+
+/*!
+	@brief
+	This is a partner to <tt>AFNetworkTransportHostSignature</tt> except that a CFNetServiceRef contains all the information required.
+ */
+struct AFNetworkTransportServiceSignature {
+	/*
+	 *	This defines _where_ and _how_ to communicate
+	 */
+	__strong CFNetServiceRef netService;
+};
+typedef struct AFNetworkTransportServiceSignature AFNetworkTransportServiceSignature;

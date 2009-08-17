@@ -32,7 +32,7 @@
 		transportSignature->port = [[endpoint port] intValue];
 	}
 	
-	AFNetworkTransportPeerSignature peerSignature = {
+	AFNetworkTransportHostSignature peerSignature = {
 		.host = host,
 		.transport = transportSignature,
 	};

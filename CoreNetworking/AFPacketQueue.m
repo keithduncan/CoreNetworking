@@ -47,6 +47,8 @@
 	if (self.currentPacket != nil) return NO;
 	if ([self.packets count] == 0) return NO;
 	
+	// Note: the order of execution here is crucial, don't change it
+	
 	const NSUInteger newPacketIndex = 0;
 	
 	id newPacket = [[self.packets objectAtIndex:newPacketIndex] retain];

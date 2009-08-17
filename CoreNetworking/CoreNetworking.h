@@ -41,9 +41,11 @@
 
 /* HTTP */
 
-#import "CoreNetworking/AFHTTPConstants.h"
-#import "CoreNetworking/AFHTTPClient.h"
+#import "CoreNetworking/AFHTTPMessage.h"
+
 #import "CoreNetworking/AFHTTPConnection.h"
+#import "CoreNetworking/AFHTTPClient.h"
+
 #import "CoreNetworking/AFHTTPTransaction.h"
 
 /* XMPP */

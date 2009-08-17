@@ -133,8 +133,8 @@ NSError *AFErrorFromCFStreamError(CFStreamError error) {
 	}
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-						  message, NSLocalizedDescriptionKey,
-						  nil];
+							  message, NSLocalizedDescriptionKey,
+							  nil];
 	
 	return [NSError errorWithDomain:domain code:error.error userInfo:userInfo];
 }

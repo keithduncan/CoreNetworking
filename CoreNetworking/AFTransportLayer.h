@@ -30,6 +30,10 @@
 */
 @protocol AFTransportLayer <NSObject>
 
+/*!
+	@brief
+	Currently the control and data delegates share the same property.
+ */
 @property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
 
 /*!
@@ -93,50 +97,68 @@
 	|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length or an NSData for bit pattern.
 	This method accepts an AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
  */
-- (void)performRead:(id)terminator forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
+- (void)performRead:(id)terminator withTimeout:(NSTimeInterval)duration context:(void *)context;
 
 /*!
 	@brief
 	This method is currently only expected to handle an (NSData) object.
  */
-- (void)performWrite:(id)dataBuffer forTag:(NSUInteger)tag withTimeout:(NSTimeInterval)duration;
+- (void)performWrite:(id)dataBuffer withTimeout:(NSTimeInterval)duration context:(void *)context;
 
 @end
 
-
+/*!
+	@brief
+	This is intentionally empty just now.
+ */
 @protocol AFTransportLayerHostDelegate <NSObject>
 
 @end
 
-
+/*!
+	@brief
+	The negative case handling methods are required, otherwise you can assume the connection succeeds.
+ */
 @protocol AFTransportLayerControlDelegate <NSObject>
 
+ @optional
 
 - (void)layerDidOpen:(id <AFTransportLayer>)layer;
 
+- (void)layerDidStartTLS:(id <AFTransportLayer>)layer;
+
+- (void)layerDidClose:(id <AFTransportLayer>)layer;
+
+ @required 
+
+/*!
+	@brief
+	This is called if opening the layer fails asynchronously.
+ */
 - (void)layer:(id <AFTransportLayer>)layer didNotOpen:(NSError *)error;
 
 /*!
 	@brief
-	This is called for connected-stream errors only.
+	This is called if the TLS fails, the error should be suitable for presenting.
+ */
+- (void)layer:(id <AFTransportLayer>)layer didNotStartTLS:(NSError *)error;
+
+/*!
+	@brief
+	This is called for already opened stream errors.
  */
 - (void)layer:(id <AFTransportLayer>)layer didReceiveError:(NSError *)error;
 
-- (void)layerDidClose:(id <AFTransportLayer>)layer;
-
- @optional
-
-- (void)layerDidStartTLS:(id <AFTransportLayer>)layer;
-
-- (void)layer:(id <AFTransportLayer>)layer didNotStartTLS:(NSError *)error;
-
 @end
 
-
+/*!
+	@brief
+	These methods inform the data delegate of successful reads and writes.
+ */
 @protocol AFTransportLayerDataDelegate <NSObject>
 
-- (void)layer:(id <AFTransportLayer>)layer didRead:(id)data forTag:(NSUInteger)tag;
+- (void)layer:(id <AFTransportLayer>)layer didRead:(id)data context:(void *)context;
 
-- (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data forTag:(NSUInteger)tag;
+- (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data context:(void *)context;
 
 @end

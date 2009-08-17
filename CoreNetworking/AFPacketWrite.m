@@ -24,8 +24,8 @@
 	return self;
 }
 
-- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration data:(NSData *)buffer {
-	self = [self initWithTag:tag timeout:duration];
+- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration data:(NSData *)buffer {
+	self = [self initWithContext:context timeout:duration];
 	if (self == nil) return self;
 	
 	_buffer = [buffer retain];

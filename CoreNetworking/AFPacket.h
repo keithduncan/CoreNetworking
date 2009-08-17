@@ -31,15 +31,35 @@ extern NSString *const AFPacketTimeoutNotificationName;
  */
 @interface AFPacket : NSObject {
  @package
-	NSUInteger _tag;
+	void *_context;
 	NSTimeInterval _duration;
  @private
 	NSTimer *timeoutTimer;
 }
 
-@property (readonly) NSUInteger tag;
+/*!
+	@param context
+	context is not retained, it should be a constant
+ */
+- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration;
 
-- (id)initWithTag:(NSUInteger)tag timeout:(NSTimeInterval)duration;
+/*!
+	@brief
+	The context passed in at instantiation.
+ */
+@property (readonly) void *context;
+
+/*!
+	@brief
+	This method will start an NSTimer (it will be scheduled in the current run loop) if the duration the packet was created with is >0.
+ */
+- (void)startTimeout;
+
+/*!
+	@brief
+	This method balances <tt>-startTimeout</tt>
+ */
+- (void)stopTimeout;
 
 /*!
 	@brief
@@ -58,18 +78,6 @@ extern NSString *const AFPacketTimeoutNotificationName;
 	|fraction| is required, calling with a NULL argument will raise an exception
  */
 - (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal;
-
-/*!
-	@brief
-	This method will start an NSTimer (it will be scheduled in the current run loop) if the duration the packet was created with is >0.
- */
-- (void)startTimeout;
-
-/*!
-	@brief
-	This method simply balances <tt>-startTimeout</tt>
- */
-- (void)stopTimeout;
 
 @end
 

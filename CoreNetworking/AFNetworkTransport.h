@@ -35,11 +35,8 @@
 	NSUInteger _connectionFlags;
 	
 	union {
-		struct AFNetworkTransportServiceSignature {
-			__strong CFNetServiceRef netService;
-		} _netServiceDestination;
-		
-		struct AFNetworkTransportPeerSignature _hostDestination;
+		AFNetworkTransportServiceSignature _netServiceDestination;
+		AFNetworkTransportHostSignature _hostDestination;
 	} _peer;
 	
 	AFStreamPacketQueue *_writeQueue;
@@ -97,7 +94,7 @@
 	@param
 	|total| will be NSUIntegerMax if the packet terminator is a data pattern.
  */
-- (void)socket:(AFNetworkTransport *)socket didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
+- (void)socket:(AFNetworkTransport *)socket didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context;
 
 /*!
 	@brief
@@ -110,6 +107,6 @@
 	@brief
 	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
  */
-- (void)socket:(AFNetworkTransport *)socket didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength forTag:(NSInteger)tag;
+- (void)socket:(AFNetworkTransport *)socket didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context;
 
 @end
