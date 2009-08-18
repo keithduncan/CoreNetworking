@@ -44,9 +44,9 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 	return [AFNetworkTransport class];
 }
 
-+ (const AFInternetTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
-	if ([scheme compare:AFNetworkSchemeHTTP options:NSCaseInsensitiveSearch] == NSOrderedSame) return &AFInternetTransportSignatureHTTP;
-	if ([scheme compare:AFNetworkSchemeHTTPS options:NSCaseInsensitiveSearch] == NSOrderedSame) return &AFInternetTransportSignatureHTTPS;
++ (AFInternetTransportSignature)transportSignatureForScheme:(NSString *)scheme {
+	if ([scheme compare:AFNetworkSchemeHTTP options:NSCaseInsensitiveSearch] == NSOrderedSame) return AFInternetTransportSignatureHTTP;
+	if ([scheme compare:AFNetworkSchemeHTTPS options:NSCaseInsensitiveSearch] == NSOrderedSame) return AFInternetTransportSignatureHTTPS;
 	return [super transportSignatureForScheme:scheme];
 }
 

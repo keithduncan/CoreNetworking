@@ -12,10 +12,14 @@
 
 @dynamic delegate;
 
-+ (const AFInternetTransportSignature *)transportSignatureForScheme:(NSString *)scheme {
++ (AFInternetTransportSignature)transportSignatureForScheme:(NSString *)scheme {
 #warning this method should parse /etc/services to determine the default port mappings
 	[NSException raise:NSInvalidArgumentException format:@"%s, cannot provide an AFNetworkTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme, nil];
-	return NULL;
+	
+	AFInternetTransportSignature signature;
+	bzero(&signature, sizeof(signature));
+	
+	return signature;
 }
 
 + (NSString *)serviceDiscoveryType {
@@ -26,15 +30,15 @@
 - (id <AFTransportLayer>)initWithURL:(NSURL *)endpoint {
 	CFHostRef host = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)[endpoint host])) autorelease];
 	
-	AFInternetTransportSignature *transportSignature = [[self class] transportSignatureForScheme:[endpoint scheme]];
+	AFInternetTransportSignature transportSignature = [[self class] transportSignatureForScheme:[endpoint scheme]];
 	
 	if ([endpoint port] != nil) {
-		transportSignature->port = [[endpoint port] intValue];
+		transportSignature.port = [[endpoint port] intValue];
 	}
 	
 	AFNetworkTransportHostSignature peerSignature = {
 		.host = host,
-		.transport = transportSignature,
+		.transport = &transportSignature,
 	};
 	
 	return [self initWithPeerSignature:&peerSignature];

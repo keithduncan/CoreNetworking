@@ -54,6 +54,8 @@ CFStringRef AFHTTPStatusCodeDescription(AFHTTPStatusCode code) {
 	switch (code) {
 		case AFHTTPStatusCodeOK:
 			return CFSTR("OK");
+		case AFHTTPStatusCodePartialContent:
+			return CFSTR("Partial Content");
 			
 		case AFHTTPStatusCodeBadRequest:
 			return CFSTR("Bad Request");
