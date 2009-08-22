@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 /*
-	Core Classes
+	Core Networking
  */
 
 #import "CoreNetworking/AFNetworkTypes.h"
@@ -48,16 +48,24 @@
 
 #import "CoreNetworking/AFHTTPTransaction.h"
 
+#import "CoreNetworking/AFHTTPServer.h"
+
 /* XMPP */
+// Not Yet Public
 
 #import "CoreNetworking/AFXMLElementPacket.h"
 
+/* AMQP */
 // Not Yet Public
 
 /* SMTP */
-
 // Not Yet Implemented
 
 /* IMAP */
+// Not Yet Implemented
 
+/* MySQL */
+// Not Yet Implemented
+
+/* LDAP */
 // Not Yet Implemented
