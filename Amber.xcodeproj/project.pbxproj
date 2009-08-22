@@ -224,6 +224,7 @@
 		53B2015F0F6D7739001DC8E7 /* AFPacketWrite.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B2014F0F6D7739001DC8E7 /* AFPacketWrite.m */; };
 		53B201600F6D7739001DC8E7 /* AFNetworkSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53B201610F6D7739001DC8E7 /* AFNetworkSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B201510F6D7739001DC8E7 /* AFNetworkSocket.m */; };
+		53C156F7104060E7008D1E82 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C156F6104060E7008D1E82 /* CoreServices.framework */; };
 		53C518630FF2BD8F003BFCE0 /* AFLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C5185F0FF2BD8F003BFCE0 /* AFLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53C518640FF2BD8F003BFCE0 /* AFLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C518600FF2BD8F003BFCE0 /* AFLibrary.m */; };
 		53C518650FF2BD8F003BFCE0 /* AFSourceNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C518610FF2BD8F003BFCE0 /* AFSourceNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -459,6 +460,7 @@
 		53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkSocket.h; path = CoreNetworking/AFNetworkSocket.h; sourceTree = "<group>"; };
 		53B201510F6D7739001DC8E7 /* AFNetworkSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkSocket.m; path = CoreNetworking/AFNetworkSocket.m; sourceTree = "<group>"; };
 		53BEF6A10F5B6A2700063B8D /* libCoreNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCoreNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		53C156F6104060E7008D1E82 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		53C5185F0FF2BD8F003BFCE0 /* AFLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFLibrary.h; path = AmberKit/AFLibrary.h; sourceTree = "<group>"; };
 		53C518600FF2BD8F003BFCE0 /* AFLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFLibrary.m; path = AmberKit/AFLibrary.m; sourceTree = "<group>"; };
 		53C518610FF2BD8F003BFCE0 /* AFSourceNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFSourceNode.h; path = AmberKit/AFSourceNode.h; sourceTree = "<group>"; };
@@ -493,6 +495,7 @@
 			files = (
 				5300213F0F8819E00044D37F /* AmberFoundation.framework in Frameworks */,
 				5300213A0F8819C00044D37F /* Foundation.framework in Frameworks */,
+				53C156F7104060E7008D1E82 /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -764,6 +767,7 @@
 		537E52F10CFC89760084F920 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				53C156F6104060E7008D1E82 /* CoreServices.framework */,
 				537E79710F54765000C8E3D4 /* Quartz.framework */,
 				53692C180F1B87CA0051C367 /* QuartzCore.framework */,
 				537E7A560F5477B100C8E3D4 /* ApplicationServices.framework */,
@@ -1597,12 +1601,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = "CoreNetworking-Info.plist";
 				INSTALL_PATH = "@rpath/";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				PREBINDING = NO;
 				PRODUCT_NAME = CoreNetworking;
 			};
@@ -1623,12 +1621,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = "CoreNetworking-Info.plist";
 				INSTALL_PATH = "@rpath/";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				PREBINDING = NO;
 				PRODUCT_NAME = CoreNetworking;
 			};
@@ -1734,12 +1726,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INSTALL_PATH = /usr/local/lib;
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(PUBLIC_HEADERS_FOLDER_PATH)/private\n";
 				PRODUCT_NAME = CoreNetworking;
@@ -1758,12 +1744,6 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INSTALL_PATH = /usr/local/lib;
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(PUBLIC_HEADERS_FOLDER_PATH)/private\n";
 				PRODUCT_NAME = CoreNetworking;
