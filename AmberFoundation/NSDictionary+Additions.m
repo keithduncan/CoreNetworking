@@ -23,4 +23,26 @@
 	return difference;
 }
 
+- (id)objectForCaseInsensitiveKey:(NSString *)key {
+#if NS_BLOCKS_AVAILABLE
+	__block id object = nil;
+	
+	[self enumerateKeysAndObjectsWithOptions:NSEnumerationConcurrent usingBlock:^ (id currentKey, id currentObject, BOOL *stop) {
+		if ([key caseInsensitiveCompare:currentKey] != NSOrderedSame) return;
+		
+		object = currentObject;
+		*stop = YES;
+	}];
+	
+	return object;
+#else
+	for (NSString *currentKey in self) {
+		if ([currentKey caseInsensitiveCompare:key] != NSOrderedSame) continue;
+		return [self objectForKey:currentKey];
+	}
+	
+	return nil;
+#endif
+}
+
 @end
