@@ -63,7 +63,7 @@
 		533F5D470FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5D480FBF622700169C14 /* NSControl+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5D460FBF622700169C14 /* NSControl+Additions.m */; };
 		533F5D490FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5349CAAE1040245A0030FD57 /* AFHTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5349CAAC1040245A0030FD57 /* AFHTTPServer.h */; };
+		5349CAAE1040245A0030FD57 /* AFHTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5349CAAC1040245A0030FD57 /* AFHTTPServer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5349CAAF1040245A0030FD57 /* AFHTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5349CAAD1040245A0030FD57 /* AFHTTPServer.m */; };
 		5349CAB01040245A0030FD57 /* AFHTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5349CAAC1040245A0030FD57 /* AFHTTPServer.h */; };
 		5349CAB11040245A0030FD57 /* AFHTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5349CAAD1040245A0030FD57 /* AFHTTPServer.m */; };
