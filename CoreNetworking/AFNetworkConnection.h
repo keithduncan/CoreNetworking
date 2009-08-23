@@ -32,7 +32,7 @@
 	The default implementation throws an exception.
  
 	@result
-	Make sure you return the whole type, including the transport layer, @"<application type>.<transport type>"
+	You only need to return the application type, excluding the transport type where @"_<application protocol>._<transport protocol>".
  */
 + (NSString *)serviceDiscoveryType;
 

@@ -8,9 +8,15 @@
 
 #import "AFNetworkConnection.h"
 
+#import "AFNetworkTransport.h"
+
 @implementation AFNetworkConnection
 
 @dynamic delegate;
+
++ (Class)lowerLayer {
+	return [AFNetworkTransport class];
+}
 
 + (AFInternetTransportSignature)transportSignatureForScheme:(NSString *)scheme {
 #warning this method should parse /etc/services to determine the default port mappings
