@@ -24,7 +24,6 @@
 @synthesize transportInfo=_transportInfo;
 
 + (Class)lowerLayer {
-	[self doesNotRecognizeSelector:_cmd];
 	return Nil;
 }
 
