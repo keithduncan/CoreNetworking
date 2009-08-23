@@ -79,9 +79,15 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 @synthesize connectionFlags=_connectionFlags;
 @synthesize writeQueue=_writeQueue, readQueue=_readQueue;
 
++ (Class)lowerLayer {
+	return [AFNetworkSocket class];
+}
+
 - (id)initWithLowerLayer:(id <AFTransportLayer>)layer {
 	self = [super initWithLowerLayer:layer];
 	if (self == nil) return nil;
+	
+	NSParameterAssert([layer isKindOfClass:[AFNetworkSocket class]]);
 	
 	AFNetworkSocket *networkSocket = (AFNetworkSocket *)layer;
 	CFSocketRef socket = (CFSocketRef)[networkSocket socket];
@@ -146,7 +152,7 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	CFWriteStreamRef writeStream;
 	CFReadStreamRef readStream;
 	
-	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, _peer._hostDestination.transport->port, &readStream, &writeStream);
+	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, _peer._hostDestination.transport.port, &readStream, &writeStream);
 	
 	[self _configureReadStream:readStream writeStream:writeStream];
 	
