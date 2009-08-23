@@ -39,12 +39,12 @@
 	AFInternetTransportSignature transportSignature = [[self class] transportSignatureForScheme:[endpoint scheme]];
 	
 	if ([endpoint port] != nil) {
-		transportSignature.port = [[endpoint port] intValue];
+		transportSignature.port = [[endpoint port] integerValue];
 	}
 	
 	AFNetworkTransportHostSignature peerSignature = {
 		.host = host,
-		.transport = &transportSignature,
+		.transport = transportSignature,
 	};
 	
 	return [self initWithPeerSignature:&peerSignature];
