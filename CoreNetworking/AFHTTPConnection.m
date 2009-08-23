@@ -51,7 +51,7 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 }
 
 + (NSString *)serviceDiscoveryType {
-	return @"_http._tcp";
+	return @"_http";
 }
 
 - (id)init {
