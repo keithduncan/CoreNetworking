@@ -28,6 +28,14 @@ struct AFSocketSignature {
 typedef struct AFSocketSignature AFSocketSignature;
 
 /*!
+	@brief
+	Simple equality test, to be used for determining the Bonjour protocol string to advertise with @"_tcp" ot @"_udp".
+ */
+NS_INLINE BOOL AFSocketSignatureEqualToSignature(AFSocketSignature lhs, AFSocketSignature rhs) {
+	return (memcmp(&lhs, &rhs, sizeof(AFSocketSignature)) == 0);
+}
+
+/*!
     @brief
 	This is suitable for creating a network TCP socket.
 */
@@ -84,7 +92,7 @@ struct AFNetworkTransportHostSignature {
 	/*
 	 *	This defines _how_ to communicate (and may allow for the return of a specific handler subclass from the creation methods)
 	 */
-	const AFInternetTransportSignature *transport;
+	const AFInternetTransportSignature transport;
 };
 typedef struct AFNetworkTransportHostSignature AFNetworkTransportHostSignature;
 

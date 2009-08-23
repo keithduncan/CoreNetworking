@@ -35,7 +35,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 @synthesize renderers=_renderers;
 
 + (id)server {
-	return [[[self alloc] initWithLowerLayer:[AFNetworkServer server] encapsulationClass:[AFHTTPConnection class]] autorelease];
+	return [[[self alloc] initWithEncapsulationClass:[AFHTTPConnection class]] autorelease];
 }
 
 + (NSArray *)_implementedMethods {
@@ -70,7 +70,13 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 }
 
 - (void)layerDidOpen:(id)layer {
-	[super layerDidOpen:layer];
+	// Note: this is a temporary solution to eliminate a compiler warning
+	struct objc_super superclass = {
+		.receiver = self,
+		.super_class = [self superclass],
+	};
+	(void (*)(id, SEL, id))objc_msgSendSuper(&superclass, _cmd, layer);
+	if (![layer isKindOfClass:[AFHTTPConnection class]]) return;
 	
 	AFHTTPConnection *connection = layer;
 	
@@ -141,8 +147,14 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 		[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
 	}
 	@catch (NSException *exception) {
-		NSLog(@"*** %@ - %@", [exception name], [exception reason], nil);
-		NSLog(@"%@", [exception callStackReturnAddresses], nil);
+		printf("*** Caught Response Handling Exception '%s', reason '%s'\n", [[exception name] UTF8String], [[exception reason] UTF8String], nil);
+		printf("*** Call Stack at throw:\n(\n", nil);
+		NSArray *addresses = [exception callStackReturnAddresses];
+		for (NSUInteger index = 0; index < [addresses count]; index++) {
+			NSNumber *address = [addresses objectAtIndex:index];
+			printf("\t%ld\t0x%qX\n", index, (unsigned long long)[address unsignedIntegerValue], nil);
+		}
+		printf(")\n", nil);
 		
 		AFHTTPStatusCode responseCode = AFHTTPStatusCodeServerError;
 		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kPangolinServerVersion)) autorelease];

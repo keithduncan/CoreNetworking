@@ -8,18 +8,18 @@
 
 #import "AFNetworkServer.h"
 
+#import "AFNetworkSocket.h"
+#import "AFNetworkTransport.h"
+#import	"AFNetworkTypes.h"
+#import "AFNetworkFunctions.h"
+#import "AFNetworkPool.h"
+#import "AFNetworkConnection.h"
+
 #import <sys/socket.h>
 #import <sys/un.h>
 #import <arpa/inet.h>
 #import <objc/runtime.h>
 #import "AmberFoundation/AmberFoundation.h"
-
-#import "AFNetworkSocket.h"
-#import "AFNetworkTransport.h"
-
-#import	"AFNetworkTypes.h"
-#import "AFNetworkFunctions.h"
-#import "AFNetworkPool.h"
 
 // Note: import this header last, allowing for any of the previous headers to import <net/if.h> see the getifaddrs man page for details
 #import <ifaddrs.h>
@@ -27,15 +27,19 @@
 static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"ServerHostConnectionsPropertyObservationContext";
 
 @interface AFNetworkServer () <AFConnectionLayerControlDelegate>
-@property (readwrite, assign) Class clientClass;
+@property (readonly) NSArray *encapsulationClasses;
+@property (readonly) NSArray *clientPools;
+@end
+
+@interface AFNetworkServer (Private)
+- (NSUInteger)_bucketContainingLayer:(id)layer;
 @end
 
 @implementation AFNetworkServer
 
-@synthesize lowerLayer=_lowerLayer, delegate=_delegate;
-
-@synthesize clients=_clients;
-@synthesize clientClass=_clientClass;
+@synthesize delegate=_delegate;
+//@synthesize bonjourDomains=_bonjourDomains, bonjourName=_bonjourName;
+@synthesize encapsulationClasses=_encapsulationClasses, clientPools=_clientPools;
 
 + (NSSet *)allInternetSocketAddresses {
 	NSMutableSet *networkAddresses = [NSMutableSet set];
@@ -71,54 +75,60 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 }
 
 + (id)server {
-	return [[[self alloc] initWithLowerLayer:[[[AFNetworkServer alloc] initWithLowerLayer:nil encapsulationClass:[AFNetworkSocket class]] autorelease] encapsulationClass:[AFNetworkTransport class]] autorelease];
+	return [[[AFNetworkServer alloc] initWithEncapsulationClass:[AFNetworkTransport class]] autorelease];
 }
 
-- (id)initWithLowerLayer:(AFNetworkServer *)server {
+#pragma mark -
+
+- (id)init {
+	self = [super init];
+	if (self == nil) return nil;
+	
+	//_bonjourDomains = [[NSMutableSet alloc] init];
+	//_bonjourServices = [[NSMutableDictionary alloc] init];
+	
+	return self;
+}
+
+- (id)initWithEncapsulationClass:(Class)clientClass {
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_lowerLayer = [server retain];
-	_lowerLayer.delegate = self;
+	NSMutableArray *encapsulation = [[NSMutableArray alloc] initWithObjects:clientClass, nil];
+	for (id lowerLayer = [clientClass lowerLayer]; lowerLayer != Nil; lowerLayer = [lowerLayer lowerLayer]){
+		[encapsulation insertObject:lowerLayer atIndex:0];
+	}
+	_encapsulationClasses = encapsulation;
+	
+	NSMutableArray *pools = [[NSMutableArray alloc] initWithCapacity:[encapsulation count]];
+	for (NSUInteger index = 0; index < [encapsulation count]; index++) {
+		AFNetworkPool *currentPool = [[[AFNetworkPool alloc] init] autorelease];
+		[pools addObject:currentPool];
+	}
+	[[pools lastObject] addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&AFNetworkServerHostConnectionsPropertyObservationContext];
+	_clientPools = pools;
 	
 	return self;
-}
-
-- (id)initWithLowerLayer:(AFNetworkServer *)server encapsulationClass:(Class)clientClass {
-	self = [self initWithLowerLayer:(id)server];
-	if (self == nil) return nil;
-	
-	_clients = [[AFNetworkPool alloc] init];
-	[_clients addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionNew) context:&AFNetworkServerHostConnectionsPropertyObservationContext];
-	
-	_clientClass = clientClass;
-	
-	return self;
-}
-
-- (void)finalize {
-	[_clients close];
-	
-	[super finalize];
 }
 
 - (void)dealloc {
-	[_lowerLayer release];
+	//[_bonjourDomains release];
+	//[_bonjourServices release];
 	
-	[_clients close];
+	[_encapsulationClasses release];
 	
-	[_clients removeObserver:self forKeyPath:@"connections"];
-	[_clients release];
+	[[_clientPools lastObject] removeObserver:self forKeyPath:@"connections"];
+	[_clientPools release];
 	
 	[super dealloc];
 }
 
-- (id)forwardingTargetForSelector:(SEL)selector {
-	return self.lowerLayer;
-}
-
-- (BOOL)respondsToSelector:(SEL)selector {
-	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == &AFNetworkServerHostConnectionsPropertyObservationContext) {
+		if (![[change objectForKey:NSKeyValueChangeKindKey] unsignedIntegerValue] == NSKeyValueChangeInsertion) return;
+		
+		[[change valueForKey:NSKeyValueChangeNewKey] makeObjectsPerformSelector:@selector(setDelegate:) withObject:self];
+	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 - (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {	
@@ -136,17 +146,33 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 	return [self delegateProxy:nil];
 }
 
-- (BOOL)openInternetSocketsWithTransportSignature:(AFInternetTransportSignature *)signature addresses:(NSSet *)sockaddrs {
-	return [self openInternetSocketsWithSocketSignature:signature->type port:&signature->port addresses:sockaddrs];
+- (AFNetworkPool *)clients {
+	return [self.clientPools lastObject];
 }
+
+- (BOOL)openInternetSocketsWithTransportSignature:(AFInternetTransportSignature)signature addresses:(NSSet *)sockaddrs {
+	return [self openInternetSocketsWithSocketSignature:signature.type port:&signature.port addresses:sockaddrs];
+}
+
+- (NSString *)_serviceDiscoveryType:(AFSocketSignature *)signature {
+	NSString *protocolType = nil;
+	if (AFSocketSignatureEqualToSignature(*signature, AFNetworkSocketSignatureTCP)) protocolType = @"_tcp";
+	else if (AFSocketSignatureEqualToSignature(*signature, AFNetworkSocketSignatureUDP)) protocolType = @"_udp";
+	else [NSException raise:NSInvalidArgumentException format:@"%s, (%p) is an invalid internet signature type", signature, nil];
 	
+	NSString *applicationType = [[[self encapsulationClasses] lastObject] serviceDiscoveryType];
+	NSString *serviceType = [NSString stringWithFormat:@"%@.%@", applicationType, protocolType, nil];
+	return serviceType;
+}
+
 - (BOOL)openInternetSocketsWithSocketSignature:(const AFSocketSignature *)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs {
 	BOOL completeSuccess = YES;
 	
 	for (NSData *currentAddress in sockaddrs) {
 		currentAddress = [[currentAddress mutableCopy] autorelease];
 		
-//#warning explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+// Note: explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
+		
 		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddress))->sin_port = htons(*port);
 		
 		AFNetworkSocket *socket = [self openSocketWithSignature:signature address:currentAddress];
@@ -164,14 +190,26 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 		}
 	}
 	
+#if 0
+	if (self.bonjourName != nil) {		
+		NSMutableSet *services = [NSMutableSet set];
+		
+		NSString *serviceType = [self _serviceDiscoveryType:signature];
+		
+		for (NSString *currentDomain in self.bonjourDomains) {
+			CFNetServiceRef currentService = (CFNetServiceRef)[NSMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)currentDomain, (CFStringRef)serviceType, (CFStringRef)self.bonjourName, *port)) autorelease];
+			[services addObject:(id)currentService];
+		}
+		
+#error register the services
+	}
+#endif
+	
 	return completeSuccess;
 }
 
 - (BOOL)openPathSocketWithLocation:(NSURL *)location {
-	if (![location isFileURL]) {
-		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) is not a file: scheme URL", __PRETTY_FUNCTION__, location, nil];
-		return NO;
-	}
+	NSParameterAssert([location isFileURL]);
 	
 	if (strlen([[location path] fileSystemRepresentation]) >= 104) {
 		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) must be < 104 characters including the NULL terminator", __PRETTY_FUNCTION__, [location path], nil];
@@ -188,11 +226,7 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 	return ([self openSocketWithSignature:(AFSocketSignature *)&AFLocalSocketSignature address:[NSData dataWithBytes:&address length:address.sun_len]] != nil);
 }
 
-- (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature *)signature address:(NSData *)address {
-	AFNetworkServer *lowestLayer = self;
-	while (lowestLayer.lowerLayer != nil) lowestLayer = lowestLayer.lowerLayer;
-	self = lowestLayer;
-	
+- (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature *)signature address:(NSData *)address {	
 	struct sockaddr addr;
 	[address getBytes:&addr length:sizeof(struct sockaddr)];
 	
@@ -207,32 +241,37 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 	AFNetworkSocket *socket = [[[AFNetworkSocket alloc] initWithSignature:&socketSignature callbacks:kCFSocketAcceptCallBack] autorelease];
 	if (socket == nil) return nil;
 	
-	[self.clients addConnectionsObject:socket];
+	[[self.clientPools objectAtIndex:0] addConnectionsObject:socket];
+	
+	[socket setDelegate:(id)self];
 	[socket open];
 	
 	return socket;
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &AFNetworkServerHostConnectionsPropertyObservationContext) {
-		if (![[change objectForKey:NSKeyValueChangeKindKey] unsignedIntegerValue] == NSKeyValueChangeInsertion) return;
-		
-		[[change valueForKey:NSKeyValueChangeNewKey] makeObjectsPerformSelector:@selector(setDelegate:) withObject:self];
-	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+- (void)encapsulateNetworkLayer:(id <AFConnectionLayer>)layer {
+	NSUInteger nextBucket = ([self.encapsulationClasses indexOfObject:[layer class]] + 1);
+	if (nextBucket >= [self.encapsulationClasses count]) return;
+	
+	Class encapsulationClass = [self.encapsulationClasses objectAtIndex:nextBucket];
+	
+	id <AFConnectionLayer> newConnection = [[[encapsulationClass alloc] initWithLowerLayer:layer] autorelease];
+	
+	[[self.clientPools objectAtIndex:nextBucket] addConnectionsObject:newConnection];
+	
+	[newConnection setDelegate:(id)self];
+	[newConnection open];
 }
 
-- (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)newLayer {
-	id <AFConnectionLayer> connection = [[[self clientClass] alloc] initWithLowerLayer:newLayer];
-	return connection;
-}
-
-- (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection {
-	return YES; // the default implementation has no reason to turn anyone away
-}
+#pragma mark -
+#pragma mark Delegate
 
 - (void)layer:(id)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
-	if ([self.clients.connections containsObject:layer]) {
-		[self.delegate layer:self didAcceptConnection:newLayer];
+	NSUInteger bucket = [self _bucketContainingLayer:layer];
+	
+	if (bucket == NSUIntegerMax || bucket == [self.clientPools count]) {
+		if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
+			[self.delegate layer:self didAcceptConnection:newLayer];
 		return;
 	}
 	
@@ -243,30 +282,46 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 		}
 	}
 	
-	id <AFConnectionLayer> newConnection = [[self newApplicationLayerForNetworkLayer:newLayer] autorelease];
-	
-	[self.clients addConnectionsObject:newConnection];
-	[newConnection open];
+	[self encapsulateNetworkLayer:newLayer];
 }
 
 - (void)layerDidOpen:(id <AFTransportLayer>)layer {
-	if (![self.clients.connections containsObject:layer]) return;
-	if (self.lowerLayer == nil) return;
-	
-	if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
-		[self.delegate layer:self didAcceptConnection:layer];
+	if ([self _bucketContainingLayer:layer] == 0) return;
+	[self encapsulateNetworkLayer:(id)layer];
 }
 
 - (void)layerDidClose:(id <AFConnectionLayer>)layer {
-	if (![self.clients.connections containsObject:layer]) return;
+	NSUInteger bucket = [self _bucketContainingLayer:layer];
 	
-	if (self.lowerLayer != nil) {
+	if (layer.lowerLayer != nil) {
 		id <AFTransportLayer> lowerLayer = [layer lowerLayer];
-		lowerLayer.delegate = (id)self.lowerLayer;
+		
+		lowerLayer.delegate = (id)self;
 		[lowerLayer close];
 	}
 	
-	[self.clients removeConnectionsObject:layer];
+	[[self.clientPools objectAtIndex:bucket] removeConnectionsObject:layer];
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindDomain:(NSString *)domainString moreComing:(BOOL)moreComing {
+	//[self.bonjourDomains addObject:domainString];
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveDomain:(NSString *)domainString moreComing:(BOOL)moreComing {
+	//[self.bonjourDomains removeObject:domainString];
+}
+
+@end
+
+@implementation AFNetworkServer (Private)
+
+- (NSUInteger)_bucketContainingLayer:(id)layer {
+	for (NSUInteger index = 0; index < [self.clientPools count]; index++) {
+		if (![[[self.clientPools objectAtIndex:index] connections] containsObject:layer]) continue;
+		return index;
+	}
+	
+	return NSUIntegerMax;
 }
 
 @end

@@ -413,9 +413,8 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	
 	if (!result) {
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-								  NSLocalizedStringWithDefaultValue(@"AFSocketConnectionTLSError", @"AFSocketConnection", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Couldn't start TLS, the connection will remain unsecure.", nil), NSLocalizedDescriptionKey,
+								  NSLocalizedStringWithDefaultValue(@"AFNetworkTransportTLSError", @"AFNetworkTransport", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Couldn't start TLS, the connection is insecure.", nil), NSLocalizedDescriptionKey,
 								  nil];
-		
 		NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFNetworkTransportTLSError userInfo:userInfo];
 		[self.delegate layer:self didNotStartTLS:error];
 	}

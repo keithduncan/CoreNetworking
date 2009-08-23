@@ -88,7 +88,16 @@
 
 - (void)layerDidOpen:(id)layer {
 	if (layer == self.lowerLayer) layer = self;
-	[self.delegate layerDidOpen:layer];
+	
+	if ([self.delegate respondsToSelector:_cmd])
+		[self.delegate layerDidOpen:layer];
+}
+
+- (void)layerDidClose:(id)layer {
+	if (layer == self.lowerLayer) layer = self;
+	
+	if ([self.delegate respondsToSelector:_cmd])
+		[self.delegate layerDidClose:layer];
 }
 
 @end

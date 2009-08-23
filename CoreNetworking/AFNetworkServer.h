@@ -15,25 +15,46 @@
 @class AFNetworkPool;
 @class AFNetworkServer;
 
+/*!
+	@brief
+	The server should consult the delegate for conditional operations. If your subclass provides a delegate protocol, it should conform to this one too.
+ */
 @protocol AFNetworkServerDelegate <AFConnectionLayerHostDelegate>
+
  @optional
+
+/*
+	@brief
+	You can return FALSE to deny a client connectivity.
+ 
+	@detail
+	This is sent before each layer is opened, allowing you to make a progressive decision.
+ */
 - (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection;
+
 @end
 
 /*!
 	@brief
 	This is a generic construct for spawning new client layers.
- 
+	
 	@detail
 	After instantiating the server you can use one of the convenience methods to open socket(s)
  */
-@interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFConnectionLayerHostDelegate> {
+@interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFConnectionLayerHostDelegate, NSNetServiceBrowserDelegate> {
 	id <AFNetworkServerDelegate> _delegate;
-	AFNetworkServer *_lowerLayer;
 	
-	AFNetworkPool *_clients;
-	Class _clientClass;
+	//NSMutableSet *_bonjourDomains;
+	//NSString *_bonjourName;
+	//NSMutableDictionary *_bonjourServices;
+	
+	NSArray *_encapsulationClasses;
+	NSArray *_clientPools;
 }
+
+/*
+	Host Addresses
+ */
 
 /*!
 	@detail
@@ -55,6 +76,10 @@
  */
 + (NSSet *)localhostInternetSocketAddresses;
 
+/*
+	Initialization
+ */
+
 /*!
 	@brief
 	Override Constructor
@@ -67,21 +92,13 @@
 
 /*!
 	@brief
-	This method is called by the designated initialiser.
- */
-- (id)initWithLowerLayer:(AFNetworkServer *)server;
-
-/*!
-	@brief
 	Designated Initialiser.
  */
-- (id)initWithLowerLayer:(AFNetworkServer *)server encapsulationClass:(Class)clientClass;
+- (id)initWithEncapsulationClass:(Class)clientClass;
 
-/*!
-	@brief
-	The server that this one sits atop. The lowerLayer delegate is set to this object.
+/*
+	State
  */
-@property (readonly) AFNetworkServer *lowerLayer;
 
 /*!
 	@brief
@@ -89,11 +106,37 @@
  */
 @property (assign) id <AFNetworkServerDelegate> delegate;
 
+#if 0
+/*!
+	@brief
+	You can provide additional registration domains in this property.
+ 
+	@detail
+	Each collection of internet sockets are registered.
+ */
+@property (readonly) NSMutableSet *bonjourDomains;
+/*!
+	@brief
+	If set, this name is used to advertise each collection of internet sockets opened.
+ */
+@property (copy) NSString *bonjourName;
+#endif
+
+/*!
+	@brief
+	This pool contains the top-level connection objects this server has created.
+ */
+@property (readonly, retain) AFNetworkPool *clients;
+
+/*
+	Socket Opening
+ */
+
 /*!
 	@brief
 	See <tt>-openInternetSocketsWithSocketSignature:port:addresses:</tt>.
  */
-- (BOOL)openInternetSocketsWithTransportSignature:(const AFInternetTransportSignature *)signature addresses:(NSSet *)sockaddrs;
+- (BOOL)openInternetSocketsWithTransportSignature:(const AFInternetTransportSignature)signature addresses:(NSSet *)sockaddrs;
 
 /*!
 	@brief
@@ -115,7 +158,7 @@
 	This method makes no provisions for deleting an existing socket should it exist, and will fail if one does.
  
 	@param |location|
-	Only file:// URLs are supported.
+	Only file:// URLs are supported, an exception is thrown if you profide another scheme.
  
 	@result
 	NO if the socket couldn't be created
@@ -124,34 +167,24 @@
 
 /*!
 	@brief
-	This is the call-through method, all the other socket opening methods call down to this one.
- 
+	This is a funnel method, all the socket opening methods call this one.
+	
 	@detail
-	This method is rarely applicable to higher-level servers, therefore this method contains 
-	its own forwarding code (because all instances respond to it) and the sockets are opened
-	on the lowest layer of the stack.
+	This method is rarely applicable to higher-level servers, sockets are opened on the lowest layer of the stack.
  */
 - (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature *)signature address:(NSData *)address;
 
-/*!
-	@brief
-	This class is used to instantiate a new higher-level layer when the server receives the <tt>-layer:didAcceptConnection:</tt> delegate callback
+/*
+	Override Points
  */
-@property (readonly, assign) Class clientClass;
 
 /*!
 	@brief
-	This method uses the <tt>+clientClass</tt>. This returns an object with +1 retain count, don't return an autoreleased object.
- 
+	This method determines the class of the |socket| parameter and wraps it in the encapsulation class one higher than it.
+	
 	@detail
-	Override point, if you need to customize your application layer before it is added to the connection pool, call super for creation and setup first
+	Override point, if you need to customize layers before they are added to their connection pool, call super for creation first.
  */
-- (id <AFConnectionLayer>)newApplicationLayerForNetworkLayer:(id <AFConnectionLayer>)socket;
-
-/*!
-	@brief
-	This pool contains the instantiated clientClass objects this server has created.
- */
-@property (readonly, retain) AFNetworkPool *clients;
+- (void)encapsulateNetworkLayer:(id <AFConnectionLayer>)layer;
 
 @end
