@@ -78,11 +78,10 @@
 
 /*!
 	@brief
-	Override Constructor
- 
+	Designated Constructor.
+	
 	@detail
-	This should call the designated initialiser with an appropriate |lowerLayer| and encapsulation class.
-	By default this creates a server with no |lowerLayer| and <tt>AFNetworkTransport</tt> as the encapsulation class.
+	This should call the designated initialiser with an appropriate encapsulation class. By default this creates a server with <tt>AFNetworkTransport</tt> as the encapsulation class.
  */
 + (id)server;
 
