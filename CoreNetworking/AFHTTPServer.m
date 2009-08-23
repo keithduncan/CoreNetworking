@@ -73,7 +73,12 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 	// Note: this is a temporary solution to eliminate a compiler warning
 	struct objc_super superclass = {
 		.receiver = self,
-		.super_class = [self superclass],
+#if TARGET_OS_IPHONE
+		.class
+#else 
+		.super_class
+#endif
+			 = [self superclass],
 	};
 	(void (*)(id, SEL, id))objc_msgSendSuper(&superclass, _cmd, layer);
 	if (![layer isKindOfClass:[AFHTTPConnection class]]) return;
