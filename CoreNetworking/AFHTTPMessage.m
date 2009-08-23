@@ -49,6 +49,7 @@ NSString *const AFHTTPMessageContentLengthHeader = @"Content-Length";
 NSString *const AFHTTPMessageHostHeader = @"Host";
 NSString *const AFHTTPMessageConnectionHeader = @"Connection";
 NSString *const AFHTTPMessageContentTypeHeader = @"Content-Type";
+NSString *const AFHTTPMessageAllowHeader = @"Allow";
 
 CFStringRef AFHTTPStatusCodeDescription(AFHTTPStatusCode code) {
 	switch (code) {
@@ -61,6 +62,8 @@ CFStringRef AFHTTPStatusCodeDescription(AFHTTPStatusCode code) {
 			return CFSTR("Bad Request");
 		case AFHTTPStatusCodeNotFound:
 			return CFSTR("Not Found");
+		case AFHTTPStatusCodeNotAllowed:
+			return CFSTR("Not Allowed");
 		case AFHTTPStatusCodeUpgradeRequired:
 			return CFSTR("Upgrade Required");
 			

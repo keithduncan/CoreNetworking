@@ -56,18 +56,21 @@ extern NSString *const AFHTTPMessageContentLengthHeader;
 extern NSString *const AFHTTPMessageHostHeader;
 extern NSString *const AFHTTPMessageConnectionHeader;
 extern NSString *const AFHTTPMessageContentTypeHeader;
+extern NSString *const AFHTTPMessageAllowHeader;
 
 /*
 	AFHTTPConnection Message Codes
 */
 
 enum {
+	// 2xx class codes indicate the request succeeded
 	AFHTTPStatusCodeOK = 200, /* OK */
 	AFHTTPStatusCodePartialContent = 206, /* Partial Content */
 	
 	// 4xx class codes indicate a client error
 	AFHTTPStatusCodeBadRequest = 400, /* Bad Request */
 	AFHTTPStatusCodeNotFound = 404, /* Not Found */
+	AFHTTPStatusCodeNotAllowed = 405, /* Not Allowed */
 	AFHTTPStatusCodeUpgradeRequired = 426, /*  Upgrade Required */
 	
 	// 5xx class codes indicate a server error
