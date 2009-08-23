@@ -41,12 +41,8 @@
 	@detail
 	After instantiating the server you can use one of the convenience methods to open socket(s)
  */
-@interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFConnectionLayerHostDelegate, NSNetServiceBrowserDelegate> {
+@interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFConnectionLayerHostDelegate> {
 	id <AFNetworkServerDelegate> _delegate;
-	
-	//NSMutableSet *_bonjourDomains;
-	//NSString *_bonjourName;
-	//NSMutableDictionary *_bonjourServices;
 	
 	NSArray *_encapsulationClasses;
 	NSArray *_clientPools;
@@ -106,28 +102,6 @@
  */
 @property (assign) id <AFNetworkServerDelegate> delegate;
 
-#if 0
-/*!
-	@brief
-	You can provide additional registration domains in this property.
- 
-	@detail
-	Each collection of internet sockets are registered.
- */
-@property (readonly) NSMutableSet *bonjourDomains;
-/*!
-	@brief
-	If set, this name is used to advertise each collection of internet sockets opened.
- */
-@property (copy) NSString *bonjourName;
-#endif
-
-/*!
-	@brief
-	This pool contains the top-level connection objects this server has created.
- */
-@property (readonly, retain) AFNetworkPool *clients;
-
 /*
 	Socket Opening
  */
@@ -148,18 +122,18 @@
 	@result
 	NO if any of the sockets couldn't be created, this will be expanded in future to allow delegate interaction to determine failure.
  */
-- (BOOL)openInternetSocketsWithSocketSignature:(const AFSocketSignature *)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs;
+- (BOOL)openInternetSocketsWithSocketSignature:(const AFSocketSignature)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs;
 
 /*!
 	@brief
 	This method opens a UNIX socket at the specified path.
- 
+	
 	@detail
 	This method makes no provisions for deleting an existing socket should it exist, and will fail if one does.
- 
+	
 	@param |location|
 	Only file:// URLs are supported, an exception is thrown if you profide another scheme.
- 
+	
 	@result
 	NO if the socket couldn't be created
  */
@@ -172,10 +146,10 @@
 	@detail
 	This method is rarely applicable to higher-level servers, sockets are opened on the lowest layer of the stack.
  */
-- (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature *)signature address:(NSData *)address;
+- (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature)signature address:(NSData *)address;
 
 /*
-	Override Points
+	Server Clients
  */
 
 /*!
@@ -186,5 +160,11 @@
 	Override point, if you need to customize layers before they are added to their connection pool, call super for creation first.
  */
 - (void)encapsulateNetworkLayer:(id <AFConnectionLayer>)layer;
+
+/*!
+	@brief
+	The pools of interest are likely to be the lowest level at index 0 containing the AFNetworkSockets and the top most pool containing the top-level connection objects this server has created.
+ */
+@property (readonly) NSArray *clientPools;
 
 @end

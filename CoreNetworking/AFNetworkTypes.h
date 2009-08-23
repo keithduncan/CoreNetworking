@@ -39,19 +39,19 @@ NS_INLINE BOOL AFSocketSignatureEqualToSignature(AFSocketSignature lhs, AFSocket
     @brief
 	This is suitable for creating a network TCP socket.
 */
-extern const AFSocketSignature AFNetworkSocketSignatureTCP;
+extern const AFSocketSignature AFSocketSignatureNetworkTCP;
 
 /*!
 	@brief
 	This is suitable for creating a network UDP socket.
  */
-extern const AFSocketSignature AFNetworkSocketSignatureUDP;
+extern const AFSocketSignature AFSocketSignatureNetworkUDP;
 
 /*!
 	@brief
-	This is suitable for creating a local UNIX socket.
+	This is suitable for creating a local UNIX path socket.
  */
-extern const AFSocketSignature AFLocalSocketSignature;
+extern const AFSocketSignature AFSocketSignatureLocalPath;
 
 /*!
 	@brief
@@ -63,13 +63,10 @@ extern const AFSocketSignature AFLocalSocketSignature;
 	Identifies the Transport Layer address to communicate using (see RFC 1122) in network byte order.
  */
 struct AFInternetTransportSignature {
-	const AFSocketSignature *type;
+	const AFSocketSignature type;
 	SInt32 port;
 };
 typedef struct AFInternetTransportSignature AFInternetTransportSignature;
-
-extern const AFInternetTransportSignature AFInternetTransportSignatureHTTP;
-extern const AFInternetTransportSignature AFInternetTransportSignatureHTTPS;
 
 /*!
 	@brief

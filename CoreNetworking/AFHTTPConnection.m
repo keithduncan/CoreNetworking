@@ -45,8 +45,22 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 }
 
 + (AFInternetTransportSignature)transportSignatureForScheme:(NSString *)scheme {
-	if ([scheme compare:AFNetworkSchemeHTTP options:NSCaseInsensitiveSearch] == NSOrderedSame) return AFInternetTransportSignatureHTTP;
-	if ([scheme compare:AFNetworkSchemeHTTPS options:NSCaseInsensitiveSearch] == NSOrderedSame) return AFInternetTransportSignatureHTTPS;
+	if ([scheme compare:AFNetworkSchemeHTTP options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+		AFInternetTransportSignature AFInternetTransportSignatureHTTP = {
+			.type = AFSocketSignatureNetworkTCP,
+			.port = 80,
+		};
+		
+		return AFInternetTransportSignatureHTTP;
+	}
+	if ([scheme compare:AFNetworkSchemeHTTPS options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+		AFInternetTransportSignature AFInternetTransportSignatureHTTPS = {
+			.type = AFSocketSignatureNetworkTCP,
+			.port = 443,
+		};
+		
+		return AFInternetTransportSignatureHTTPS;
+	}
 	return [super transportSignatureForScheme:scheme];
 }
 

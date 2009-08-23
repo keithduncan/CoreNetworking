@@ -24,11 +24,10 @@
 // Note: import this header last, allowing for any of the previous headers to import <net/if.h> see the getifaddrs man page for details
 #import <ifaddrs.h>
 
-static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"ServerHostConnectionsPropertyObservationContext";
+NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 
 @interface AFNetworkServer () <AFConnectionLayerControlDelegate>
 @property (readonly) NSArray *encapsulationClasses;
-@property (readonly) NSArray *clientPools;
 @end
 
 @interface AFNetworkServer (Private)
@@ -38,7 +37,6 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 @implementation AFNetworkServer
 
 @synthesize delegate=_delegate;
-//@synthesize bonjourDomains=_bonjourDomains, bonjourName=_bonjourName;
 @synthesize encapsulationClasses=_encapsulationClasses, clientPools=_clientPools;
 
 + (NSSet *)allInternetSocketAddresses {
@@ -80,16 +78,6 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 
 #pragma mark -
 
-- (id)init {
-	self = [super init];
-	if (self == nil) return nil;
-	
-	//_bonjourDomains = [[NSMutableSet alloc] init];
-	//_bonjourServices = [[NSMutableDictionary alloc] init];
-	
-	return self;
-}
-
 - (id)initWithEncapsulationClass:(Class)clientClass {
 	self = [self init];
 	if (self == nil) return nil;
@@ -111,10 +99,7 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 	return self;
 }
 
-- (void)dealloc {
-	//[_bonjourDomains release];
-	//[_bonjourServices release];
-	
+- (void)dealloc {	
 	[_encapsulationClasses release];
 	
 	[[_clientPools lastObject] removeObserver:self forKeyPath:@"connections"];
@@ -146,26 +131,11 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 	return [self delegateProxy:nil];
 }
 
-- (AFNetworkPool *)clients {
-	return [self.clientPools lastObject];
-}
-
 - (BOOL)openInternetSocketsWithTransportSignature:(AFInternetTransportSignature)signature addresses:(NSSet *)sockaddrs {
 	return [self openInternetSocketsWithSocketSignature:signature.type port:&signature.port addresses:sockaddrs];
 }
 
-- (NSString *)_serviceDiscoveryType:(AFSocketSignature *)signature {
-	NSString *protocolType = nil;
-	if (AFSocketSignatureEqualToSignature(*signature, AFNetworkSocketSignatureTCP)) protocolType = @"_tcp";
-	else if (AFSocketSignatureEqualToSignature(*signature, AFNetworkSocketSignatureUDP)) protocolType = @"_udp";
-	else [NSException raise:NSInvalidArgumentException format:@"%s, (%p) is an invalid internet signature type", signature, nil];
-	
-	NSString *applicationType = [[[self encapsulationClasses] lastObject] serviceDiscoveryType];
-	NSString *serviceType = [NSString stringWithFormat:@"%@.%@", applicationType, protocolType, nil];
-	return serviceType;
-}
-
-- (BOOL)openInternetSocketsWithSocketSignature:(const AFSocketSignature *)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs {
+- (BOOL)openInternetSocketsWithSocketSignature:(const AFSocketSignature)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs {
 	BOOL completeSuccess = YES;
 	
 	for (NSData *currentAddress in sockaddrs) {
@@ -190,49 +160,35 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 		}
 	}
 	
-#if 0
-	if (self.bonjourName != nil) {		
-		NSMutableSet *services = [NSMutableSet set];
-		
-		NSString *serviceType = [self _serviceDiscoveryType:signature];
-		
-		for (NSString *currentDomain in self.bonjourDomains) {
-			CFNetServiceRef currentService = (CFNetServiceRef)[NSMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)currentDomain, (CFStringRef)serviceType, (CFStringRef)self.bonjourName, *port)) autorelease];
-			[services addObject:(id)currentService];
-		}
-		
-#error register the services
-	}
-#endif
-	
 	return completeSuccess;
 }
 
 - (BOOL)openPathSocketWithLocation:(NSURL *)location {
 	NSParameterAssert([location isFileURL]);
 	
-	if (strlen([[location path] fileSystemRepresentation]) >= 104) {
-		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) must be < 104 characters including the NULL terminator", __PRETTY_FUNCTION__, [location path], nil];
-		return NO;
-	}
-	
 	struct sockaddr_un address;
 	bzero(&address, sizeof(struct sockaddr_un));
+	
+	unsigned int maximumLength = sizeof(address.sun_path);
+	if (strlen([[location path] fileSystemRepresentation]) >= maximumLength) {
+		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) must be < %ld characters including the NULL terminator", __PRETTY_FUNCTION__, [location path], maximumLength, nil];
+		return NO;
+	}
 	
 	address.sun_family = AF_UNIX;
 	strcpy(address.sun_path, [[location path] fileSystemRepresentation]);
 	address.sun_len = SUN_LEN(&address);
 	
-	return ([self openSocketWithSignature:(AFSocketSignature *)&AFLocalSocketSignature address:[NSData dataWithBytes:&address length:address.sun_len]] != nil);
+	return ([self openSocketWithSignature:AFSocketSignatureLocalPath address:[NSData dataWithBytes:&address length:address.sun_len]] != nil);
 }
 
-- (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature *)signature address:(NSData *)address {	
+- (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature)signature address:(NSData *)address {	
 	struct sockaddr addr;
 	[address getBytes:&addr length:sizeof(struct sockaddr)];
 	
 	CFSocketSignature socketSignature = {
-		.socketType = signature->socketType,
-		.protocol = signature->protocol,
+		.socketType = signature.socketType,
+		.protocol = signature.protocol,
 		
 		.protocolFamily = addr.sa_family,
 		.address = (CFDataRef)address,
@@ -286,7 +242,7 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 }
 
 - (void)layerDidOpen:(id <AFTransportLayer>)layer {
-	if ([self _bucketContainingLayer:layer] == 0) return;
+	if ([self _bucketContainingLayer:layer] == 0) return; // Note: these are the initial socket layers opening, nothing else is spawned at this layer
 	[self encapsulateNetworkLayer:(id)layer];
 }
 
@@ -301,14 +257,6 @@ static NSString *AFNetworkServerHostConnectionsPropertyObservationContext = @"Se
 	}
 	
 	[[self.clientPools objectAtIndex:bucket] removeConnectionsObject:layer];
-}
-
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindDomain:(NSString *)domainString moreComing:(BOOL)moreComing {
-	//[self.bonjourDomains addObject:domainString];
-}
-
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveDomain:(NSString *)domainString moreComing:(BOOL)moreComing {
-	//[self.bonjourDomains removeObject:domainString];
 }
 
 @end

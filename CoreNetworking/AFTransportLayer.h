@@ -129,7 +129,7 @@
 
 - (void)layerDidClose:(id <AFTransportLayer>)layer;
 
- @required 
+ @required
 
 /*!
 	@brief
