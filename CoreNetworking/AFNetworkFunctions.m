@@ -24,7 +24,7 @@ NS_INLINE bool sockaddr_is_ipv4_mapped(const struct sockaddr *addr) {
 }
 
 bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b) {	
-	/*! we have to handle IPv6 IPV4MAPPED addresses - convert them to IPv4 */
+	/* we have to handle IPv6 IPV4MAPPED addresses - convert them to IPv4 */
 	if (sockaddr_is_ipv4_mapped(addr_a)) {
 		const struct sockaddr_in6 *addr_a6 = (const struct sockaddr_in6 *)addr_a;
 		
@@ -71,10 +71,10 @@ bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr
 		const struct sockaddr_in6 *addr_a6 = (const struct sockaddr_in6 *)addr_a;
 		const struct sockaddr_in6 *addr_b6 = (const struct sockaddr_in6 *)addr_b;
 		
-		/*! compare scope */
+		/* compare scope */
 		if (addr_a6->sin6_scope_id && addr_b6->sin6_scope_id && (addr_a6->sin6_scope_id != addr_b6->sin6_scope_id)) return false;
 		
-		/*! compare address part 
+		/* compare address part 
 		 * either may be IN6ADDR_ANY, resulting in a good match */
 		if ((memcmp(&(addr_a6->sin6_addr), &in6addr_any,
 		            sizeof(struct in6_addr)) != 0) &&
@@ -86,7 +86,7 @@ bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr
 			return false;
 		}
 		
-		/*! compare port part 
+		/* compare port part 
 		 * either port may be 0 (any), resulting in a good match */
 		return ((addr_a6->sin6_port == 0) || (addr_b6->sin6_port == 0) || (addr_a6->sin6_port == addr_b6->sin6_port));
 	} else {
