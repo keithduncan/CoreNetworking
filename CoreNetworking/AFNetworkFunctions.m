@@ -111,7 +111,7 @@ const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen)
 
 NSError *AFErrorFromCFStreamError(CFStreamError error) {
 	if (error.domain == 0 && error.error == 0) return nil;
-	NSString *domain = @"CFStreamError (unlisted domain)", *message = nil;
+	NSString *domain = @"Unlisted CFStreamError Domain", *message = nil;
 	
 	if (error.domain == kCFStreamErrorDomainPOSIX) {
 		domain = NSPOSIXErrorDomain;
