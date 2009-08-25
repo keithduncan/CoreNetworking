@@ -90,7 +90,8 @@ bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr
 		 * either port may be 0 (any), resulting in a good match */
 		return ((addr_a6->sin6_port == 0) || (addr_b6->sin6_port == 0) || (addr_a6->sin6_port == addr_b6->sin6_port));
 	} else {
-		assert(0); // Note: Unknown address family
+		BOOL addressFamilyHandled = NO;
+		NSCParameterAssert(addressFamilyHandled);
 	}
 	
 	return false;
