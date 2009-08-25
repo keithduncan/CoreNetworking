@@ -10,10 +10,6 @@
 
 NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification";
 
-@interface AFPacket ()
-@property (readonly) NSTimeInterval duration;
-@end
-
 @implementation AFPacket
 
 @dynamic buffer;

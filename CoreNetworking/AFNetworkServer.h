@@ -25,12 +25,18 @@
 
 /*
 	@brief
-	You can return FALSE to deny a client connectivity.
+	You can return FALSE to deny connectivity.
  
 	@detail
-	This is sent before each layer is opened, allowing you to make a progressive decision.
+	This is sent before the first layer is encapsulated.
  */
 - (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection;
+
+/*!
+	@brief
+	This is sent after each layer is encapsulated; before it is opened.
+ */
+- (void)server:(AFNetworkServer *)server didEncapsulateLayer:(id <AFConnectionLayer>)connection;
 
 @end
 

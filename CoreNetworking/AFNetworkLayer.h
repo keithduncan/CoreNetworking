@@ -82,7 +82,12 @@
 /*!
 	@brief
 	This isn't currently used by the framework, it is intended for use like <tt>-[NSThread threadDictionary]</tt> to store miscellaneous data.
+ 
+	@detail
+	The network layers are KVC containers, much like a CALayer. Values for undefined keys are stored in this property.
+	
+	The dictionary returned is the result of collapsing the |transportInfo| onto the |lowerLayer.transportInfo|
  */
-@property (readonly, retain) NSMutableDictionary *transportInfo;
+@property (readonly, retain) NSDictionary *transportInfo;
 
 @end

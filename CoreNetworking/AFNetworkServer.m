@@ -215,6 +215,9 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 	
 	[[self.clientPools objectAtIndex:nextBucket] addConnectionsObject:newConnection];
 	
+	if ([self.delegate respondsToSelector:@selector(server:didEncapsulateLayer:)])
+		[self.delegate server:self didEncapsulateLayer:newConnection];
+	
 	[newConnection setDelegate:(id)self];
 	[newConnection open];
 }

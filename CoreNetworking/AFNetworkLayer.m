@@ -86,6 +86,28 @@
 	return [self delegateProxy:nil];
 }
 
+- (NSDictionary *)transportInfo {
+	NSMutableDictionary *transportInfo = [NSMutableDictionary dictionary];
+	
+	NSMutableArray *layers = [NSMutableArray array];
+	for (id layer = self; layer != nil; layer = [layer lowerLayer]) [layers insertObject:layer atIndex:0];
+	
+	for (AFNetworkLayer *currentLayer in [layers reverseObjectEnumerator]) {
+		// Note: the direct ivar access is important
+		[transportInfo setValuesForKeysWithDictionary:currentLayer->_transportInfo];
+	}
+	
+	return transportInfo;
+}
+
+- (id)valueForUndefinedKey:(NSString *)key {
+	return [_transportInfo valueForKey:key];
+}
+
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key {
+	[_transportInfo setValue:value forKey:key];
+}
+
 - (void)layerDidOpen:(id)layer {
 	if (layer == self.lowerLayer) layer = self;
 	

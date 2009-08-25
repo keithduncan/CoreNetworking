@@ -51,6 +51,12 @@ extern NSString *const AFPacketTimeoutNotificationName;
 
 /*!
 	@brief
+	The duration passed in at instantiation.
+ */
+@property (readonly) NSTimeInterval duration;
+
+/*!
+	@brief
 	This method will start an NSTimer (it will be scheduled in the current run loop) if the duration the packet was created with is >0.
  */
 - (void)startTimeout;
