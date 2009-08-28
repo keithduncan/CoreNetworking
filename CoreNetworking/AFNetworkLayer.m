@@ -14,7 +14,6 @@
 
 @interface AFNetworkLayer ()
 @property (readwrite, retain) AFNetworkLayer *lowerLayer;
-@property (readwrite, retain) NSMutableDictionary *transportInfo;
 @end
 
 @implementation AFNetworkLayer
