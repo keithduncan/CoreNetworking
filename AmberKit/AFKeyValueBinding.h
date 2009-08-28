@@ -6,13 +6,11 @@
 //  Copyright 2007 thirty-three. All rights reserved.
 //
 
-#if TARGET_OS_IPHONE
 #import <Foundation/Foundation.h>
-#else
-#import <Cocoa/Cocoa.h>
-#endif
 
 #if !TARGET_OS_IPHONE
+#import <AppKit/AppKit.h>
+
 #define AFObservedKeyPathKey NSObservedKeyPathKey
 #define AFObservedObjectKey NSObservedObjectKey
 #define AFOptionsKey NSOptionsKey
@@ -20,6 +18,11 @@
 #define AFValueTransformerBindingOption NSValueTransformerBindingOption
 #define AFValueTransformerNameBindingOption NSValueTransformerNameBindingOption
 #endif
+
+/*!
+	@header
+	This is an extention of the NSKeyValueBinding protocol.
+ */
 
 extern NSString *AFObservedKeyPathKey;
 extern NSString *AFObservedObjectKey;
@@ -29,15 +32,18 @@ extern NSString *AFValueTransformerBindingOption;
 extern NSString *AFValueTransformerNameBindingOption;
 
 /*!
-	@header
-	This is an extention of the NSKeyValueBinding protocol.
- */
-
-/*!
 	@brief
 	This constant stores the current value of an unbound binding.
  */
 extern NSString *const AFUnboundValueKey;
+
+#if TARGET_OS_IPHONE
+// Note: this category eliminates compiler warnings when using bindings with UIKit subclasses
+@interface NSObject (AFKeyValueBinding)
+- (void)bind:(NSString *)propertyName toObject:(id)observable withKeyPath:(NSString *)keyPath options:(NSDictionary *)options;
+- (void)unbind:(NSString *)propertyName;
+@end
+#endif
 
 /*!
 	@brief
@@ -107,7 +113,7 @@ extern NSString *const AFUnboundValueKey;
 #if TARGET_OS_IPHONE
 
 /*
-	These are only delcared when compling for the iPhone because they exist in AppKit already.
+	This group of binding property names are only delcared when compling for the iPhone because they exist in AppKit already.
  */
 
 /*!
