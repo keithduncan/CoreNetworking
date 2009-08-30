@@ -109,7 +109,7 @@
 
 /*!
 	@brief
-	This is intentionally empty just now.
+	This is intentionally empty.
  */
 @protocol AFTransportLayerHostDelegate <NSObject>
 

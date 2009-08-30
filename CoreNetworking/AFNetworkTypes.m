@@ -15,12 +15,12 @@
 
 const AFSocketSignature AFSocketSignatureNetworkTCP = {
 	.socketType = SOCK_STREAM,
-	.protocol = IPPROTO_TCP
+	.protocol = IPPROTO_TCP,
 };
 
 const AFSocketSignature AFSocketSignatureNetworkUDP = {
 	.socketType = SOCK_DGRAM,
-	.protocol = IPPROTO_UDP
+	.protocol = IPPROTO_UDP,
 };
 
 const AFSocketSignature AFSocketSignatureLocalPath = {
