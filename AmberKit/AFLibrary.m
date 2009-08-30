@@ -78,7 +78,7 @@
 	return YES;
 }
 
-- (NSMenuItem *)_createMenuItemForNode:(AFSourceNode *)node {
+- (NSMenuItem *)_createMenuItemForNode:(AFSourceNode *)node NS_RETURNS_RETAINED {
 	NSMenuItem *nodeMenuItem = [[NSMenuItem alloc] init];
 	
 	[nodeMenuItem setImage:node.image];
