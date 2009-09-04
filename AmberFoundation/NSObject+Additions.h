@@ -15,18 +15,27 @@
 @interface NSObject (AFAdditions)
 
 /*!
+ @brief
+ To message a thread, the thread must have a valid runloop.
+*/
+- (id)syncThreadProxy:(NSThread *)thread;
+- (id)asyncThreadProxy:(NSThread *)thread;
+
+/*!
 	@brief
 	This simply calls <tt>-[NSObject threadProxy:]</tt> using [NSThread mainThread] as an argument.
-	Messages will be performed synchronously.
+	Sync messages will be performed synchronously. If async, control returns immediately to caller.
  */
-- (id)mainThreadProxy;
+- (id)syncMainThreadProxy;
+- (id)asyncMainThreadProxy;
 
 /*!
 	@brief
 	This creates a background thread and associates the proxy with it.
-	Messages will be performed on it asynchronously.
+	Sync messages will be performed synchronously. If async, control returns immediately to caller.
  */
-- (id)backgroundThreadProxy;
+- (id)syncBackgroundThreadProxy;
+- (id)asyncBackgroundThreadProxy;
 
 /*!
 	@brief
