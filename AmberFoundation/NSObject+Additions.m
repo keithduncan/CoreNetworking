@@ -70,6 +70,14 @@
 }
 
 - (void)forwardInvocation:(NSInvocation *)invocation {
+	
+	if ([_thread isEqual:[NSThread currentThread]]) {
+		[invocation invokeWithTarget:_target];
+		return;
+	}
+	
+	if (_async) // If we don't retain the arguments, they're likely release when the local pool is popped, while |_target| is using them on |_thread|
+		[invocation retainArguments];
 	[invocation performSelector:@selector(invokeWithTarget:) onThread:_thread withObject:_target waitUntilDone:!_async];
 }
 
