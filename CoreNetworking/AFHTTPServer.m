@@ -73,7 +73,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 	// Note: this is a temporary solution to eliminate a compiler warning
 	struct objc_super superclass = {
 		.receiver = self,
-#if TARGET_OS_IPHONE
+#if !__OBJC2__
 		.class
 #else 
 		.super_class
