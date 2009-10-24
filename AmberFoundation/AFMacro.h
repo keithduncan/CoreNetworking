@@ -10,6 +10,10 @@
 
 #import "AmberFoundation/NSString+Additions.h"
 
+/*!
+	@file
+ */
+
 #define NSSTRING_CONTEXT(var) static NSString *var = @#var
 
 NS_INLINE BOOL AFFileExistsAtLocation(NSURL *location) {

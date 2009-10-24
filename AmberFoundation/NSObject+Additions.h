@@ -15,23 +15,26 @@
 @interface NSObject (AFAdditions)
 
 /*!
- @brief
- To message a thread, the thread must have a valid runloop.
-*/
-- (id)syncThreadProxy:(NSThread *)thread;
-- (id)asyncThreadProxy:(NSThread *)thread;
-
-/*!
 	@brief
+	This is a primitive method.
+ 
+	@param thread
+	This thread must service it's runloop, otherwise the message will not be executed.
+	
+	@param waitUntilDone
+	If true, the caller will block until the target thread has executes each message.
+*/
+- (id)threadProxy:(NSThread *)thread synchronous:(BOOL)waitUntilDone;
+
+/*
 	This simply calls <tt>-[NSObject threadProxy:]</tt> using [NSThread mainThread] as an argument.
 	Sync messages will be performed synchronously. If async, control returns immediately to caller.
  */
 - (id)syncMainThreadProxy;
 - (id)asyncMainThreadProxy;
 
-/*!
-	@brief
-	This creates a background thread and associates the proxy with it.
+/*
+	These enqueue the messages on a shared background thread.
 	Sync messages will be performed synchronously. If async, control returns immediately to caller.
  */
 - (id)syncBackgroundThreadProxy;
@@ -39,25 +42,13 @@
 
 /*!
 	@brief
-	This method returns a private NSProxy subclass.
-	Caution: don't become overly confident with the thread proxy methods.
+	The proxy returned will only forward selectors that the target returns true for <tt>-respondsToSelector:</tt>.
  
 	@detail
-	If you intend to execute a method on the main thread using the proxy, that method
-	will be enqueued on the main thread and WILL execute on the main thread - the calling
-	thread WILL block until the method returns - but once it does the execution
-	will continue in the calling thread. That is to say, execution doesn't yield to the
-	main thread so be careful what you do with return values of methods called on -threadProxy.
+	This allows you to send unimplemented selectors without throwing an exception.
  
-	Note: messages performed synchronously iff [thread isEqual:[NSThread mainThread]]
- */
-- (id)threadProxy:(NSThread *)object;
-
-/*!
-	@brief
-	This method returns an <tt>AFProtocolProxy</tt> with the receiver as the target.
-	Only selectors that the target returns true for <tt>-respondsToSelector:</tt> will be
-	forwarded allowing you to send unimplemented selectors.
+	@result
+	An <tt>AFProtocolProxy</tt> with the receiver as the target.
  */
 - (id)protocolProxy:(Protocol *)protocol;
 

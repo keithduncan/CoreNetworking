@@ -12,7 +12,7 @@
 
 /*!
 	@brief
-	This method loads the URL into memory using NSData, hashes it, and compares it to the hash provided.
+	Loads the URL into memory using NSData, hashes it, and compares it to the hash provided.
  */
 - (BOOL)validateURL:(NSURL *)location withMD5Hash:(NSData *)hash;
 

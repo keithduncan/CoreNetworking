@@ -15,7 +15,7 @@ NSString *const AFCompanyNameKey = @"AFCompanyName";
 @implementation NSBundle (AFAdditions)
 
 - (NSString *)version {
-	return [self objectForInfoDictionaryKey:@"CFBundleVersion"];
+	return [self objectForInfoDictionaryKey:(id)kCFBundleVersionKey];
 }
 
 - (NSString *)displayVersion {
@@ -25,7 +25,7 @@ NSString *const AFCompanyNameKey = @"AFCompanyName";
 }
 
 - (NSString *)name {
-	return [self objectForInfoDictionaryKey:@"CFBundleName"];
+	return [self objectForInfoDictionaryKey:(id)kCFBundleNameKey];
 }
 
 - (NSString *)displayName {

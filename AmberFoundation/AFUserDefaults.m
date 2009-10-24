@@ -53,19 +53,21 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 }
 
 + (void)initialize {
-	if (self == [AFUserDefaults class]) {
-		class_addMethod(self, @selector(stringForKey:), (IMP)TypedValueForKey, "@@:@");
-		class_addMethod(self, @selector(arrayForKey:), (IMP)TypedValueForKey, "@@:@");
-		class_addMethod(self, @selector(dictionaryForKey:), (IMP)TypedValueForKey, "@@:@");
-		class_addMethod(self, @selector(dataForKey:), (IMP)TypedValueForKey, "@@:@");
-		class_addMethod(self, @selector(stringArrayForKey:), (IMP)TypedValueForKey, "@@:@");
-	}
+	if (self != [AFUserDefaults class]) return;
+	
+	const char *typedMethodTypes = "@@:@";
+	class_addMethod(self, @selector(stringForKey:), (IMP)TypedValueForKey, typedMethodTypes);
+	class_addMethod(self, @selector(arrayForKey:), (IMP)TypedValueForKey, typedMethodTypes);
+	class_addMethod(self, @selector(dictionaryForKey:), (IMP)TypedValueForKey, typedMethodTypes);
+	class_addMethod(self, @selector(dataForKey:), (IMP)TypedValueForKey, typedMethodTypes);
+	class_addMethod(self, @selector(stringArrayForKey:), (IMP)TypedValueForKey, typedMethodTypes);
 }
 
 - (id)initWithBundleIdentifier:(NSString *)identifier {
 	NSParameterAssert((identifier != nil && ![identifier isEmpty]));
 	
-	[self init];
+	self = [self init];
+	if (self == nil) return nil;
 	
 	_identifier = [identifier copy];
 	
@@ -169,12 +171,12 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 
 - (NSArray *)_searchList {
 	CFArrayRef keys = CFPreferencesCopyKeyList((CFStringRef)self.identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
-	
 	CFDictionaryRef defaults = CFPreferencesCopyMultiple(keys, (CFStringRef)self.identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
-	CFRelease(keys);
 	
 	NSArray *searchList = [NSArray arrayWithObjects:(id)defaults, self.registrationDomain, nil];
+	
 	CFRelease(defaults);
+	CFRelease(keys);
 	
 	return searchList;
 }

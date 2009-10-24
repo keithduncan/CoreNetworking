@@ -10,7 +10,7 @@
 
 /*!
 	@brief
-	This class is much like the OrderedDictionary written by Matt Gallager <a href="http://cocoawithlove.com">cocoawithlove.com</a>
+	Much like the OrderedDictionary written by Matt Gallager <a href="http://cocoawithlove.com">cocoawithlove.com</a>
 	but instead the primary interface is an array. It maintains an index of the objects it contains 
 	using <tt>-valueForKeyPath:</tt> on the objects added to the collection.
  

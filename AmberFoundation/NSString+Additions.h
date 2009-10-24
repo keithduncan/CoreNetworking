@@ -18,13 +18,13 @@
 
 /*!
 	@brief
-	This method compares the receiver, after trimming whitespace, to @"".
+	Compares the receiver, after trimming whitespace, to @"".
  */
 - (BOOL)isEmpty;
 
 /*!
-	@brief
-	This method returns a substring from index after |count| characters and then appends @"..."
+	@result
+	A substring from index zero to |count| characters and then appends @"..."
  */
 - (NSString *)stringByAppendingElipsisAfterCharacters:(NSUInteger)count;
 
@@ -32,7 +32,7 @@
 
 /*!
 	@brief
-	This category assists in manipulating KVC dotted paths.
+	Assists in manipulating KVC dotted paths.
  */
 @interface NSString (AFKeyValueCoding)
 

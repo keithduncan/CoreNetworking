@@ -10,9 +10,8 @@
 
 /*!
 	@brief
-	Wrapprt around the CommonCrypto hashing functions.
-	These data objects are unlikely to be used raw, there are a number
-	of base conversion methods in the <tt>AFBaseConversion</tt> NSData category.
+	Wrapper around the CommonCrypto hashing functions.
+	These data objects are unlikely to be used raw, there are a number of base conversion methods in the <tt>AFBaseConversion</tt> NSData category.
  */
 @interface NSData (AFHashing)
 - (NSData *)MD5Hash;
@@ -21,8 +20,8 @@
 
 /*!
 	@brief
-	The methods in this category allow a caller to convert a binary NSData to an NSString.
-	They come in pairs which allow for the string to be reinterpreted as binary data again.
+	Allow a caller to convert a binary NSData to an NSString of required base.
+	The methods are defined in pairs, allowing for the string to be reinterpreted as binary data again.
  */
 @interface NSData (AFBaseConversion)
 
@@ -39,8 +38,7 @@
 
 /*!
 	@brief
-	The methods in this category are particularly useful when implementing network protocols.
-	They are commonly used as packet terminators.
+	Network packet terminators.
  */
 @interface NSData (AFPacketTerminator)
 + (NSData *)CRLF;

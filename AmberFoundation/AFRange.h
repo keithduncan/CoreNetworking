@@ -9,7 +9,11 @@
 #import <Foundation/Foundation.h>
 
 /*!
+	@file
+ */
+
+/*!
 	@brief
-	This constant is a range with location and length equal {0, 0}.
+	A range with location and length equal {0, 0}.
  */
 extern const NSRange AFEmptyRange;

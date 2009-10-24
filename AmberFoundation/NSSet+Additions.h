@@ -8,12 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-
 @interface NSSet (AFAdditions)
 
 /*!
-	@brief
-	This returns a copy of the receiver with the provided objects appended to the collection.
+	@result
+	A copy of the receiver with the provided objects appended to the collection.
  */
 - (NSSet *)setByAddingObjects:(id)firstObject, ... NS_REQUIRES_NIL_TERMINATION;
 

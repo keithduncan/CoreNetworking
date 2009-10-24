@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 
 /*!
+	@file
+ */
+
+/*!
 	@brief
 	This constant is an Info.plist key for the company that produced a bundle.
  */
@@ -70,7 +74,7 @@ extern NSString *const AFCompanyNameKey;
 /*!
 	@brief
 	This protocol allows classes to discover which bundle their resources have originated from.
-	It accomodates for cases where <tt>+[NSBundle bundleForClass:]</tt> may not return an appropriate value.
+	It accommodates for cases where <tt>+[NSBundle bundleForClass:]</tt> may not return an appropriate value.
  */
 @protocol AFBundleDiscovery <NSObject>
 

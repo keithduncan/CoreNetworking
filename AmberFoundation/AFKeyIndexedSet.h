@@ -10,7 +10,7 @@
 
 /*!
 	@brief
-	This (controvertial!) class is designed to solve the problem of observing the content of a dictionary.
+	Designed to solve the problem of observing the content of a dictionary.
  
 	See <tt>AFKeyIndexedArray</tt> for more details, the two classes are nearly identical.
  

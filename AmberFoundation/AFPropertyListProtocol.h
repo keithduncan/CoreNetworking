@@ -10,8 +10,7 @@
 
 /*!
 	@brief
-	This protocol defines an <tt>NSCoding</tt> like method pair.
-	Unlike NSCoding it is designed to produce human-readable archives.
+	An <tt>NSCoding</tt> like method pair. Unlike NSCoding it is designed to produce human-readable archives.
  */
 @protocol AFPropertyList <NSObject>
 - (id)initWithPropertyListRepresentation:(id)propertyListRepresentation;

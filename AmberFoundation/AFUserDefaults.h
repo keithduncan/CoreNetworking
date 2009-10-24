@@ -12,14 +12,11 @@
 
 /*!
 	@brief
-	This class is essentailly NSUserDefaults for an arbitary bundle identifer, it doesn't
-	restrict you to working with the current application identifer.
+	Essentailly NSUserDefaults for an arbitary bundle identifer, it doesn't restrict you to working with the current application identifer.
 	
 	@detail
-	It doesn't register for termination notifications nor does it save the 
-	values occasionally, this must be handled externally. It does propogate 
-	synchronization notifications like NSUserDefaults does. This is particularly 
-	useful for plugin defaults, used across process boundaries.
+	This class doesn't register for termination notifications nor does it save the  values occasionally, this must be handled externally. It does propogate synchronization notifications like NSUserDefaults does.
+	This is particularly useful for plugin defaults, used across process boundaries.
 */
 @interface AFUserDefaults : NSObject {
 	NSString *_identifier;
@@ -59,10 +56,10 @@
 
 /*!
 	@brief
-	This is inserted at the lowest index of the search list, the values will
-	only be returned if the default domains above it don't contain an object for requested key.
- 
-	@param	|regisrationDictionary| is copied.
+	This is inserted at the lowest index of the search list, the values will only be returned if the default domains above it don't contain an object for requested key.
+	
+	@param	registrationDictionary
+	This parameter is copied.
  */
 - (void)registerDefaults:(NSDictionary *)registrationDictionary;
 

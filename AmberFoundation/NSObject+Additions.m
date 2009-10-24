@@ -14,14 +14,31 @@
 
 @interface _AFThread : NSThread
 
++ (id)sharedBackgroundRunLoop;
+
 @end
 
 @implementation _AFThread
 
++ (id)backgroundRunLoop {
+	static _AFThread *_sharedBackgroundThread;
+	@synchronized ([_AFThread class]) {
+		if (_sharedBackgroundThread == nil) {
+			_sharedBackgroundThread = [[_AFThread alloc] init];
+			[_sharedBackgroundThread start];
+		}
+	}
+	return _sharedBackgroundThread;
+}
+
 - (void)main {
-	do {
-		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-	} while (![self isCancelled]);
+	CFRunLoopSourceContext context;
+	bzero(&context, sizeof(CFRunLoopSourceContext));
+	
+	CFRunLoopSourceRef keepAliveSource = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &context);
+	CFRunLoopAddSource(CFRunLoopGetCurrent(), keepAliveSource, kCFRunLoopCommonModes);
+	
+	CFRunLoopRun();
 }
 
 @end
@@ -29,7 +46,7 @@
 #pragma mark -
 
 @interface _AFObjectProxy : NSProxy {
-@public
+ @public
 	NSObject *_target;
 }
 
@@ -53,9 +70,9 @@
  */
 
 @interface _AFThreadProxy : _AFObjectProxy {
-@public
-	NSThread	*_thread;
-	BOOL		_async;
+ @public
+	NSThread *_thread;
+	BOOL _sync;
 }
 
 @end
@@ -63,28 +80,26 @@
 @implementation _AFThreadProxy
 
 - (void)dealloc {
-	if ([_thread isKindOfClass:[_AFThread class]]) [_thread cancel];
 	[_thread release];
 	
 	[super dealloc];
 }
 
-- (void)forwardInvocation:(NSInvocation *)invocation {
-	
+- (void)forwardInvocation:(NSInvocation *)invocation {	
 	if ([_thread isEqual:[NSThread currentThread]]) {
 		[invocation invokeWithTarget:_target];
 		return;
 	}
 	
-	if (_async) // If we don't retain the arguments, they're likely release when the local pool is popped, while |_target| is using them on |_thread|
-		[invocation retainArguments];
+	// If we don't retain the arguments, they're likely release when the local pool is popped, while |_target| is using them on |_thread|
+	if (_async) [invocation retainArguments];
+	
 	[invocation performSelector:@selector(invokeWithTarget:) onThread:_thread withObject:_target waitUntilDone:!_async];
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
 	NSMethodSignature *signature = [_target methodSignatureForSelector:selector];
-	if (_async)
-		NSAssert1((strcmp([signature methodReturnType], @encode(void)) == 0), @"A method was request to be performed asynchronously on the main thread, but its return type is not void signature:%@", signature);
+	if (!_sync) NSAssert1((strcmp([signature methodReturnType], @encode(void)) == 0), @"A method was request to be performed asynchronously, but its return type is not void signature: %@", signature);
 	return signature;
 }
 
@@ -94,43 +109,31 @@
 
 @implementation NSObject (AFAdditions)
 
-- (id)_threadProxy:(NSThread *)thread async:(BOOL)async;
-{
+- (id)threadProxy:(NSThread *)thread synchronous:(BOOL)waitUntilDone {
 	_AFThreadProxy *proxy = [[_AFThreadProxy alloc] autorelease];
 	
 	proxy->_target = [self retain];
 	
 	proxy->_thread = [thread retain];
-	if ([thread isKindOfClass:[_AFThread class]]) [thread start];
-	proxy->_async = async;
+	proxy->_sync = waitUntilDone;
 	
 	return proxy;
 }
 
-- (id)syncThreadProxy:(NSThread *)thread;
-{
-	return [self _threadProxy:thread async:NO];	
-}
-
-- (id)asyncThreadProxy:(NSThread *)thread;
-{
-	return [self _threadProxy:thread async:YES];
-}
-
 - (id)syncMainThreadProxy {
-	return [self _threadProxy:[NSThread mainThread] async:NO];
+	return [self threadProxy:[NSThread mainThread] synchronous:YES];
 }
 
 - (id)asyncMainThreadProxy {
-	return [self _threadProxy:[NSThread mainThread] async:YES];
+	return [self threadProxy:[NSThread mainThread] synchronous:NO];
 }
 
 - (id)syncBackgroundThreadProxy {
-	return [self _threadProxy:[[[_AFThread alloc] init] autorelease] async:NO];
+	return [self threadProxy:[_AFThreadProxy backgroundRunLoop] synchronous:YES];
 }
 
 - (id)asyncBackgroundThreadProxy {
-	return [self _threadProxy:[[[_AFThread alloc] init] autorelease] async:YES];
+	return [self threadProxy:[_AFThreadProxy backgroundRunLoop] synchronous:NO];
 }
 
 - (id)protocolProxy:(Protocol *)protocol {

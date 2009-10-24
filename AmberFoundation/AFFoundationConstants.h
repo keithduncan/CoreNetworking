@@ -8,4 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+/*!
+	@file
+ */
+
 extern NSString *const AFAmberFoundationBundleIdentifier;

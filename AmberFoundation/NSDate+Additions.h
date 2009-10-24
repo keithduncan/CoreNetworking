@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+/*!
+	@file
+ */
+
 enum {
 	SUNDAY = 1,
 	MONDAY,
@@ -46,7 +50,8 @@ typedef NSUInteger AFMonth;
 @interface NSDate (AFAdditions)
 
 /*!
-	@result The day of the month.
+	@result
+	The day of the month.
  */
 - (NSUInteger)day;
 
@@ -58,7 +63,7 @@ typedef NSUInteger AFMonth;
 
 /*!
 	@brief
-	This method creates NSDateComponents for each the receiver and |otherDate| using the flags, and returns the result of <tt>-[NSDateComponents components:match:]</tt>.
+	Creates NSDateComponents for each the receiver and |otherDate| using the flags, and returns the result of <tt>-[NSDateComponents components:match:]</tt>.
  */
 - (BOOL)components:(NSUInteger)flags matchDate:(NSDate *)otherDate;
 
@@ -71,7 +76,7 @@ typedef NSUInteger AFMonth;
 
 /*!
 	@brief
-	This method checks each of the components in |flags| for equality against |components|.
+	Checks each of the components in |flags| for equality against |components|.
  */
 - (BOOL)components:(NSUInteger)flags match:(NSDateComponents *)components;
 
