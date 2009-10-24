@@ -10,10 +10,6 @@
 	<string>com.thirty-three.AmberFoundation.framework</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-	<key>CFBundlePackageType</key>
-	<string>FMWK</string>
-	<key>CFBundleSignature</key>
-	<string>KDUN</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 </dict>
