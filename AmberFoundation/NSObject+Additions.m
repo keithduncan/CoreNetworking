@@ -9,12 +9,13 @@
 #import "NSObject+Additions.h"
 
 #import <objc/runtime.h>
+#import <pthread.h>
 
 #import "AFProtocolProxy.h"
 
 @interface _AFThread : NSThread
 
-+ (id)sharedBackgroundRunLoop;
++ (id)backgroundRunLoop;
 
 @end
 
@@ -25,6 +26,9 @@
 	@synchronized ([_AFThread class]) {
 		if (_sharedBackgroundThread == nil) {
 			_sharedBackgroundThread = [[_AFThread alloc] init];
+			
+			[_sharedBackgroundThread setName:@"com.thirty-three.amberfoundation.backgroundrunloop"];
+			
 			[_sharedBackgroundThread start];
 		}
 	}
@@ -32,6 +36,8 @@
 }
 
 - (void)main {
+	pthread_setname_np([[[NSThread currentThread] name] UTF8String]);
+	
 	CFRunLoopSourceContext context;
 	bzero(&context, sizeof(CFRunLoopSourceContext));
 	
@@ -72,7 +78,7 @@
 @interface _AFThreadProxy : _AFObjectProxy {
  @public
 	NSThread *_thread;
-	BOOL _sync;
+	BOOL _synchronous;
 }
 
 @end
@@ -92,14 +98,14 @@
 	}
 	
 	// If we don't retain the arguments, they're likely release when the local pool is popped, while |_target| is using them on |_thread|
-	if (_async) [invocation retainArguments];
+	if (!_synchronous) [invocation retainArguments];
 	
-	[invocation performSelector:@selector(invokeWithTarget:) onThread:_thread withObject:_target waitUntilDone:!_async];
+	[invocation performSelector:@selector(invokeWithTarget:) onThread:_thread withObject:_target waitUntilDone:_synchronous];
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
 	NSMethodSignature *signature = [_target methodSignatureForSelector:selector];
-	if (!_sync) NSAssert1((strcmp([signature methodReturnType], @encode(void)) == 0), @"A method was request to be performed asynchronously, but its return type is not void signature: %@", signature);
+	if (!_synchronous) NSAssert1((strcmp([signature methodReturnType], @encode(void)) == 0), @"A method was request to be performed asynchronously, but its return type is not void signature: %@", signature);
 	return signature;
 }
 
@@ -115,7 +121,7 @@
 	proxy->_target = [self retain];
 	
 	proxy->_thread = [thread retain];
-	proxy->_sync = waitUntilDone;
+	proxy->_synchronous = waitUntilDone;
 	
 	return proxy;
 }
@@ -129,11 +135,11 @@
 }
 
 - (id)syncBackgroundThreadProxy {
-	return [self threadProxy:[_AFThreadProxy backgroundRunLoop] synchronous:YES];
+	return [self threadProxy:[_AFThread backgroundRunLoop] synchronous:YES];
 }
 
 - (id)asyncBackgroundThreadProxy {
-	return [self threadProxy:[_AFThreadProxy backgroundRunLoop] synchronous:NO];
+	return [self threadProxy:[_AFThread backgroundRunLoop] synchronous:NO];
 }
 
 - (id)protocolProxy:(Protocol *)protocol {
