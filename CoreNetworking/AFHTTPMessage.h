@@ -23,7 +23,7 @@
 	@detail
 	If the request parameter uses a stream for the body, this function will throw an exception.
  */
-extern CFHTTPMessageRef AFHTTPMessageForRequest(NSURLRequest *request);
+extern CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request);
 
 /*!
 	@brief
@@ -68,18 +68,18 @@ extern NSString *const AFHTTPMessageAllowHeader;
 
 enum {
 	// 2xx class codes indicate the request succeeded
-	AFHTTPStatusCodeOK = 200, /* OK */
-	AFHTTPStatusCodePartialContent = 206, /* Partial Content */
+	AFHTTPStatusCodeOK				= 200, /* OK */
+	AFHTTPStatusCodePartialContent	= 206, /* Partial Content */
 	
 	// 4xx class codes indicate a client error
-	AFHTTPStatusCodeBadRequest = 400, /* Bad Request */
-	AFHTTPStatusCodeNotFound = 404, /* Not Found */
-	AFHTTPStatusCodeNotAllowed = 405, /* Not Allowed */
-	AFHTTPStatusCodeUpgradeRequired = 426, /*  Upgrade Required */
+	AFHTTPStatusCodeBadRequest		= 400, /* Bad Request */
+	AFHTTPStatusCodeNotFound		= 404, /* Not Found */
+	AFHTTPStatusCodeNotAllowed		= 405, /* Not Allowed */
+	AFHTTPStatusCodeUpgradeRequired = 426, /* Upgrade Required */
 	
 	// 5xx class codes indicate a server error
-	AFHTTPStatusCodeServerError = 500, /* Server Error */
-	AFHTTPStatusCodeNotImplemented = 501, /* Not Implemented */
+	AFHTTPStatusCodeServerError		= 500, /* Server Error */
+	AFHTTPStatusCodeNotImplemented	= 501, /* Not Implemented */
 };
 typedef NSInteger AFHTTPStatusCode;
 

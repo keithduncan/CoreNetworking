@@ -40,11 +40,11 @@
 - (void)addConnectionsObject:(id <AFTransportLayer>)connection {
 	[self.mutableConnections addObject:connection];
 	
-	[connection scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
+	[connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
 - (void)removeConnectionsObject:(id <AFTransportLayer>)connection {
-	[connection unscheduleFromRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopDefaultMode];
+	[connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	
 	[self.mutableConnections removeObject:connection];
 }

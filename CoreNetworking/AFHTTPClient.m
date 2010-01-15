@@ -19,7 +19,7 @@
 
 @implementation AFHTTPClient
 
-@synthesize authenticationCredentials=_authenticationCredentials;
+@synthesize authentication=_authentication, authenticationCredentials=_authenticationCredentials;
 
 static NSString *_AFHTTPConnectionUserAgentFromBundle(NSBundle *bundle) {
 	return [NSString stringWithFormat:@"%@/%@", [[bundle displayName] stringByReplacingOccurrencesOfString:@" " withString:@"-"], [[bundle displayVersion] stringByReplacingOccurrencesOfString:@" " withString:@"-"], nil];
@@ -58,29 +58,16 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 }
 
 - (void)dealloc {
-	[self setAuthentication:NULL];
+	if (_authentication != NULL) CFRelease(_authentication);
 	[_authenticationCredentials release];
 	
 	[super dealloc];
 }
 
 - (void)finalize {
-	[self setAuthentication:NULL];
-	
-	[super finalize];
-}
-
-- (CFHTTPAuthenticationRef)authentication {
-	return _authentication;
-}
-
-- (void)setAuthentication:(CFHTTPAuthenticationRef)authentication {
 	if (_authentication != NULL) CFRelease(_authentication);
 	
-	_authentication = authentication;
-	if (authentication == NULL) return;
-	
-	_authentication = (CFHTTPAuthenticationRef)CFRetain(authentication);
+	[super finalize];
 }
 
 - (void)performWrite:(CFHTTPMessageRef)message withTimeout:(NSTimeInterval)duration context:(void *)context {

@@ -8,6 +8,10 @@
 
 #import "CoreNetworking/AFPacket.h"
 
+/*!
+	@brief
+	This is a standard write packet.
+ */
 @interface AFPacketWrite : AFPacket <AFPacketWriting> {
  @private
 	NSData *_buffer;

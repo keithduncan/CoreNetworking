@@ -39,6 +39,7 @@
 }
 
 - (void)dealloc {
+	[_currentRead release];
 	[_xmlBuffer release];
 	
 	[super dealloc];

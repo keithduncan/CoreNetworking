@@ -39,6 +39,18 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 @synthesize delegate=_delegate;
 @synthesize encapsulationClasses=_encapsulationClasses, clientPools=_clientPools;
 
++ (NSSet *)localhostInternetSocketAddresses {
+	CFHostRef localhost = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost")) autorelease];
+	
+	CFStreamError error;
+	memset(&error, 0, sizeof(CFStreamError));
+	
+	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
+	if (!resolved) return nil;
+	
+	return [NSSet setWithArray:(NSArray *)CFHostGetAddressing(localhost, NULL)];
+}
+
 + (NSSet *)allInternetSocketAddresses {
 	NSMutableSet *networkAddresses = [NSMutableSet set];
 	
@@ -58,18 +70,6 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 	freeifaddrs(addrs);
 	
 	return networkAddresses;
-}
-
-+ (NSSet *)localhostInternetSocketAddresses {
-	CFHostRef localhost = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost")) autorelease];
-	
-	CFStreamError error;
-	memset(&error, 0, sizeof(CFStreamError));
-	
-	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
-	if (!resolved) return nil;
-	
-	return [NSSet setWithArray:(NSArray *)CFHostGetAddressing(localhost, NULL)];
 }
 
 + (id)server {

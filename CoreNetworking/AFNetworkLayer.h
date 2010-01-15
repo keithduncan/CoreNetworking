@@ -18,8 +18,11 @@
 	
 	@detail
 	This class configures a bidirectional proxying system. Unimplemented methods are forwarded to the |lowerLayer|, and the delegate accessor returns a proxy that forwards messages up the delegate chain.
-	CFHostRef and CFNetServiceRef are both first class citizens in CoreNetworking, and you can easily bring a stack online using either.
+	CFHostRef and CFNetServiceRef are both first class citizens in Core Networking, and you can easily bring a stack online using either. (Consider NSURL/CFURL as a stand in for CFHostRef.)
 	There are two designated outbound initialisers, each accepting one of the destination types.
+	
+	Core Networking layers are not automatically scheduled in the current run loop on creation, this is because they offer two means of scheduling; run loop based and dispatch_queue_t based. You must schedule the layer appropriately to receive callbacks.
+	Scheduling a layer in both a run loop and a queue is unsupported and the results are undefined.
  */
 @interface AFNetworkLayer : NSObject {
  @private
@@ -81,12 +84,12 @@
 
 /*!
 	@brief
-	This isn't currently used by the framework, it is intended for use like <tt>-[NSThread threadDictionary]</tt> to store miscellaneous data.
- 
+	This isn't used by the framework, it is intended for use like <tt>-[NSThread threadDictionary]</tt> to store miscellaneous data.
+	
 	@detail
 	The network layers are KVC containers, much like a CALayer. Values for undefined keys are stored in this property.
 	
-	The dictionary returned is the result of collapsing the |transportInfo| onto the |lowerLayer.transportInfo|
+	The dictionary returned is the result of reducing the |transportInfo| onto the |lowerLayer.transportInfo|. This takes place recursively.
  */
 @property (readonly, retain) NSDictionary *transportInfo;
 

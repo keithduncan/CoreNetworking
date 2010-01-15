@@ -24,10 +24,11 @@
 /*!
     @brief
 	Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the name was changed so not to imply the exclusive use of SOCK_STREAM.
- 
+	
     @detail
-	This class is a mix of two of the primary patterns. Internally, it acts an adaptor between the CFSocket and CFStream API.
-	Externally, it bridges CFHost, CFNetService with CFSocket and CFStream. It provides a CFStream like API.
+	This class is a mix of two of the primary patterns:
+	• Internally, it acts an adaptor between the CFSocketRef and CFStreamRef API.
+	• Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and CFStreamRef providing a CFStreamRef like API.
 	
 	Note: The layout of the _peer union is important, we can cast the _peer instance variable to CFTypeRef and introspect using CFGetTypeID to determine the struct in use.
 */
@@ -40,7 +41,10 @@
 	} _peer;
 	
 	AFStreamPacketQueue *_writeQueue;
+	void *_writeQueueSource;
+	
 	AFStreamPacketQueue *_readQueue;
+	void *_readQueueSource;
 }
 
 @property (assign) id <AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate> delegate;

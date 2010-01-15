@@ -37,8 +37,8 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 			memset(&context, 0, sizeof(CFSocketContext));
 			context.info = newSocket;
 			
-			newSocket->_socket = CFSocketCreateWithNative(kCFAllocatorDefault, *(CFSocketNativeHandle *)data, 0, AFSocketCallback, &context);
-			newSocket->_socketRunLoopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, newSocket->_socket, 0);
+			newSocket->_socket = (CFSocketRef)CFMakeCollectable(CFSocketCreateWithNative(kCFAllocatorDefault, *(CFSocketNativeHandle *)data, 0, AFSocketCallback, &context));
+			newSocket->_socketRunLoopSource = (CFRunLoopSourceRef)CFMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, newSocket->_socket, 0));
 			
 			if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
 				[self.delegate layer:self didAcceptConnection:newSocket];
@@ -75,7 +75,6 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	
 	int sockoptError = 0;
 	sockoptError = setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_REUSEADDR, &reuseAddr, sizeof(reuseAddr));
-#pragma unused (sockoptError)
 #endif
 	
 	if (_socket == NULL) {
@@ -87,10 +86,10 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 }
 
 - (void)finalize {	
-	if (_signature->address != NULL)
-		CFRelease(_signature->address);
-	
-	free(_signature);
+	if (_signature != NULL) {
+		if (_signature->address != NULL) CFRelease(_signature->address);
+		free(_signature);
+	}
 	
 	[super finalize];
 }
@@ -112,8 +111,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 - (void)open {
 	NSParameterAssert(_signature != NULL);
 	
-	CFSocketError socketError = kCFSocketError;
-	socketError = CFSocketSetAddress(_socket, _signature->address);
+	CFSocketError socketError = CFSocketSetAddress(_socket, _signature->address);
 	
 	if (socketError == kCFSocketSuccess) {
 		[self.delegate layerDidOpen:self];
@@ -127,7 +125,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	AFNetworkingErrorCode errorCode = AFNetworkSocketErrorUnknown;
 	if (socketError == kCFSocketTimeout) errorCode = AFNetworkSocketErrorTimeout;
 	
-	NSError *error = [NSError errorWithDomain:AFNetworkingErrorDomain code:errorCode userInfo:userInfo];
+	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:userInfo];
 	[self.delegate layer:self didNotOpen:error];
 }
 
@@ -162,12 +160,12 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	return description;
 }
 
-- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
-	CFRunLoopAddSource(loop, _socketRunLoopSource, mode);
+- (void)scheduleInRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode {
+	CFRunLoopAddSource([loop getCFRunLoop], _socketRunLoopSource, (CFStringRef)mode);
 }
 
-- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
-	CFRunLoopRemoveSource(loop, _socketRunLoopSource, mode);
+- (void)unscheduleFromRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode {
+	CFRunLoopRemoveSource([loop getCFRunLoop], _socketRunLoopSource, (CFStringRef)mode);
 }
 
 - (id)localAddress {

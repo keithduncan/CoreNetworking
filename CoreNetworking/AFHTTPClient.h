@@ -22,9 +22,7 @@
 + (NSString *)userAgent;
 + (void)setUserAgent:(NSString *)userAgent;
 
-- (CFHTTPAuthenticationRef)authentication;
-- (void)setAuthentication:(CFHTTPAuthenticationRef)authentication;
-
+@property (retain) CFHTTPAuthenticationRef authentication __attribute__((NSObject));
 @property (copy) NSDictionary *authenticationCredentials;
 
 @end

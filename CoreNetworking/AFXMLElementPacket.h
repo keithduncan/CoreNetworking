@@ -25,7 +25,7 @@
 	3. </element>
 	
 	@detail
-	The completed buffer is an NSString, allowing the client code to instantiate whatever XML handling representation it needs.
+	The completed buffer is an NSString, allowing the caller to use whatever XML library is available.
  */
 @interface AFXMLElementPacket : AFPacket <AFPacketReading> {
 	NSStringEncoding _encoding;

@@ -10,7 +10,7 @@
 
 #import "CoreNetworking/AFPacket.h"
 
-/*!
+/*
  *	Network Layers
  *		Transport + Internetwork
  */
@@ -84,13 +84,13 @@
 	@brief
 	The socket connection must be scheduled in at least one run loop to function.
  */
-- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
+- (void)scheduleInRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode;
 
 /*!
 	@brief
 	The socket connection must remain scheduled in at least one run loop to function.
  */
-- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode;
+- (void)unscheduleFromRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode;
 
 /*!
 	@param

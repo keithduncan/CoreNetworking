@@ -46,8 +46,6 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 	
 	_source = (CFRunLoopSourceRef)NSMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, (CFIndex)0));
 	
-	[self scheduleInRunLoop:CFRunLoopGetCurrent() forMode:kCFRunLoopCommonModes];
-	
 	return self;
 }
 
@@ -58,12 +56,12 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 	[super dealloc];
 }
 
-- (void)scheduleInRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
-	CFRunLoopAddSource(loop, _source, mode);
+- (void)scheduleInRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode {
+	CFRunLoopAddSource([loop getCFRunLoop], _source, (CFStringRef)mode);
 }
 
-- (void)unscheduleFromRunLoop:(CFRunLoopRef)loop forMode:(CFStringRef)mode {
-	CFRunLoopRemoveSource(loop, _source, mode);
+- (void)unscheduleFromRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode {
+	CFRunLoopRemoveSource([loop getCFRunLoop], _source, (CFStringRef)mode);
 }
 
 - (void)invalidate {
@@ -71,3 +69,18 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 }
 
 @end
+
+#if defined(DISPATCH_API_VERSION)
+
+extern void AFServiceDiscoveryScheduleQueueSource(DNSServiceRef service, dispatch_queue_t queue) {
+	dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, DNSServiceRefSockFD(service), 0, queue);
+	
+	dispatch_source_set_event_handler(source, ^ {
+		DNSServiceProcessResult(service);
+		dispatch_release(source);
+	});
+	
+	dispatch_resume(source);
+}
+
+#endif

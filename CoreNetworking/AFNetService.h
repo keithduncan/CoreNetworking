@@ -12,6 +12,8 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
+@protocol AFNetServiceDelegate;
+
 /*!
 	@brief
 	The defines the minimum required to create a service suitable for resolution
@@ -24,15 +26,23 @@
  */
 @protocol AFNetServiceCommon <NSObject>
 
+/*!
+	@brief
+	This is the expanded form of <tt>-initWithNetService:</tt> taking explict arguments.
+ */
+- (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name;
+
+/*!
+	@brief
+	The uniquing properties of a DNS-SD registration.
+ */
 @property (readonly) NSString *name, *type, *domain;
 
 /*!
 	@brief
-	This method MUST use <tt>-valueForKey:</tt> to extract the |name|, |type| and |domain| as documented in the <tt>AFNetServiceCommon</tt> description.
+	Implementors MUST use <tt>-valueForKey:</tt> to extract the |name|, |type| and |domain| as documented in the <tt>AFNetServiceCommon</tt> description.
  */
 - (id)initWithNetService:(id <AFNetServiceCommon>)service;
-
- @optional
 
 /*!
 	@brief
@@ -40,13 +50,8 @@
  */
 - (NSString *)fullName;
 
-/*!
-	@brief
-	This is the expanded form of <tt>-initWithNetService:</tt> taking explict arguments.
- */
-- (id)initWithName:(NSString *)name type:(NSString *)type domain:(NSString *)domain;
-
 @end
+
 
 /*!
 	@brief
@@ -72,7 +77,6 @@ extern NSDictionary *AFNetServicePropertyDictionaryFromTXTRecordData(NSData *TXT
  */
 extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary);
 
-@protocol AFNetServiceDelegate;
 
 /*!
     @brief

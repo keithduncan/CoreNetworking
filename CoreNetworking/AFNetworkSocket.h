@@ -12,16 +12,17 @@
 
 /*!
 	@brief
-	An simple object-oriented wrapper around CFSocket
- 
+	A very simple Objective-C wrapper around CFSocketRef.
+	
 	@detail
-	The current purpose of this class is to spawn more sockets upon revieving inbound connections.
+	The purpose of this class is to spawn more sockets upon revieving inbound connections.
  */
 @interface AFNetworkSocket : AFNetworkLayer <AFConnectionLayer> {
  @private
 	__strong CFSocketSignature *_signature;
 	
 	__strong CFSocketRef _socket;
+	
 	__strong CFRunLoopSourceRef _socketRunLoopSource;
 }
 
@@ -36,6 +37,10 @@
  */
 - (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options;
 
+/*!
+	@brief
+	
+ */
 @property (assign) id <AFConnectionLayerHostDelegate, AFConnectionLayerControlDelegate> delegate;
 
 /*!

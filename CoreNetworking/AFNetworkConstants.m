@@ -8,6 +8,4 @@
 
 #import "AFNetworkConstants.h"
 
-NSString *const AFCoreNetworkingBundleIdentifier = @"com.thirty-three.CoreNetworking.framework";
-
-NSString *const AFNetworkingErrorDomain = @"AFNetworkingError";
+NSString *const AFCoreNetworkingBundleIdentifier = @"com.thirty-three.CoreNetworking";

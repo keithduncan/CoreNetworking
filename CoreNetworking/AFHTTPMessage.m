@@ -8,10 +8,10 @@
 
 #import "AFHTTPMessage.h"
 
-extern CFHTTPMessageRef AFHTTPMessageForRequest(NSURLRequest *request) {
+extern CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request) {
 	NSCParameterAssert([request HTTPBodyStream] == nil);
 	
-	CFHTTPMessageRef message = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)[request HTTPMethod], (CFURLRef)[request URL], kCFHTTPVersion1_1)) autorelease];
+	CFHTTPMessageRef message = CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)[request HTTPMethod], (CFURLRef)[request URL], kCFHTTPVersion1_1);
 	
 	for (NSString *currentHeader in [request allHTTPHeaderFields])
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)currentHeader, (CFStringRef)[[request allHTTPHeaderFields] objectForKey:currentHeader]);

@@ -40,6 +40,7 @@
 
 @end
 
+
 /*!
 	@brief
 	This is a generic construct for spawning new client layers.
@@ -60,23 +61,23 @@
 
 /*!
 	@detail
+	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6), however you shouldn't <em>need</em> to know this.
+	This is likely only to be useful for testing your server, since it won't be accessable from another computer.
+ 
+	@result
+	All the localhost socket addresses, these are only accessible from the local machine.
+	This allows you to create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to 127.0.0.1 and ::1).
+ */
++ (NSSet *)localhostInternetSocketAddresses;
+
+/*!
+	@detail
 	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6).
 	
 	@result
 	All the network socket addresses, these may be accessable from other network clients (ignoring firewall restrictions).
  */
 + (NSSet *)allInternetSocketAddresses;
-
-/*!
-	@detail
-	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6), however you shouldn't <em>need</em> to know this.
-	This is likely only to be useful for testing your server, since it won't be accessable from another computer.
-	
-	@result
-	All the localhost socket addresses, these are only accessible from the local machine.
-	This allows you to create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to 127.0.0.1 and ::1).
- */
-+ (NSSet *)localhostInternetSocketAddresses;
 
 /*
 	Initialization

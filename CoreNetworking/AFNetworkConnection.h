@@ -48,7 +48,7 @@
 - (id <AFConnectionLayer>)initWithURL:(NSURL *)endpoint;
 
 /*!
- 
+	@brief
  */
 - (AFNetworkLayer <AFConnectionLayer> *)lowerLayer;
 

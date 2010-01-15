@@ -16,16 +16,16 @@
 	@brief
 	Common transport layer types can be defined using these two fields.
 	
-	@field |socketType|
-	Should be one of the socket types defined in <sys/socket.h>
-	@field |protocol|
-	Should typically be one of the IP protocols defined in RFC 1700 see http://www.faqs.org/rfcs/rfc1700.html - it is important that an appropriate |socketType| is also provided.
+	@field socketType
+	One of the socket types defined in <sys/socket.h>
+	@field protocol
+	One of the IP protocols defined in RFC 1700 see http://www.faqs.org/rfcs/rfc1700.html - it is important that an appropriate .socketType is also provided.
  */
-struct AFSocketSignature {
+struct _AFSocketSignature {
 	const SInt32 socketType;
 	const SInt32 protocol;
 };
-typedef struct AFSocketSignature AFSocketSignature;
+typedef struct _AFSocketSignature AFSocketSignature;
 
 /*!
 	@brief
@@ -57,16 +57,16 @@ extern const AFSocketSignature AFSocketSignatureLocalPath;
 	@brief
 	A transport layer struct simply includes the post number too, the port number isn't included in the <tt>AFSocketType</tt> because it is useful without it.
  
-	@field |type|
+	@field type
 	See the documentation on <tt>AFSocketType</tt>.
-	@field |port|
+	@field port
 	Identifies the Transport Layer address to communicate using (see RFC 1122) in network byte order.
  */
-struct AFInternetTransportSignature {
+struct _AFInternetTransportSignature {
 	const AFSocketSignature type;
 	SInt32 port;
 };
-typedef struct AFInternetTransportSignature AFInternetTransportSignature;
+typedef struct _AFInternetTransportSignature AFInternetTransportSignature;
 
 /*!
 	@brief
@@ -76,12 +76,12 @@ typedef struct AFInternetTransportSignature AFInternetTransportSignature;
 	@detail
 	Doesn't include a |protocolFamily| field like CFSocketSignature because the |host| may resolve to a number of addresses each with a different protocol family.
 	
-	@field |host|
+	@field host
 	This should be copied using CFHostCreateCopy(). The addresses property should be resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap or as an instance variable, it won't be reclaimed.
-	@field |transport|
+	@field transport
 	See the documentation for <tt>AFNetworkTransportLayer</tt>, it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc) and the port.
  */
-struct AFNetworkTransportHostSignature {
+struct _AFNetworkTransportHostSignature {
 	/*
 	 *	This defines _where_ to communicate
 	 */
@@ -91,16 +91,26 @@ struct AFNetworkTransportHostSignature {
 	 */
 	const AFInternetTransportSignature transport;
 };
-typedef struct AFNetworkTransportHostSignature AFNetworkTransportHostSignature;
+typedef struct _AFNetworkTransportHostSignature AFNetworkTransportHostSignature;
 
 /*!
 	@brief
 	This is a partner to <tt>AFNetworkTransportHostSignature</tt> except that a CFNetServiceRef contains all the information required.
  */
-struct AFNetworkTransportServiceSignature {
+struct _AFNetworkTransportServiceSignature {
 	/*
 	 *	This defines _where_ and _how_ to communicate
 	 */
 	__strong CFNetServiceRef netService;
 };
-typedef struct AFNetworkTransportServiceSignature AFNetworkTransportServiceSignature;
+typedef struct _AFNetworkTransportServiceSignature AFNetworkTransportServiceSignature;
+
+/*!
+	@brief
+	This struct allows for arguments to be either <tt>AFNetworkTransportHostSignature</tt> or <tt>AFNetworkTransportServiceSignature</tt>.
+	A receiver must introspect the type using <tt>CFGetTypeID</tt> to determine which has been passed.
+ */
+struct _AFNetworkTransportSignature {
+	CFTypeRef endpoint;
+};
+typedef struct _AFNetworkTransportSignature AFNetworkTransportSignature;

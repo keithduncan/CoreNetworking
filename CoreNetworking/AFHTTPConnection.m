@@ -146,7 +146,7 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 }
 
 - (void)performRequest:(NSURLRequest *)request {
-	[self _performRequest:AFHTTPMessageForRequest(request)];
+	[self _performRequest:(CFHTTPMessageRef)[NSMakeCollectable(AFHTTPMessageCreateForRequest(request)) autorelease]];
 }
 
 - (void)readRequest {

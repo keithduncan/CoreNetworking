@@ -18,7 +18,7 @@
 #define ENABLE_REQUEST_LOGGING 1
 #define ENABLE_RESPONSE_LOGGING 1
 
-#define kPangolinServerVersion kCFHTTPVersion1_1
+#define kCoreNetworkingHTTPServerVersion kCFHTTPVersion1_1
 
 NSString *const AFHTTPServerRenderersKey = @"renderers";
 
@@ -92,7 +92,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 }
 
 - (void)connection:(AFHTTPConnection *)connection didReceiveRequest:(CFHTTPMessageRef)request {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	
 	CFHTTPMessageRef response = NULL;
 	
@@ -103,7 +103,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 #pragma unused (requestBody)
 		
 #if ENABLE_REQUEST_LOGGING
-		printf("Request:\n\t", nil);
+		printf("Request:\n", nil);
 		CFShow(request);
 		for (NSString *currentKey in [requestHeaders allKeys])
 			printf("\t%s: %s\n", [currentKey UTF8String], [[requestHeaders objectForKey:currentKey] UTF8String], nil);
@@ -112,7 +112,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 		// Note: assert that the server implements the request method
 		if (![[[self class] _implementedMethods] containsObject:[requestMethod uppercaseString]]) {
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotImplemented;
-			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kPangolinServerVersion)) autorelease];
+			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
 			return;
@@ -121,7 +121,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 		// Note: assert that the client has included the Host: header as required by HTTP/1.1
 		if ([requestHeaders objectForCaseInsensitiveKey:AFHTTPMessageHostHeader] == nil) {
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeBadRequest;
-			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kPangolinServerVersion)) autorelease];
+			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
 			return;
@@ -130,7 +130,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 		// Note: echo the request back to the client
 		if ([requestMethod caseInsensitiveCompare:AFHTTPMethodTRACE] == NSOrderedSame) {
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
-			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kPangolinServerVersion)) autorelease];
+			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			CFHTTPMessageSetBody(response, (CFDataRef)[NSMakeCollectable(CFHTTPMessageCopySerializedMessage(request)) autorelease]);
 			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
@@ -148,7 +148,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 		}
 		
 		AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotFound;
-		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kPangolinServerVersion)) autorelease];
+		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 		[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
 	}
 	@catch (NSException *exception) {
@@ -162,7 +162,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 		printf(")\n", nil);
 		
 		AFHTTPStatusCode responseCode = AFHTTPStatusCodeServerError;
-		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kPangolinServerVersion)) autorelease];
+		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 		[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
 	}
 	
@@ -191,7 +191,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 	else CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageConnectionHeader, CFSTR("close"));
 	
 #if ENABLE_RESPONSE_LOGGING
-	printf("Response:\n\t", nil);
+	printf("Response:\n", nil);
 	CFShow(response);
 	NSDictionary *responseHeaders = [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields(response)) autorelease];
 	for (NSString *currentKey in [responseHeaders allKeys])
@@ -203,9 +203,10 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 	
 	if (allow && keepAlive) {
 		[connection readRequest];
-	} else {
-		[connection close];
+		return;
 	}
+	
+	[connection close];
 }
 
 @end

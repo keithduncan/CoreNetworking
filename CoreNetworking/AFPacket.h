@@ -39,7 +39,7 @@ extern NSString *const AFPacketTimeoutNotificationName;
 
 /*!
 	@param context
-	context is not retained, it should be a constant
+	The value is not retained, it should be a compile time constant.
  */
 - (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration;
 
@@ -70,7 +70,7 @@ extern NSString *const AFPacketTimeoutNotificationName;
 /*!
 	@brief
 	This is a dynamic property for subclasses to implement.
-	This property is returned to the delegate in the -...didRead: and -...didWrite: callbacks.
+	This property is usually returned to an <tt>AFNetworkLayer</tt> delegate in the -...didRead: and -...didWrite: callbacks.
  */
 @property (readonly) id buffer;
 

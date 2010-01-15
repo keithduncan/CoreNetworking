@@ -103,7 +103,7 @@ NSSTRING_CONTEXT(AFHTTPMessagePacketBodyContext);
 				_message = NULL;
 				
 				if (errorRef != NULL)
-					*errorRef = [NSError errorWithDomain:AFNetworkingErrorDomain code:AFNetworkPacketParseError userInfo:nil];
+					*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketParseError userInfo:nil];
 				
 				return YES;
 			}

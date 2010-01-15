@@ -50,7 +50,7 @@ NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordD
 @synthesize presence;
 
 - (id)initWithNetService:(id <AFNetServiceCommon>)service {
-	return [self initWithName:[(id)service valueForKey:@"name"] type:[(id)service valueForKey:@"type"] domain:[(id)service valueForKey:@"domain"]];
+	return [self initWithDomain:[(id)service valueForKey:@"domain"] type:[(id)service valueForKey:@"type"] name:[(id)service valueForKey:@"name"]];
 }
 
 static void AFNetServiceMonitorClientCallBack(CFNetServiceMonitorRef monitor, CFNetServiceRef service, CFNetServiceMonitorType typeInfo, CFDataRef rdata, CFStreamError *error, void *info) {
@@ -70,7 +70,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 									  NSLocalizedString(@"Couldn't resolve the remote client's address.", @"AFNetService resolve failure"), NSLocalizedDescriptionKey,
 									  nil];
 			
-			NSError *error = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:-1 userInfo:userInfo] autorelease];
+			NSError *error = [[[NSError alloc] initWithDomain:AFCoreNetworkingBundleIdentifier code:0 userInfo:userInfo] autorelease];
 			
 			[self->delegate netService:self didNotResolveAddress:error];
 		}
@@ -82,7 +82,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 		[self->delegate netServiceDidResolveAddress:self];
 }
 
-- (id)initWithName:(NSString *)name type:(NSString *)type domain:(NSString *)domain {
+- (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name {
 	self = [self init];
 	if (self == nil) return nil;
 	
