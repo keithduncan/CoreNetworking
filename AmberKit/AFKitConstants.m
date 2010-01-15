@@ -8,4 +8,4 @@
 
 #import "AFKitConstants.h"
 
-NSString *const AFAmberKitBundleIdentifier = @"com.thirty-three.AmberKit.framework";
+NSString *const AFAmberKitBundleIdentifier = @"com.thirty-three.AmberKit";

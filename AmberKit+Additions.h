@@ -8,6 +8,16 @@
 
 #import "AmberKit/AFKeyValueBinding.h"
 
+/*
+	General
+ */
+
+#import "AmberFoundation/AFGeometry.h"
+
+/*
+	Categories
+ */
+
 #import "AmberKit/NSTreeNode+Additions.h"
 #import "AmberKit/NSBundle+Additions.h"
 #import "AmberKit/NSBezierPath+Additions.h"

@@ -8,8 +8,6 @@
 
 #import "NSBundle+Additions.h"
 
-NSString *const AFAlertIconFileKey = @"AFAlertIconFile";
-
 @implementation NSBundle (AKAdditions)
 
 static NSImage *_AFCacheImageFromBundle(NSBundle *bundle, NSString *key) {
@@ -27,10 +25,6 @@ static NSImage *_AFCacheImageFromBundle(NSBundle *bundle, NSString *key) {
 
 - (NSImage *)icon {
 	return _AFCacheImageFromBundle(self, @"CFBundleIconFile");
-}
-
-- (NSImage *)alertIcon {
-	return _AFCacheImageFromBundle(self, AFAlertIconFileKey);
 }
 
 @end

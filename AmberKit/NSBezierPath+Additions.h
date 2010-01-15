@@ -8,6 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+/*!
+	@brief
+	Constants for <tt>-appendBezierPathWithRoundedRect:corners:radius:</tt>.
+ */
 enum {
 	AFCornerLowerLeft	= 1 << 0,
 	AFCornerLowerRight	= 1 << 1,
@@ -16,6 +20,10 @@ enum {
 };
 typedef NSUInteger AFCornerOptions;
 
+/*!
+	@brief
+	Drawing conveniences.
+ */
 @interface NSBezierPath (AFAdditions)
 
 /*!

@@ -8,9 +8,11 @@
 
 #import "NSTreeNode+Additions.h"
 
-/*!
-	Note: this function doesn't handle recursive relationships
+/*
+	Private Functions
  */
+
+// Note: this function doesn't handle recursive relationships
 static void _AFTreeNodeAddChildrenToCollection(NSTreeNode *self, id <NSFastEnumeration> collection) {
 	for (NSTreeNode *currentNode in [self childNodes]) {
 		[(id)collection addObject:currentNode];
@@ -29,20 +31,24 @@ static id <NSFastEnumeration> _AFTreeNodeCollectionFromNode(NSTreeNode *self, Cl
 	return collection;
 }
 
-extern NSSet *AFTreeNodeObjectsAtIndexPaths(NSTreeNode *self, NSArray *indexPaths) {
+/*
+	Public Functions
+ */
+
+NSSet *AFTreeNodeObjectsAtIndexPaths(NSTreeNode *self, NSArray *indexPaths) {
 	NSMutableSet *objects = [NSMutableSet setWithCapacity:[indexPaths count]];
 	for (NSIndexPath *currentPath in indexPaths) [objects addObject:[self descendantNodeAtIndexPath:currentPath]];
 	return objects;
 }
 
-extern NSSet *AFTreeNodeSetFromNodeInclusive(NSTreeNode *self, BOOL inclusive) {
+NSSet *AFTreeNodeSetFromNodeInclusive(NSTreeNode *self, BOOL inclusive) {
 	return (id)_AFTreeNodeCollectionFromNode(self, [NSMutableSet class], inclusive);
 }
 
-extern NSArray *AFTreeNodeArrayFromNodeInclusive(NSTreeNode *self, BOOL inclusive) {
+NSArray *AFTreeNodeArrayFromNodeInclusive(NSTreeNode *self, BOOL inclusive) {
 	return (id)_AFTreeNodeCollectionFromNode(self, [NSMutableArray class], inclusive);
 }
 
-extern void AFTreeNodeAddChildrenToCollection(NSTreeNode *self, id <NSFastEnumeration> collection) {
+void AFTreeNodeAddChildrenToCollection(NSTreeNode *self, id <NSFastEnumeration> collection) {
 	_AFTreeNodeAddChildrenToCollection(self, collection);
 }
