@@ -77,6 +77,9 @@
 		535514200FAF6A35004F8FC5 /* AFNetworkLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */; };
 		535514210FAF6A35004F8FC5 /* AFNetworkLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5355141D0FAF6A35004F8FC5 /* AFNetworkLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535514220FAF6A35004F8FC5 /* AFNetworkLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */; };
+		53599FAB10A86E110064F48C /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEA60F5AEDFE008F5991 /* AFGeometry.h */; };
+		53599FAC10A86E120064F48C /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEA70F5AEDFE008F5991 /* AFGeometry.m */; };
+		53599FAD10A86E160064F48C /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEA60F5AEDFE008F5991 /* AFGeometry.h */; };
 		53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		5370DE780F5AED47008F5991 /* AFPluralTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE720F5AED47008F5991 /* AFPluralTransformer.m */; };
@@ -364,6 +367,7 @@
 		535511F00FAF4A34004F8FC5 /* AFNetworkTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkTransport.m; path = CoreNetworking/AFNetworkTransport.m; sourceTree = "<group>"; };
 		5355141D0FAF6A35004F8FC5 /* AFNetworkLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkLayer.h; path = CoreNetworking/AFNetworkLayer.h; sourceTree = "<group>"; };
 		5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkLayer.m; path = CoreNetworking/AFNetworkLayer.m; sourceTree = "<group>"; };
+		53599FA610A86D900064F48C /* libAmberKit Touch.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libAmberKit Touch.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		53692BA50F1B85A90051C367 /* AmberFoundation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation_Prefix.pch; sourceTree = "<group>"; };
 		53692BA60F1B85B10051C367 /* AmberKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberKit_Prefix.pch; sourceTree = "<group>"; };
 		53692C180F1B87CA0051C367 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
@@ -486,6 +490,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				532F73E30F0EB1D7004D6056 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		53599FA410A86D900064F48C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,6 +672,7 @@
 				532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */,
 				5370E0710F5B0571008F5991 /* CoreNetworking.framework */,
 				53BEF6A10F5B6A2700063B8D /* libCoreNetworking.a */,
+				53599FA610A86D900064F48C /* libAmberKit Touch.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -685,6 +697,15 @@
 				5370E0890F5B061D008F5991 /* AFNetworkConnection.m */,
 			);
 			name = Classes;
+			sourceTree = "<group>";
+		};
+		53599FAA10A86DCB0064F48C /* General */ = {
+			isa = PBXGroup;
+			children = (
+				5370DEA60F5AEDFE008F5991 /* AFGeometry.h */,
+				5370DEA70F5AEDFE008F5991 /* AFGeometry.m */,
+			);
+			name = General;
 			sourceTree = "<group>";
 		};
 		53692A780F1B7EE70051C367 /* CoreNetworking */ = {
@@ -864,8 +885,6 @@
 		539A613D0D269E8A001CD14A /* General */ = {
 			isa = PBXGroup;
 			children = (
-				5370DEA60F5AEDFE008F5991 /* AFGeometry.h */,
-				5370DEA70F5AEDFE008F5991 /* AFGeometry.m */,
 				5370DEA80F5AEDFE008F5991 /* AFPropertyListProtocol.h */,
 				5370DEA90F5AEDFE008F5991 /* AFPropertyListProtocol.m */,
 				5370DEAA0F5AEDFE008F5991 /* AFRange.h */,
@@ -956,6 +975,7 @@
 			children = (
 				539BFE030F1FE2AE003C1148 /* AmberKit.h */,
 				5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */,
+				53599FAA10A86DCB0064F48C /* General */,
 				53C5184E0FF2B5A4003BFCE0 /* Model */,
 				53692CD00F1B8F2F0051C367 /* Additions */,
 				537917990F7FC8220064EB92 /* Value Transformers */,
@@ -996,6 +1016,13 @@
 				533F5BF90FBF52F500169C14 /* AFKeyPathProxy.h in Headers */,
 				533F5C7E0FBF5A1700169C14 /* AFMacro.h in Headers */,
 				53F6E3710FCB3AF10009FF33 /* AFFoundationConstants.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		53599FA210A86D900064F48C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1046,6 +1073,7 @@
 				533F5D470FBF622700169C14 /* NSControl+Additions.h in Headers */,
 				53C518630FF2BD8F003BFCE0 /* AFLibrary.h in Headers */,
 				53C518650FF2BD8F003BFCE0 /* AFSourceNode.h in Headers */,
+				53599FAB10A86E110064F48C /* AFGeometry.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1143,6 +1171,7 @@
 				53F6E3770FCB3B350009FF33 /* AFKitConstants.h in Headers */,
 				53C518670FF2BD8F003BFCE0 /* AFLibrary.h in Headers */,
 				53C518690FF2BD8F003BFCE0 /* AFSourceNode.h in Headers */,
+				53599FAD10A86E160064F48C /* AFGeometry.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1164,6 +1193,23 @@
 			name = "AmberFoundation Touch";
 			productName = AmberFoundationTouch;
 			productReference = 532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		53599FA510A86D900064F48C /* AmberKit Touch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 53599FA910A86DB30064F48C /* Build configuration list for PBXNativeTarget "AmberKit Touch" */;
+			buildPhases = (
+				53599FA210A86D900064F48C /* Headers */,
+				53599FA310A86D900064F48C /* Sources */,
+				53599FA410A86D900064F48C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "AmberKit Touch";
+			productName = "AmberKit Touch";
+			productReference = 53599FA610A86D900064F48C /* libAmberKit Touch.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		5370E0700F5B0571008F5991 /* CoreNetworking */ = {
@@ -1278,6 +1324,7 @@
 			targets = (
 				53EE97460F190070008AD8C0 /* AmberKit */,
 				537917740F7FC43B0064EB92 /* AmberKit (Additions) */,
+				53599FA510A86D900064F48C /* AmberKit Touch */,
 				539A60C20D2698B7001CD14A /* AmberFoundation */,
 				532F73DD0F0EB1AA004D6056 /* AmberFoundation Touch */,
 				5370E0700F5B0571008F5991 /* CoreNetworking */,
@@ -1349,6 +1396,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		53599FA310A86D900064F48C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5370E06E0F5B0571008F5991 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1392,6 +1446,7 @@
 				533F5D480FBF622700169C14 /* NSControl+Additions.m in Sources */,
 				53C518640FF2BD8F003BFCE0 /* AFLibrary.m in Sources */,
 				53C518660FF2BD8F003BFCE0 /* AFSourceNode.m in Sources */,
+				53599FAC10A86E120064F48C /* AFGeometry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1582,6 +1637,31 @@
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
 				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		53599FA710A86D910064F48C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PREBINDING = NO;
+				PRODUCT_NAME = "AmberKit Touch";
+			};
+			name = Debug;
+		};
+		53599FA810A86D910064F48C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PREBINDING = NO;
+				PRODUCT_NAME = "AmberKit Touch";
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -1815,6 +1895,15 @@
 			buildConfigurations = (
 				5343E6FF0C21FB1000B63E6E /* Debug */,
 				5343E7000C21FB1000B63E6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		53599FA910A86DB30064F48C /* Build configuration list for PBXNativeTarget "AmberKit Touch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				53599FA710A86D910064F48C /* Debug */,
+				53599FA810A86D910064F48C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
