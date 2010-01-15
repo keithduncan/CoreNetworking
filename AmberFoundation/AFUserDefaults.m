@@ -8,6 +8,8 @@
 
 #import "AFUserDefaults.h"
 
+#import "AFPropertyListProtocol.h"
+
 #import <objc/runtime.h>
 #import <CoreFoundation/CFPreferences.h>
 
@@ -33,23 +35,9 @@ static NSString *const kAFBundleRegisteredDefaults = @"kRegisteredDefaults";
 @synthesize registrationDomain=_registration;
 @synthesize identifier=_identifier;
 
-static BOOL isPlistObject(id object) {
-	if ([object isKindOfClass:[NSString class]]) return YES;
-	else if ([object isKindOfClass:[NSData class]]) return YES;
-	else if ([object isKindOfClass:[NSDate class]]) return YES;
-	else if ([object isKindOfClass:[NSNumber class]]) return YES;
-	else if ([object isKindOfClass:[NSArray class]]) {
-		for (id currentObject in object) if (!isPlistObject(currentObject)) return NO;
-		return YES;
-    } else if ([object isKindOfClass:[NSDictionary class]]) {		
-		for (id currentKey in object) if (![currentKey isKindOfClass:[NSString class]] || !isPlistObject([(NSDictionary *)object objectForKey:currentKey])) return NO;
-		return YES;
-    } else return NO;
-}
-
 static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 	id value = [self objectForKey:key];
-	return (isPlistObject(value) ? value : nil);
+	return (AFObjectIsPlistSerialisable(value) ? value : nil);
 }
 
 + (void)initialize {
@@ -93,7 +81,7 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 }
 
 - (void)setObject:(id)value forKey:(NSString *)key {
-	NSAssert(isPlistObject(value), @"value was not an object of plist type");
+	NSAssert(AFObjectIsPlistSerialisable(value), @"value was not an object of plist type");
 	CFPreferencesSetValue((CFStringRef)key, (CFPropertyListRef)value, (CFStringRef)self.identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
 }
 

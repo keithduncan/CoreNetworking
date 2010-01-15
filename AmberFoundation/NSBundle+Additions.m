@@ -10,8 +10,6 @@
 
 #import "NSArray+Additions.h"
 
-NSString *const AFCompanyNameKey = @"AFCompanyName";
-
 @implementation NSBundle (AFAdditions)
 
 - (NSString *)version {
@@ -32,10 +30,6 @@ NSString *const AFCompanyNameKey = @"AFCompanyName";
 	id value = [self objectForInfoDictionaryKey:@"CFBundleDisplayName"];
 	if (value == nil) value = [self name];
 	return value;
-}
-
-- (NSString *)companyName {
-	return [self objectForInfoDictionaryKey:AFCompanyNameKey];
 }
 
 @end

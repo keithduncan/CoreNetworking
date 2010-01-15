@@ -9,12 +9,32 @@
 #import <Foundation/Foundation.h>
 
 /*!
+	@file
+ */
+
+/*!
+	@brief
+	Check the plist serialisability of the object passed in.
+ 
+	@detail
+	The plist objects are NSString, NSArray, NSDictionary, NSDate, NSData, NSNumber.
+	In the case of NSDictionary, the keys must be NSString object mapping to another plist object.
+ 
+	@result
+	If the object is, or is wholly consituted of, plist objects.
+ */
+BOOL AFObjectIsPlistSerialisable(id object);
+
+/*!
 	@brief
 	An <tt>NSCoding</tt> like method pair. Unlike NSCoding it is designed to produce human-readable archives.
  */
 @protocol AFPropertyList <NSObject>
+
 - (id)initWithPropertyListRepresentation:(id)propertyListRepresentation;
+
 - (id)propertyListRepresentation;
+
 @end
 
 @interface NSArray (AFPropertyList) <AFPropertyList>

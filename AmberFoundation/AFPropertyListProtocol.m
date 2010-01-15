@@ -11,28 +11,28 @@
 static NSString *const AFPropertyListClassNameKey = @"propertyListClass";
 static NSString *const AFPropertyListObjectDataKey = @"propertyListData";
 
-static BOOL isPlistObject(id object) {
+BOOL AFObjectIsPlistSerialisable(id object) {
 	if ([object isKindOfClass:[NSString class]]) return YES;
 	else if ([object isKindOfClass:[NSData class]]) return YES;
     else if ([object isKindOfClass:[NSDate class]]) return YES;
 	else if ([object isKindOfClass:[NSNumber class]]) return YES;
 	else if ([object isKindOfClass:[NSArray class]]) {
 		for (id currentObject in (NSArray *)object) {
-			if (!isPlistObject(currentObject)) return NO;
+			if (!AFObjectIsPlistSerialisable(currentObject)) return NO;
 		}
 		
 		return YES;
     } else if ([object isKindOfClass:[NSDictionary class]]) {
 		for (id currentKey in (NSDictionary *)object) {
-			if (!isPlistObject(currentKey)) return NO;
-			if (!isPlistObject([object objectForKey:currentKey])) return NO;
+			if ([currentKey isKindOfClass:[NSString class]]) return NO;
+			if (!AFObjectIsPlistSerialisable([object objectForKey:currentKey])) return NO;
 		}
 		
 		return YES;
     } else return NO;
 }
 
-static BOOL isPlistRepresentation(id object) {
+static BOOL _AFObjectIsPlistRepresentation(id object) {
 	if (![object isKindOfClass:[NSDictionary class]]) return NO;
 	
 	NSDictionary *representation = object;
@@ -53,13 +53,15 @@ id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresent
 @implementation NSArray (AFPropertyList)
 
 - (id)initWithPropertyListRepresentation:(id)propertyListRepresentation {
+	// Note: this fixes a bug where the Xcode debugger view will ask the uninitialised array passed in as self for it's count, throwing an exception
+	// Note: breakpoints must be set after self has been set to nil
 	[self autorelease];
 	self = nil;
 	
 	NSMutableArray *newArray = [[NSMutableArray alloc] initWithCapacity:[propertyListRepresentation count]];
 	
 	for (id currentObject in propertyListRepresentation) {
-		if (!isPlistRepresentation(currentObject)) {
+		if (!_AFObjectIsPlistRepresentation(currentObject)) {
 			[newArray addObject:currentObject];
 			continue;
 		}
@@ -75,7 +77,7 @@ id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresent
 	NSMutableArray *propertyListRepresentation = [NSMutableArray array];
 	
 	for (id <AFPropertyList> currentObject in self) {
-		if (isPlistObject(currentObject)) {
+		if (AFObjectIsPlistSerialisable(currentObject)) {
 			[propertyListRepresentation addObject:currentObject];
 			continue;
 		}
@@ -92,6 +94,8 @@ id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresent
 @implementation NSDictionary (AFPropertyList)
 
 - (id)initWithPropertyListRepresentation:(id)propertyListRepresentation {
+	// Note: this fixes a bug where the Xcode debugger view will ask the uninitialised dictionary passed in as self for it's count, throwing an exception
+	// Note: breakpoints must be set after self has been set to nil
 	[self autorelease];
 	self = nil;
 	
@@ -100,7 +104,7 @@ id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresent
 	for (NSString *currentKey in propertyListRepresentation) {
 		id currentObject = [propertyListRepresentation objectForKey:currentKey];
 		
-		if (!isPlistRepresentation(currentObject)) {
+		if (!_AFObjectIsPlistRepresentation(currentObject)) {
 			[newDictionary setObject:currentObject forKey:currentKey];
 			continue;
 		}
@@ -117,7 +121,7 @@ id AFPropertyListRepresentationUnarchive(CFPropertyListRef propertyListRepresent
 	for (NSString *currentKey in self) {
 		id <AFPropertyList> currentObject = [self objectForKey:currentKey];
 		
-		if (isPlistObject(currentObject)) {
+		if (AFObjectIsPlistSerialisable(currentObject)) {
 			[propertyListRepresentation setObject:currentObject forKey:currentKey];
 			continue;
 		}

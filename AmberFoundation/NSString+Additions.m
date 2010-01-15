@@ -8,6 +8,8 @@
 
 #import "NSString+Additions.h"
 
+#import "NSArray+Additions.h"
+
 @implementation NSString (AFAdditions)
 
 - (NSString *)stringByTrimmingWhiteSpace {
@@ -29,17 +31,15 @@
 
 @implementation NSString (AFKeyValueCoding)
 
-static NSString *const AFKeyPathComponentSeparator = @".";
-
 - (NSArray *)keyPathComponents {
-	return [self componentsSeparatedByString:AFKeyPathComponentSeparator];
+	return [self componentsSeparatedByString:@"."];
 }
 
 - (NSString *)lastKeyPathComponent {
 	return [[self keyPathComponents] lastObject];
 }
 
-+ (NSString *)keyPathWithComponents:(NSString *)component, ... {
++ (NSString *)stringWithKeyPathComponents:(NSString *)component, ... {
 	NSMutableArray *components = [NSMutableArray array];
 	
 	if (component != nil) {
@@ -53,30 +53,30 @@ static NSString *const AFKeyPathComponentSeparator = @".";
 		va_end(keyList);
 	}
 	
-	return [components componentsJoinedByString:AFKeyPathComponentSeparator];
+	return [components componentsJoinedByString:@"."];
 }
 
 - (NSString *)stringByAppendingKeyPath:(NSString *)keyPath {
-	return [self stringByAppendingFormat:@"%@%@", AFKeyPathComponentSeparator, keyPath];
+	return [self stringByAppendingFormat:@".%@", keyPath, nil];
 }
 
 - (NSString *)stringByRemovingKeyPathComponentAtIndex:(NSUInteger)index {
 	NSArray *keyPathComponents = [self keyPathComponents];
-	if (!NSLocationInRange(index, NSMakeRange(0, [keyPathComponents count]))) {
-		[NSException raise:NSRangeException format:@"%s, attempting to access keypath component at index %d beyond range.", __PRETTY_FUNCTION__, index];
+	if (!AFArrayContainsIndex(keyPathComponents, index)) {
+		[NSException raise:NSRangeException format:@"%s, attempting to access keypath component at index %d beyond range.", __PRETTY_FUNCTION__, index, nil];
 		return nil;
 	}
 	
 	NSMutableArray *mutableKeyPathComponents = [keyPathComponents mutableCopy];
 	[mutableKeyPathComponents removeObjectAtIndex:index];
-	NSString *newKeyPath = [mutableKeyPathComponents componentsJoinedByString:AFKeyPathComponentSeparator];
+	NSString *newKeyPath = [mutableKeyPathComponents componentsJoinedByString:@"."];
 	[mutableKeyPathComponents release];
 	
 	return newKeyPath;
 }
 
 - (NSString *)stringByRemovingLastKeyPathComponent {
-	return [self stringByRemovingKeyPathComponentAtIndex:([[self keyPathComponents] count]-1)];
+	return [self stringByRemovingKeyPathComponentAtIndex:([[self keyPathComponents] count] - 1)];
 }
 
 @end

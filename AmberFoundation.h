@@ -17,11 +17,10 @@
 //
 
 #import "AmberFoundation/AFRange.h"
-#import "AmberFoundation/AFGeometry.h"
 #import "AmberFoundation/AFMacro.h"
 
 //
-//	Objects
+//	Utility Objects
 //
 
 #import "AmberFoundation/AFUserDefaults.h"

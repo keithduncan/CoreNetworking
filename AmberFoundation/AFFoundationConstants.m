@@ -8,4 +8,4 @@
 
 #import "AFFoundationConstants.h"
 
-NSString *const AFAmberFoundationBundleIdentifier = @"com.thirty-three.AmberFoundation.framework";
+NSString *const AFAmberFoundationBundleIdentifier = @"com.thirty-three.AmberFoundation";

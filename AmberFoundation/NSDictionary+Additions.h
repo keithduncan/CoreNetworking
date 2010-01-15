@@ -18,7 +18,7 @@
 
 /*!
 	@brief
-	This was written for HTTP message header lookup.
+	For HTTP message header lookup.
  */
 - (id)objectForCaseInsensitiveKey:(NSString *)key;
 

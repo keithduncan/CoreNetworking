@@ -17,12 +17,13 @@
 /*!
 	@brief
 	This is a primitive method.
- 
+	
 	@param thread
 	This thread must service it's runloop, otherwise the message will not be executed.
 	
 	@param waitUntilDone
 	If true, the caller will block until the target thread has executes each message.
+	This is provided for executing work on the main thread and blocking until complation.
 */
 - (id)threadProxy:(NSThread *)thread synchronous:(BOOL)waitUntilDone;
 

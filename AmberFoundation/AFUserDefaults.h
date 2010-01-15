@@ -35,6 +35,10 @@
  */
 - (id)initWithBundleIdentifier:(NSString *)identifier;
 
+/*
+	NSUserDefault methods
+ */
+
 - (id)objectForKey:(NSString *)key;
 - (void)setObject:(id)value forKey:(NSString *)key;
 - (void)removeObjectForKey:(NSString *)key;
@@ -74,10 +78,12 @@
 	These are simply strongly typed synonyms to <tt>-objectForKey:</tt>.
  */
 @interface AFUserDefaults (TypedAccessors)
+
 - (NSString *)stringForKey:(NSString *)key;
 - (NSArray *)arrayForKey:(NSString *)key;
 - (NSDictionary *)dictionaryForKey:(NSString *)key;
 - (NSData *)dataForKey:(NSString *)key;
+
 @end
 
 #endif

@@ -12,12 +12,6 @@
 	@file
  */
 
-/*!
-	@brief
-	This constant is an Info.plist key for the company that produced a bundle.
- */
-extern NSString *const AFCompanyNameKey;
-
 @interface NSBundle (AFAdditions)
 
 /*!
@@ -50,11 +44,6 @@ extern NSString *const AFCompanyNameKey;
  */
 - (NSString *)displayName;
 
-/*!
-	@result
-	<tt>-objectForInfoDictionaryKey:</tt> AFCompanyName.
- */
-- (NSString *)companyName;
 @end
 
 @interface NSBundle (AFPathAdditions)
