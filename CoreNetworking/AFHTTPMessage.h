@@ -91,4 +91,4 @@ typedef NSInteger AFHTTPStatusCode;
 	@detail
 	This is typed to return a CFStringRef to minimise the impedance mismatch with CFHTTPMessageCreate.
  */
-extern CFStringRef AFHTTPStatusCodeDescription(AFHTTPStatusCode code);
+extern CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code);

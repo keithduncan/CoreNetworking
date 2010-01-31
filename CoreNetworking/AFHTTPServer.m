@@ -32,6 +32,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 
 @implementation AFHTTPServer
 
+@dynamic delegate;
 @synthesize renderers=_renderers;
 
 + (id)server {
@@ -112,7 +113,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 		// Note: assert that the server implements the request method
 		if (![[[self class] _implementedMethods] containsObject:[requestMethod uppercaseString]]) {
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotImplemented;
-			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
 			return;
@@ -121,7 +122,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 		// Note: assert that the client has included the Host: header as required by HTTP/1.1
 		if ([requestHeaders objectForCaseInsensitiveKey:AFHTTPMessageHostHeader] == nil) {
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeBadRequest;
-			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
 			return;
@@ -130,7 +131,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 		// Note: echo the request back to the client
 		if ([requestMethod caseInsensitiveCompare:AFHTTPMethodTRACE] == NSOrderedSame) {
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
-			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			CFHTTPMessageSetBody(response, (CFDataRef)[NSMakeCollectable(CFHTTPMessageCopySerializedMessage(request)) autorelease]);
 			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
@@ -147,8 +148,17 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 			return;
 		}
 		
+		if ([[self delegate] respondsToSelector:@selector(server:renderResourceForRequest:)]) {
+			response = [[self delegate] server:self renderResourceForRequest:request];
+			
+			if (response != NULL) {
+				[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
+				return;
+			}
+		}
+		
 		AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotFound;
-		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 		[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
 	}
 	@catch (NSException *exception) {
@@ -162,7 +172,7 @@ NSString *const AFHTTPServerRenderersKey = @"renderers";
 		printf(")\n", nil);
 		
 		AFHTTPStatusCode responseCode = AFHTTPStatusCodeServerError;
-		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 		[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
 	}
 	

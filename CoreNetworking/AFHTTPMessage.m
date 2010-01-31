@@ -51,7 +51,7 @@ NSString *const AFHTTPMessageConnectionHeader = @"Connection";
 NSString *const AFHTTPMessageContentTypeHeader = @"Content-Type";
 NSString *const AFHTTPMessageAllowHeader = @"Allow";
 
-CFStringRef AFHTTPStatusCodeDescription(AFHTTPStatusCode code) {
+CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 	switch (code) {
 		case AFHTTPStatusCodeOK:
 			return CFSTR("OK");

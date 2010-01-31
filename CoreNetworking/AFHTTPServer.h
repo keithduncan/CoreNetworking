@@ -23,6 +23,12 @@ extern NSString *const AFHTTPServerRenderersKey;
 
 /*!
 	@brief
+	The HTTP server delegate participates in the response rendering process.
+ */
+@property (assign) id <AFHTTPServerDataDelegate> delegate;
+
+/*!
+	@brief
 	The objects in this collection must implement the AFHTTPServerRenderer protocol.
 	
 	@detail
@@ -33,6 +39,14 @@ extern NSString *const AFHTTPServerRenderersKey;
 @end
 
 @protocol AFHTTPServerDataDelegate <AFNetworkServerDelegate>
+
+ @optional
+
+/*!
+	@brief
+	The delegate is asked last, after each of the renderers.
+ */
+- (CFHTTPMessageRef)server:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;
 
 @end
 
