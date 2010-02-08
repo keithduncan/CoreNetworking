@@ -74,7 +74,7 @@ NSSTRING_CONTEXT(AFHTTPMessagePacketBodyContext);
 	}
 	
 	NSInteger contentLength = AFHTTPMessageGetHeaderLength(self.message);
-	if (contentLength != -1) {
+	if (contentLength > 0) {
 		return [[[AFPacketRead alloc] initWithContext:&AFHTTPMessagePacketBodyContext timeout:-1 terminator:[NSNumber numberWithInteger:contentLength]] autorelease];
 	}
 	
