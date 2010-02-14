@@ -50,6 +50,7 @@ NSString *const AFHTTPMessageHostHeader = @"Host";
 NSString *const AFHTTPMessageConnectionHeader = @"Connection";
 NSString *const AFHTTPMessageContentTypeHeader = @"Content-Type";
 NSString *const AFHTTPMessageAllowHeader = @"Allow";
+NSString *const AFHTTPMessageLocationHeader = @"Location";
 
 CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 	switch (code) {
@@ -57,6 +58,11 @@ CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 			return CFSTR("OK");
 		case AFHTTPStatusCodePartialContent:
 			return CFSTR("Partial Content");
+			
+		case AFHTTPStatusCodeFound:
+			return CFSTR("Found");
+		case AFHTTPStatusCodeSeeOther:
+			return CFSTR("See Other");
 			
 		case AFHTTPStatusCodeBadRequest:
 			return CFSTR("Bad Request");
