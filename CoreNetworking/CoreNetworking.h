@@ -56,7 +56,10 @@
 #import "CoreNetworking/AFXMLElementPacket.h"
 
 /* AMQP */
-// Not Yet Public
+// Not Yet Implemented
+
+/* RSTP */
+// Not Yet Implemented
 
 /* SMTP */
 // Not Yet Implemented
