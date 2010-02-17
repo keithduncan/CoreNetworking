@@ -51,7 +51,8 @@
 #import "CoreNetworking/AFHTTPServer.h"
 
 /* XMPP */
-// Not Yet Public
+
+// See http://code.google.com/p/objectivexmpp/ for implementation.
 
 #import "CoreNetworking/AFXMLElementPacket.h"
 
