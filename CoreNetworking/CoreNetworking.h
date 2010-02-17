@@ -58,7 +58,7 @@
 /* AMQP */
 // Not Yet Implemented
 
-/* RSTP */
+/* RTSP */
 // Not Yet Implemented
 
 /* SMTP */
