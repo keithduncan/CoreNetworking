@@ -160,7 +160,7 @@
 
 /*!
 	@brief
-	This method determines the class of the |socket| parameter and wraps it in the encapsulation class one higher than it.
+	This method determines the class of the |layer| parameter and wraps it in the encapsulation class one higher than it.
 	
 	@detail
 	Override point, if you need to customize layers before they are added to their connection pool, call super for creation first.

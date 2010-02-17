@@ -15,8 +15,8 @@
 #import "AmberFoundation/AmberFoundation.h"
 #import <objc/message.h>
 
-#define ENABLE_REQUEST_LOGGING 1
-#define ENABLE_RESPONSE_LOGGING 1
+#define ENABLE_REQUEST_LOGGING 0
+#define ENABLE_RESPONSE_LOGGING 0
 
 #define kCoreNetworkingHTTPServerVersion kCFHTTPVersion1_1
 

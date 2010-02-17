@@ -337,8 +337,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	if (CFGetTypeID([self peer]) == CFHostGetTypeID()) {
 		CFHostRef host = (CFHostRef)self.peer;
 		
-		CFStreamError error;
-		memset(&error, 0, sizeof(CFStreamError));
+		CFStreamError error = {0};
 		
 		Boolean result = false;
 		result = CFHostStartInfoResolution(host, kCFHostReachability, &error);

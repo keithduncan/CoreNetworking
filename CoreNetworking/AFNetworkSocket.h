@@ -35,7 +35,18 @@
 	@detail
 	If the socket cannot be created they return nil.
  */
-- (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options;
+- (id)initWithHostSignature:(const CFSocketSignature *)signature;
+
+/*!
+	@brief
+	Connect initialiser.
+	This is not called by the framework, it is provided for you to bring exising FDs into the object graph.
+	
+	@detail
+	Since AFNetworkSocket doesnt actually perform any read/write operations; this method doesn't take any options.
+	This is intended to provide a socket to a higher layer.
+ */
+- (id)initWithNativeHandle:(CFSocketNativeHandle)handle;
 
 /*!
 	@brief

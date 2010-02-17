@@ -42,8 +42,7 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 + (NSSet *)localhostInternetSocketAddresses {
 	CFHostRef localhost = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)@"localhost")) autorelease];
 	
-	CFStreamError error;
-	memset(&error, 0, sizeof(CFStreamError));
+	CFStreamError error = {0};
 	
 	Boolean resolved = CFHostStartInfoResolution(localhost, (CFHostInfoType)kCFHostAddresses, &error);
 	if (!resolved) return nil;
@@ -194,7 +193,7 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 		.address = (CFDataRef)address,
 	};
 	
-	AFNetworkSocket *socket = [[[AFNetworkSocket alloc] initWithSignature:&socketSignature callbacks:kCFSocketAcceptCallBack] autorelease];
+	AFNetworkSocket *socket = [[[AFNetworkSocket alloc] initWithHostSignature:&socketSignature] autorelease];
 	if (socket == nil) return nil;
 	
 	[[self.clientPools objectAtIndex:0] addConnectionsObject:socket];

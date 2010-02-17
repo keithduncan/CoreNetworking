@@ -86,9 +86,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	self = [self init];
 	if (self == nil) return nil;
 	
-	CFNetServiceClientContext context;
-	memset(&context, 0, sizeof(CFNetServiceClientContext));
-				
+	CFNetServiceClientContext context = {0};
 	context.info = self;
 	
 	_service =  (CFNetServiceRef)CFMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)domain, (CFStringRef)type, (CFStringRef)name, 0));

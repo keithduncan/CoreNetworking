@@ -33,8 +33,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 		{	
 			AFNetworkSocket *newSocket = [[[[self class] alloc] initWithLowerLayer:nil] autorelease];
 			
-			CFSocketContext context;
-			memset(&context, 0, sizeof(CFSocketContext));
+			CFSocketContext context = {0};
 			context.info = newSocket;
 			
 			newSocket->_socket = (CFSocketRef)CFMakeCollectable(CFSocketCreateWithNative(kCFAllocatorDefault, *(CFSocketNativeHandle *)data, 0, AFSocketCallback, &context));
@@ -55,7 +54,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	[pool drain];
 }
 
-- (id)initWithSignature:(const CFSocketSignature *)signature callbacks:(CFOptionFlags)options {
+- (id)initWithHostSignature:(const CFSocketSignature *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
@@ -63,11 +62,10 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	memcpy(_signature, signature, sizeof(CFSocketSignature));
 	CFRetain(_signature->address);
 	
-	CFSocketContext context;
-	memset(&context, 0, sizeof(CFSocketContext));
+	CFSocketContext context = {0};
 	context.info = self;
 	
-	_socket = (CFSocketRef)CFMakeCollectable(CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, options, AFSocketCallback, &context));
+	_socket = (CFSocketRef)CFMakeCollectable(CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, kCFSocketAcceptCallBack, AFSocketCallback, &context));
 	_socketRunLoopSource = (CFRunLoopSourceRef)CFMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0));
 	
 #if DEBUGFULL
@@ -81,6 +79,19 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 		[self release];
 		return nil;
 	}
+	
+	return self;
+}
+
+- (id)initWithNativeHandle:(CFSocketNativeHandle)handle {
+	self = [self init];
+	if (self == nil) return nil;
+	
+	CFSocketContext context = {0};
+	context.info = self;
+	
+	_socket = (CFSocketRef)CFMakeCollectable(CFSocketCreateWithNative(kCFAllocatorDefault, handle, (CFOptionFlags)0, AFSocketCallback, &context));
+	_socketRunLoopSource = (CFRunLoopSourceRef)CFMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0));
 	
 	return self;
 }
