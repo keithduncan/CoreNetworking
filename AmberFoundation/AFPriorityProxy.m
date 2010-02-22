@@ -8,6 +8,10 @@
 
 #import "AFPriorityProxy.h"
 
+@interface AFPriorityProxy ()
+- (NSMutableArray *)_dispatchedTargetsForSelector:(SEL)selector;
+@end
+
 @implementation AFPriorityProxy
 
 - (id)init {
@@ -37,6 +41,7 @@
 - (BOOL)respondsToSelector:(SEL)selector {
 	for (id currentDispatchTarget in dispatchOrder) {
 		if (![currentDispatchTarget respondsToSelector:selector]) continue;
+		if ([[self _dispatchedTargetsForSelector:selector] containsObject:currentDispatchTarget]) continue;
 		return YES;
 	}
 	
