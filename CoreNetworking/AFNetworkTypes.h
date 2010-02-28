@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CoreNetworking/AFNetService.h"
-
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif

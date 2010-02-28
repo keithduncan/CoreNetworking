@@ -77,7 +77,6 @@ extern NSDictionary *AFNetServicePropertyDictionaryFromTXTRecordData(NSData *TXT
  */
 extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary);
 
-
 /*!
     @brief
 	A replacement for a resolvable NSNetService with a KVO compliant 'presence' dictionary corresponding to the TXT record data

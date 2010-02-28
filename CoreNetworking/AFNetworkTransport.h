@@ -29,16 +29,14 @@
 	This class is a mix of two of the primary patterns:
 	• Internally, it acts an adaptor between the CFSocketRef and CFStreamRef API.
 	• Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and CFStreamRef providing a CFStreamRef like API.
-	
-	Note: The layout of the _peer union is important, we can cast the _peer instance variable to CFTypeRef and introspect using CFGetTypeID to determine the struct in use.
 */
-@interface AFNetworkTransport : AFNetworkLayer <AFConnectionLayer> {	
-	NSUInteger _connectionFlags;
-	
+@interface AFNetworkTransport : AFNetworkLayer <AFConnectionLayer> {
 	union {
-		AFNetworkTransportServiceSignature _netServiceDestination;
-		AFNetworkTransportHostSignature _hostDestination;
-	} _peer;
+		AFNetworkTransportHostSignature _host;
+		AFNetworkTransportServiceSignature _service;
+	} _signature;
+	
+	NSUInteger _connectionFlags;
 	
 	AFStreamPacketQueue *_writeQueue;
 	void *_writeQueueSource;

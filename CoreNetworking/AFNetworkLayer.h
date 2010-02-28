@@ -18,11 +18,11 @@
 	
 	@detail
 	This class configures a bidirectional proxying system. Unimplemented methods are forwarded to the |lowerLayer|, and the delegate accessor returns a proxy that forwards messages up the delegate chain.
-	CFHostRef and CFNetServiceRef are both first class citizens in Core Networking, and you can easily bring a stack online using either. (Consider NSURL/CFURL as a stand in for CFHostRef.)
-	There are two designated outbound initialisers, each accepting one of the destination types.
+	CFHostRef and CFNetServiceRef are both first class citizens in Core Networking, and you can easily bring a stack online using either. (You should also consider NSURL/CFURL as a stand in for CFHostRef.)
 	
-	Core Networking layers are not automatically scheduled in the current run loop on creation, this is because they offer two means of scheduling; run loop based and dispatch_queue_t based. You must schedule the layer appropriately to receive callbacks.
-	Scheduling a layer in both a run loop and a queue is unsupported and the results are undefined.
+	Core Networking layers are NOT automatically scheduled in the current run loop on creation.
+	Two means of scheduling are available; run loop based and dispatch_queue_t based. You must schedule the layer appropriately to receive callbacks.
+	Scheduling a layer in both a run loop and a queue is unsupported, results are undefined.
  */
 @interface AFNetworkLayer : NSObject {
  @private
@@ -40,8 +40,7 @@
 
 /*!
 	@brief
-	Inbound Initialiser
-	This is used when you have an accept socket that has spawned a new connection.
+	Designated Initialiser.
  */
 - (id)initWithLowerLayer:(id <AFTransportLayer>)layer;
 
@@ -54,27 +53,16 @@
 /*!
 	@brief
 	Outbound Initialiser.
-	This initialiser is a sibling to <tt>-initWithNetService:</tt>.
  
 	@detail
-	This doesn't use CFSocketSignature because the protocol family is determined by the CFHostRef address values.
+	You can provide either a host + transport details, or <AFNetServiceCommon> compilant class.
+	
+	If you provide a host, the details are captured and the host copied.
+	If you provide an <AFNetServiceCommon> it will be used to create a CFNetService internally.
+	
 	The default implementation creates a lower-layer using <tt>+lowerLayerClass</tt> and calls the same initialiser on the new object.
  */
-- (id <AFTransportLayer>)initWithPeerSignature:(const AFNetworkTransportHostSignature *)signature;
-
-/*!
-	@brief
-	Outbound Initialiser.
-	This initialiser is a sibling to <tt>-initWithSignature:</tt>.
- 
-	@detail
-	A net service - once resolved - encapsulates all the data from <tt>AFSocketPeerSignature</tt>.
-	The default implementation creates a lower-layer using <tt>+lowerLayerClass</tt> and calls the same initialiser on the new object.
- 
-	@param |netService|
-	Will be used to create a CFNetService internally.
- */
-- (id <AFTransportLayer>)initWithNetService:(id <AFNetServiceCommon>)netService;
+- (AFNetworkLayer *)initWithTransportSignature:(AFNetworkTransportSignature)signature;
 
 /*!
 	@brief

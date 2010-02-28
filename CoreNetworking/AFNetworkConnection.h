@@ -8,6 +8,7 @@
 
 #import "CoreNetworking/AFNetworkLayer.h"
 
+#import "CoreNetworking/AFNetService.h"
 #import "CoreNetworking/AFConnectionLayer.h"
 
 /*!
@@ -46,6 +47,13 @@
 	If the URL provides a port number that one is used instead of the scheme-implied port. Scheme implied ports are looked up in /etc/services.
  */
 - (id <AFConnectionLayer>)initWithURL:(NSURL *)endpoint;
+
+/*!
+	@brief
+	Outbound Initialiser.
+	This initialiser is shorthand for creating a AFNetworkTransportServiceSignature.
+ */
+- (id <AFConnectionLayer>)initWithService:(id <AFNetServiceCommon>)service;
 
 /*!
 	@brief
