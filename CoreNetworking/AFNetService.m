@@ -53,15 +53,12 @@ NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordD
 	return [self initWithDomain:[(id)service valueForKey:@"domain"] type:[(id)service valueForKey:@"type"] name:[(id)service valueForKey:@"name"]];
 }
 
-static void AFNetServiceMonitorClientCallBack(CFNetServiceMonitorRef monitor, CFNetServiceRef service, CFNetServiceMonitorType typeInfo, CFDataRef rdata, CFStreamError *error, void *info) {
-	AFNetService *self = info;
-	
+static void AFNetServiceMonitorClientCallBack(CFNetServiceMonitorRef monitor, CFNetServiceRef service, CFNetServiceMonitorType typeInfo, CFDataRef rdata, CFStreamError *error, AFNetService *self) {
 	NSDictionary *values = AFNetServicePropertyDictionaryFromTXTRecordData((NSData *)rdata);
 	[self updatePresenceWithValuesForKeys:values];
 }
 
-static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *error, void *info) {
-	AFNetService *self = info;
+static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *error, AFNetService *self) {
 	NSArray *resolvedAddresses = [self addresses];
 	
 	if (resolvedAddresses == nil) {
@@ -90,7 +87,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	context.info = self;
 	
 	_service =  (CFNetServiceRef)CFMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)domain, (CFStringRef)type, (CFStringRef)name, 0));
-	Boolean client = CFNetServiceSetClient(_service, AFNetServiceClientCallBack, &context);
+	Boolean client = CFNetServiceSetClient(_service, (CFNetServiceClientCallBack)AFNetServiceClientCallBack, &context);
 	
 	if (!client) {
 		[NSException raise:NSInternalInconsistencyException format:@"%s, couldn't set service client", __PRETTY_FUNCTION__, nil];
@@ -99,7 +96,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 		return nil;
 	}
 	
-	_monitor = (CFNetServiceMonitorRef)CFMakeCollectable(CFNetServiceMonitorCreate(kCFAllocatorDefault, _service, AFNetServiceMonitorClientCallBack, &context));
+	_monitor = (CFNetServiceMonitorRef)CFMakeCollectable(CFNetServiceMonitorCreate(kCFAllocatorDefault, _service, (CFNetServiceMonitorClientCallBack)AFNetServiceMonitorClientCallBack, &context));
 	
 	return self;
 }

@@ -94,7 +94,6 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 	NSDictionary *presence;
 }
 
-
 @property (assign) id <AFNetServiceDelegate> delegate;
 
 @property (readonly, retain) NSDictionary *presence;
@@ -137,10 +136,5 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 
 - (void)netServiceDidResolveAddress:(AFNetService *)service;
 - (void)netService:(AFNetService *)service didNotResolveAddress:(NSError *)error;
-
-@end
-
-
-@interface NSNetService (AFAdditions) <AFNetServiceCommon>
 
 @end

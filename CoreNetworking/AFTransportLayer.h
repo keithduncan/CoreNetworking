@@ -103,7 +103,7 @@
 	@brief
 	This method is currently only expected to handle an (NSData) object.
  */
-- (void)performWrite:(id)dataBuffer withTimeout:(NSTimeInterval)duration context:(void *)context;
+- (void)performWrite:(id)buffer withTimeout:(NSTimeInterval)duration context:(void *)context;
 
 @end
 

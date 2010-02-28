@@ -31,8 +31,11 @@
 /*!
 	@brief
 	Pass a dictionary with the SSL keys specified in CFSocketStream.h
+	
+	@detail
+	Any immediate error is returned by reference, if negotiation fails the error will be delivered by 
  */
-- (void)startTLS:(NSDictionary *)options;
+- (BOOL)startTLS:(NSDictionary *)options error:(NSError **)errorRef;
 
 /*!
 	@brief

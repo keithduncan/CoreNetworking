@@ -22,30 +22,28 @@
 	self = [super init];
 	if (self == nil) return nil;
 	
-	self.mutableConnections = [NSMutableSet set];
+	_connections = [[NSMutableSet alloc] init];
 	
 	return self;
 }
 
 - (void)dealloc {
-	self.mutableConnections = nil;
+	[_connections release];
 	
 	[super dealloc];
 }
 
 - (NSSet *)connections {
-	return self.mutableConnections;
+	return [_connections copy];
 }
 
 - (void)addConnectionsObject:(id <AFTransportLayer>)connection {
 	[self.mutableConnections addObject:connection];
-	
 	[connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
 - (void)removeConnectionsObject:(id <AFTransportLayer>)connection {
 	[connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	
 	[self.mutableConnections removeObject:connection];
 }
 

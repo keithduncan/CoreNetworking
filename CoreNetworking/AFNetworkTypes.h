@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CoreNetworking/AFNetService.h"
+
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
@@ -101,16 +103,16 @@ struct _AFNetworkTransportServiceSignature {
 	/*
 	 *	This defines _where_ and _how_ to communicate
 	 */
-	__strong CFNetServiceRef netService;
+	__strong CFNetServiceRef service;
 };
 typedef struct _AFNetworkTransportServiceSignature AFNetworkTransportServiceSignature;
 
 /*!
 	@brief
 	This struct allows for arguments to be either <tt>AFNetworkTransportHostSignature</tt> or <tt>AFNetworkTransportServiceSignature</tt>.
-	A receiver must introspect the type using <tt>CFGetTypeID</tt> to determine which has been passed.
+	A receiver will introspect the type using <tt>CFGetTypeID</tt> to determine which has been passed.
  */
-struct _AFNetworkTransportSignature {
-	CFTypeRef endpoint;
-};
-typedef struct _AFNetworkTransportSignature AFNetworkTransportSignature;
+typedef union _AFNetworkTransportSignature {
+	AFNetworkTransportHostSignature *_host;
+	AFNetworkTransportServiceSignature *_service;
+} AFNetworkTransportSignature __attribute__((transparent_union));

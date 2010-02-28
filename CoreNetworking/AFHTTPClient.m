@@ -93,7 +93,11 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 										 (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
 										 nil];
 		
-		[self startTLS:securityOptions];
+		NSError *TLSError = nil;
+		BOOL secureNegotiation = [self startTLS:securityOptions error:&TLSError];
+		if (secureNegotiation) return;
+		
+		[self.delegate layer:self didReceiveError:TLSError];
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])

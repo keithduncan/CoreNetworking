@@ -10,8 +10,6 @@
 
 @protocol AFHTTPServerDataDelegate;
 
-extern NSString *const AFHTTPServerRenderersKey;
-
 /*!
 	@brief
 	This is a simple HTTP server which attempts to return resources sourced through two means.
@@ -34,7 +32,7 @@ extern NSString *const AFHTTPServerRenderersKey;
 	@detail
 	Each of these objects is consulted in order to render the resource, if NULL is returned the next is consulted.
  */
-@property (readonly, retain) NSArray *renderers;
+@property (copy) NSArray *renderers;
 
 @end
 

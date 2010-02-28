@@ -20,12 +20,6 @@
 
 #define kCoreNetworkingHTTPServerVersion kCFHTTPVersion1_1
 
-NSString *const AFHTTPServerRenderersKey = @"renderers";
-
-@interface AFHTTPServer ()
-@property (readwrite, retain) NSArray *renderers;
-@end
-
 @interface AFHTTPServer (Private)
 - (void)_returnResponse:(CFHTTPMessageRef)response forRequest:(CFHTTPMessageRef)request connection:(id)connection permitKeepAlive:(BOOL)allow;
 @end

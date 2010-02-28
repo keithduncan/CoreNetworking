@@ -165,8 +165,7 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 - (BOOL)openPathSocketWithLocation:(NSURL *)location {
 	NSParameterAssert([location isFileURL]);
 	
-	struct sockaddr_un address;
-	bzero(&address, sizeof(struct sockaddr_un));
+	struct sockaddr_un address = {0};
 	
 	unsigned int maximumLength = sizeof(address.sun_path);
 	if (strlen([[location path] fileSystemRepresentation]) >= maximumLength) {
