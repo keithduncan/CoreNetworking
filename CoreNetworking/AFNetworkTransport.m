@@ -321,6 +321,20 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 		return handle;
 	};
 	
+	if (_writeQueueSource != NULL) {
+		dispatch_source_cancel(_writeQueueSource);
+		dispatch_release(_writeQueueSource);
+		_writeQueueSource = NULL;
+	}
+	
+	if (_readQueueSource != NULL) {
+		dispatch_source_cancel(_readQueueSource);
+		dispatch_release(_readQueueSource);
+		_readQueueSource = NULL;
+	}
+	
+	if (queue == NULL) return;
+	
 	if (_writeQueueSource == NULL) {
 		dispatch_source_t writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, getNativeHandle((CopyStreamProperty)CFWriteStreamCopyProperty, [self writeStream]), 0, queue);
 		dispatch_source_set_event_handler(writeSource, ^ {
