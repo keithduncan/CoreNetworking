@@ -38,8 +38,7 @@
 - (void)main {
 	pthread_setname_np([[[NSThread currentThread] name] UTF8String]);
 	
-	CFRunLoopSourceContext context;
-	bzero(&context, sizeof(CFRunLoopSourceContext));
+	CFRunLoopSourceContext context = {0};
 	
 	CFRunLoopSourceRef keepAliveSource = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &context);
 	CFRunLoopAddSource(CFRunLoopGetCurrent(), keepAliveSource, kCFRunLoopCommonModes);
