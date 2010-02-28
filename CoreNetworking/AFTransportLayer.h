@@ -92,6 +92,19 @@
  */
 - (void)unscheduleFromRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode;
 
+#if defined(DISPATCH_API_VERSION)
+
+/*!
+	@brief
+	Creates a dispatch source.
+	
+	@param queue
+	A layer can only be scheduled in a single queue at a time, to unschedule it pass NULL.
+ */
+- (void)scheduleInQueue:(dispatch_queue_t)queue;
+
+#endif
+
 /*!
 	@param
 	|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length or an NSData for bit pattern.

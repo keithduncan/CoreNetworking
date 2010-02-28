@@ -180,6 +180,13 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 		return;
 	}
 	
+	if (_writeQueueSource != NULL) {
+		dispatch_release(_writeQueueSource);
+	}
+	if (_readQueueSource != NULL) {
+		dispatch_release(_readQueueSource);
+	}
+	
 	[super finalize];
 }
 
@@ -200,6 +207,13 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 	
 	[_writeQueue release];
 	[_readQueue release];
+	
+	if (_writeQueueSource != NULL) {
+		dispatch_release(_writeQueueSource);
+	}
+	if (_readQueueSource != NULL) {
+		dispatch_release(_readQueueSource);
+	}
 	
 	[super dealloc];
 }
@@ -294,6 +308,7 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 }
 
 #if defined(DISPATCH_API_VERSION)
+
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
 	typedef id (*CopyStreamProperty)(CFTypeRef, CFStringRef);
 	typedef CFSocketNativeHandle (^GetNativeSteamHandle)(CopyStreamProperty copyProperty, CFTypeRef stream);
@@ -306,24 +321,25 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 		return handle;
 	};
 	
-	dispatch_source_t writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, getNativeHandle((CopyStreamProperty)CFWriteStreamCopyProperty, [self writeStream]), 0, queue);
-	dispatch_source_set_event_handler(writeSource, ^ {
-		AFNetworkTransportWriteStreamCallback([self writeStream], kCFStreamEventCanAcceptBytes, self);
-	});
-	dispatch_resume(writeSource);
-	_writeQueueSource = writeSource;
+	if (_writeQueueSource == NULL) {
+		dispatch_source_t writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, getNativeHandle((CopyStreamProperty)CFWriteStreamCopyProperty, [self writeStream]), 0, queue);
+		dispatch_source_set_event_handler(writeSource, ^ {
+			AFNetworkTransportWriteStreamCallback([self writeStream], kCFStreamEventCanAcceptBytes, self);
+		});
+		dispatch_resume(writeSource);
+		_writeQueueSource = writeSource;
+	}
 	
-	dispatch_source_t readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, getNativeHandle((CopyStreamProperty)CFReadStreamCopyProperty, [self readStream]), 0, queue);
-	dispatch_source_set_event_handler(readSource, ^ {
-		AFNetworkTransportReadStreamCallback([self readStream], kCFStreamEventHasBytesAvailable, self);
-	});
-	dispatch_resume(readSource);
-	_readQueueSource = readSource;
+	if (_readQueueSource == NULL) {
+		dispatch_source_t readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, getNativeHandle((CopyStreamProperty)CFReadStreamCopyProperty, [self readStream]), 0, queue);
+		dispatch_source_set_event_handler(readSource, ^ {
+			AFNetworkTransportReadStreamCallback([self readStream], kCFStreamEventHasBytesAvailable, self);
+		});
+		dispatch_resume(readSource);
+		_readQueueSource = readSource;
+	}
 }
 
-- (void)unscheduleFromQueue {
-	
-}
 #endif
 
 #pragma mark -
