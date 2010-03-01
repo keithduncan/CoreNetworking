@@ -163,6 +163,14 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 
 @end
 
+@implementation AFHTTPConnection (AFAdditions)
+
+- (void)downloadResource:(NSString *)resource toURL:(NSURL *)location deleteFileOnFailure:(BOOL)deleteFileOnFailure {
+	
+}
+
+@end
+
 @implementation AFHTTPConnection (_Delegate)
 
 - (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data context:(void *)context {

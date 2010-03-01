@@ -13,6 +13,7 @@
 #endif
 
 @interface AFHTTPClient : AFHTTPConnection {
+ @private
 	__strong CFHTTPAuthenticationRef _authentication;
 	NSDictionary *_authenticationCredentials;
 	

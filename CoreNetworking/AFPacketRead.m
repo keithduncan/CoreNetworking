@@ -16,7 +16,8 @@
 @synthesize buffer=_buffer;
 
 - (id)init {
-	[super init];
+	self = [super init];
+	if (self == nil) return nil;
 	
 	_buffer = [[NSMutableData alloc] init];
 	
@@ -118,7 +119,7 @@
 - (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)errorRef {
 	BOOL packetComplete = NO;
 	
-	while (!packetComplete && CFReadStreamHasBytesAvailable(readStream)) {		
+	while (!packetComplete && CFReadStreamHasBytesAvailable(readStream)) {
 		NSUInteger maximumReadLength = [self _increaseBuffer];
 		
 		UInt8 *readBuffer = (UInt8 *)([_buffer mutableBytes] + _bytesRead);
@@ -148,7 +149,11 @@
 		}
 	}
 	
-	return packetComplete;
+	if (packetComplete) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+	}
+	
+	return YES;
 }
 
 @end

@@ -49,6 +49,7 @@
 	After instantiating the server you can use one of the convenience methods to open socket(s)
  */
 @interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFConnectionLayerHostDelegate> {
+ @private
 	id <AFNetworkServerDelegate> _delegate;
 	
 	NSArray *_encapsulationClasses;

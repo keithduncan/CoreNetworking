@@ -21,9 +21,18 @@ typedef NSInteger AFPacketError;
 
 /*!
 	@brief
-	This is posted when a timeout occurs, the object is the packet
+	Posted when a timeout occurs, the object is the packet
  */
-extern NSString *const AFPacketTimeoutNotificationName;
+extern NSString *const AFPacketDidTimeoutNotificationName;
+
+/*!
+	@brief
+	Posted when the packet completed (successfully or otherwise).
+	
+	@detail
+	If the packet is completing because an error was encountered, return it under the <tt>AFPacketErrorKey</tt> key.
+ */
+extern NSString *const AFPacketDidCompleteNotificationName;
 
 /*!
 	@brief
@@ -79,9 +88,6 @@ extern NSString *const AFPacketTimeoutNotificationName;
 	This is an override point
 	@result
 	Values in the range [0.0, 1.0], this method returns 0.0 by default
- 
-	@param
-	|fraction| is required, calling with a NULL argument will raise an exception
  */
 - (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal;
 
@@ -95,10 +101,7 @@ extern NSString *const AFPacketTimeoutNotificationName;
 
 /*!
 	@brief
-	This method is called to perform the read once the stream has signalled that it has bytes available.
- 
-	@result
-	Return TRUE to indicate that the packet is complete. Once your packet is complete the <tt>buffer</tt> property should contain the read results.
+	Called to perform the read once the stream has signalled that it has bytes available.
  */
 - (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef;
 
@@ -112,10 +115,7 @@ extern NSString *const AFPacketTimeoutNotificationName;
 
 /*!
 	@brief
-	This method is called to perform the write once the stream has signalled it has space available.
- 
-	@result
-	Return TRUE to indicate that the packet is complete. Once your packet is complete the <tt>buffer</tt> property should contain the written data.
+	Called to perform the write once the stream has signalled that it can accept bytes.
  */
 - (BOOL)performWrite:(CFWriteStreamRef)writeStream error:(NSError **)errorRef;
 

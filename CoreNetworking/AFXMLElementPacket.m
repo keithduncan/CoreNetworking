@@ -56,6 +56,8 @@
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
 
+#warning change this to use the new return contract
+
 - (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef {
 	BOOL shouldContinue = NO;
 	

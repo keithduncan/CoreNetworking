@@ -86,6 +86,7 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 	This cannot currently be used for publishing a service, the NSNetService API is generally sufficient for that.
 */
 @interface AFNetService : NSObject <AFNetServiceCommon> {
+ @private
 	__strong CFNetServiceRef _service;
 	__strong CFNetServiceMonitorRef _monitor;
 	

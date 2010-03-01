@@ -36,19 +36,19 @@ NSSTRING_CONTEXT(AFHTTPMessagePacketBodyContext);
 
 @interface AFHTTPMessagePacket ()
 @property (readonly) CFHTTPMessageRef message;
-@property (retain) AFPacketRead *currentRead;
+@property (retain) AFPacketRead *currentPacket;
 @end
 
 @implementation AFHTTPMessagePacket
 
 @synthesize message=_message;
-@synthesize currentRead=_currentRead;
+@synthesize currentPacket=_currentPacket;
 
 - (id)initForRequest:(BOOL)isRequest {
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_message = (CFHTTPMessageRef)CFMakeCollectable(CFHTTPMessageCreateEmpty(kCFAllocatorDefault, isRequest));
+	_message = CFHTTPMessageCreateEmpty(kCFAllocatorDefault, isRequest);
 	
 	return self;
 }
@@ -59,9 +59,18 @@ NSSTRING_CONTEXT(AFHTTPMessagePacketBodyContext);
 		_message = NULL;
 	}
 	
-	[_currentRead release];
+	[_currentPacket release];
 	
 	[super dealloc];
+}
+
+- (void)finalize {
+	if (_message != NULL) {
+		CFRelease(_message);
+		_message = NULL;
+	}
+	
+	[super finalize];
 }
 
 - (id)buffer {
@@ -81,37 +90,38 @@ NSSTRING_CONTEXT(AFHTTPMessagePacketBodyContext);
 	return nil;
 }
 
+#warning change this to use the new return contract
+
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
 
 - (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef {	
 	BOOL shouldContinue = NO;
 	do {
-		if (self.currentRead == nil) {
-			self.currentRead = [self _nextReadPacket];
+		if (self.currentPacket == nil) {
+			self.currentPacket = [self _nextReadPacket];
 			
 			// Note: this covers reading a request where there's no body
-			if (self.currentRead == nil) return YES;
+			if (self.currentPacket == nil) return YES;
 		}
 		
-		shouldContinue = [self.currentRead performRead:stream error:errorRef];
+		shouldContinue = [self.currentPacket performRead:stream error:errorRef];
+		if (!shouldContinue) break;
 		
-		if (shouldContinue) {
-			shouldContinue = CFHTTPMessageAppendBytes(self.message, [self.currentRead.buffer bytes], [self.currentRead.buffer length]);
+		shouldContinue = CFHTTPMessageAppendBytes(self.message, [self.currentPacket.buffer bytes], [self.currentPacket.buffer length]);
+		
+		if (!shouldContinue) {
+			CFRelease(_message);
+			_message = NULL;
 			
-			if (!shouldContinue) {
-				CFRelease(_message);
-				_message = NULL;
-				
-				if (errorRef != NULL)
-					*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketParseError userInfo:nil];
-				
-				return YES;
-			}
+			if (errorRef != NULL)
+				*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketParseError userInfo:nil];
 			
-			if (self.currentRead.context == &AFHTTPMessagePacketBodyContext) return YES;
-			self.currentRead = nil;
+			return YES;
 		}
-	} while (shouldContinue && self.currentRead == nil);
+		
+		if (self.currentPacket.context == &AFHTTPMessagePacketBodyContext) return YES;
+		self.currentPacket = nil;
+	} while (shouldContinue && self.currentPacket == nil);
 	
 	return NO;
 }

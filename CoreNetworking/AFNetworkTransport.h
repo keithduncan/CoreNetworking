@@ -17,9 +17,19 @@
 @protocol AFNetworkTransportDataDelegate;
 @protocol AFNetworkTransportControlDelegate;
 
-@class AFStreamPacketQueue;
+@class AFPacketQueue;
 @class AFPacketWrite;
 @class AFPacketRead;
+
+struct _AFNetworkTransportQueue {
+	AFPacketQueue *_queue;
+	
+	__strong CFTypeRef _stream;
+	void *_source;
+	
+	NSUInteger _flags;
+	BOOL _dequeuing;
+};
 
 /*!
     @brief
@@ -31,18 +41,16 @@
 	• Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and CFStreamRef providing a CFStreamRef like API.
 */
 @interface AFNetworkTransport : AFNetworkLayer <AFConnectionLayer> {
+ @private
 	union {
-		AFNetworkTransportHostSignature _host;
 		AFNetworkTransportServiceSignature _service;
+		AFNetworkTransportHostSignature _host;
 	} _signature;
 	
 	NSUInteger _connectionFlags;
 	
-	AFStreamPacketQueue *_writeQueue;
-	void *_writeQueueSource;
-	
-	AFStreamPacketQueue *_readQueue;
-	void *_readQueueSource;
+	struct _AFNetworkTransportQueue _writeQueue;
+	struct _AFNetworkTransportQueue _readQueue;
 }
 
 @property (assign) id <AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate> delegate;

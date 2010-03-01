@@ -16,6 +16,7 @@
 	It first consults the delegate to return a CFHTTPMessageRef response for a given request, if NULL 
  */
 @interface AFHTTPServer : AFNetworkServer {
+ @private
 	NSArray *_renderers;
 }
 

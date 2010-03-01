@@ -27,6 +27,7 @@
 	- 
  */
 @interface AFHTTPConnection : AFNetworkConnection <AFConnectionLayer> {
+ @private
 	NSMutableDictionary *_messageHeaders;
 	AFPacketQueue *_transactionQueue;
 }
@@ -104,6 +105,19 @@
 	The transaction enqueuing methods will call this after writing a request.
  */
 - (void)readResponse;
+
+@end
+
+@interface AFHTTPConnection (AFAdditions)
+
+/*!
+	@brief
+	Replaces NSURLDownload which can't be scheduled in multiple run loop modes.
+	
+	@detail
+	Will handle large files by streaming them to disk.
+ */
+- (void)downloadResource:(NSString *)resource toURL:(NSURL *)location deleteFileOnFailure:(BOOL)deleteFileOnFailure;
 
 @end
 

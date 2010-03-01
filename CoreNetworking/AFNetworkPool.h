@@ -17,6 +17,7 @@
 	This class schedules added connections on a run loop. They should be prepared to the scheduled on a background run loop.
  */
 @interface AFNetworkPool : NSObject {
+ @private
 	NSMutableSet *_connections;
 }
 

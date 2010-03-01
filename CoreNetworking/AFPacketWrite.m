@@ -70,7 +70,11 @@
 		if (self.chunkSize > 0) break;
 	}
 	
-	return packetComplete;
+	if (packetComplete) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+	}
+	
+	return YES;
 }
 
 @end

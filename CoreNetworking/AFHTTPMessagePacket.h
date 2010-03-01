@@ -28,10 +28,15 @@ extern NSInteger AFHTTPMessageGetHeaderLength(CFHTTPMessageRef message);
 	This packet will read either a request or response and return a CFHTTPMessageRef as it's buffer.
  */
 @interface AFHTTPMessagePacket : AFPacket <AFPacketReading> {
+ @private
 	__strong CFHTTPMessageRef _message;
-	AFPacketRead *_currentRead;
+	AFPacketRead *_currentPacket;
 }
 
+/*!
+	@brief
+	Designated Initialiser.
+ */
 - (id)initForRequest:(BOOL)isRequest;
 
 @end

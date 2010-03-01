@@ -17,6 +17,7 @@
 	This class encapsulates a request/response pair.
  */
 @interface AFHTTPTransaction : NSObject {
+ @private
 	BOOL _emptyRequest;
 	
 	__strong CFHTTPMessageRef _request;

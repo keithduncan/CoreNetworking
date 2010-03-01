@@ -8,7 +8,9 @@
 
 #import "AFPacket.h"
 
-NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification";
+NSString *const AFPacketDidTimeoutNotificationName = @"AFPacketDidTimeoutNotification";
+NSString *const AFPacketDidCompleteNotificationName = @"AFPacketDidCompleteNotification";
+NSString *const AFPacketErrorKey = @"AFPacketError";
 
 @implementation AFPacket
 
@@ -53,7 +55,7 @@ NSString *const AFPacketTimeoutNotificationName = @"AFPacketTimeoutNotification"
 }
 
 - (void)_timeout:(NSTimer *)sender {
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketTimeoutNotificationName object:self userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidTimeoutNotificationName object:self userInfo:nil];
 }
 
 - (void)startTimeout {

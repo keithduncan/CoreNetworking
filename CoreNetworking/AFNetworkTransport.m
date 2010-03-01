@@ -27,7 +27,6 @@
 #import "AFNetworkFunctions.h"
 
 #import "AFPacketQueue.h"
-#import "AFStreamPacketQueue.h"
 #import "AFPacketRead.h"
 #import "AFPacketWrite.h"
 
@@ -46,15 +45,14 @@ enum {
 };
 typedef NSUInteger AFSocketConnectionStreamFlags;
 
-NSSTRING_CONTEXT(AFNetworkTransportPacketQueueObservationContext);
-
 @interface AFNetworkTransport ()
 @property (assign) NSUInteger connectionFlags;
 
-@property (readonly) AFStreamPacketQueue *readQueue, *writeQueue;
+@property (readonly) AFPacketQueue *writeQueue;
+@property (readonly) AFPacketQueue *readQueue;
 
-@property (readonly) CFWriteStreamRef writeStream;
-@property (readonly) CFReadStreamRef readStream;
+@property (readonly) CFWriteStreamRef writeStream __attribute__((NSObject));
+@property (readonly) CFReadStreamRef readStream __attribute__((NSObject));
 @end
 
 @interface AFNetworkTransport (Streams)
@@ -63,9 +61,14 @@ NSSTRING_CONTEXT(AFNetworkTransportPacketQueueObservationContext);
 - (void)_streamDidStartTLS;
 @end
 
-@interface AFNetworkTransport (PacketQueue) <AFStreamPacketQueueDelegate>
-- (void)_tryDequeuePackets;
-- (void)_emptyQueues;
+@interface AFNetworkTransport (PacketQueue)
+- (BOOL)_canDequeuePacketFromQueue:(struct _AFNetworkTransportQueue *)queue;
+- (void)_tryDequeuePackets:(struct _AFNetworkTransportQueue *)queue;
+- (void)_shouldTryDequeuePacketFromQueue:(struct _AFNetworkTransportQueue *)queue;
+- (void)_startPacket:(AFPacket *)packet;
+- (void)_packetDidTimeout:(NSNotification *)notification;
+- (void)_packetDidComplete:(NSNotification *)notification;
+- (void)_packetDidFinish:(NSNotification *)notification;
 @end
 
 static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, AFNetworkTransport *self);
@@ -76,8 +79,8 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 @implementation AFNetworkTransport
 
 @dynamic delegate;
+
 @synthesize connectionFlags=_connectionFlags;
-@synthesize writeQueue=_writeQueue, readQueue=_readQueue;
 
 + (Class)lowerLayer {
 	return [AFNetworkSocket class];
@@ -180,11 +183,11 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 		return;
 	}
 	
-	if (_writeQueueSource != NULL) {
-		dispatch_release(_writeQueueSource);
+	if (_writeQueue._source != NULL) {
+		dispatch_release(_writeQueue._source);
 	}
-	if (_readQueueSource != NULL) {
-		dispatch_release(_readQueueSource);
+	if (_readQueue._source != NULL) {
+		dispatch_release(_readQueue._source);
 	}
 	
 	[super finalize];
@@ -205,52 +208,42 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 		*peer = NULL;
 	}
 	
-	[_writeQueue release];
-	[_readQueue release];
-	
-	if (_writeQueueSource != NULL) {
-		dispatch_release(_writeQueueSource);
+	if (_writeQueue._stream != NULL) {
+		CFRelease(_writeQueue._stream);
+		_writeQueue._stream = NULL;
 	}
-	if (_readQueueSource != NULL) {
-		dispatch_release(_readQueueSource);
+	if (_readQueue._stream != nil) {
+		CFRelease(_readQueue._stream);
+		_readQueue._stream = NULL;
+	}
+	
+	[_writeQueue._queue release];
+	[_readQueue._queue release];
+	
+	if (_writeQueue._source != NULL) {
+		dispatch_release(_writeQueue._source);
+	}
+	if (_readQueue._source != NULL) {
+		dispatch_release(_readQueue._source);
 	}
 	
 	[super dealloc];
 }
 
+- (AFPacketQueue *)writeQueue {
+	return _writeQueue._queue;
+}
+
+- (AFPacketQueue *)readQueue {
+	return _writeQueue._queue;
+}
+
 - (CFWriteStreamRef)writeStream {
-	return (CFWriteStreamRef)self.writeQueue.stream;
+	return (CFWriteStreamRef)_writeQueue._stream;
 }
 
 - (CFReadStreamRef)readStream {
-	return (CFReadStreamRef)self.readQueue.stream;
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &AFNetworkTransportPacketQueueObservationContext) {
-		id oldPacket = [change objectForKey:NSKeyValueChangeOldKey];
-		
-		if (oldPacket != nil && ![oldPacket isEqual:[NSNull null]]) {
-			[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketTimeoutNotificationName object:oldPacket];
-			[oldPacket stopTimeout];
-		}
-		
-		id newPacket = [change objectForKey:NSKeyValueChangeNewKey];
-		
-		if (newPacket == nil || [newPacket isEqual:[NSNull null]]) {
-			if (object == self.writeQueue) {
-				BOOL shouldClose = YES;
-				shouldClose &= ((self.connectionFlags & _kConnectionCloseSoon) == _kConnectionCloseSoon);
-				shouldClose &= ([self.writeQueue count] == 0);
-				if (shouldClose) [self close];
-			}
-			
-			return;
-		}
-		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetTimeoutNotification:) name:AFPacketTimeoutNotificationName object:newPacket];
-		[newPacket startTimeout];
-	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	return (CFReadStreamRef)_readQueue._stream;
 }
 
 - (id)localAddress {
@@ -321,36 +314,36 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 		return handle;
 	};
 	
-	if (_writeQueueSource != NULL) {
-		dispatch_source_cancel(_writeQueueSource);
-		dispatch_release(_writeQueueSource);
-		_writeQueueSource = NULL;
+	if (_writeQueue._source != NULL) {
+		dispatch_source_cancel(_writeQueue._source);
+		dispatch_release(_writeQueue._source);
+		_writeQueue._source = NULL;
 	}
 	
-	if (_readQueueSource != NULL) {
-		dispatch_source_cancel(_readQueueSource);
-		dispatch_release(_readQueueSource);
-		_readQueueSource = NULL;
+	if (_readQueue._source != NULL) {
+		dispatch_source_cancel(_readQueue._source);
+		dispatch_release(_readQueue._source);
+		_readQueue._source = NULL;
 	}
 	
 	if (queue == NULL) return;
 	
-	if (_writeQueueSource == NULL) {
+	if (_writeQueue._source == NULL) {
 		dispatch_source_t writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, getNativeHandle((CopyStreamProperty)CFWriteStreamCopyProperty, [self writeStream]), 0, queue);
 		dispatch_source_set_event_handler(writeSource, ^ {
 			AFNetworkTransportWriteStreamCallback([self writeStream], kCFStreamEventCanAcceptBytes, self);
 		});
 		dispatch_resume(writeSource);
-		_writeQueueSource = writeSource;
+		_writeQueue._source = writeSource;
 	}
 	
-	if (_readQueueSource == NULL) {
+	if (_readQueue._source == NULL) {
 		dispatch_source_t readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, getNativeHandle((CopyStreamProperty)CFReadStreamCopyProperty, [self readStream]), 0, queue);
 		dispatch_source_set_event_handler(readSource, ^ {
 			AFNetworkTransportReadStreamCallback([self readStream], kCFStreamEventHasBytesAvailable, self);
 		});
 		dispatch_resume(readSource);
-		_readQueueSource = readSource;
+		_readQueue._source = readSource;
 	}
 }
 
@@ -435,7 +428,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	}
 	
 	// Note: you can only prevent a local close, if the streams were closed remotely there's nothing we can do
-	if ((self.readQueue.flags & _kStreamDidClose) != _kStreamDidClose && (self.writeQueue.flags & _kStreamDidClose) != _kStreamDidClose) {
+	if ((_readQueue._flags & _kStreamDidClose) != _kStreamDidClose && (_writeQueue._flags & _kStreamDidClose) != _kStreamDidClose) {
 		BOOL pendingWrites = ([self.writeQueue currentPacket] != nil || [self.writeQueue count] > 0);
 		
 		if (pendingWrites) {
@@ -450,9 +443,8 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 		}
 	}
 	
-	[self.writeQueue removeObserver:self forKeyPath:@"currentPacket"];
-	[self.readQueue removeObserver:self forKeyPath:@"currentPacket"];
-	[self _emptyQueues];
+	[self.writeQueue emptyQueue];
+	[self.readQueue emptyQueue];
 	
 	NSError *streamError = nil;
 	
@@ -463,7 +455,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 		CFReadStreamSetClient(self.readStream, kCFStreamEventNone, NULL, NULL);
 		CFReadStreamClose(self.readStream);
 		
-		self.readQueue.flags = (self.readQueue.flags | _kStreamDidClose);
+		_readQueue._flags = (_readQueue._flags | _kStreamDidClose);
 	}
 	
 	if (self.writeStream != NULL) {
@@ -473,7 +465,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 		CFWriteStreamSetClient(self.writeStream, kCFStreamEventNone, NULL, NULL);
 		CFWriteStreamClose(self.writeStream);
 		
-		self.writeQueue.flags = (self.writeQueue.flags | _kStreamDidClose);
+		_writeQueue._flags = (_writeQueue._flags | _kStreamDidClose);
 	}
 	
 	// Note: set this before the delegation so that the object can be released
@@ -532,7 +524,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 		[self.delegate socket:self willEnqueueWritePacket:packet];
 	
 	[self.writeQueue enqueuePacket:packet];
-	[self.writeQueue tryDequeuePackets];
+	[self _tryDequeuePackets:&_writeQueue];
 }
 
 static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, AFNetworkTransport *self) {
@@ -543,7 +535,7 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 	switch (type) {
 		case kCFStreamEventOpenCompleted:
 		{
-			self.writeQueue.flags = (self.writeQueue.flags | _kStreamDidOpen);
+			self->_writeQueue._flags = (self->_writeQueue._flags | _kStreamDidOpen);
 			
 			[self _streamDidOpen];
 			break;
@@ -552,7 +544,7 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		{
 			if ((self.connectionFlags & _kConnectionWillStartTLS) == _kConnectionWillStartTLS) {
 				[self _streamDidStartTLS];
-			} else [self.writeQueue tryDequeuePackets];
+			} else [self _tryDequeuePackets:&self->_writeQueue];
 			
 			break;
 		}
@@ -598,7 +590,7 @@ static void AFNetworkTransportWriteStreamCallback(CFWriteStreamRef stream, CFStr
 		[self.delegate socket:self willEnqueueReadPacket:packet];
 	
 	[self.readQueue enqueuePacket:packet];
-	[self.readQueue tryDequeuePackets];
+	[self _tryDequeuePackets:&_readQueue];
 }
 
 static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, AFNetworkTransport *self) {
@@ -609,7 +601,7 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 	switch (type) {
 		case kCFStreamEventOpenCompleted:
 		{
-			self.readQueue.flags = (self.readQueue.flags | _kStreamDidOpen);
+			self->_readQueue._flags = (self->_readQueue._flags | _kStreamDidOpen);
 			
 			[self _streamDidOpen];
 			break;
@@ -618,7 +610,7 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 		{	
 			if ((self.connectionFlags & _kConnectionWillStartTLS) == _kConnectionWillStartTLS) {
 				[self _streamDidStartTLS];
-			} else [self.readQueue tryDequeuePackets];
+			} else [self _tryDequeuePackets:&self->_readQueue];
 			
 			break;
 		}
@@ -659,16 +651,14 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 	CFStreamEventType sharedTypes = (kCFStreamEventOpenCompleted | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered);
 	
 	if (writeStream != NULL) {
-		_writeQueue = [[AFStreamPacketQueue alloc] initWithStream:(id)writeStream delegate:self];
-		[_writeQueue addObserver:self forKeyPath:@"currentPacket" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&AFNetworkTransportPacketQueueObservationContext];
-		
+		_writeQueue._queue = [[AFPacketQueue alloc] init];
+		_writeQueue._stream = (CFWriteStreamRef)CFMakeCollectable(CFRetain(writeStream));
 		result &= CFWriteStreamSetClient(self.writeStream, (sharedTypes | kCFStreamEventCanAcceptBytes), (CFWriteStreamClientCallBack)AFNetworkTransportWriteStreamCallback, &context);
 	}
 	
 	if (readStream != NULL) {
-		_readQueue = [[AFStreamPacketQueue alloc] initWithStream:(id)readStream delegate:self];
-		[_readQueue addObserver:self forKeyPath:@"currentPacket" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&AFNetworkTransportPacketQueueObservationContext];
-		
+		_readQueue._queue = [[AFPacketQueue alloc] init];
+		_readQueue._stream = (CFReadStreamRef)CFMakeCollectable(CFRetain(readStream));
 		result &= CFReadStreamSetClient(self.readStream, (sharedTypes | kCFStreamEventHasBytesAvailable), (CFReadStreamClientCallBack)AFNetworkTransportReadStreamCallback, &context);
 	}
 	
@@ -678,7 +668,7 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 - (void)_streamDidOpen {
 	if ((self.connectionFlags & _kConnectionDidOpen) == _kConnectionDidOpen) return;
 	
-	if ((self.readQueue.flags & _kStreamDidOpen) != _kStreamDidOpen || (self.writeQueue.flags & _kStreamDidOpen) != _kStreamDidOpen) return;
+	if ((_readQueue._flags & _kStreamDidOpen) != _kStreamDidOpen || (_writeQueue._flags & _kStreamDidOpen) != _kStreamDidOpen) return;
 	self.connectionFlags = (self.connectionFlags | _kConnectionDidOpen);
 	
 	if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])
@@ -702,69 +692,39 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 
 @implementation AFNetworkTransport (PacketQueue)
 
-- (void)_tryDequeuePackets {
-	[self.writeQueue tryDequeuePackets];
-	[self.readQueue tryDequeuePackets];
-}
-
-- (void)_emptyQueues {
-	[self.writeQueue emptyQueue];
-	[self.readQueue emptyQueue];
-}
-
-- (void)_packetTimeoutNotification:(NSNotification *)notification {
-	NSError *error = nil;
-	
-	if ([[notification object] isEqual:[self.readQueue currentPacket]]) {
-		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-							  NSLocalizedStringWithDefaultValue(@"AFSocketConnectionReadTimeoutError", @"AFSocketConnection", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Read operation timeout.", nil), NSLocalizedDescriptionKey,
-							  nil];
-		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportReadTimeoutError userInfo:errorInfo];
-	} else if ([[notification object] isEqual:[self.writeQueue currentPacket]]) {
-		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-							  NSLocalizedStringWithDefaultValue(@"AFSocketConnectionWriteTimeoutError", @"AFSocketConnection", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Write operation timeout.", nil), NSLocalizedDescriptionKey,
-							  nil];
-		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportWriteTimeoutError userInfo:errorInfo];
-	}
-	
-	[self.delegate layer:self didReceiveError:error];
-}
-
-- (BOOL)streamQueueCanDequeuePackets:(AFStreamPacketQueue *)queue {
+- (BOOL)_canDequeuePacketFromQueue:(struct _AFNetworkTransportQueue *)queue {
 	if ((self.connectionFlags & _kConnectionWillStartTLS) == _kConnectionWillStartTLS) {
 		return ((self.connectionFlags & _kConnectionDidStartTLS) != _kConnectionDidStartTLS);
 	}
 	return YES;
 }
 
-- (BOOL)streamQueue:(AFStreamPacketQueue *)queue shouldTryDequeuePacket:(AFPacket *)packet {
-	if (queue == self.readQueue) {
-		NSError *error = nil;
-		BOOL packetComplete = [(id)packet performRead:(CFReadStreamRef)queue.stream error:&error];
+- (void)_tryDequeuePackets:(struct _AFNetworkTransportQueue *)queue {
+	if (![self _canDequeuePacketFromQueue:queue]) return;
+	
+	if (queue->_dequeuing) return;
+	queue->_dequeuing = YES;
+	
+	do {
+		[self _shouldTryDequeuePacketFromQueue:queue];
+	} while ([queue->_queue tryDequeue]);
+	
+	queue->_dequeuing = NO;
+}
+
+static NSString *const _AFPacketDidErrorNotificationName = @"_AFPacketDidErrorNotification";
+
+- (void)_shouldTryDequeuePacketFromQueue:(struct _AFNetworkTransportQueue *)queue {
+	AFPacket *packet = [queue->_queue currentPacket];
+	
+	if (queue == &_writeQueue) {
+		NSError *writeError = nil;
+		BOOL writeSucceeded = [(id)packet performWrite:self.writeStream error:&writeError];
 		
-		if (error != nil) {
-			[self.delegate layer:self didReceiveError:error];
-			return YES;
-		}
-		
-		if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:total:context:)]) {
-			NSUInteger bytesRead = 0, bytesTotal = 0;
-			[packet currentProgressWithBytesDone:&bytesRead bytesTotal:&bytesTotal];
-			
-			[self.delegate socket:self didReadPartialDataOfLength:bytesRead total:bytesTotal context:packet.context];
-		}
-		
-		if (packetComplete) {
-			[self.delegate layer:self didRead:packet.buffer context:packet.context];
-			return YES;
-		}
-	} else if (queue == self.writeQueue) {
-		NSError *error = nil;
-		BOOL packetComplete = [(id)packet performWrite:(CFWriteStreamRef)queue.stream error:&error];
-		
-		if (error != nil) {
-			[self.delegate layer:self didReceiveError:error];
-			return YES;
+		if (!writeSucceeded) {
+			[self.delegate layer:self didReceiveError:writeError];
+			[self _packetDidFinish:[NSNotification notificationWithName:_AFPacketDidErrorNotificationName object:packet]];
+			return;
 		}
 		
 		if ([self.delegate respondsToSelector:@selector(socket:didWritePartialDataOfLength:total:context:)]) {
@@ -773,14 +733,85 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 			
 			[self.delegate socket:self didWritePartialDataOfLength:bytesWritten total:totalBytes context:packet.context];
 		}
+	} else if (queue == &_readQueue) {
+		NSError *readError = nil;
+		BOOL readSucceeded = [(id)packet performRead:self.readStream error:&readError];
 		
-		if (packetComplete) {
-			[self.delegate layer:self didWrite:packet.buffer context:packet.context];
-			return YES;
+		if (!readSucceeded) {
+			[self.delegate layer:self didReceiveError:readError];
+			[self _packetDidFinish:[NSNotification notificationWithName:_AFPacketDidErrorNotificationName object:packet]];
+			return;
+		}
+		
+		if ([self.delegate respondsToSelector:@selector(socket:didReadPartialDataOfLength:total:context:)]) {
+			NSUInteger bytesRead = 0, bytesTotal = 0;
+			[packet currentProgressWithBytesDone:&bytesRead bytesTotal:&bytesTotal];
+			
+			[self.delegate socket:self didReadPartialDataOfLength:bytesRead total:bytesTotal context:packet.context];
 		}
 	}
+}
+
+#pragma mark -
+
+- (void)_startPacket:(AFPacket *)packet {
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetDidComplete:) name:AFPacketDidCompleteNotificationName object:packet];
 	
-	return NO;
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetDidTimeout:) name:AFPacketDidTimeoutNotificationName object:packet];
+	[packet startTimeout];
+}
+
+- (void)_packetDidTimeout:(NSNotification *)notification {
+	AFPacket *packet = [notification object];
+	
+	NSError *error = nil;
+	if ([packet isEqual:[self.writeQueue currentPacket]]) {
+		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+								   NSLocalizedStringWithDefaultValue(@"AFNetworkTransportWriteTimeoutError", @"AFNetworkTransport", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Write operation timeout.", nil), NSLocalizedDescriptionKey,
+								   nil];
+		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportWriteTimeoutError userInfo:errorInfo];
+	} else if ([packet isEqual:[self.readQueue currentPacket]]) {
+		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+								   NSLocalizedStringWithDefaultValue(@"AFNetworkTransportReadTimeoutError", @"AFNetworkTransport", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Read operation timeout.", nil), NSLocalizedDescriptionKey,
+								   nil];
+		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportReadTimeoutError userInfo:errorInfo];
+	}
+	
+	[self.delegate layer:self didReceiveError:error];
+	[self _packetDidFinish:notification];
+}
+
+- (void)_packetDidComplete:(NSNotification *)notification {
+	[self _packetDidFinish:notification];
+}
+
+- (void)_packetDidFinish:(NSNotification *)notification {
+	AFPacket *packet = [notification object];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidTimeoutNotificationName object:packet];
+	[packet stopTimeout];
+	
+	BOOL didCompleteSuccessfully = ![[notification name] isEqualToString:AFPacketDidTimeoutNotificationName];
+	
+	struct _AFNetworkTransportQueue *queue = NULL;
+	
+	if ([packet isEqual:[self.writeQueue currentPacket]]) {
+		if (((self.connectionFlags & _kConnectionCloseSoon) == _kConnectionCloseSoon) && ([self.writeQueue count] == 0)) {
+			[self close];
+			return;
+		}
+		
+		if (didCompleteSuccessfully) [self.delegate layer:self didWrite:packet.buffer context:packet.context];
+		queue = &_writeQueue;
+	} else if ([packet isEqual:[self.readQueue currentPacket]]) {
+		if (didCompleteSuccessfully) [self.delegate layer:self didRead:packet.buffer context:packet.context];
+		queue = &_readQueue;
+	}
+	
+	[queue->_queue dequeued];
+	[self _tryDequeuePackets:queue];
 }
 
 @end

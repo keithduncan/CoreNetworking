@@ -28,6 +28,7 @@
 	The completed buffer is an NSString, allowing the caller to use whatever XML library is available.
  */
 @interface AFXMLElementPacket : AFPacket <AFPacketReading> {
+ @private
 	NSStringEncoding _encoding;
 	
 	AFPacketRead *_currentRead;
