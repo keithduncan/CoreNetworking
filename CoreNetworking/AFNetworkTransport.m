@@ -705,9 +705,9 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 	if (queue->_dequeuing) return;
 	queue->_dequeuing = YES;
 	
-	do {
+	while ([queue->_queue tryDequeue]) {
 		[self _shouldTryDequeuePacketFromQueue:queue];
-	} while ([queue->_queue tryDequeue]);
+	}
 	
 	queue->_dequeuing = NO;
 }
