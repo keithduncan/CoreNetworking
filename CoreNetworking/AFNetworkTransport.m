@@ -166,10 +166,10 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 }
 
 - (AFNetworkLayer *)initWithTransportSignature:(AFNetworkTransportSignature)signature {
-	if (CFGetTypeID(*(CFTypeRef *)&signature) == CFHostGetTypeID()) {
+	if (CFGetTypeID(*(CFTypeRef *)*(void **)&signature) == CFHostGetTypeID()) {
 		return [self _initWithHostSignature:signature._host];
 	}
-	if (CFGetTypeID(*(CFTypeRef *)&signature) == CFNetServiceGetTypeID()) {
+	if (CFGetTypeID(*(CFTypeRef *)*(void **)&signature) == CFNetServiceGetTypeID()) {
 		return [self _initWithServiceSignature:signature._service];
 	}
 	
@@ -178,7 +178,7 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 }
 
 - (void)finalize {
-	if (![self isClosed]) {
+	if (((self.connectionFlags & _kConnectionDidOpen) == _kConnectionDidOpen) && ((self.connectionFlags & _kConnectionDidClose) != _kConnectionDidClose)) {
 		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot finalize a layer which isn't closed yet.", __PRETTY_FUNCTION__, nil];
 		return;
 	}
@@ -469,7 +469,7 @@ static BOOL _AFSocketConnectionReachabilityResult(CFDataRef data) {
 	}
 	
 	// Note: set this before the delegation so that the object can be released
-	self.connectionFlags = _kConnectionDidClose;
+	self.connectionFlags = (self.connectionFlags | _kConnectionDidClose);
 	
 	if ([self.delegate respondsToSelector:@selector(layer:didDisconnectWithError:)])
 		[self.delegate layer:self didDisconnectWithError:streamError];
