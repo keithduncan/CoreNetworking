@@ -103,7 +103,7 @@ extern NSString *const AFPacketDidCompleteNotificationName;
 	@brief
 	Called to perform the read once the stream has signalled that it has bytes available.
  */
-- (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef;
+- (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)errorRef;
 
 @end
 

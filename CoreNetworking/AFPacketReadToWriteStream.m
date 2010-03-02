@@ -68,14 +68,14 @@
 			_numberOfBytesToWrite -= bufferSize;
 			
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:newReadPacket];
-			[self setCurrentRead:newReadPacket];
+			self.currentRead = newReadPacket;
 			
 			BOOL readSuccessful = [[self currentRead] performRead:readStream error:errorRef];
 			if (!readSuccessful) return NO;
 			
-			if ([self writeBuffer] != nil) {
-				const UInt8 *bytes = [[self writeBuffer] bytes];
-				NSUInteger byteCount = [[self writeBuffer] length];
+			if (self.writeBuffer != nil) {
+				const UInt8 *bytes = [self.writeBuffer bytes];
+				NSUInteger byteCount = [self.writeBuffer length];
 				
 				while (byteCount != 0) {
 					CFIndex bytesWritten = CFWriteStreamWrite(_writeStream, bytes, byteCount);
@@ -90,20 +90,20 @@
 					bytes += bytesWritten;
 				}
 				
-				[self setWriteBuffer:nil];
+				self.writeBuffer = nil;
 			}
 		}
-	} while ([self currentRead] == nil);
+	} while (self.currentRead == nil);
 	
 	return YES;
 }
 
 - (void)_readPacketDidComplete:(NSNotification *)notification {
 	AFPacketRead *readPacket = [notification object];
-	[self setWriteBuffer:[readPacket buffer]];
+	self.writeBuffer = readPacket.buffer;
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:readPacket];
-	[self setCurrentRead:nil];
+	self.currentRead = nil;
 }
 
 @end

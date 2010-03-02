@@ -55,7 +55,7 @@
 	}
 	
 	do {
-		if ([self currentWrite] == nil) {
+		if (self.currentWrite == nil) {
 			size_t bufferSize = (32 * 1024);
 			if (_numberOfBytesToRead >= 0) {
 				bufferSize = MIN(_numberOfBytesToRead, bufferSize);
@@ -81,12 +81,12 @@
 			free(buffer);
 			
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_writePacketDidComplete:) name:AFPacketDidCompleteNotificationName object:nextWrite];
-			[self setCurrentWrite:nextWrite];
+			self.currentWrite = nextWrite;
 		}
 		
-		BOOL writeSucceeded = [[self currentWrite] performWrite:writeStream error:errorRef];
+		BOOL writeSucceeded = [self.currentWrite performWrite:writeStream error:errorRef];
 		if (!writeSucceeded) return NO;
-	} while ([self currentWrite] == nil);
+	} while (self.currentWrite == nil);
 	
 	return YES;
 }
@@ -95,7 +95,7 @@
 	AFPacketWrite *packet = [notification object];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
-	[self setCurrentWrite:nil];
+	self.currentWrite = nil;
 	
 	if ((_numberOfBytesToRead < 0 && CFReadStreamGetStatus(_readStream) == kCFStreamStatusAtEnd) || _numberOfBytesToRead == 0) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];

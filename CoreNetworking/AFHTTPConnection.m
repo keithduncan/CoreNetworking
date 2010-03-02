@@ -12,16 +12,21 @@
 #import "AFPacketQueue.h"
 #import "AFHTTPMessage.h"
 #import "AFHTTPTransaction.h"
+
 #import "AFHTTPMessagePacket.h"
+#import "AFHTTPFilePacket.h"
 
 #import "AmberFoundation/AmberFoundation.h"
 
-NSSTRING_CONTEXT(AFHTTPConnectionCurrentTransactionObservationContext);
+NSSTRING_CONTEXT(_AFHTTPConnectionCurrentTransactionObservationContext);
 
-NSSTRING_CONTEXT(AFHTTPConnectionReadRequestContext);
-NSSTRING_CONTEXT(AFHTTPConnectionReadResponseContext);
+NSSTRING_CONTEXT(_AFHTTPConnectionReadRequestContext);
+NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
-NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
+NSSTRING_CONTEXT(_AFHTTPConnectionReadDownloadRequestContext);
+NSSTRING_CONTEXT(_AFHTTPConnectionReadDownloadResponseContext);
+
+NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 
 @interface AFHTTPConnection ()
 @property (readwrite, retain) NSMutableDictionary *messageHeaders;
@@ -75,7 +80,7 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 	_messageHeaders = [[NSMutableDictionary alloc] init];
 	
 	_transactionQueue = [[AFPacketQueue alloc] init];
-	[_transactionQueue addObserver:self forKeyPath:@"currentPacket" options:NSKeyValueObservingOptionNew context:&AFHTTPConnectionCurrentTransactionObservationContext];
+	[_transactionQueue addObserver:self forKeyPath:@"currentPacket" options:NSKeyValueObservingOptionNew context:&_AFHTTPConnectionCurrentTransactionObservationContext];
 	
 	return self;
 }
@@ -90,7 +95,7 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &AFHTTPConnectionCurrentTransactionObservationContext) {
+    if (context == &_AFHTTPConnectionCurrentTransactionObservationContext) {
 		AFHTTPTransaction *newPacket = [change objectForKey:NSKeyValueChangeNewKey];
 		if (newPacket == nil || [newPacket isEqual:[NSNull null]]) return;
 		
@@ -150,15 +155,15 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 }
 
 - (void)readRequest {
-	[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:YES] autorelease] withTimeout:-1 context:&AFHTTPConnectionReadRequestContext];
+	[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:YES] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadRequestContext];
 }
 
 - (void)performResponse:(CFHTTPMessageRef)message {
-	[self performWrite:message withTimeout:-1 context:&AFHTTPConnectionWriteResponseContext];
+	[self performWrite:message withTimeout:-1 context:&_AFHTTPConnectionWriteResponseContext];
 }
 
 - (void)readResponse {
-	[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease] withTimeout:-1 context:&AFHTTPConnectionReadResponseContext];
+	[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadResponseContext];
 }
 
 @end
@@ -166,7 +171,12 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 @implementation AFHTTPConnection (AFAdditions)
 
 - (void)downloadResource:(NSString *)resource toURL:(NSURL *)location deleteFileOnFailure:(BOOL)deleteFileOnFailure {
+	NSURL *endpoint = [self peer];
+	NSURL *resourcePath = [NSURL URLWithString:([resource isEmpty] ? @"/" : resource) relativeToURL:endpoint];
+	CFHTTPMessageRef request = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)AFHTTPMethodGET, (CFURLRef)resourcePath, kCFHTTPVersion1_1)) autorelease];
+	[self performWrite:request withTimeout:-1 context:&_AFHTTPConnectionReadDownloadRequestContext];
 	
+	[super performRead:[[[AFHTTPFilePacket alloc] initWithLocation:location deleteFileOnFailure:deleteFileOnFailure] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadDownloadResponseContext];
 }
 
 @end
@@ -174,7 +184,7 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 @implementation AFHTTPConnection (_Delegate)
 
 - (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data context:(void *)context {
-	if (context == &AFHTTPConnectionWriteResponseContext) {
+	if (context == &_AFHTTPConnectionWriteResponseContext) {
 		// nop
 	} else {
 		if ([self.delegate respondsToSelector:_cmd])
@@ -185,12 +195,12 @@ NSSTRING_CONTEXT(AFHTTPConnectionWriteResponseContext);
 - (void)layer:(id <AFTransportLayer>)layer didRead:(id)data context:(void *)context {
 	BOOL dequeue = NO;
 	
-	if (context == &AFHTTPConnectionReadRequestContext) {
+	if (context == &_AFHTTPConnectionReadRequestContext) {
 		if ([self.delegate respondsToSelector:@selector(connection:didReceiveRequest:)])
 			[self.delegate connection:self didReceiveRequest:(CFHTTPMessageRef)data];
 		
 		dequeue = YES;
-	} else if (context == &AFHTTPConnectionReadResponseContext) {
+	} else if (context == &_AFHTTPConnectionReadResponseContext) {
 		if ([self.delegate respondsToSelector:@selector(connection:didReceiveResponse:)])
 			[self.delegate connection:self didReceiveResponse:(CFHTTPMessageRef)data];
 		

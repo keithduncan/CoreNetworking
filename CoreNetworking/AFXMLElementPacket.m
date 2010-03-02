@@ -14,11 +14,12 @@
 
 @interface AFXMLElementPacket ()
 @property (retain) AFPacketRead *currentRead;
+@property (readonly) NSMutableData *xmlBuffer;
 @end
 
 @implementation AFXMLElementPacket
 
-@synthesize currentRead=_currentRead;
+@synthesize currentRead=_currentRead, xmlBuffer=_xmlBuffer;
 
 - (id)init {
 	self = [super init];
@@ -56,35 +57,42 @@
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
 
-#warning change this to use the new return contract
-
-- (BOOL)performRead:(CFReadStreamRef)stream error:(NSError **)errorRef {
-	BOOL shouldContinue = NO;
-	
+- (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)errorRef {
 	do {
-		if (self.currentRead == nil)
-			self.currentRead = [self _nextReadPacket];
-		
-		shouldContinue = [self.currentRead performRead:stream error:errorRef];
-		
-		if (shouldContinue) {
-			[_xmlBuffer appendData:self.currentRead.buffer];
+		if (self.currentRead == nil) {
+			AFPacketRead *newPacket = [self _nextReadPacket];
 			
-			NSString *xmlString = [[[NSString alloc] initWithData:self.currentRead.buffer encoding:_encoding] autorelease];
-			xmlString = [xmlString stringByTrimmingWhiteSpace];
-			
-			self.currentRead = nil;
-			
-		
-			if (!NSEqualRanges([xmlString rangeOfString:@"</"], NSMakeRange(NSNotFound, 0))) _depth--;
-			else if (!NSEqualRanges([xmlString rangeOfString:@"/>"], NSMakeRange(NSNotFound, 0))) _depth;
-			else _depth++;
-			
-			if (_depth <= 0) return YES;
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:newPacket];
+			self.currentRead = newPacket;
 		}
-	} while (shouldContinue && self.currentRead == nil);
+		
+		BOOL readSucceeded = [self.currentRead performRead:readStream error:errorRef];
+		if (!readSucceeded) return NO;
+	} while (self.currentRead == nil);
 	
-	return NO;
+	return YES;
+}
+
+- (void)_readPacketDidComplete:(NSNotification *)notification {
+	AFPacketRead *packet = [notification object];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
+	
+	[[self xmlBuffer] appendData:packet.buffer];
+	
+	NSString *xmlString = [[[NSString alloc] initWithData:self.currentRead.buffer encoding:_encoding] autorelease];
+	xmlString = [xmlString stringByTrimmingWhiteSpace];
+	
+	if (!NSEqualRanges([xmlString rangeOfString:@"</"], NSMakeRange(NSNotFound, 0))) _depth--;
+	else if (!NSEqualRanges([xmlString rangeOfString:@"/>"], NSMakeRange(NSNotFound, 0))) _depth;
+	else _depth++;
+	
+	if (_depth <= 0) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+		return;
+	}
+	
+	self.currentRead = nil;
 }
 
 @end

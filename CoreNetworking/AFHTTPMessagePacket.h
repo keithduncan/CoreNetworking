@@ -16,21 +16,14 @@
 
 /*!
 	@brief
-	This function returns the expected body length of the provided CFHTTPMessageRef.
- 
-	This method uses the "Content-Length" header of the response to determine how much more a client should read to complete the packet.
-	If CFHTTPMessageIsHeaderComplete(self.response) returns false, this method returns -1.
- */
-extern NSInteger AFHTTPMessageGetHeaderLength(CFHTTPMessageRef message);
-
-/*!
-	@brief
 	This packet will read either a request or response and return a CFHTTPMessageRef as it's buffer.
  */
 @interface AFHTTPMessagePacket : AFPacket <AFPacketReading> {
  @private
 	__strong CFHTTPMessageRef _message;
-	AFPacketRead *_currentPacket;
+	AFPacket *_currentRead;
+	
+	NSData *_readBuffer;
 }
 
 /*!
