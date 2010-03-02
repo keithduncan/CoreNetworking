@@ -235,7 +235,7 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 }
 
 - (AFPacketQueue *)readQueue {
-	return _writeQueue._queue;
+	return _readQueue._queue;
 }
 
 - (CFWriteStreamRef)writeStream {
@@ -705,9 +705,9 @@ static void AFNetworkTransportReadStreamCallback(CFReadStreamRef stream, CFStrea
 	if (queue->_dequeuing) return;
 	queue->_dequeuing = YES;
 	
-	while ([queue->_queue tryDequeue]) {
-		[self _shouldTryDequeuePacketFromQueue:queue];
-	}
+	do {
+		if ([queue->_queue currentPacket] != nil) [self _shouldTryDequeuePacketFromQueue:queue];
+	} while ([queue->_queue tryDequeue]);
 	
 	queue->_dequeuing = NO;
 }
@@ -793,7 +793,7 @@ static NSString *const _AFPacketDidErrorNotificationName = @"_AFPacketDidErrorNo
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidTimeoutNotificationName object:packet];
 	[packet stopTimeout];
 	
-	BOOL didCompleteSuccessfully = ![[notification name] isEqualToString:AFPacketDidTimeoutNotificationName];
+	BOOL didCompleteSuccessfully = [[notification name] isEqualToString:AFPacketDidCompleteNotificationName];
 	
 	struct _AFNetworkTransportQueue *queue = NULL;
 	

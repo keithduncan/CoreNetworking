@@ -109,6 +109,7 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 			
 			if (self.currentRead.context == &_AFHTTPMessagePacketBodyContext) {
 				[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+				return YES;
 			}
 			
 			self.currentRead = nil;
