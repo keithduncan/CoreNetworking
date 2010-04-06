@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 16/10/2007.
-//  Copyright 2007 thirty-three. All rights reserved.
+//  Copyright 2007. All rights reserved.
 //
 
 #import "NSBundle+Additions.h"

@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 20/05/2007.
-//  Copyright 2007 thirty-three. All rights reserved.
+//  Copyright 2007. All rights reserved.
 //
 
 #import "AFSourceNode.h"

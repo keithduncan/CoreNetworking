@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 22/08/2007.
-//  Copyright 2007 thirty-three. All rights reserved.
+//  Copyright 2007. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
@@ -35,7 +35,7 @@ extern NSSet *AFTreeNodeObjectsAtIndexPaths(NSTreeNode *self, NSArray *indexPath
 	A set representation of the tree, collapsed into an unordered collection.
  
 	@param inclusive
-	Whether to include the receiver node in the result.
+	Whether to include the receiver in the result.
  */
 extern NSSet *AFTreeNodeSetFromNodeInclusive(NSTreeNode *self, BOOL inclusive);
 
@@ -47,7 +47,7 @@ extern NSSet *AFTreeNodeSetFromNodeInclusive(NSTreeNode *self, BOOL inclusive);
 	A flat representation of the tree, collapsed into an unordered collection.
  
 	@param inclusive
-	Whether to include the receiver node in the result.
+	Whether to include the receiver in the result.
  */
 extern NSArray *AFTreeNodeArrayFromNodeInclusive(NSTreeNode *self, BOOL inclusive);
 
