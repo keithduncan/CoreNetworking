@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 28/06/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import "AFXMLElementPacket.h"
@@ -57,7 +57,7 @@
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
 
-- (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)errorRef {
+- (void)performRead:(NSInputStream *)readStream {
 	do {
 		if (self.currentRead == nil) {
 			AFPacketRead *newPacket = [self _nextReadPacket];
@@ -66,15 +66,14 @@
 			self.currentRead = newPacket;
 		}
 		
-		BOOL readSucceeded = [self.currentRead performRead:readStream error:errorRef];
-		if (!readSucceeded) return NO;
+		[self.currentRead performRead:readStream];
 	} while (self.currentRead == nil);
-	
-	return YES;
 }
 
 - (void)_readPacketDidComplete:(NSNotification *)notification {
 	AFPacketRead *packet = [notification object];
+	
+#warning detect the error condition
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
 	

@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 15/06/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import "AFHTTPMessagePacket.h"
@@ -72,7 +72,7 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
 
-- (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)errorRef {
+- (void)performRead:(NSInputStream *)readStream {
 	do {
 		if (self.currentRead == nil) {
 			AFPacket *newPacket = [self _nextPacket];
@@ -83,12 +83,11 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 			// Note: this covers reading a request where there's no body
 			if (self.currentRead == nil) {
 				[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
-				return YES;
+				return;
 			}
 		}
 		
-		BOOL readSucceeded = [self.currentRead performRead:readStream error:errorRef];
-		if (!readSucceeded) return NO;
+		[self.currentRead performRead:readStream];
 		
 		if (self.readBuffer != nil) {
 			BOOL bytesAppended = CFHTTPMessageAppendBytes(self.message, [self.readBuffer bytes], [self.readBuffer length]);
@@ -97,9 +96,12 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 				CFRelease(_message);
 				_message = NULL;
 				
-				if (errorRef != NULL)
-					*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketParseError userInfo:nil];
-				return YES;
+				NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketParseError userInfo:nil];
+				NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+												  error, AFPacketErrorKey,
+												  nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+				return;
 			}
 			
 			self.readBuffer = nil;
@@ -109,18 +111,22 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 			
 			if (self.currentRead.context == &_AFHTTPMessagePacketBodyContext) {
 				[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
-				return YES;
+				return;
 			}
 			
 			self.currentRead = nil;
 		}
 	} while (self.currentRead == nil);
 	
-	return YES;
+	return;
 }
 
 - (void)_readPacketDidComplete:(NSNotification *)notification {
 	AFPacket *packet = [notification object];
+	
+#warning check for the error condition
+	
+	if ([packet isKindOfClass:[AFHTTPHeadersPacket class]]) return;
 	self.readBuffer = packet.buffer;
 }
 

@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 02/04/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import "AFPacketQueue.h"
@@ -35,12 +35,13 @@
 }
 
 - (NSUInteger)count {
-	return [self.packets count];
+	NSUInteger count = [self.packets count];
+	if (self.currentPacket != nil) count++;
+	return count;
 }
 
 - (void)enqueuePacket:(id)packet {
 	[self.packets addObject:packet];
-	[self tryDequeue];
 }
 
 - (BOOL)tryDequeue {

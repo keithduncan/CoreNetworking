@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 15/03/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import "AFPacketWrite.h"
@@ -28,7 +28,7 @@
 	self = [self initWithContext:context timeout:duration];
 	if (self == nil) return self;
 	
-	_buffer = [buffer retain];
+	_buffer = [buffer copy];
 	
 	return self;
 }
@@ -49,20 +49,23 @@
 	return ((float)done/(float)total);
 }
 
-- (BOOL)performWrite:(CFWriteStreamRef)writeStream error:(NSError **)errorRef {
+- (void)performWrite:(NSOutputStream *)writeStream {
 	BOOL packetComplete = NO;
 	
-	while (!packetComplete && CFWriteStreamCanAcceptBytes(writeStream)) {
+	while (!packetComplete && [writeStream hasSpaceAvailable]) {
 		NSUInteger bytesRemaining = ([self.buffer length] - _bytesWritten);
 		if (self.chunkSize > 0 && bytesRemaining > self.chunkSize) bytesRemaining = self.chunkSize;
 		
-		UInt8 *writeStart = (UInt8 *)([self.buffer bytes] + _bytesWritten);
-		CFIndex actualBytesWritten = CFWriteStreamWrite(writeStream, writeStart, bytesRemaining);
+		uint8_t *writeBuffer = (UInt8 *)([self.buffer bytes] + _bytesWritten);
+		NSUInteger actualBytesWritten = [writeStream write:writeBuffer maxLength:bytesRemaining];
 		
 		if (actualBytesWritten < 0) {
-			if (errorRef != NULL)
-				*errorRef = AFErrorFromCFStreamError(CFWriteStreamGetError(writeStream));
-			return NO;
+			NSError *error = [writeStream streamError];
+			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+											  error, AFPacketErrorKey,
+											  nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+			return;
 		}
 		
 		_bytesWritten += actualBytesWritten;
@@ -70,11 +73,7 @@
 		if (self.chunkSize > 0) break;
 	}
 	
-	if (packetComplete) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
-	}
-	
-	return YES;
+	if (packetComplete) [[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 }
 
 @end

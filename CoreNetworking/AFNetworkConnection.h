@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 25/12/2008.
-//  Copyright 2008 thirty-three software. All rights reserved.
+//  Copyright 2008 software. All rights reserved.
 //
 
 #import "CoreNetworking/AFNetworkLayer.h"

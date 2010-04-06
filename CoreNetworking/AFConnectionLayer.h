@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 31/03/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import "CoreNetworking/AFTransportLayer.h"
@@ -59,29 +59,7 @@
 
 @protocol AFConnectionLayerControlDelegate <AFTransportLayerControlDelegate>
 
- @optional
-
-/*!
-	@brief
-	This method is paired with <tt>-layerDidOpen:</tt> and MUST be sent AFTER it by implementors.
- 
-	@param peer
-	A CFHostRef or CFNetServiceRef depending on what the connection layer was instantiated with. Use CFGetTypeID() to determine which you've been passed.
- */
-- (void)layer:(id <AFConnectionLayer>)layer didConnectToPeer:(id)peer;
-
-/*!
-	@brief
-	This method is paired with <tt>-layerDidClose:</tt> and MUST be sent BEFORE it by implementors.
-	
-	@detail
-	This method signals disconnection in both clean and dirty conditions, the |error| argument will be nil to signify a clean disconnection.
-	If calling this method on the delegate where the |error| parameter is non-nil, you MUST first call <tt>-layer:didReceiveError:</tt>.
- */
-- (void)layer:(id <AFConnectionLayer>)layer didDisconnectWithError:(NSError *)error;
-
 @end
-
 
 @protocol AFConnectionLayerDataDelegate <AFNetworkLayerDataDelegate>
 

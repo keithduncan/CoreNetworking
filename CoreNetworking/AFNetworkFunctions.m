@@ -3,7 +3,7 @@
 //  Bonjour
 //
 //  Created by Keith Duncan on 02/01/2009.
-//  Copyright 2009 thirty-three software. All rights reserved.
+//  Copyright 2009 software. All rights reserved.
 //
 
 #import "AFNetworkFunctions.h"

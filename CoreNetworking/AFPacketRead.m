@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 15/03/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import "AFPacketRead.h"
@@ -116,19 +116,23 @@
 	return 0;
 }
 
-- (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)errorRef {
+- (void)performRead:(NSInputStream *)readStream {
 	BOOL packetComplete = NO;
 	
-	while (!packetComplete && CFReadStreamHasBytesAvailable(readStream)) {
+	while (!packetComplete && [readStream hasBytesAvailable]) {
 		NSUInteger maximumReadLength = [self _increaseBuffer];
 		
-		UInt8 *readBuffer = (UInt8 *)([_buffer mutableBytes] + _bytesRead);
-		CFIndex bytesRead = CFReadStreamRead(readStream, readBuffer, maximumReadLength);
+		uint8_t *readBuffer = (UInt8 *)([_buffer mutableBytes] + _bytesRead);
+		NSUInteger bytesRead = [readStream read:readBuffer maxLength:maximumReadLength];
 		
 		if (bytesRead < 0) {
-			if (errorRef != NULL)
-				*errorRef = AFErrorFromCFStreamError(CFReadStreamGetError(readStream));
-			return NO;
+#warning check if this error is reported by event to the stream delegate, making this redundant? also in AFPacketWrite
+			NSError *error = [readStream streamError];
+			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+											  error, AFPacketErrorKey,
+											  nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+			return;
 		} else {
 			_bytesRead += bytesRead;
 		}
@@ -149,11 +153,7 @@
 		}
 	}
 	
-	if (packetComplete) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
-	}
-	
-	return YES;
+	if (packetComplete) [[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 }
 
 @end

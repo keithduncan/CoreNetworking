@@ -3,11 +3,12 @@
 //  Amber
 //
 //  Created by Keith Duncan on 01/03/2010.
-//  Copyright 2010 Realmac Software. All rights reserved.
+//  Copyright 2010. All rights reserved.
 //
 
 #import "CoreNetworking/AFPacket.h"
 
+@class AFNetworkWriteStream;
 @class AFPacketRead;
 
 /*!
@@ -19,18 +20,18 @@
  */
 @interface AFPacketReadToWriteStream : AFPacket <AFPacketReading> {
  @private
-	BOOL _opened;
-	__strong CFWriteStreamRef _writeStream;
 	NSInteger _numberOfBytesToWrite;
-	AFPacketRead *_currentRead;
 	
-	NSData *_writeBuffer;
+	BOOL _opened;
+	AFNetworkWriteStream *_writeStream;
+	
+	AFPacketRead *_currentRead;
 }
 
 /*!
 	@brief
 	Designated Initialiser.
  */
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration writeStream:(CFWriteStreamRef)writeStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite;
+- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration writeStream:(NSOutputStream *)writeStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite;
 
 @end

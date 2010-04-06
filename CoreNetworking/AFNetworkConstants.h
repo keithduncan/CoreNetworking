@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 08/03/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -26,9 +26,8 @@ enum {
 	// AFNetworkTransportError				 [300, 499]
 	AFNetworkTransportErrorUnknown			= 301,
 	AFNetworkTransportReachabilityError		= 302,
-	AFNetworkTransportReadTimeoutError		= 304,
-	AFNetworkTransportWriteTimeoutError		= 305,
-	AFNetworkTransportTLSError				= 306,
+	AFNetworkTransportTimeoutError			= 303,
+	AFNetworkTransportTLSError				= 304,
 	
 	// AFPacketError						 [500, 699]
 	AFNetworkPacketParseError				= 500,

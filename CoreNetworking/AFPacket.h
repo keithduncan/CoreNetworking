@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 15/03/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -33,6 +33,8 @@ extern NSString *const AFPacketDidTimeoutNotificationName;
 	If the packet is completing because an error was encountered, return it under the <tt>AFPacketErrorKey</tt> key.
  */
 extern NSString *const AFPacketDidCompleteNotificationName;
+
+	extern NSString *const AFPacketErrorKey;
 
 /*!
 	@brief
@@ -103,7 +105,7 @@ extern NSString *const AFPacketDidCompleteNotificationName;
 	@brief
 	Called to perform the read once the stream has signalled that it has bytes available.
  */
-- (BOOL)performRead:(CFReadStreamRef)readStream error:(NSError **)errorRef;
+- (void)performRead:(NSInputStream *)readStream;
 
 @end
 
@@ -117,6 +119,6 @@ extern NSString *const AFPacketDidCompleteNotificationName;
 	@brief
 	Called to perform the write once the stream has signalled that it can accept bytes.
  */
-- (BOOL)performWrite:(CFWriteStreamRef)writeStream error:(NSError **)errorRef;
+- (void)performWrite:(NSOutputStream *)writeStream;
 
 @end

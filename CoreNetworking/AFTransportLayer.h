@@ -3,7 +3,7 @@
 //  Bonjour
 //
 //  Created by Keith Duncan on 26/12/2008.
-//  Copyright 2008 thirty-three software. All rights reserved.
+//  Copyright 2008 software. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -108,13 +108,14 @@
 /*!
 	@param
 	|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length or an NSData for bit pattern.
-	This method accepts an AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
+	This method should also accept an AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
  */
 - (void)performRead:(id)terminator withTimeout:(NSTimeInterval)duration context:(void *)context;
 
 /*!
 	@brief
-	This method is currently only expected to handle an (NSData) object.
+	|buffer| should be an NSData to write over the file descriptor
+	This method should accept a AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
  */
 - (void)performWrite:(id)buffer withTimeout:(NSTimeInterval)duration context:(void *)context;
 

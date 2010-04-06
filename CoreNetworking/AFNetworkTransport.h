@@ -6,7 +6,7 @@
 //	Although the class is now much departed from the original codebase.
 //
 //  Created by Keith Duncan
-//  Copyright 2008 thirty-three software. All rights reserved.
+//  Copyright 2008 software. All rights reserved.
 //
 
 #import "CoreNetworking/AFNetworkLayer.h"
@@ -17,19 +17,11 @@
 @protocol AFNetworkTransportDataDelegate;
 @protocol AFNetworkTransportControlDelegate;
 
-@class AFPacketQueue;
+@class AFNetworkWriteStream;
+@class AFNetworkReadStream;
+
 @class AFPacketWrite;
 @class AFPacketRead;
-
-struct _AFNetworkTransportQueue {
-	AFPacketQueue *_queue;
-	
-	__strong CFTypeRef _stream;
-	void *_source;
-	
-	NSUInteger _flags;
-	BOOL _dequeuing;
-};
 
 /*!
     @brief
@@ -49,11 +41,14 @@ struct _AFNetworkTransportQueue {
 	
 	NSUInteger _connectionFlags;
 	
-	struct _AFNetworkTransportQueue _writeQueue;
-	struct _AFNetworkTransportQueue _readQueue;
+	AFNetworkWriteStream *_writeStream;
+	NSUInteger _writeFlags;
+	
+	AFNetworkReadStream *_readStream;
+	NSUInteger _readFlags;
 }
 
-@property (assign) id <AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate> delegate;
+@property (assign) id <AFNetworkTransportDataDelegate, AFNetworkTransportControlDelegate, AFTransportLayerDataDelegate> delegate;
 
 /*!
 	@brief
@@ -83,19 +78,19 @@ struct _AFNetworkTransportQueue {
 /*!
 	@brief	When the socket is closing you can keep it open until the writes are complete, but you'll have to ensure the object remains live.
  */
-- (BOOL)socket:(AFNetworkTransport *)socket shouldRemainOpenPendingWrites:(NSUInteger)count;
+- (BOOL)transportShouldRemainOpenPendingWrites:(AFNetworkTransport *)transport;
 
 @end
 
-@protocol AFNetworkTransportDataDelegate <AFTransportLayerDataDelegate>
+@protocol AFNetworkTransportDataDelegate <NSObject>
 
  @optional
 
 /*!
 	@brief
-	This method is called before a packet is actually enqueued.
+	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
  */
-- (void)socket:(AFNetworkTransport *)socket willEnqueueReadPacket:(AFPacketRead *)packet;
+- (void)transport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context;
 
 /*!
 	@brief
@@ -104,19 +99,6 @@ struct _AFNetworkTransportQueue {
 	@param
 	|total| will be NSUIntegerMax if the packet terminator is a data pattern.
  */
-- (void)socket:(AFNetworkTransport *)socket didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context;
-
-/*!
-	@brief
-	This method is called before a packet is actually enqueued.
-	It allows you to tweak the chunk size for instance.
- */
-- (void)socket:(AFNetworkTransport *)socket willEnqueueWritePacket:(AFPacketWrite *)packet;
-
-/*!
-	@brief
-	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
- */
-- (void)socket:(AFNetworkTransport *)socket didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context;
+- (void)transport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context;
 
 @end

@@ -3,7 +3,7 @@
 //  CoreNetworking
 //
 //  Created by Keith Duncan on 29/04/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import "AFHTTPConnection.h"
@@ -131,7 +131,9 @@ NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
 	
 	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequest:request] autorelease];
+	
 	[self.transactionQueue enqueuePacket:transaction];
+	[self.transactionQueue tryDequeue];
 }
 
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body {
@@ -176,7 +178,7 @@ NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 	CFHTTPMessageRef request = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)AFHTTPMethodGET, (CFURLRef)resourcePath, kCFHTTPVersion1_1)) autorelease];
 	[self performWrite:request withTimeout:-1 context:&_AFHTTPConnectionReadDownloadRequestContext];
 	
-	[super performRead:[[[AFHTTPFilePacket alloc] initWithLocation:location deleteFileOnFailure:deleteFileOnFailure] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadDownloadResponseContext];
+	[super performRead:[[[AFHTTPFilePacket alloc] initForResponseWithLocation:location] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadDownloadResponseContext];
 }
 
 @end

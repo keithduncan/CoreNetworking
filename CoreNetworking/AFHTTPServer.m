@@ -3,7 +3,7 @@
 //  pangolin
 //
 //  Created by Keith Duncan on 01/06/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import "AFHTTPServer.h"
@@ -177,7 +177,7 @@
 	[layer close];
 }
 
-- (BOOL)socket:(AFNetworkTransport *)socket shouldRemainOpenPendingWrites:(NSUInteger)count {
+- (BOOL)transport:(AFNetworkTransport *)transport shouldRemainOpenPendingWrites:(NSUInteger)count {
 	return YES;
 }
 
