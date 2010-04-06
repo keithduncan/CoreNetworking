@@ -3,7 +3,7 @@
 //  Timelines
 //
 //  Created by Keith Duncan on 11/10/2008.
-//  Copyright 2008 thirty-three software. All rights reserved.
+//  Copyright 2008 software. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

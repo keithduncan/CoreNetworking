@@ -3,7 +3,7 @@
 //  Key-Path Proxy
 //
 //  Created by Keith Duncan on 24/04/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -18,7 +18,7 @@
 	The collection key-paths will be caught if the |currentTarget| is an array or set.
 	This allows you to ask for -avg and will result in @avg being prepended to the next key-path component.			
  */
-@interface AFKeyPathProxy : NSObject {
+@interface AFKeyPathAccumulatorProxy : NSObject {
 	id _currentTarget;
 	NSString *_prependOperator;
 }

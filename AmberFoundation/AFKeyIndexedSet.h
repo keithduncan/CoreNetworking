@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 04/02/2009.
-//  Copyright 2009 thirty-three software. All rights reserved.
+//  Copyright 2009 software. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -18,6 +18,7 @@
 	Like its sibling class the AFKeyIndexedArray it maintains an internal dictionary index for an arbitrary key, thus providing O(1) access to members if the key is known in advance and dictionary like removal.
 */
 @interface AFKeyIndexedSet : NSMutableSet <NSFastEnumeration> {
+ @private
 	NSString *_keyPath;
 	
 	NSMutableSet *_objects;

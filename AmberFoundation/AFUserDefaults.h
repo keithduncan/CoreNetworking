@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 04/04/2008.
-//  Copyright 2008 thirty-three. All rights reserved.
+//  Copyright 2008. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

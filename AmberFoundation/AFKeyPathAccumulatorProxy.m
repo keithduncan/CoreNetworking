@@ -3,23 +3,23 @@
 //  Key-Path Proxy
 //
 //  Created by Keith Duncan on 24/04/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
-#import "AFKeyPathProxy.h"
+#import "AFKeyPathAccumulatorProxy.h"
 
 #import <objc/runtime.h>
 
-@interface AFKeyPathProxy ()
+@interface AFKeyPathAccumulatorProxy ()
 - (id)_currentTarget;
 @property (copy) NSString *prependOperator;
 @end
 
-@interface AFKeyPathProxy (Private)
+@interface AFKeyPathAccumulatorProxy (Private)
 - (NSString *)_prependKeyPathOperator:(NSString *)keyPath;
 @end
 
-@implementation AFKeyPathProxy
+@implementation AFKeyPathAccumulatorProxy
 
 @synthesize currentTarget=_currentTarget;
 @synthesize prependOperator=_prependOperator;
@@ -113,7 +113,7 @@ static BOOL _AFKeyPathProxyKeyIsOperator(NSString *key) {
 
 @end
 
-@implementation AFKeyPathProxy (Private)
+@implementation AFKeyPathAccumulatorProxy (Private)
 
 - (NSString *)_prependKeyPathOperator:(NSString *)keyPath {
 	if (self.prependOperator != nil) {

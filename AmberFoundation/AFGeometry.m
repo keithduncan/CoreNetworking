@@ -3,7 +3,7 @@
 //  AmberFoundation
 //
 //  Created by Keith Duncan on 12/06/2007.
-//  Copyright 2007 thirty-three. All rights reserved.
+//  Copyright 2007. All rights reserved.
 //
 
 #include "AFGeometry.h"

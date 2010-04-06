@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 28/01/2009.
-//  Copyright 2009 thirty-three software. All rights reserved.
+//  Copyright 2009 software. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -17,7 +17,8 @@
 	The objects returned from <tt>-valueForKeyPath:</tt> for the provided keypath must implement the &lt;NSCoding&gt; protocol, as they are used for keying the object in the private dictionary index. Equally, the property identified by |keyPath| should be immutable, the collection doesn't observe it for changes for performance reasons.
 	If you do change an indexed value you can force the collection to reindex using the <tt>-refreshIndex</tt> method.
  */
-@interface AFKeyIndexedArray : NSMutableArray {
+@interface AFKeyIndexedArray : NSMutableArray <NSFastEnumeration> {
+ @private
 	NSString *_keyPath;
 	
 	NSMutableArray *_objects;

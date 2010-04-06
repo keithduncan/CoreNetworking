@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 27/03/2007.
-//  Copyright 2007 thirty-three. All rights reserved.
+//  Copyright 2007. All rights reserved.
 //
 
 #import "NSArray+Additions.h"

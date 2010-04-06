@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 28/01/2009.
-//  Copyright 2009 thirty-three. All rights reserved.
+//  Copyright 2009. All rights reserved.
 //
 
 #import "AFKeyIndexedArray.h"
@@ -21,6 +21,7 @@
 
 - (id)init {
 	self = [super init];
+	if (self == nil) return nil;
 	
 	_objects = [[NSMutableArray alloc] init];
 	_index = [[NSMutableDictionary alloc] init];
@@ -29,9 +30,11 @@
 }
 
 - (id)initWithKeyPath:(NSString *)keyPath {
-	self = [super init];
-	
 	NSParameterAssert(keyPath != nil);
+	
+	self = [super init];
+	if (self == nil) return nil;
+	
 	_keyPath = [keyPath copy];
 	
 	return self;

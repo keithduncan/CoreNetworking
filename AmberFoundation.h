@@ -3,7 +3,7 @@
  *  AmberFoundation
  *
  *  Created by Keith Duncan on 27/11/2007.
- *  Copyright 2007 thirty-three. All rights reserved.
+ *  Copyright 2007. All rights reserved.
  *
  */
 
@@ -34,7 +34,8 @@
 
 #import "AmberFoundation/AFProtocolProxy.h"
 #import "AmberFoundation/AFPriorityProxy.h"
-#import "AmberFoundation/AFKeyPathProxy.h"
+#import "AmberFoundation/AFKeyPathAccumulatorProxy.h"
+#import "AmberFoundation/AFTargetProxy.h"
 
 //
 //	Protocols

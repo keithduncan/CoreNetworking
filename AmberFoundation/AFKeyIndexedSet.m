@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 04/02/2009.
-//  Copyright 2009 thirty-three software. All rights reserved.
+//  Copyright 2009 software. All rights reserved.
 //
 
 #import "AFKeyIndexedSet.h"
@@ -29,10 +29,11 @@
 }
 
 - (id)initWithKeyPath:(NSString *)keyPath {
+	NSParameterAssert(keyPath != nil);
+	
 	self = [self init];
 	if (self == nil) return nil;
 	
-	NSParameterAssert(keyPath != nil);
 	_keyPath = [keyPath copy];
 	
 	return self;

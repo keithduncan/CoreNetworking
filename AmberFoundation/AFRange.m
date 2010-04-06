@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 24/01/2008.
-//  Copyright 2008 thirty-three. All rights reserved.
+//  Copyright 2008. All rights reserved.
 //
 
 #import "AFRange.h"
