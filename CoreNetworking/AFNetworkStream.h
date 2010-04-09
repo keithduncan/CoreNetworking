@@ -65,6 +65,9 @@
 - (void)open;
 - (void)close;
 
+- (id)streamPropertyForKey:(NSString *)key;
+- (BOOL)setStreamProperty:(id)property forKey:(NSString *)key;
+
 @end
 
 @interface AFNetworkWriteStream : AFNetworkStream

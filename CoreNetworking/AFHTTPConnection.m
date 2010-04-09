@@ -14,7 +14,6 @@
 #import "AFHTTPTransaction.h"
 
 #import "AFHTTPMessagePacket.h"
-#import "AFHTTPFilePacket.h"
 
 #import "AmberFoundation/AmberFoundation.h"
 
@@ -178,7 +177,7 @@ NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 	CFHTTPMessageRef request = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)AFHTTPMethodGET, (CFURLRef)resourcePath, kCFHTTPVersion1_1)) autorelease];
 	[self performWrite:request withTimeout:-1 context:&_AFHTTPConnectionReadDownloadRequestContext];
 	
-	[super performRead:[[[AFHTTPFilePacket alloc] initForResponseWithLocation:location] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadDownloadResponseContext];
+#warning download the resource to disk
 }
 
 @end

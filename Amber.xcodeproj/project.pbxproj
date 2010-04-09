@@ -92,6 +92,10 @@
 		53599FAB10A86E110064F48C /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEA60F5AEDFE008F5991 /* AFGeometry.h */; };
 		53599FAC10A86E120064F48C /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEA70F5AEDFE008F5991 /* AFGeometry.m */; };
 		53599FAD10A86E160064F48C /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEA60F5AEDFE008F5991 /* AFGeometry.h */; };
+		53656036116FC61B0006DCAF /* AFPacketWriteFromReadStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C0113BF96200FED57B /* AFPacketWriteFromReadStream.m */; };
+		53656037116FC6210006DCAF /* AFPacketWriteFromReadStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5BF113BF96200FED57B /* AFPacketWriteFromReadStream.h */; };
+		53656042116FC7970006DCAF /* AFPacketReadToWriteStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C6113BF98000FED57B /* AFPacketReadToWriteStream.m */; };
+		53656043116FC7990006DCAF /* AFPacketReadToWriteStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5C5113BF98000FED57B /* AFPacketReadToWriteStream.h */; };
 		53692B150F1B83510051C367 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		5370DE780F5AED47008F5991 /* AFPluralTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE720F5AED47008F5991 /* AFPluralTransformer.m */; };
@@ -1103,6 +1107,8 @@
 				533AD715113C81A200FED57B /* AFHTTPHeadersPacket.h in Headers */,
 				53C0B640113DAD360011A604 /* AFNetworkStream.h in Headers */,
 				538EC15C115D6E5A00A8E8F9 /* AFNetworkFormDocument.h in Headers */,
+				53656037116FC6210006DCAF /* AFPacketWriteFromReadStream.h in Headers */,
+				53656043116FC7990006DCAF /* AFPacketReadToWriteStream.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1485,6 +1491,8 @@
 				533AD716113C81A200FED57B /* AFHTTPHeadersPacket.m in Sources */,
 				53C0B641113DAD360011A604 /* AFNetworkStream.m in Sources */,
 				538EC15D115D6E5A00A8E8F9 /* AFNetworkFormDocument.m in Sources */,
+				53656036116FC61B0006DCAF /* AFPacketWriteFromReadStream.m in Sources */,
+				53656042116FC7970006DCAF /* AFPacketReadToWriteStream.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

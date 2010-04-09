@@ -8,6 +8,8 @@
 
 #import "AFPacketWriteFromReadStream.h"
 
+#import "AFPriorityProxy.h"
+
 #import "AFPacketRead.h"
 #import "AFPacketWrite.h"
 #import "AFNetworkStream.h"
@@ -15,96 +17,171 @@
 
 // Note: this doesn't simply reuse the AFNetworkTransport with provided write and read streams since the base packets would read and then write the whole packet. This adaptor class minimises the memory footprint.
 
-@interface AFPacketWriteFromReadStream () <AFNetworkReadStreamDelegate>
+@interface AFPacketWriteFromReadStream ()
 @property (readonly) AFNetworkReadStream *readStream;
-@property (retain) AFPacketRead *currentRead;
-@property (retain) AFPacketWrite *currentWrite;
+@property (assign) BOOL readStreamDidEnd;
+
+@property (readonly) AFNetworkWriteStream *writeStream;
+@property (readonly) id originalWriteStreamDelegate;
+@end
+
+@interface AFPacketWriteFromReadStream (Private)
+- (void)_scheduleStreams;
+- (void)_unscheduleStreams;
+
+- (void)_enqueueReadPacket;
+- (void)_readPacketDidComplete:(NSNotification *)notification;
+- (void)_writePacketDidComplete:(NSNotification *)notification;
 @end
 
 @implementation AFPacketWriteFromReadStream
 
-@synthesize readStream=_readStream, currentRead=_currentRead, currentWrite=_currentWrite;
+@synthesize readStream=_readStream, readStreamDidEnd=_readStreamDidEnd, writeStream=_writeStream, originalWriteStreamDelegate=_originalWriteStreamDelegate;
 
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration readStream:(NSInputStream *)readStream numberOfBytesToRead:(NSInteger)numberOfBytesToRead {
-	NSParameterAssert([readStream streamStatus] == NSStreamStatusNotOpen);
+- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration readStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite {
+	NSParameterAssert(readStream != nil && [readStream streamStatus] == NSStreamStatusNotOpen);
 	
 	self = [self initWithContext:context timeout:duration];
 	if (self == nil) return nil;
 	
-	_numberOfBytesToRead = numberOfBytesToRead;
+	_numberOfBytesToWrite = numberOfBytesToWrite;
 	
 	_readStream = [[AFNetworkReadStream alloc] initWithStream:readStream];
-	[_readStream setDelegate:self];
+	[_readStream setDelegate:(id)self];
 	
 	return self;
 }
 
 - (void)dealloc {
 	[_readStream release];
-
-	[_currentRead release];
-	[_currentWrite release];
+	[_writeStream release];
 	
 	[super dealloc];
 }
 
+- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
+	if ([self originalWriteStreamDelegate] == nil) return proxy;
+	
+	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
+	
+	if ([[self originalWriteStreamDelegate] respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)[self originalWriteStreamDelegate] delegateProxy:proxy];
+	[proxy insertTarget:[self originalWriteStreamDelegate]];
+	
+	return proxy;
+}
+
 - (void)performWrite:(NSOutputStream *)writeStream {
+	// Note: because we hijack the stream's delegate, this is only called once
+	
 	if (!_opened) {
-#warning this should schedule the inner write stream in the same manner as the parent transport layer
-		[[self readStream] scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-		[[self readStream] open];
+		[self _scheduleStreams];
+		
+		_originalWriteStreamDelegate = [writeStream delegate];
+		
+		_writeStream = [[AFNetworkWriteStream alloc] initWithStream:writeStream];
+		[_writeStream setDelegate:(id)self];
 		
 		_opened = YES;
 	}
 	
-	do {
-		if ([self currentWrite] == nil) {
-			size_t bufferSize = (32 * 1024);
-			if (_numberOfBytesToRead >= 0) {
-				bufferSize = MIN(_numberOfBytesToRead, bufferSize);
-				_numberOfBytesToRead -= bufferSize;
-				
-				if (bufferSize == 0) break;
-			}
-			
-			AFPacketRead *readPacket = [[[AFPacketRead alloc] initWithContext:NULL timeout:-1 terminator:[NSNumber numberWithInteger:bufferSize]] autorelease];
-			[self setCurrentRead:readPacket];
-			
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:readPacket];
-		}
+	[self _enqueueReadPacket];
+}
+
+@end
+
+@implementation AFPacketWriteFromReadStream (Private)
+
+- (void)_scheduleStreams {
+#warning this should schedule the inner write stream in the same manner as the parent transport layer, supporting dispatch queues
+	[[self readStream] scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+	[[self readStream] open];
+	
+	// Note: the write stream doesn't need to be scheduled, since it already is to get this message
+}
+
+- (void)_unscheduleStreams {
+	[[self readStream] unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+	[[self readStream] close];
+	
+	[[self writeStream] setDelegate:(id)[self originalWriteStreamDelegate]];
+}
+
+- (void)_enqueueReadPacket {
+	size_t bufferSize = (32 * 1024);
+	if (_numberOfBytesToWrite >= 0) {
+		bufferSize = MIN(_numberOfBytesToWrite, bufferSize);
+		_numberOfBytesToWrite -= bufferSize;
 		
-		if ([self currentWrite] == nil) return;
-		
-		BOOL writeSucceeded = [[self currentWrite] performWrite:writeStream error:errorRef];
-		if (!writeSucceeded) return;
-	} while ([self currentWrite] == nil);
+		if (bufferSize == 0) return;
+	}
+	
+	AFPacketRead *readPacket = [[[AFPacketRead alloc] initWithContext:NULL timeout:-1 terminator:[NSNumber numberWithInteger:bufferSize]] autorelease];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:readPacket];
+	
+	[[self readStream] enqueueRead:readPacket];
 }
 
 - (void)_readPacketDidComplete:(NSNotification *)notification {
 	AFPacketRead *readPacket = [notification object];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:readPacket];
+	
+	NSError *readError = [[notification userInfo] objectForKey:AFPacketErrorKey];
+	if (readError != nil) {
+		[self _unscheduleStreams];
+		
+		NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+										  readError, AFPacketErrorKey,
+										  nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+		
+		return;
+	}
 	
 	NSData *readBuffer = [readPacket buffer];
 	AFPacketWrite *writePacket = [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:readBuffer] autorelease];
-#warning do something with the packet
+	[[self writeStream] enqueueWrite:writePacket];
 	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:readPacket];
-	[self setCurrentRead:nil];
+	[self _enqueueReadPacket];
+}
+
+- (void)networkStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event {
+	if (stream != [self readStream]) {
+		id delegate = [self delegateProxy:nil];
+		if ([delegate respondsToSelector:_cmd]) [delegate networkStream:stream didReceiveEvent:event];
+		return;
+	}
+	
+	if (event == NSStreamEventEndEncountered) [self setReadStreamDidEnd:YES];
+}
+
+- (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
+	[self _unscheduleStreams];
+		
+	NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+										error, AFPacketErrorKey,
+										nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+	
+#warning do we need to forward write stream errors to the originalWriteStreamDelegate?
 }
 
 - (void)_writePacketDidComplete:(NSNotification *)notification {
 	AFPacketWrite *packet = [notification object];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
-	[self setCurrentWrite:nil];
 	
 	NSError *writeError = [[notification userInfo] objectForKey:AFPacketErrorKey];
 	if (writeError != nil) {
+		[self _unscheduleStreams];
+		
 		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
 		return;
 	}
 	
-	if (!(_numberOfBytesToRead < 0 && CFReadStreamGetStatus(_readStream) == kCFStreamStatusAtEnd) && _numberOfBytesToRead != 0) return;
+	if ([[self writeStream] countOfEnqueuedWrites] != 0) return;
+	if (!(_numberOfBytesToWrite < 0 && [self readStreamDidEnd]) && _numberOfBytesToWrite != 0) return;
 	
+	[self _unscheduleStreams];
 	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 }
 

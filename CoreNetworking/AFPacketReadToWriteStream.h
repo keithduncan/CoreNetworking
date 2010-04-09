@@ -20,7 +20,7 @@
  */
 @interface AFPacketReadToWriteStream : AFPacket <AFPacketReading> {
  @private
-	NSInteger _numberOfBytesToWrite;
+	NSInteger _numberOfBytesToRead;
 	
 	BOOL _opened;
 	AFNetworkWriteStream *_writeStream;
@@ -32,6 +32,6 @@
 	@brief
 	Designated Initialiser.
  */
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration writeStream:(NSOutputStream *)writeStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite;
+- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration writeStream:(NSOutputStream *)writeStream numberOfBytesToRead:(NSInteger)numberOfBytesToRead;
 
 @end

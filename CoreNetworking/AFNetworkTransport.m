@@ -326,9 +326,10 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	if ((_connectionFlags & _kConnectionWillStartTLS) == _kConnectionWillStartTLS) return YES;
 	_connectionFlags = (_connectionFlags | _kConnectionWillStartTLS);
 	
-	Boolean result = true;
-	result = (result & CFWriteStreamSetProperty((CFWriteStreamRef)self.writeStream.stream, kCFStreamPropertySSLSettings, (CFDictionaryRef)options));
-	result = (result & CFReadStreamSetProperty((CFReadStreamRef)self.readStream.stream, kCFStreamPropertySSLSettings, (CFDictionaryRef)options));
+	BOOL result = YES;
+	if (self.writeStream != nil) result = (result & [self.writeStream setStreamProperty:options forKey:(id)kCFStreamPropertySSLSettings]);
+	if (self.readStream != nil) result = (result & [self.readStream setStreamProperty:options forKey:(id)kCFStreamPropertySSLSettings]);
+#warning check that this works :-[
 	
 	if (!result) {
 		if (errorRef != NULL) {
@@ -466,11 +467,15 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 @implementation AFNetworkTransport (Streams)
 
 - (void)_configureWriteStream:(NSOutputStream *)writeStream readStream:(NSInputStream *)readStream {
-	_writeStream = [[AFNetworkWriteStream alloc] initWithStream:writeStream];
-	[_writeStream setDelegate:self];
+	if (writeStream != nil) {
+		_writeStream = [[AFNetworkWriteStream alloc] initWithStream:writeStream];
+		[_writeStream setDelegate:self];
+	}
 	
-	_readStream = [[AFNetworkReadStream alloc] initWithStream:readStream];
-	[_readStream setDelegate:self];
+	if (readStream != nil) {
+		_readStream = [[AFNetworkReadStream alloc] initWithStream:readStream];
+		[_readStream setDelegate:self];
+	}
 }
 
 - (void)_streamDidOpen {

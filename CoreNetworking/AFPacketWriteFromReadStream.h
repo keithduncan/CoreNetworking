@@ -9,8 +9,7 @@
 #import "CoreNetworking/AFPacket.h"
 
 @class AFNetworkReadStream;
-@class AFPacketRead;
-@class AFPacketWrite;
+@class AFNetworkWriteStream;
 
 /*!
 	@brief
@@ -21,13 +20,15 @@
  */
 @interface AFPacketWriteFromReadStream : AFPacket <AFPacketWriting> {
  @private
-	NSInteger _numberOfBytesToRead;
+	NSInteger _numberOfBytesToWrite;
 	
 	BOOL _opened;
-	AFNetworkReadStream *_readStream;
-	AFPacketRead *_currentRead;
 	
-	AFPacketWrite *_currentWrite;
+	AFNetworkReadStream *_readStream;
+	BOOL _readStreamDidEnd;
+	
+	id <NSStreamDelegate> _originalWriteStreamDelegate;
+	AFNetworkWriteStream *_writeStream;
 }
 
 /*!
@@ -40,6 +41,6 @@
 	@param numberOfBytesToRead
 	Pass -1 to read until the stream is empty.
  */
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration readStream:(NSInputStream *)readStream numberOfBytesToRead:(NSInteger)numberOfBytesToRead;
+- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration readStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite;
 
 @end

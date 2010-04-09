@@ -72,7 +72,7 @@
 	[super finalize];
 }
 
-- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {	
+- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
 	if (_delegate == nil) return proxy;
 	
 	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
@@ -161,6 +161,14 @@
 - (void)close {
 	[self.queue emptyQueue];
 	[self.stream close];
+}
+
+- (id)streamPropertyForKey:(NSString *)key {
+	return [self.stream propertyForKey:key];
+}
+
+- (BOOL)setStreamProperty:(id)property forKey:(NSString *)key {
+	return [self.stream setProperty:property forKey:key];
 }
 
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)event {
