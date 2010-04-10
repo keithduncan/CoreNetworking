@@ -47,6 +47,8 @@
 	_stream = [stream retain];
 	[_stream setDelegate:self];
 	
+	_queue = [[AFPacketQueue alloc] init];
+	
 	return self;
 }
 
@@ -58,6 +60,8 @@
 		dispatch_release(_source);
 		_source = NULL;
 	}
+	
+	[_queue release];
 	
 	[super dealloc];
 }
@@ -216,8 +220,7 @@
 
 - (void)_shouldTryDequeuePacket {
 	AFPacket *packet = [self.queue currentPacket];
-	BOOL performSucceeded = ((BOOL (*)(id, SEL, id))objc_msgSend)(packet, _performSelector, self.stream);
-	if (!performSucceeded) return;
+	((void (*)(id, SEL, id))objc_msgSend)(packet, _performSelector, self.stream);
 	
 	if ([self.delegate respondsToSelector:_callbackSelectors[0]]) {
 		NSUInteger bytesWritten = 0, totalBytes = 0;
