@@ -125,14 +125,10 @@
 	AFPacketRead *readPacket = [notification object];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:readPacket];
 	
-	NSError *readError = [[notification userInfo] objectForKey:AFPacketErrorKey];
-	if (readError != nil) {
+	if ([[notification userInfo] objectForKey:AFPacketErrorKey] != nil) {
 		[self _unscheduleStreams];
 		
-		NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-										  readError, AFPacketErrorKey,
-										  nil];
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
 		
 		return;
 	}
@@ -170,8 +166,7 @@
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
 	
-	NSError *writeError = [[notification userInfo] objectForKey:AFPacketErrorKey];
-	if (writeError != nil) {
+	if ([[notification userInfo] objectForKey:AFPacketErrorKey] != nil) {
 		[self _unscheduleStreams];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
