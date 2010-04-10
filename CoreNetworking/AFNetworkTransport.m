@@ -457,7 +457,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	else if (stream == self->_readStream) delegateSelector = @selector(layer:didRead:context:);
 	NSCParameterAssert(delegateSelector != NULL);
 	
-	((void (*)(id, SEL, id, void *))objc_msgSend)([self delegate], delegateSelector, [packet buffer], [packet context]);
+	((void (*)(id, SEL, id, id, void *))objc_msgSend)([self delegate], delegateSelector, self, [packet buffer], [packet context]);
 }
 
 @end
