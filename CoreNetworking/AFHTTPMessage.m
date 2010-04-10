@@ -41,16 +41,24 @@ NSString *const AFHTTPMethodPOST = @"POST";
 NSString *const AFHTTPMethodPUT = @"PUT";
 NSString *const AFHTTPMethodDELETE = @"DELETE";
 
+
 NSString *const AFNetworkSchemeHTTP = @"http";
 NSString *const AFNetworkSchemeHTTPS = @"https";
 
+
 NSString *const AFHTTPMessageUserAgentHeader = @"User-Agent";
-NSString *const AFHTTPMessageContentLengthHeader = @"Content-Length";
 NSString *const AFHTTPMessageHostHeader = @"Host";
+
 NSString *const AFHTTPMessageConnectionHeader = @"Connection";
+
+NSString *const AFHTTPMessageContentLengthHeader = @"Content-Length";
 NSString *const AFHTTPMessageContentTypeHeader = @"Content-Type";
+NSString *const AFHTTPMessageContentRangeHeader = @"Content-Range";
+
 NSString *const AFHTTPMessageAllowHeader = @"Allow";
 NSString *const AFHTTPMessageLocationHeader = @"Location";
+NSString *const AFHTTPMessageRangeHeader = @"Range";
+
 
 CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 	switch (code) {
