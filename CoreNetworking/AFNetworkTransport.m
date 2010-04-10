@@ -50,8 +50,6 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 @interface AFNetworkTransport ()
 @property (readonly) AFNetworkWriteStream *writeStream;
 @property (readonly) AFNetworkReadStream *readStream;
-- (BOOL)_writeStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event;
-- (BOOL)_readStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event;
 static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFPacket *packet, NSUInteger currentPartialBytes, NSUInteger totalBytes);
 static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFPacket *packet);
 @end
@@ -348,10 +346,22 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 #pragma mark -
 
 - (void)networkStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event {
-	if (stream == [self writeStream]) {
-		if ([self _writeStream:(id)stream didReceiveEvent:event]) return;
-	} else if (stream == [self readStream]) {
-		if ([self _readStream:(id)stream didReceiveEvent:event]) return;
+	NSParameterAssert(stream == [self writeStream] || stream == [self readStream]);
+	
+	switch (event) {
+		case NSStreamEventOpenCompleted:
+		{
+			if (stream == [self writeStream]) _writeFlags = (_writeFlags | _kStreamDidOpen);
+			else if (stream == [self readStream]) _readFlags = (_readFlags | _kStreamDidOpen);
+			
+			[self _streamDidOpen];
+			return;
+		}
+		case NSStreamEventEndEncountered:
+		{			
+			[self close];
+			return;
+		}
 	}
 	
 	if ([[self delegate] respondsToSelector:@selector(networkStream:didReceiveEvent:)])
@@ -381,25 +391,6 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	[self.writeStream enqueueWrite:packet];
 }
 
-- (BOOL)_writeStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event {
-	switch (event) {
-		case NSStreamEventOpenCompleted:
-		{
-			self->_writeFlags = (self->_writeFlags | _kStreamDidOpen);
-			
-			[self _streamDidOpen];
-			return YES;
-		}
-		case NSStreamEventEndEncountered:
-		{			
-			[self close];
-			return YES;
-		}
-	}
-	
-	return NO;
-}
-
 #pragma mark Reading
 
 - (void)performRead:(id)terminator withTimeout:(NSTimeInterval)duration context:(void *)context {
@@ -417,25 +408,6 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	}
 	
 	[self.readStream enqueueRead:packet];
-}
-
-- (BOOL)_readStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event {
-	switch (event) {
-		case NSStreamEventOpenCompleted:
-		{
-			self->_readFlags = (self->_readFlags | _kStreamDidOpen);
-			
-			[self _streamDidOpen];
-			return YES;
-		}
-		case NSStreamEventEndEncountered:
-		{
-			[self close];
-			return YES;
-		}
-	}
-	
-	return NO;
 }
 
 #pragma mark -
@@ -481,7 +453,8 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 - (void)_streamDidOpen {
 	if ((_connectionFlags & _kConnectionDidOpen) == _kConnectionDidOpen) return;
 	
-	if ((_readFlags & _kStreamDidOpen) != _kStreamDidOpen || (_writeFlags & _kStreamDidOpen) != _kStreamDidOpen) return;
+	if ([self writeSteam] != nil && ((_writeFlags & _kStreamDidOpen) != _kStreamDidOpen)) return;
+	if ([self readStream] != nil && ((_readFlags & _kStreamDidOpen) != _kStreamDidOpen)) return;
 	_connectionFlags = (_connectionFlags | _kConnectionDidOpen);
 	
 	if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])
