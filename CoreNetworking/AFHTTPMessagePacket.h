@@ -22,8 +22,6 @@
  @private
 	__strong CFHTTPMessageRef _message;
 	AFPacket *_currentRead;
-	
-	NSData *_readBuffer;
 }
 
 /*!
