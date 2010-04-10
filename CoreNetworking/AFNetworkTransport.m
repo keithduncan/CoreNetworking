@@ -490,7 +490,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 
 - (BOOL)networkStreamCanDequeuePackets:(AFNetworkStream *)networkStream {
 	if ((_connectionFlags & _kConnectionWillStartTLS) == _kConnectionWillStartTLS) {
-		return ((_connectionFlags & _kConnectionDidStartTLS) != _kConnectionDidStartTLS);
+		return ((_connectionFlags & _kConnectionDidStartTLS) == _kConnectionDidStartTLS);
 	}
 	return YES;
 }
