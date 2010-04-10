@@ -88,10 +88,10 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 }
 
 - (id)initWithLowerLayer:(id <AFTransportLayer>)layer {
+	NSParameterAssert([layer isKindOfClass:[AFNetworkSocket class]]);
+	
 	self = [super initWithLowerLayer:layer];
 	if (self == nil) return nil;
-	
-	NSParameterAssert([layer isKindOfClass:[AFNetworkSocket class]]);
 	
 	AFNetworkSocket *networkSocket = (AFNetworkSocket *)layer;
 	CFSocketRef socket = (CFSocketRef)[networkSocket socket];
