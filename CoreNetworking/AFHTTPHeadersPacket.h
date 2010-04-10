@@ -26,9 +26,7 @@ extern NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message);
 @interface AFHTTPHeadersPacket : AFPacket <AFPacketReading> {
  @private
 	__strong CFHTTPMessageRef _message;
-	
 	AFPacketRead *_currentRead;
-	NSData *_readBuffer;
 }
 
 /*!

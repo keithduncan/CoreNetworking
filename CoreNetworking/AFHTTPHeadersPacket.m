@@ -32,12 +32,11 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 @interface AFHTTPHeadersPacket ()
 @property (retain) CFHTTPMessageRef message __attribute__((NSObject));
 @property (retain) AFPacketRead *currentRead;
-@property (retain) NSData *readBuffer;
 @end
 
 @implementation AFHTTPHeadersPacket
 
-@synthesize message=_message, currentRead=_currentRead, readBuffer=_readBuffer;
+@synthesize message=_message, currentRead=_currentRead;
 
 - (id)initWithMessage:(CFHTTPMessageRef)message {
 	self = [self init];
@@ -54,7 +53,6 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 	}
 	
 	[_currentRead release];
-	[_readBuffer release];
 	
 	[super dealloc];
 }
@@ -73,37 +71,33 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 		}
 		
 		[self.currentRead performRead:readStream];
-		
-		if (self.readBuffer != nil) {
-			BOOL appendBytes = CFHTTPMessageAppendBytes(self.message, [self.readBuffer bytes], [self.readBuffer length]);
-			if (!appendBytes) {
-				CFRelease(_message);
-				_message = NULL;
-				
-				NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketParseError userInfo:nil];
-				NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-												  error, AFPacketErrorKey,
-												  nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
-				return;
-			}
-			self.readBuffer = nil;
-			
-			if (CFHTTPMessageIsHeaderComplete(self.message)) {
-				[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
-				break;
-			}
-		}
 	} while (self.currentRead == nil);
 }
 
 - (void)_readPacketDidComplete:(NSNotification *)notification {
 	AFPacketRead *packet = [notification object];	
-	self.readBuffer = packet.buffer;
-	
-#warning detect the error condition here
-	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
+	
+	if ([[notification userInfo] objectForKey:AFPacketErrorKey] != nil) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
+		return;
+	}
+	
+	BOOL appendBytes = CFHTTPMessageAppendBytes(self.message, [[packet buffer] bytes], [[packet buffer] length]);
+	if (!appendBytes) {
+		NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketParseError userInfo:nil];
+		NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+										  error, AFPacketErrorKey,
+										  nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+		return;
+	}
+	
+	if (CFHTTPMessageIsHeaderComplete(self.message)) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+		return;
+	}
+	
 	self.currentRead = nil;
 }
 
