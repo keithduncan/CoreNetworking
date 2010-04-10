@@ -56,7 +56,7 @@
 		NSUInteger bytesRemaining = ([self.buffer length] - _bytesWritten);
 		if (self.chunkSize > 0 && bytesRemaining > self.chunkSize) bytesRemaining = self.chunkSize;
 		
-		uint8_t *writeBuffer = (UInt8 *)([self.buffer bytes] + _bytesWritten);
+		uint8_t *writeBuffer = (uint8_t *)([self.buffer bytes] + _bytesWritten);
 		NSUInteger actualBytesWritten = [writeStream write:writeBuffer maxLength:bytesRemaining];
 		
 		if (actualBytesWritten < 0) {
