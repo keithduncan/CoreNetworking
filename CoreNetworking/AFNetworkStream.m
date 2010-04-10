@@ -194,16 +194,18 @@
 @implementation AFNetworkStream (_Queue)
 
 - (void)_tryDequeuePackets {
+	if (_dequeuing) return;
+	
 	if ([self.delegate respondsToSelector:@selector(networkStreamCanDequeuePacket:)])
 		if (![self.delegate networkStreamCanDequeuePacket:self]) return;
 	
-	if (_dequeuing) return;
 	_dequeuing = YES;
 	
 	do {
-		if ([self.queue tryDequeue]) {
+		if (self.queue.currentPacket == nil) {
+			if (![self.queue tryDequeue]) break;
 			[self _startPacket:self.queue.currentPacket];
-		} else break;
+		}
 		
 		[self _shouldTryDequeuePacket];
 	} while (self.queue.currentPacket == nil);
@@ -221,6 +223,8 @@
 - (void)_shouldTryDequeuePacket {
 	AFPacket *packet = [self.queue currentPacket];
 	((void (*)(id, SEL, id))objc_msgSend)(packet, _performSelector, self.stream);
+	
+	if (self.queue.currentPacket == nil) return;
 	
 	if ([self.delegate respondsToSelector:_callbackSelectors[0]]) {
 		NSUInteger bytesWritten = 0, totalBytes = 0;
