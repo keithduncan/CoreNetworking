@@ -505,8 +505,8 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 
 - (void)networkStreamDidDequeuePacket:(AFNetworkStream *)networkStream {
 	if (networkStream != [self writeStream]) return;
-	
-	if (((_connectionFlags & _kConnectionCloseSoon) != _kConnectionCloseSoon) || ([self.writeStream countOfEnqueuedWrites] != 0)) return;
+	if ((_connectionFlags & _kConnectionCloseSoon) != _kConnectionCloseSoon) return;
+	if ([self.writeStream countOfEnqueuedWrites] != 0) return;
 	
 	[self close];
 }

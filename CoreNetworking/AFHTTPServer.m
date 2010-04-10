@@ -175,7 +175,7 @@
 	[layer close];
 }
 
-- (BOOL)transport:(AFNetworkTransport *)transport shouldRemainOpenPendingWrites:(NSUInteger)count {
+- (BOOL)transportShouldRemainOpenPendingWrites:(AFNetworkTransport *)transport {
 	return YES;
 }
 
