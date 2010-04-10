@@ -184,18 +184,12 @@
 @implementation AFHTTPServer (Private)
 
 - (void)_logMessage:(CFHTTPMessageRef)message {
-	if (CFHTTPMessageIsRequest(message)) {
-		fprintf(stderr, "Request:\n");
-	} else {
-		fprintf(stderr, "Response:\n");
-	}
+	fprintf(stderr, (CFHTTPMessageIsRequest(message) ? "Request:\n" : "Response:\n"));
 	
 	CFShow(message);
 	
 	CFDictionaryRef messageHeaders = CFHTTPMessageCopyAllHeaderFields(message);
-	[(NSDictionary *)messageHeaders enumerateKeysAndObjectsUsingBlock:^ (id currentKey, id currentObject, BOOL *stop) {
-		fprintf(stderr, "\t%s: %s\n", [currentKey UTF8String], [currentObject UTF8String]);
-	}];
+	for (NSString *currentHeaderKey in (id)messageHeaders) fprintf(stderr, "\t%s: %s\n", [currentHeaderKey UTF8String], [[(id)messageHeaders objectForKey:currentHeaderKey] UTF8String]);
 	CFRelease(messageHeaders);
 }
 
