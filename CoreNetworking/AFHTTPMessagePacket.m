@@ -77,14 +77,14 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 		if (self.currentRead == nil) {
 			AFPacket *newPacket = [self _nextPacket];
 			
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:newPacket];
-			self.currentRead = newPacket;
-			
 			// Note: this covers reading a request where there's no body
-			if (self.currentRead == nil) {
+			if (newPacket == nil) {
 				[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 				return;
 			}
+			
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:newPacket];
+			self.currentRead = newPacket;
 		}
 		
 		[self.currentRead performRead:readStream];
