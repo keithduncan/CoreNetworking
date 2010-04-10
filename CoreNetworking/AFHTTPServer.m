@@ -21,6 +21,7 @@
 #define kCoreNetworkingHTTPServerVersion kCFHTTPVersion1_1
 
 @interface AFHTTPServer (Private)
+- (void)_logMessage:(CFHTTPMessageRef)message;
 - (void)_returnResponse:(CFHTTPMessageRef)response forRequest:(CFHTTPMessageRef)request connection:(id)connection permitKeepAlive:(BOOL)allow;
 @end
 
@@ -98,10 +99,7 @@
 #pragma unused (requestBody)
 		
 #if ENABLE_REQUEST_LOGGING
-		printf("Request:\n", nil);
-		CFShow(request);
-		for (NSString *currentKey in [requestHeaders allKeys])
-			printf("\t%s: %s\n", [currentKey UTF8String], [[requestHeaders objectForKey:currentKey] UTF8String], nil);
+		[self _logMessage:request];
 #endif
 		
 		// Note: assert that the server implements the request method
@@ -185,6 +183,22 @@
 
 @implementation AFHTTPServer (Private)
 
+- (void)_logMessage:(CFHTTPMessageRef)message {
+	if (CFHTTPMessageIsRequest(message)) {
+		fprintf(stderr, "Request:\n");
+	} else {
+		fprintf(stderr, "Response:\n");
+	}
+	
+	CFShow(message);
+	
+	CFDictionaryRef messageHeaders = CFHTTPMessageCopyAllHeaderFields(message);
+	[(NSDictionary *)messageHeaders enumerateKeysAndObjectsUsingBlock:^ (id currentKey, id currentObject, BOOL *stop) {
+		fprintf(stderr, "\t%s: %s\n", [currentKey UTF8String], [currentObject UTF8String]);
+	}];
+	CFRelease(messageHeaders);
+}
+
 - (void)_returnResponse:(CFHTTPMessageRef)response forRequest:(CFHTTPMessageRef)request connection:(id)connection permitKeepAlive:(BOOL)allow {
 	NSDictionary *requestHeaders = [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields(request)) autorelease];
 	
@@ -195,12 +209,7 @@
 	else CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageConnectionHeader, CFSTR("close"));
 	
 #if ENABLE_RESPONSE_LOGGING
-	printf("Response:\n", nil);
-	CFShow(response);
-	NSDictionary *responseHeaders = [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields(response)) autorelease];
-	for (NSString *currentKey in [responseHeaders allKeys])
-		printf("\t%s: %s\n", [currentKey UTF8String], [[responseHeaders objectForKey:currentKey] UTF8String], nil);
-	printf("\n");
+	[self _logMessage:response];
 #endif
 	
 	[connection performResponse:response];
