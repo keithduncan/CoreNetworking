@@ -122,7 +122,7 @@
 	while (!packetComplete && [readStream hasBytesAvailable]) {
 		NSUInteger maximumReadLength = [self _increaseBuffer];
 		
-		uint8_t *readBuffer = (UInt8 *)([_buffer mutableBytes] + _bytesRead);
+		uint8_t *readBuffer = (uint8_t *)([_buffer mutableBytes] + _bytesRead);
 		NSUInteger bytesRead = [readStream read:readBuffer maxLength:maximumReadLength];
 		
 		if (bytesRead < 0) {
