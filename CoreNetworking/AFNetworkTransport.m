@@ -453,7 +453,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 - (void)_streamDidOpen {
 	if ((_connectionFlags & _kConnectionDidOpen) == _kConnectionDidOpen) return;
 	
-	if ([self writeSteam] != nil && ((_writeFlags & _kStreamDidOpen) != _kStreamDidOpen)) return;
+	if ([self writeStream] != nil && ((_writeFlags & _kStreamDidOpen) != _kStreamDidOpen)) return;
 	if ([self readStream] != nil && ((_readFlags & _kStreamDidOpen) != _kStreamDidOpen)) return;
 	_connectionFlags = (_connectionFlags | _kConnectionDidOpen);
 	
