@@ -24,6 +24,7 @@
 @interface AFNetworkStream (_Queue)
 - (void)_tryDequeuePackets;
 - (void)_startPacket:(AFPacket *)packet;
+- (void)_stopPacket:(AFPacket *)packet;
 - (void)_shouldTryDequeuePacket;
 - (void)_packetDidTimeout:(NSNotification *)notification;
 - (void)_packetDidComplete:(NSNotification *)notification;
@@ -220,6 +221,13 @@
 	[packet startTimeout];
 }
 
+- (void)_stopPacket:(AFPacket *)packet {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidTimeoutNotificationName object:packet];
+	[packet stopTimeout];
+}
+
 - (void)_shouldTryDequeuePacket {
 	AFPacket *packet = [self.queue currentPacket];
 	((void (*)(id, SEL, id))objc_msgSend)(packet, _performSelector, self.stream);
@@ -249,10 +257,7 @@
 - (void)_packetDidComplete:(NSNotification *)notification {
 	AFPacket *packet = [notification object];
 	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
-	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidTimeoutNotificationName object:packet];
-	[packet stopTimeout];
+	[self _stopPacket:packet];
 	
 	NSError *packetError = [[notification userInfo] objectForKey:AFPacketErrorKey];
 	if (packetError != nil) [[self delegate] networkStream:self didReceiveError:packetError];
