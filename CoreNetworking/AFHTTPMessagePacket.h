@@ -21,6 +21,8 @@
 @interface AFHTTPMessagePacket : AFPacket <AFPacketReading> {
  @private
 	__strong CFHTTPMessageRef _message;
+	NSURL *_bodyStorage;
+	
 	AFPacket *_currentRead;
 }
 
@@ -29,5 +31,11 @@
 	Designated Initialiser.
  */
 - (id)initForRequest:(BOOL)isRequest;
+
+/*!
+	@brief
+	If called, the body will be streamed to disk instead of loaded into memory.
+ */
+- (void)downloadBodyToURL:(NSURL *)URL;
 
 @end

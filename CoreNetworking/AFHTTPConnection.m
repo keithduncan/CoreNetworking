@@ -19,13 +19,11 @@
 
 NSSTRING_CONTEXT(_AFHTTPConnectionCurrentTransactionObservationContext);
 
+NSSTRING_CONTEXT(_AFHTTPConnectionWriteRequestContext);
+NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
+
 NSSTRING_CONTEXT(_AFHTTPConnectionReadRequestContext);
 NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
-
-NSSTRING_CONTEXT(_AFHTTPConnectionReadDownloadRequestContext);
-NSSTRING_CONTEXT(_AFHTTPConnectionReadDownloadResponseContext);
-
-NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 
 @interface AFHTTPConnection ()
 @property (readwrite, retain) NSMutableDictionary *messageHeaders;
@@ -36,6 +34,8 @@ NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 @interface AFHTTPConnection (Private)
 - (BOOL)_shouldStartTLS;
 @end
+
+#pragma mark -
 
 @implementation AFHTTPConnection
 
@@ -135,6 +135,8 @@ NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 	[self.transactionQueue tryDequeue];
 }
 
+#pragma mark -
+
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body {
 	NSURL *endpoint = [self peer];
 	NSURL *resourcePath = [NSURL URLWithString:([resource isEmpty] ? @"/" : resource) relativeToURL:endpoint];
@@ -159,6 +161,8 @@ NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 	[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:YES] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadRequestContext];
 }
 
+#pragma mark -
+
 - (void)performResponse:(CFHTTPMessageRef)message {
 	[self performWrite:message withTimeout:-1 context:&_AFHTTPConnectionWriteResponseContext];
 }
@@ -167,17 +171,27 @@ NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 	[super performRead:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadResponseContext];
 }
 
+- (void)downloadResponse:(NSURL *)location {
+	NSParameterAssert([location isFileURL]);
+	
+	AFHTTPMessagePacket *messagePacket = [[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease];
+	[messagePacket downloadBodyToURL:location];
+	[super performRead:messagePacket withTimeout:-1 context:&_AFHTTPConnectionReadResponseContext];
+}
+
+#pragma mark -
+
 @end
 
 @implementation AFHTTPConnection (AFAdditions)
 
-- (void)downloadResource:(NSString *)resource toURL:(NSURL *)location deleteFileOnFailure:(BOOL)deleteFileOnFailure {
+- (void)downloadResource:(NSString *)resource toURL:(NSURL *)location {
 	NSURL *endpoint = [self peer];
 	NSURL *resourcePath = [NSURL URLWithString:([resource isEmpty] ? @"/" : resource) relativeToURL:endpoint];
 	CFHTTPMessageRef request = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)AFHTTPMethodGET, (CFURLRef)resourcePath, kCFHTTPVersion1_1)) autorelease];
-	[self performWrite:request withTimeout:-1 context:&_AFHTTPConnectionReadDownloadRequestContext];
+	[self performWrite:request withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
 	
-#warning download the resource to disk
+	[self downloadResponse:location];
 }
 
 @end
@@ -185,7 +199,9 @@ NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 @implementation AFHTTPConnection (_Delegate)
 
 - (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data context:(void *)context {
-	if (context == &_AFHTTPConnectionWriteResponseContext) {
+	if (context == &_AFHTTPConnectionWriteRequestContext) {
+		// nop
+	} else if (context == &_AFHTTPConnectionWriteResponseContext) {
 		// nop
 	} else {
 		if ([self.delegate respondsToSelector:_cmd])

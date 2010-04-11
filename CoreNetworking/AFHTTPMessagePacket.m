@@ -12,6 +12,7 @@
 
 #import "AFHTTPHeadersPacket.h"
 #import "AFPacketRead.h"
+#import "AFPacketReadToWriteStream.h"
 #import "AFHTTPMessage.h"
 #import "AFNetworkConstants.h"
 
@@ -22,12 +23,13 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 
 @interface AFHTTPMessagePacket ()
 @property (readonly) CFHTTPMessageRef message;
+@property (readwrite, copy) NSURL *bodyStorage;
 @property (retain) AFPacket <AFPacketReading> *currentRead;
 @end
 
 @implementation AFHTTPMessagePacket
 
-@synthesize message=_message, currentRead=_currentRead;
+@synthesize message=_message, bodyStorage=_bodyStorage, currentRead=_currentRead;
 
 - (id)initForRequest:(BOOL)isRequest {
 	self = [self init];
@@ -43,10 +45,15 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 		CFRelease(_message);
 		_message = NULL;
 	}
+	[_bodyStorage release];
 	
 	[_currentRead release];
 	
 	[super dealloc];
+}
+
+- (void)downloadBodyToURL:(NSURL *)URL {
+	[self setBodyStorage:URL];
 }
 
 - (id)buffer {
@@ -61,11 +68,14 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 	}
 	
 	NSInteger contentLength = AFHTTPMessageGetExpectedBodyLength(self.message);
-	if (contentLength > 0) {
-		return [[[AFPacketRead alloc] initWithContext:&_AFHTTPMessagePacketBodyContext timeout:-1 terminator:[NSNumber numberWithInteger:contentLength]] autorelease];
+	if (contentLength <= 0) return nil;
+	
+	if ([self bodyStorage] != nil) {
+		NSOutputStream *writeStream = [NSOutputStream outputStreamWithURL:[self bodyStorage] append:NO];
+		return [[[AFPacketReadToWriteStream alloc] initWithContext:NULL timeout:-1 writeStream:writeStream numberOfBytesToRead:contentLength] autorelease];
 	}
 	
-	return nil;
+	return [[[AFPacketRead alloc] initWithContext:&_AFHTTPMessagePacketBodyContext timeout:-1 terminator:[NSNumber numberWithInteger:contentLength]] autorelease];
 }
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
@@ -103,22 +113,27 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 		return;
 	}
 	
-	
-	BOOL bytesAppended = CFHTTPMessageAppendBytes(self.message, [[packet buffer] bytes], [[packet buffer] length]);
-	
-	if (!bytesAppended) {
-		CFRelease(_message);
-		_message = NULL;
+	if ([packet isKindOfClass:[AFPacketRead class]]) {
+		BOOL bytesAppended = CFHTTPMessageAppendBytes(self.message, [[packet buffer] bytes], [[packet buffer] length]);
 		
-		NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketParseError userInfo:nil];
-		NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-										  error, AFPacketErrorKey,
-										  nil];
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
-		return;
+		if (!bytesAppended) {
+			CFRelease(_message);
+			_message = NULL;
+			
+			NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketParseError userInfo:nil];
+			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+											  error, AFPacketErrorKey,
+											  nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+			return;
+		}
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+	if ([packet isKindOfClass:[AFPacketReadToWriteStream class]]) {
+		
+	}
 }
 
 @end

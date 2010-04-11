@@ -65,9 +65,6 @@
 	@brief
 	This method enqueues a transaction, which pairs a request with it's response. The request may not be issued immediately.
 	You will be notified via the delegate method <tt>-connection:didReceiveResponse:</tt> when the response has been read.
-	
-	@result
-	The data written to the socket, complete with the headers added internally.
  */
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body;
 
@@ -76,7 +73,7 @@
 	This method enqueues a transaction, which pairs a request with it's response. The request may not be issued immediately.
 	This method may assist you in moving to a request/response model from the URL loading architecture in Cocoa.
 	You will be notified via the delegate method <tt>-connection:didReceiveResponse:</tt> when the response has been read.
- 
+	
 	@detail
 	This is likely to be most useful where you already have a web service context, which vends preconstructed requests.
  */
@@ -106,18 +103,24 @@
  */
 - (void)readResponse;
 
+/*!
+	@brief
+	This enqueues a response reading packet, which writes the body to the location indicated, and is usefule for raw messaging.
+ */
+- (void)downloadResponse:(NSURL *)location;
+
 @end
 
 @interface AFHTTPConnection (AFAdditions)
 
 /*!
 	@brief
-	Replaces NSURLDownload which can't be scheduled in multiple run loop modes.
+	Replaces NSURLDownload which can't be scheduled in multiple run loops and modes.
 	
 	@detail
 	Will handle large files by streaming them to disk.
  */
-- (void)downloadResource:(NSString *)resource toURL:(NSURL *)location deleteFileOnFailure:(BOOL)deleteFileOnFailure;
+- (void)downloadResource:(NSString *)resource toURL:(NSURL *)location;
 
 @end
 
