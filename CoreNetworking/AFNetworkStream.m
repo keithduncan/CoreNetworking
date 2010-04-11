@@ -56,10 +56,10 @@
 - (void)dealloc {
 	[_stream release];
 	
-	if (_source != NULL) {
-		dispatch_source_cancel(_source);
-		dispatch_release(_source);
-		_source = NULL;
+	if (_dispatchSource != NULL) {
+		dispatch_dispatchSource_cancel(_dispatchSource);
+		dispatch_release(_dispatchSource);
+		_dispatchSource = NULL;
 	}
 	
 	[_queue release];
@@ -68,10 +68,10 @@
 }
 
 - (void)finalize {
-	if (_source != NULL) {
-		dispatch_source_cancel(_source);
-		dispatch_release(_source);
-		_source = NULL;
+	if (_dispatchSource != NULL) {
+		dispatch_dispatchSource_cancel(_dispatchSource);
+		dispatch_release(_dispatchSource);
+		_dispatchSource = NULL;
 	}
 	
 	[super finalize];
@@ -125,10 +125,10 @@
 		return handle;
 	};
 	
-	if (_source != NULL) {
-		dispatch_source_cancel(_source);
-		dispatch_release(_source);
-		_source = NULL;
+	if (_dispatchSource != NULL) {
+		dispatch_dispatchSource_cancel(_dispatchSource);
+		dispatch_release(_dispatchSource);
+		_dispatchSource = NULL;
 	}
 	
 	if (queue == NULL) return;
@@ -143,18 +143,18 @@
 		return;
 	}
 	
-	dispatch_source_t newSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, getNativeHandle(getter, self.stream), 0, queue);
+	dispatch_dispatchSource_t newSource = dispatch_dispatchSource_create(DISPATCH_SOURCE_TYPE_WRITE, getNativeHandle(getter, self.stream), 0, queue);
 	
-	dispatch_source_set_event_handler(newSource, ^ {
+	dispatch_dispatchSource_set_event_handler(newSource, ^ {
 		[self stream:self.stream handleEvent:NSStreamEventHasSpaceAvailable];
 	});
 	
-	dispatch_source_set_cancel_handler(newSource, ^ {
+	dispatch_dispatchSource_set_cancel_handler(newSource, ^ {
 		[self close];
 	});
 	
 	dispatch_resume(newSource);
-	_source = newSource;
+	_dispatchSource = newSource;
 }
 
 #endif

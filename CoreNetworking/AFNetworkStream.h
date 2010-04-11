@@ -29,7 +29,8 @@
 	
 	NSUInteger _flags;
 	
-	void *_source;
+	CFMutableDictionaryRef _runLoopSources;
+	void *_dispatchSource;
 	
 	__strong AFPacketQueue *_queue;
 	BOOL _dequeuing;
