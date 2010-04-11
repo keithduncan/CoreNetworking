@@ -229,7 +229,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	
 	[description appendFormat:@"\tPeer: %@\n", [(id)[self peer] description], nil];
 	
-	[description appendFormat:@"\tOpen: %@, Closed: %@\n", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO"), nil];
+	[description appendFormat:@"\tOpened: %@, Closed: %@\n", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO"), nil];
 	
 	[description appendFormat:@"\tWrite Stream: %@", [self.writeStream description]];
 	[description appendFormat:@"\tRead Stream: %@", [self.readStream description]];
@@ -358,7 +358,10 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 			return;
 		}
 		case NSStreamEventEndEncountered:
-		{			
+		{
+			if (stream == [self writeStream]) _writeFlags = (_writeFlags | _kStreamDidClose);
+			else if (stream == [self readStream]) _readFlags = (_readFlags | _kStreamDidClose);			
+			
 			[self close];
 			return;
 		}
