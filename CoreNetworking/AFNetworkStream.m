@@ -294,6 +294,8 @@
 
 - (void)enqueueWrite:(id <AFPacketWriting>)packet {
 	[self.queue enqueuePacket:packet];
+	
+	[self _tryDequeuePackets];
 }
 
 - (NSUInteger)countOfEnqueuedWrites {
@@ -320,6 +322,8 @@
 
 - (void)enqueueRead:(id <AFPacketReading>)packet {
 	[self.queue enqueuePacket:packet];
+	
+	[self _tryDequeuePackets];
 }
 
 - (NSUInteger)countOfEnqueuedReads {
