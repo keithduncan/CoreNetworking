@@ -194,17 +194,12 @@
 
 @implementation AFNetworkStream (_Queue)
 
-- (void)_scheduleDequeuing {
-	
-}
-
 - (void)_tryDequeuePackets {
 	if (_dequeuing) return;
+	_dequeuing = YES;
 	
 	if ([self.delegate respondsToSelector:@selector(networkStreamCanDequeuePacket:)])
-		if (![self.delegate networkStreamCanDequeuePacket:self]) return;
-	
-	_dequeuing = YES;
+		if (![self.delegate networkStreamCanDequeuePacket:self]) goto DequeueEnd;
 	
 	do {
 		if (self.queue.currentPacket == nil) {
@@ -215,6 +210,7 @@
 		[self _shouldTryDequeuePacket];
 	} while (self.queue.currentPacket == nil);
 	
+DequeueEnd:
 	_dequeuing = NO;
 }
 
@@ -298,7 +294,7 @@
 
 - (void)enqueueWrite:(id <AFPacketWriting>)packet {
 	[self.queue enqueuePacket:packet];
-	[self _scheduleDequeuing];
+	[self _tryDequeuePackets];
 }
 
 - (NSUInteger)countOfEnqueuedWrites {
@@ -325,7 +321,7 @@
 
 - (void)enqueueRead:(id <AFPacketReading>)packet {
 	[self.queue enqueuePacket:packet];
-	[self _scheduleDequeuing];
+	[self _tryDequeuePackets];
 }
 
 - (NSUInteger)countOfEnqueuedReads {
