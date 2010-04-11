@@ -22,6 +22,7 @@
 
 #import "CoreNetworking/AFNetworkSocket.h"
 #import "CoreNetworking/AFNetworkTransport.h"
+#import "CoreNetworking/AFNetworkStream.h"
 #import "CoreNetworking/AFNetworkConnection.h"
 
 #import "CoreNetworking/AFPacket.h"
@@ -52,9 +53,9 @@
 
 /* XMPP */
 
-// See http://code.google.com/p/objectivexmpp/ for implementation.
-
 #import "CoreNetworking/AFXMLElementPacket.h"
+
+// See http://code.google.com/p/objectivexmpp/ for implementation.
 
 /* AMQP */
 // Not Yet Implemented

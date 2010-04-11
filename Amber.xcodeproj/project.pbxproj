@@ -247,9 +247,9 @@
 		53B2015F0F6D7739001DC8E7 /* AFPacketWrite.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B2014F0F6D7739001DC8E7 /* AFPacketWrite.m */; };
 		53B201600F6D7739001DC8E7 /* AFNetworkSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53B201610F6D7739001DC8E7 /* AFNetworkSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B201510F6D7739001DC8E7 /* AFNetworkSocket.m */; };
-		53C0B63E113DAD360011A604 /* AFNetworkStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C0B63C113DAD360011A604 /* AFNetworkStream.h */; };
+		53C0B63E113DAD360011A604 /* AFNetworkStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C0B63C113DAD360011A604 /* AFNetworkStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53C0B63F113DAD360011A604 /* AFNetworkStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C0B63D113DAD360011A604 /* AFNetworkStream.m */; };
-		53C0B640113DAD360011A604 /* AFNetworkStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C0B63C113DAD360011A604 /* AFNetworkStream.h */; };
+		53C0B640113DAD360011A604 /* AFNetworkStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C0B63C113DAD360011A604 /* AFNetworkStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53C0B641113DAD360011A604 /* AFNetworkStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C0B63D113DAD360011A604 /* AFNetworkStream.m */; };
 		53C156F7104060E7008D1E82 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C156F6104060E7008D1E82 /* CoreServices.framework */; };
 		53C518630FF2BD8F003BFCE0 /* AFLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C5185F0FF2BD8F003BFCE0 /* AFLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
