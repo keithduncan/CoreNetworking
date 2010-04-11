@@ -123,9 +123,9 @@
 		NSUInteger maximumReadLength = [self _increaseBuffer];
 		
 		uint8_t *readBuffer = (uint8_t *)([_buffer mutableBytes] + _bytesRead);
-		NSUInteger bytesRead = [readStream read:readBuffer maxLength:maximumReadLength];
+		NSUInteger currentBytesRead = [readStream read:readBuffer maxLength:maximumReadLength];
 		
-		if (bytesRead < 0) {
+		if (currentBytesRead < 0) {
 #warning check if this error is reported by event to the stream delegate, making this redundant? also in AFPacketWrite
 			NSError *error = [readStream streamError];
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -134,7 +134,7 @@
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 			return;
 		} else {
-			_bytesRead += bytesRead;
+			_bytesRead += currentBytesRead;
 		}
 		
 		if ([_terminator isKindOfClass:[NSData class]]) {
