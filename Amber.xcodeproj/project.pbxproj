@@ -210,9 +210,9 @@
 		538307B3101384DF000DA939 /* AFHTTPMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 538307AF101384DF000DA939 /* AFHTTPMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		538307B4101384DF000DA939 /* AFHTTPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 538307B0101384DF000DA939 /* AFHTTPMessage.m */; };
 		538AD2D50F8A81780031CFF7 /* AmberKit+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		538EC15C115D6E5A00A8E8F9 /* AFNetworkFormDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 538EC15A115D6E5A00A8E8F9 /* AFNetworkFormDocument.h */; };
+		538EC15C115D6E5A00A8E8F9 /* AFNetworkFormDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 538EC15A115D6E5A00A8E8F9 /* AFNetworkFormDocument.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		538EC15D115D6E5A00A8E8F9 /* AFNetworkFormDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 538EC15B115D6E5A00A8E8F9 /* AFNetworkFormDocument.m */; };
-		538EC15E115D6E5A00A8E8F9 /* AFNetworkFormDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 538EC15A115D6E5A00A8E8F9 /* AFNetworkFormDocument.h */; };
+		538EC15E115D6E5A00A8E8F9 /* AFNetworkFormDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 538EC15A115D6E5A00A8E8F9 /* AFNetworkFormDocument.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		538EC15F115D6E5A00A8E8F9 /* AFNetworkFormDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 538EC15B115D6E5A00A8E8F9 /* AFNetworkFormDocument.m */; };
 		539A44160F782DF500564C73 /* NSObject+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 539A44120F782DF500564C73 /* NSObject+Additions.m */; };
 		539A44170F782DF500564C73 /* NSObject+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 539A44130F782DF500564C73 /* NSObject+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
