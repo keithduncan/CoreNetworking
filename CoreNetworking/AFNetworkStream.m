@@ -57,7 +57,7 @@
 	[_stream release];
 	
 	if (_dispatchSource != NULL) {
-		dispatch_dispatchSource_cancel(_dispatchSource);
+		dispatch_source_cancel(_dispatchSource);
 		dispatch_release(_dispatchSource);
 		_dispatchSource = NULL;
 	}
@@ -69,7 +69,7 @@
 
 - (void)finalize {
 	if (_dispatchSource != NULL) {
-		dispatch_dispatchSource_cancel(_dispatchSource);
+		dispatch_source_cancel(_dispatchSource);
 		dispatch_release(_dispatchSource);
 		_dispatchSource = NULL;
 	}
@@ -126,7 +126,7 @@
 	};
 	
 	if (_dispatchSource != NULL) {
-		dispatch_dispatchSource_cancel(_dispatchSource);
+		dispatch_source_cancel(_dispatchSource);
 		dispatch_release(_dispatchSource);
 		_dispatchSource = NULL;
 	}
@@ -143,13 +143,13 @@
 		return;
 	}
 	
-	dispatch_dispatchSource_t newSource = dispatch_dispatchSource_create(DISPATCH_SOURCE_TYPE_WRITE, getNativeHandle(getter, self.stream), 0, queue);
+	dispatch_source_t newSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, getNativeHandle(getter, self.stream), 0, queue);
 	
-	dispatch_dispatchSource_set_event_handler(newSource, ^ {
+	dispatch_source_set_event_handler(newSource, ^ {
 		[self stream:self.stream handleEvent:NSStreamEventHasSpaceAvailable];
 	});
 	
-	dispatch_dispatchSource_set_cancel_handler(newSource, ^ {
+	dispatch_source_set_cancel_handler(newSource, ^ {
 		[self close];
 	});
 	
@@ -193,6 +193,10 @@
 @end
 
 @implementation AFNetworkStream (_Queue)
+
+- (void)_scheduleDequeuing {
+	
+}
 
 - (void)_tryDequeuePackets {
 	if (_dequeuing) return;
@@ -294,8 +298,7 @@
 
 - (void)enqueueWrite:(id <AFPacketWriting>)packet {
 	[self.queue enqueuePacket:packet];
-	
-	[self _tryDequeuePackets];
+	[self _scheduleDequeuing];
 }
 
 - (NSUInteger)countOfEnqueuedWrites {
@@ -322,8 +325,7 @@
 
 - (void)enqueueRead:(id <AFPacketReading>)packet {
 	[self.queue enqueuePacket:packet];
-	
-	[self _tryDequeuePackets];
+	[self _scheduleDequeuing];
 }
 
 - (NSUInteger)countOfEnqueuedReads {
