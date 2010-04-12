@@ -133,11 +133,34 @@
 		return;
 	}
 	
-	NSData *readBuffer = [readPacket buffer];
-	AFPacketWrite *writePacket = [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:readBuffer] autorelease];
+	AFPacketWrite *writePacket = [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:[readPacket buffer]] autorelease];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_writePacketDidComplete:) name:AFPacketDidCompleteNotificationName object:writePacket];
 	[[self writeStream] enqueueWrite:writePacket];
 	
 	[self _enqueueReadPacket];
+}
+
+// Note: these prevents the message being sent to the transport layer
+
+- (void)networkStream:(AFNetworkReadStream *)readStream didRead:(id <AFPacketReading>)packet partialDataOfLength:(NSUInteger)partialLength totalBytes:(NSUInteger)totalLength {
+	
+}
+
+- (void)networkStream:(AFNetworkStream *)stream didRead:(id <AFPacketReading>)packet {
+	
+}
+
+- (void)networkStream:(AFNetworkWriteStream *)readStream didWrite:(id <AFPacketReading>)packet partialDataOfLength:(NSUInteger)partialLength totalBytes:(NSUInteger)totalLength {
+	
+}
+
+- (void)networkStream:(AFNetworkStream *)stream didWrite:(id <AFPacketWriting>)packet {
+	if ([[self writeStream] countOfEnqueuedWrites] != 0) return;
+	if (!(_numberOfBytesToWrite < 0 && [self readStreamDidEnd]) && _numberOfBytesToWrite != 0) return;
+	
+	[self _unscheduleStreams];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 }
 
 - (void)networkStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event {
@@ -154,8 +177,8 @@
 	[self _unscheduleStreams];
 		
 	NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-										error, AFPacketErrorKey,
-										nil];
+									  error, AFPacketErrorKey,
+									  nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 	
 #warning do we need to forward write stream errors to the originalWriteStreamDelegate?
@@ -163,21 +186,13 @@
 
 - (void)_writePacketDidComplete:(NSNotification *)notification {
 	AFPacketWrite *packet = [notification object];
-	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
 	
 	if ([[notification userInfo] objectForKey:AFPacketErrorKey] != nil) {
 		[self _unscheduleStreams];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
-		return;
 	}
-	
-	if ([[self writeStream] countOfEnqueuedWrites] != 0) return;
-	if (!(_numberOfBytesToWrite < 0 && [self readStreamDidEnd]) && _numberOfBytesToWrite != 0) return;
-	
-	[self _unscheduleStreams];
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 }
 
 @end
