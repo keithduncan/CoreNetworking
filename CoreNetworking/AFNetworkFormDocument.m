@@ -84,7 +84,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 									   nil]
 	 ];
 	
-#if 0
+#if 1
 	NSInputStream *readStream = [[[NSInputStream alloc] initWithURL:[self location]] autorelease];
 	AFPacketWriteFromReadStream *filePacket = [[[AFPacketWriteFromReadStream alloc] initWithContext:NULL timeout:-1 readStream:readStream numberOfBytesToWrite:[resourceLength unsignedIntegerValue]] autorelease];
 #else
