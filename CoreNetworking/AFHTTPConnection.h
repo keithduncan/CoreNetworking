@@ -55,7 +55,7 @@
 	@detail
 	All messages written over the connection are funneled through this method so that the custom headers are added.
  */
-- (void)performWrite:(CFHTTPMessageRef)message withTimeout:(NSTimeInterval)duration context:(void *)context;
+- (void)performMessageWrite:(CFHTTPMessageRef)message withTimeout:(NSTimeInterval)duration context:(void *)context;
 
 /*
 	Request Methods

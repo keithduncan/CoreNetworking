@@ -70,7 +70,7 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 	[super finalize];
 }
 
-- (void)performWrite:(CFHTTPMessageRef)message withTimeout:(NSTimeInterval)duration context:(void *)context {
+- (void)performMessageWrite:(CFHTTPMessageRef)message withTimeout:(NSTimeInterval)duration context:(void *)context {
 	NSString *agent = [[self class] userAgent];
 	if (agent != nil) {
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageUserAgentHeader, (CFStringRef)agent);
@@ -84,7 +84,7 @@ static NSString *_AFHTTPConnectionUserAgent = nil;
 #pragma unused (authenticated)
 	}
 	
-	[super performWrite:message withTimeout:duration context:context];
+	[super performMessageWrite:message withTimeout:duration context:context];
 }
 
 - (void)layerDidOpen:(id <AFConnectionLayer>)layer {
