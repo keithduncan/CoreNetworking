@@ -21,10 +21,10 @@ static NSData *_AFNetworkFormDocumentHeadersDataFromDictionary(NSDictionary *hea
 	for (NSString *currentKey in headers) {
 		NSString *currentValue = [headers objectForKey:currentKey];
 		
-		NSString *currentHeader = [NSString stringWithFormat:@"%@: %@\n", currentKey, currentValue];
+		NSString *currentHeader = [NSString stringWithFormat:@"%@: %@\r\n", currentKey, currentValue];
 		[data appendData:[currentHeader dataUsingEncoding:_FormEncoding]];
 	}
-	[data appendData:[@"\n" dataUsingEncoding:_FormEncoding]];
+	[data appendData:[@"\r\n" dataUsingEncoding:_FormEncoding]];
 	
 	return data;
 }
@@ -84,8 +84,13 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 									   nil]
 	 ];
 	
+#if 0
 	NSInputStream *readStream = [[[NSInputStream alloc] initWithURL:[self location]] autorelease];
 	AFPacketWriteFromReadStream *filePacket = [[[AFPacketWriteFromReadStream alloc] initWithContext:NULL timeout:-1 readStream:readStream numberOfBytesToWrite:[resourceLength unsignedIntegerValue]] autorelease];
+#else
+	NSData *fileData = [NSData dataWithContentsOfURL:[self location]];
+	AFPacketWrite *filePacket = [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:fileData] autorelease];
+#endif
 	
 	if (frameLengthRef != NULL) *frameLengthRef = [resourceLength unsignedIntegerValue];
 	
@@ -155,14 +160,10 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	NSString *multipartBoundary = [[NSProcessInfo processInfo] globallyUniqueString];
 	multipartBoundary = [multipartBoundary stringByReplacingOccurrencesOfString:@"-" withString:@""];
 	
-	*multipartHeaderRef = [[NSString stringWithFormat:@"--%@\n", multipartBoundary] dataUsingEncoding:_FormEncoding];
-	*multipartFooterRef = [[NSString stringWithFormat:@"--%@--\n", multipartBoundary] dataUsingEncoding:_FormEncoding];
+	*multipartHeaderRef = [[NSString stringWithFormat:@"--%@\r\n", multipartBoundary] dataUsingEncoding:_FormEncoding];
+	*multipartFooterRef = [[NSString stringWithFormat:@"--%@--\r\n", multipartBoundary] dataUsingEncoding:_FormEncoding];
 	
 	return multipartBoundary;
-}
-
-- (void)_appendValuesToCumulativePackets:(NSMutableArray *)packets cumulativeFrameLength:(NSUInteger *)cumulativeFrameLength {
-	
 }
 
 - (void)_appendPart:(_AFNetworkFormDocumentFileFieldPart *)part toCumulativePackets:(NSMutableArray *)cumulativePackets cumulativeFrameLength:(NSUInteger *)cumulativeFrameLengthRef withContentDisposition:(NSString *)contentDisposition {
@@ -186,13 +187,14 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	[partPackets addObjectsFromArray:currentValuePackets];
 	partFrameLength += currentValueFrameLength;
 	
+	NSData *newLineData = [@"\r\n" dataUsingEncoding:_FormEncoding];
+	AFPacketWrite *newLinePacket = [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:newLineData] autorelease];
+	[partPackets addObject:newLinePacket];
+	partFrameLength += [newLineData length];
+	
 	
 	[cumulativePackets addObjectsFromArray:partPackets];
 	*cumulativeFrameLengthRef += partFrameLength;
-}
-
-- (void)_appendFilesToCumulativePackets:(NSMutableArray *)cumulativePackets cumulativeFrameLength:(NSUInteger *)cumulativeFrameLength {
-	
 }
 
 - (NSArray *)documentPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef {
@@ -220,7 +222,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 		
 		NSString *currentValue = [[self values] objectForKey:currentFieldname];
 		[currentValueData appendData:[currentValue dataUsingEncoding:_FormEncoding]];
-		[currentValueData appendData:[@"\n" dataUsingEncoding:_FormEncoding]];
+		[currentValueData appendData:[@"\r\n" dataUsingEncoding:_FormEncoding]];
 		
 		AFPacketWrite *currentValuePacket = [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:currentValueData] autorelease];
 		[cumulativePackets addObject:currentValuePacket];
@@ -269,7 +271,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 			_AFNetworkFormDocumentFileFieldPart *currentValue = [currentLocations objectForKey:currentFilename];
 			NSString *contentDisposition = [NSString stringWithFormat:@"file; filename=\"%@\"", currentFilename];
 			[self _appendPart:currentValue toCumulativePackets:cumulativePackets cumulativeFrameLength:&cumulativeFrameLength withContentDisposition:contentDisposition];
-		}	
+		}
 		
 		AFPacketWrite *innerFooterPacket = [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:innerMultipartFooter] autorelease];
 		[cumulativePackets addObject:innerFooterPacket];
