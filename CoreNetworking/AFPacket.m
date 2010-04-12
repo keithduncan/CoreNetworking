@@ -14,8 +14,6 @@ NSString *const AFPacketErrorKey = @"AFPacketError";
 
 @implementation AFPacket
 
-@dynamic buffer;
-
 @synthesize context=_context;
 @synthesize duration=_duration;
 
@@ -33,6 +31,10 @@ NSString *const AFPacketErrorKey = @"AFPacketError";
 	[self stopTimeout];
 	
 	[super dealloc];
+}
+
+- (id)buffer {
+	return nil;
 }
 
 - (NSString *)description {

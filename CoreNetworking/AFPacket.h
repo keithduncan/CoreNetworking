@@ -81,7 +81,7 @@ extern NSString *const AFPacketDidCompleteNotificationName;
 /*!
 	@brief
 	This is a dynamic property for subclasses to implement.
-	This property is usually returned to an <tt>AFNetworkLayer</tt> delegate in the -...didRead: and -...didWrite: callbacks.
+	This property is returned to an <tt>AFNetworkLayer</tt> delegate in the -...didRead: and -...didWrite: callbacks.
  */
 @property (readonly) id buffer;
 
