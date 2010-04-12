@@ -47,13 +47,13 @@ typedef NSUInteger _AFNetworkStreamFlags;
 @synthesize stream=_stream, queue=_queue;
 
 - (id)initWithStream:(NSStream *)stream {
-	NSParameterAssert([stream streamStatus] == NSStreamStatusNotOpen);
-	
 	self = [self init];
 	if (self == nil) return nil;
 	
 	_stream = [stream retain];
 	[_stream setDelegate:self];
+	
+	if ([_stream streamStatus] >= NSStreamStatusOpen) _flags = (_flags | _kStreamDidOpen);
 	
 	_queue = [[AFPacketQueue alloc] init];
 	
@@ -186,7 +186,7 @@ typedef NSUInteger _AFNetworkStreamFlags;
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)event {
 	if (event == NSStreamEventOpenCompleted) {
 		_flags = (_flags | _kStreamDidOpen);
-		[self _scheduleDequeuePackets];
+		[self _tryDequeuePackets];
 	}
 	
 	if (event == NSStreamEventHasBytesAvailable || event == NSStreamEventHasSpaceAvailable) {
