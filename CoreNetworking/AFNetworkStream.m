@@ -16,12 +16,19 @@
 #import "AFPacket.h"
 #import "AFNetworkConstants.h"
 
+enum {
+	_kStreamDidOpen = 1UL << 0,
+};
+typedef NSUInteger _AFNetworkStreamFlags;
+
 @interface AFNetworkStream () <NSStreamDelegate>
 @property (readonly) NSStream *stream;
 @property (readonly) AFPacketQueue *queue;
 @end
 
 @interface AFNetworkStream (_Queue)
+- (void)_scheduleDequeuePackets;
+- (BOOL)_canDequeuePackets;
 - (void)_tryDequeuePackets;
 - (void)_startPacket:(AFPacket *)packet;
 - (void)_stopPacket:(AFPacket *)packet;
@@ -177,6 +184,11 @@
 }
 
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)event {
+	if (event == NSStreamEventOpenCompleted) {
+		_flags = (_flags | _kStreamDidOpen);
+		[self _scheduleDequeuePackets];
+	}
+	
 	if (event == NSStreamEventHasBytesAvailable || event == NSStreamEventHasSpaceAvailable) {
 		[self _tryDequeuePackets];
 		return;
@@ -194,12 +206,24 @@
 
 @implementation AFNetworkStream (_Queue)
 
+- (void)_scheduleDequeuePackets {
+	[self _tryDequeuePackets];
+}
+
+- (BOOL)_canDequeuePackets {
+	if ((_flags & _kStreamDidOpen) != _kStreamDidOpen) return NO;
+	
+	if ([self.delegate respondsToSelector:@selector(networkStreamCanDequeuePacket:)])
+		return [self.delegate networkStreamCanDequeuePacket:self];
+	
+	return YES;
+}
+
 - (void)_tryDequeuePackets {
 	if (_dequeuing) return;
 	_dequeuing = YES;
 	
-	if ([self.delegate respondsToSelector:@selector(networkStreamCanDequeuePacket:)])
-		if (![self.delegate networkStreamCanDequeuePacket:self]) goto DequeueEnd;
+	if (![self _canDequeuePackets]) goto DequeueEnd;
 	
 	do {
 		if (self.queue.currentPacket == nil) {
@@ -258,13 +282,12 @@ DequeueEnd:
 	AFPacket *packet = [notification object];
 	
 	[self _stopPacket:packet];
+	[self.queue dequeued];
 	
 	NSError *packetError = [[notification userInfo] objectForKey:AFPacketErrorKey];
 	if (packetError != nil) [[self delegate] networkStream:self didReceiveError:packetError];
 	
 	((void (*)(id, SEL, id, id))objc_msgSend)(self.delegate, _callbackSelectors[1], self, packet);
-	
-	[self.queue dequeued];
 	
 	if ([self.delegate respondsToSelector:@selector(networkStreamDidDequeuePacket:)])
 		[self.delegate networkStreamDidDequeuePacket:self];
@@ -294,7 +317,7 @@ DequeueEnd:
 
 - (void)enqueueWrite:(id <AFPacketWriting>)packet {
 	[self.queue enqueuePacket:packet];
-	[self _tryDequeuePackets];
+	[self _scheduleDequeuePackets];
 }
 
 - (NSUInteger)countOfEnqueuedWrites {
@@ -321,7 +344,7 @@ DequeueEnd:
 
 - (void)enqueueRead:(id <AFPacketReading>)packet {
 	[self.queue enqueuePacket:packet];
-	[self _tryDequeuePackets];
+	[self _scheduleDequeuePackets];
 }
 
 - (NSUInteger)countOfEnqueuedReads {

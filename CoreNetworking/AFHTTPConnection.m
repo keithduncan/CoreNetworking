@@ -125,6 +125,8 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	CFRelease(messageData);
 }
 
+#pragma mark -
+
 - (void)_performRequest:(CFHTTPMessageRef)request {
 	NSURL *endpoint = [self peer];
 	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
@@ -134,8 +136,6 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	[self.transactionQueue enqueuePacket:transaction];
 	[self.transactionQueue tryDequeue];
 }
-
-#pragma mark -
 
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body {
 	NSURL *endpoint = [self peer];
@@ -187,10 +187,13 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 - (void)downloadResource:(NSString *)resource toURL:(NSURL *)location {
 	NSURL *endpoint = [self peer];
-	NSURL *resourcePath = [NSURL URLWithString:([resource isEmpty] ? @"/" : resource) relativeToURL:endpoint];
-	CFHTTPMessageRef request = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)AFHTTPMethodGET, (CFURLRef)resourcePath, kCFHTTPVersion1_1)) autorelease];
-	[self performWrite:request withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
+	NSURL *resourceURL = [NSURL URLWithString:([resource isEmpty] ? @"/" : resource) relativeToURL:endpoint];
 	
+	CFHTTPMessageRef request = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)AFHTTPMethodGET, (CFURLRef)resourceURL, kCFHTTPVersion1_1)) autorelease];
+	
+	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
+	
+	[self performWrite:request withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
 	[self downloadResponse:location];
 }
 

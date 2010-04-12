@@ -71,6 +71,8 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 	if (contentLength <= 0) return nil;
 	
 	if ([self bodyStorage] != nil) {
+		[[NSFileManager defaultManager] createDirectoryAtPath:[[[self bodyStorage] URLByDeletingLastPathComponent] path] withIntermediateDirectories:YES attributes:nil error:NULL];
+		
 		NSOutputStream *writeStream = [NSOutputStream outputStreamWithURL:[self bodyStorage] append:NO];
 		return [[[AFPacketReadToWriteStream alloc] initWithContext:NULL timeout:-1 writeStream:writeStream numberOfBytesToRead:contentLength] autorelease];
 	}
@@ -132,7 +134,7 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 	}
 	
 	if ([packet isKindOfClass:[AFPacketReadToWriteStream class]]) {
-		
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 	}
 }
 

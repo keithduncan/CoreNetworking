@@ -56,15 +56,35 @@
 		_opened = YES;
 	}
 	
-	CFIndex bytesRead = 0;
-	const uint8_t *buffer = CFReadStreamGetBuffer((CFReadStreamRef)readStream, _numberOfBytesToRead, &bytesRead);
-	NSParameterAssert(buffer != NULL);
+	NSUInteger bufferSize = (16 * 1024);
+	bufferSize = MIN(_numberOfBytesToRead, bufferSize);
+	uint8_t *readBuffer = malloc(bufferSize);
 	
-	_numberOfBytesToRead -= bytesRead;
+	NSMutableData *writeBuffer = [NSMutableData dataWithCapacity:bufferSize];
 	
-	NSData *bufferData = [NSData dataWithBytes:buffer length:bytesRead];
-	AFPacketWrite *writePacket = [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:bufferData] autorelease];
+	while ([readStream hasBytesAvailable]) {
+		NSInteger bytesRead = [readStream read:readBuffer maxLength:bufferSize];
+		
+		if (bytesRead < 0) {
+			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+											  [readStream streamError], AFPacketErrorKey,
+											  nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+			break;
+		}
+		
+		[writeBuffer appendBytes:readBuffer length:bytesRead];
+		_numberOfBytesToRead -= bytesRead;
+	}
+	
+	AFPacketWrite *writePacket = [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:writeBuffer] autorelease];
 	[[self writeStream] enqueueWrite:writePacket];
+	
+	free(readBuffer);
+}
+
+- (void)networkStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event {
+	
 }
 
 - (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
