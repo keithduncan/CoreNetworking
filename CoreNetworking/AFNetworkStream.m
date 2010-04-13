@@ -292,7 +292,7 @@ DequeueEnd:
 	if ([self.delegate respondsToSelector:@selector(networkStreamDidDequeuePacket:)])
 		[self.delegate networkStreamDidDequeuePacket:self];
 	
-	[self _tryDequeuePackets];
+	[self _scheduleDequeuePackets];
 }
 
 @end
