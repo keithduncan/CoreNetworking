@@ -43,6 +43,7 @@
 /* HTTP */
 
 #import "CoreNetworking/AFHTTPMessage.h"
+#import "CoreNetworking/NSURLRequest+AFHTTPAdditions.h"
 
 #import "CoreNetworking/AFHTTPConnection.h"
 #import "CoreNetworking/AFHTTPClient.h"
