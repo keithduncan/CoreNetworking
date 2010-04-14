@@ -8,6 +8,9 @@
 
 #import "AFHTTPMessage.h"
 
+#import "AFPacketWrite.h"
+#import "AFPacketWriteFromReadStream.h"
+
 extern CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request) {
 	NSCParameterAssert([request HTTPBodyStream] == nil);
 	
@@ -54,6 +57,7 @@ NSString *const AFHTTPMessageConnectionHeader = @"Connection";
 NSString *const AFHTTPMessageContentLengthHeader = @"Content-Length";
 NSString *const AFHTTPMessageContentTypeHeader = @"Content-Type";
 NSString *const AFHTTPMessageContentRangeHeader = @"Content-Range";
+NSString *const AFHTTPMessageContentMD5Header = @"Content-MD5";
 
 NSString *const AFHTTPMessageAllowHeader = @"Allow";
 NSString *const AFHTTPMessageLocationHeader = @"Location";

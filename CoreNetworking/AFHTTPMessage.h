@@ -63,6 +63,7 @@ extern NSString *const AFHTTPMessageConnectionHeader;
 extern NSString *const AFHTTPMessageContentLengthHeader;
 extern NSString *const AFHTTPMessageContentTypeHeader;
 extern NSString *const AFHTTPMessageContentRangeHeader;
+extern NSString *const AFHTTPMessageContentMD5Header;
 
 extern NSString *const AFHTTPMessageAllowHeader;
 extern NSString *const AFHTTPMessageLocationHeader;

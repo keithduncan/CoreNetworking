@@ -98,16 +98,16 @@
 
 /*!
 	@brief
+	This enqueues a response reading packet, which writes the body to the location indicated, and is useful for raw messaging.
+ */
+- (void)downloadResponse:(NSURL *)location;
+
+/*!
+	@brief
 	This enqueues a response reading packet, and is useful for raw messaging.
 	The transaction enqueuing methods will call this after writing a request.
  */
 - (void)readResponse;
-
-/*!
-	@brief
-	This enqueues a response reading packet, which writes the body to the location indicated, and is usefule for raw messaging.
- */
-- (void)downloadResponse:(NSURL *)location;
 
 @end
 
@@ -120,7 +120,13 @@
 	@detail
 	Will handle large files by streaming them to disk.
  */
-- (void)downloadResource:(NSString *)resource toURL:(NSURL *)location;
+- (void)performDownload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation;
+
+/*!
+	@brief
+	Counterpart to <tt>performDownload:onResource:withHeaders:withLocation:</tt>.
+ */
+- (BOOL)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation error:(NSError **)errorRef;
 
 @end
 

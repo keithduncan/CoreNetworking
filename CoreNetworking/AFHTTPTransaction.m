@@ -10,19 +10,13 @@
 
 @implementation AFHTTPTransaction
 
-@synthesize emptyRequest=_emptyRequest;
-@synthesize request=_request, response=_response;
+@synthesize requestPackets=_requestPackets, response=_response;
 
-- (id)initWithRequest:(CFHTTPMessageRef)request {
+- (id)initWithRequestPackets:(NSArray *)requestPackets {
 	self = [super init];
 	if (self == nil) return nil;
 	
-	if (request == NULL) {
-		_emptyRequest = YES;
-		_request = (CFHTTPMessageRef)NSMakeCollectable(CFHTTPMessageCreateEmpty(kCFAllocatorDefault, true));
-	} else {
-		_request = (CFHTTPMessageRef)NSMakeCollectable(CFRetain(request));
-	}
+	_requestPackets = [requestPackets copy];
 	
 	_response = (CFHTTPMessageRef)NSMakeCollectable(CFHTTPMessageCreateEmpty(kCFAllocatorDefault, false));
 	
@@ -30,10 +24,7 @@
 }
 
 - (void)dealloc {
-	if (_request != NULL) {
-		CFRelease(_request);
-		_request = NULL;
-	}
+	[_requestPackets release];
 	
 	if (_response != NULL) {
 		CFRelease(_response);
