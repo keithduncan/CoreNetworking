@@ -200,7 +200,7 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	if (fileAttributes == nil) return NO;
 	
 	CFHTTPMessageRef request = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:nil];
-	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader, (id)[[fileAttributes objectForKey:NSFileSize] stringValue]);
+	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[fileAttributes objectForKey:NSFileSize] stringValue]);
 	[self performWrite:[self _packetForMessage:request] withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
 	
 	AFPacketWriteFromReadStream *streamPacket = [[[AFPacketWriteFromReadStream alloc] initWithContext:NULL timeout:-1 readStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:-1] autorelease];
