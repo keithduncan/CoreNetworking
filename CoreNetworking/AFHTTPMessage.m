@@ -10,9 +10,11 @@
 
 #import "AFPacketWrite.h"
 #import "AFPacketWriteFromReadStream.h"
+#import "NSURLRequest+AFHTTPAdditions.h"
 
 extern CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request) {
 	NSCParameterAssert([request HTTPBodyStream] == nil);
+	NSCParameterAssert([request HTTPBodyFile] == nil);
 	
 	CFHTTPMessageRef message = CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)[request HTTPMethod], (CFURLRef)[request URL], kCFHTTPVersion1_1);
 	

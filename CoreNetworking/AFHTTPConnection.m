@@ -8,16 +8,16 @@
 
 #import "AFHTTPConnection.h"
 
+#import "AmberFoundation/AmberFoundation.h"
+
 #import "AFNetworkTransport.h"
 #import "AFPacketQueue.h"
 #import "AFHTTPMessage.h"
 #import "AFHTTPTransaction.h"
-
 #import "AFHTTPMessagePacket.h"
 #import "AFPacketWrite.h"
 #import "AFPacketWriteFromReadStream.h"
-
-#import "AmberFoundation/AmberFoundation.h"
+#import "NSURLRequest+AFHTTPAdditions.h"
 
 NSSTRING_CONTEXT(_AFHTTPConnectionCurrentTransactionObservationContext);
 
@@ -25,7 +25,13 @@ NSSTRING_CONTEXT(_AFHTTPConnectionWriteRequestContext);
 NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 
 NSSTRING_CONTEXT(_AFHTTPConnectionReadRequestContext);
+NSSTRING_CONTEXT(_AFHTTPConnectionReadPartialResponseContext);
 NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
+
+NS_INLINE AFPacket *_AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message) {
+	NSData *messageData = [NSMakeCollectable(CFHTTPMessageCopySerializedMessage(message)) autorelease];
+	return [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:messageData] autorelease];
+}
 
 @interface AFHTTPConnection ()
 @property (readwrite, retain) NSMutableDictionary *messageHeaders;
@@ -35,7 +41,7 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 @interface AFHTTPConnection (Private)
 - (CFHTTPMessageRef)_requestForMethod:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body;
-- (void)_prepareMessage:(CFHTTPMessageRef)message;
+- (void)_enqueueTransactionWithRequestPackets:(NSArray *)requestPackets responsePackets:(NSArray *)responsePackets;
 @end
 
 #pragma mark -
@@ -104,7 +110,14 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 		for (id <AFPacketWriting> currentPacket in [newPacket requestPackets]) {
 			[self performWrite:currentPacket withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
 		}
-		[self readResponse];
+		
+		if ([newPacket responsePackets] != nil) for (id <AFPacketReading> currentPacket in [newPacket responsePackets]) {
+			void *context = &_AFHTTPConnectionReadPartialResponseContext;
+			if (currentPacket == [[newPacket responsePackets] lastObject]) context = &_AFHTTPConnectionReadResponseContext;
+			[self performRead:currentPacket withTimeout:-1 context:context];
+		} else {
+			[self readResponse];
+		}
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
@@ -112,58 +125,70 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	return self.transactionQueue.currentPacket;
 }
 
-- (void)performMessageWrite:(CFHTTPMessageRef)message withTimeout:(NSTimeInterval)duration context:(void *)context {
-	[self _prepareMessage:message];
+- (void)preprocessRequest:(CFHTTPMessageRef)request {
+	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
+		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(request)) autorelease] length]] stringValue]);
+	}
 	
-	CFDataRef messageData = CFHTTPMessageCopySerializedMessage(message);
-	[self performWrite:(id)messageData withTimeout:duration context:context];
-	CFRelease(messageData);
+	for (NSString *currentConnectionHeader in [self.messageHeaders allKeys]) {
+		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)currentConnectionHeader, (CFStringRef)[self.messageHeaders objectForKey:currentConnectionHeader]);
+	}
 }
 
 #pragma mark -
-
-- (void)_performRequest:(NSArray *)packets {
-	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequestPackets:packets] autorelease];
-	[self.transactionQueue enqueuePacket:transaction];
-	[self.transactionQueue tryDequeue];
-}
-
-- (AFPacketWrite *)_packetForMessage:(CFHTTPMessageRef)message {
-	NSData *messageData = [NSMakeCollectable(CFHTTPMessageCopySerializedMessage(message)) autorelease];
-	return [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:messageData] autorelease];
-}
+#pragma mark Transaction Messaging
 
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body {
-	AFPacket *requestPacket = [self _packetForMessage:[self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:body]];
-	[self _performRequest:[NSArray arrayWithObject:requestPacket]];
+	CFHTTPMessageRef requestMessage = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:body];
+	[self _enqueueTransactionWithRequestPackets:[NSArray arrayWithObject:_AFHTTPConnectionPacketForMessage(requestMessage)] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]]];
 }
 
-- (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withStream:(NSInputStream *)bodyStream {
-	CFHTTPMessageRef request = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:nil];
-	AFPacket *requestPacket = [self _packetForMessage:request];
+- (BOOL)performRequest:(NSURLRequest *)request error:(NSError **)errorRef {
+	NSParameterAssert([request HTTPBodyStream] == nil);
 	
-	AFPacketWriteFromReadStream *streamPacket = [[[AFPacketWriteFromReadStream alloc] initWithContext:NULL timeout:-1 readStream:bodyStream numberOfBytesToWrite:-1] autorelease];
-	
-	[self _performRequest:[NSArray arrayWithObjects:requestPacket, streamPacket, nil]];
-}
-
-- (void)performRequest:(NSURLRequest *)request {
-	if ([request HTTPBodyStream] != nil) {
-		[self performRequest:[request HTTPMethod] onResource:[[request URL] path] withHeaders:[request allHTTPHeaderFields] withStream:[request HTTPBodyStream]];
-		return;
+	NSURL *fileLocation = [request HTTPBodyFile];
+	if (fileLocation != nil) {
+		NSParameterAssert([fileLocation isFileURL]);
+		
+		NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileLocation path] error:errorRef];
+		if (fileAttributes == nil) return NO;
+		
+		CFHTTPMessageRef requestMessage = [self _requestForMethod:[request HTTPMethod] onResource:[[request URL] path] withHeaders:[request allHTTPHeaderFields] withBody:nil];
+		CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[fileAttributes objectForKey:NSFileSize] stringValue]);
+		
+		AFPacketWriteFromReadStream *streamPacket = [[[AFPacketWriteFromReadStream alloc] initWithContext:NULL timeout:-1 readStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:-1] autorelease];
+		
+		[self _enqueueTransactionWithRequestPackets:[NSArray arrayWithObjects:_AFHTTPConnectionPacketForMessage(requestMessage), streamPacket, nil] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]]];
+		return YES;
 	}
 	
-	[self performRequest:[request HTTPMethod] onResource:[[request URL] path] withHeaders:[request allHTTPHeaderFields] withBody:[request HTTPBody]];
+	CFHTTPMessageRef requestMessage = (CFHTTPMessageRef)[NSMakeCollectable(AFHTTPMessageCreateForRequest(request)) autorelease];
+	[self preprocessRequest:requestMessage];
+	[self _enqueueTransactionWithRequestPackets:[NSArray arrayWithObject:_AFHTTPConnectionPacketForMessage(requestMessage)] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]]];
+	
+	return YES;
+}
+
+#pragma mark -
+#pragma mark Raw Messaging
+
+- (void)performRequestMessage:(CFHTTPMessageRef)message {
+	[self preprocessRequest:message];
+	[self performWrite:_AFHTTPConnectionPacketForMessage(message) withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
 }
 
 - (void)readRequest {
 	[self performRead:[[[AFHTTPMessagePacket alloc] initForRequest:YES] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadRequestContext];
 }
 
-#pragma mark -
+- (void)downloadRequest:(NSURL *)location {
+	NSParameterAssert([location isFileURL]);
+	
+	[self doesNotRecognizeSelector:_cmd];
+}
 
-- (void)performResponse:(CFHTTPMessageRef)message {
-	[self performMessageWrite:message withTimeout:-1 context:&_AFHTTPConnectionWriteResponseContext];
+- (void)performResponseMessage:(CFHTTPMessageRef)message {
+	[self performWrite:_AFHTTPConnectionPacketForMessage(message) withTimeout:-1 context:&_AFHTTPConnectionWriteResponseContext];
 }
 
 - (void)readResponse {
@@ -175,22 +200,24 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	
 	AFHTTPMessagePacket *messagePacket = [[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease];
 	[messagePacket downloadBodyToURL:location];
-	[super performRead:messagePacket withTimeout:-1 context:&_AFHTTPConnectionReadResponseContext];
+	[self performRead:messagePacket withTimeout:-1 context:&_AFHTTPConnectionReadResponseContext];
 }
 
-#pragma mark -
-
 @end
+
+#pragma mark -
 
 @implementation AFHTTPConnection (AFAdditions)
 
 - (void)performDownload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation {
 	NSParameterAssert([fileLocation isFileURL]);
 	
-	CFHTTPMessageRef request = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:nil];
-	[self performMessageWrite:request withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
+	CFHTTPMessageRef requestMessage = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:nil];
 	
-	[self downloadResponse:fileLocation];
+	AFHTTPMessagePacket *messagePacket = [[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease];
+	[messagePacket downloadBodyToURL:fileLocation];
+	
+	[self _enqueueTransactionWithRequestPackets:[NSArray arrayWithObject:_AFHTTPConnectionPacketForMessage(requestMessage)] responsePackets:[NSArray arrayWithObject:messagePacket]];
 }
 
 - (BOOL)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation error:(NSError **)errorRef {
@@ -199,14 +226,13 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileLocation path] error:errorRef];
 	if (fileAttributes == nil) return NO;
 	
-	CFHTTPMessageRef request = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:nil];
-	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[fileAttributes objectForKey:NSFileSize] stringValue]);
-	[self performWrite:[self _packetForMessage:request] withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
+	CFHTTPMessageRef requestMessage = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:nil];
+	CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[fileAttributes objectForKey:NSFileSize] stringValue]);
 	
-	AFPacketWriteFromReadStream *streamPacket = [[[AFPacketWriteFromReadStream alloc] initWithContext:NULL timeout:-1 readStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:-1] autorelease];
-	[self performWrite:streamPacket withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
+	AFPacket *headersPacket = _AFHTTPConnectionPacketForMessage(requestMessage);
+	AFPacketWriteFromReadStream *bodyPacket = [[[AFPacketWriteFromReadStream alloc] initWithContext:NULL timeout:-1 readStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:[[fileAttributes objectForKey:NSFileSize] unsignedIntegerValue]] autorelease];
 	
-	[self readResponse];
+	[self _enqueueTransactionWithRequestPackets:[NSArray arrayWithObjects:headersPacket, bodyPacket, nil] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]]];
 	
 	return YES;
 }
@@ -227,26 +253,20 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 }
 
 - (void)layer:(id <AFTransportLayer>)layer didRead:(id)data context:(void *)context {
-	BOOL dequeue = NO;
-	
 	if (context == &_AFHTTPConnectionReadRequestContext) {
 		if ([self.delegate respondsToSelector:@selector(connection:didReceiveRequest:)])
 			[self.delegate connection:self didReceiveRequest:(CFHTTPMessageRef)data];
-		
-		dequeue = YES;
+	} else if (context == &_AFHTTPConnectionReadPartialResponseContext) {
+		// nop
 	} else if (context == &_AFHTTPConnectionReadResponseContext) {
 		if ([self.delegate respondsToSelector:@selector(connection:didReceiveResponse:)])
 			[self.delegate connection:self didReceiveResponse:(CFHTTPMessageRef)data];
 		
-		dequeue = YES;
+		[self.transactionQueue dequeued];
+		[self.transactionQueue tryDequeue];
 	} else {
 		if ([self.delegate respondsToSelector:_cmd])
 			[self.delegate layer:self didRead:data context:context];
-	}
-	
-	if (dequeue) {
-		[self.transactionQueue dequeued];
-		[self.transactionQueue tryDequeue];
 	}
 }
 
@@ -268,19 +288,15 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	
 	CFHTTPMessageSetBody(request, (CFDataRef)body);
 	
-	[self _prepareMessage:request];
+	[self preprocessRequest:request];
 	
 	return request;
 }
 
-- (void)_prepareMessage:(CFHTTPMessageRef)message {
-	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
-		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease] length]] stringValue]);
-	}
-	
-	for (NSString *currentConnectionHeader in [self.messageHeaders allKeys]) {
-		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)currentConnectionHeader, (CFStringRef)[self.messageHeaders objectForKey:currentConnectionHeader]);
-	}
+- (void)_enqueueTransactionWithRequestPackets:(NSArray *)requestPackets responsePackets:(NSArray *)responsePackets {
+	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequestPackets:requestPackets responsePackets:responsePackets] autorelease];
+	[self.transactionQueue enqueuePacket:transaction];
+	[self.transactionQueue tryDequeue];
 }
 												 
 @end

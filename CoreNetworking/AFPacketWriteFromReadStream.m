@@ -21,8 +21,9 @@
 @property (readonly) AFNetworkReadStream *readStream;
 @property (assign) BOOL readStreamDidEnd;
 
-@property (readonly) AFNetworkWriteStream *writeStream;
 @property (readonly) id originalWriteStreamDelegate;
+@property (readonly) NSOutputStream *originalWriteStream;
+@property (readonly) AFNetworkWriteStream *writeStream;
 @end
 
 @interface AFPacketWriteFromReadStream (Private)
@@ -36,7 +37,7 @@
 
 @implementation AFPacketWriteFromReadStream
 
-@synthesize readStream=_readStream, readStreamDidEnd=_readStreamDidEnd, writeStream=_writeStream, originalWriteStreamDelegate=_originalWriteStreamDelegate;
+@synthesize readStream=_readStream, readStreamDidEnd=_readStreamDidEnd, originalWriteStreamDelegate=_originalWriteStreamDelegate, originalWriteStream=_originalWriteStream, writeStream=_writeStream;
 
 - (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration readStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite {
 	NSParameterAssert(readStream != nil && [readStream streamStatus] == NSStreamStatusNotOpen);
@@ -77,6 +78,7 @@
 		[self _scheduleStreams];
 		
 		_originalWriteStreamDelegate = [writeStream delegate];
+		_originalWriteStream = writeStream;
 		
 		_writeStream = [[AFNetworkWriteStream alloc] initWithStream:writeStream];
 		[_writeStream setDelegate:(id)self];
@@ -104,6 +106,7 @@
 	[[self readStream] close];
 	
 	[[self writeStream] setDelegate:(id)[self originalWriteStreamDelegate]];
+	[(id)[self originalWriteStreamDelegate] stream:[self originalWriteStream] handleEvent:NSStreamEventHasSpaceAvailable];
 }
 
 - (void)_enqueueReadPacket {

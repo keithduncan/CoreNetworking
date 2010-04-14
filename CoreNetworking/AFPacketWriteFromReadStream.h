@@ -28,6 +28,7 @@
 	BOOL _readStreamDidEnd;
 	
 	id <NSStreamDelegate> _originalWriteStreamDelegate;
+	NSOutputStream *_originalWriteStream;
 	AFNetworkWriteStream *_writeStream;
 }
 

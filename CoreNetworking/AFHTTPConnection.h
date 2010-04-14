@@ -49,16 +49,16 @@
 
 /*!
 	@brief
-	This method doesn't enqueue a transaction; it simply passes the data on to the |lowerLayer| for writing.
-	This method allows for raw HTTP messaging without starting the internal request/response matching.
- 
+	Overridable for subclasses, called for every request.
+	
 	@detail
-	All messages written over the connection are funneled through this method so that the custom headers are added.
+	Adds the <tt>messageHeaders</tt>.
  */
-- (void)performMessageWrite:(CFHTTPMessageRef)message withTimeout:(NSTimeInterval)duration context:(void *)context;
+- (void)preprocessRequest:(CFHTTPMessageRef)request;
 
 /*
-	Request Methods
+	Transaction Methods
+	 These automatically enqueue a response, and are for replacing NSURLConnection functionality.
  */
 
 /*!
@@ -76,8 +76,23 @@
 	
 	@detail
 	This is likely to be most useful where you already have a web service context, which vends preconstructed requests.
+	
+	@param request
+	This method handles HTTP NSURLRequest objects with an HTTPBodyData, or HTTPBodyFile.
+	If passed an NSURLRequest with an HTTPBodyStream, and exception is thrown.
  */
-- (void)performRequest:(NSURLRequest *)request;
+- (BOOL)performRequest:(NSURLRequest *)request error:(NSError **)errorRef;
+
+/*
+	Raw Messaging Methods
+ */
+
+/*!
+	@brief
+	This method doesn't enqueue a transaction; it simply passes the data on to the |lowerLayer| for writing.
+	This method allows for raw HTTP messaging without starting the internal request/response matching.
+ */
+- (void)performRequestMessage:(CFHTTPMessageRef)message;
 
 /*!
 	@brief
@@ -85,22 +100,18 @@
  */
 - (void)readRequest;
 
-/*
-	Response Methods
+/*!
+	@brief
+	This enqueues a request reading packet, which writes the body to the location indicated, and is useful for raw messaging.
  */
+- (void)downloadRequest:(NSURL *)location;
 
 /*!
 	@brief
 	This serialises the response and writes it out over the wire.
 	The connection wide headers will be appended to it.
  */
-- (void)performResponse:(CFHTTPMessageRef)message;
-
-/*!
-	@brief
-	This enqueues a response reading packet, which writes the body to the location indicated, and is useful for raw messaging.
- */
-- (void)downloadResponse:(NSURL *)location;
+- (void)performResponseMessage:(CFHTTPMessageRef)message;
 
 /*!
 	@brief
@@ -108,6 +119,12 @@
 	The transaction enqueuing methods will call this after writing a request.
  */
 - (void)readResponse;
+
+/*!
+	@brief
+	This enqueues a response reading packet, which writes the body to the location indicated, and is useful for raw messaging.
+ */
+- (void)downloadResponse:(NSURL *)location;
 
 @end
 
@@ -118,6 +135,7 @@
 	Replaces NSURLDownload which can't be scheduled in multiple run loops and modes.
 	
 	@detail
+	Transaction mode.
 	Will handle large files by streaming them to disk.
  */
 - (void)performDownload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation;
@@ -125,6 +143,9 @@
 /*!
 	@brief
 	Counterpart to <tt>performDownload:onResource:withHeaders:withLocation:</tt>.
+	
+	@detail
+	Transaction mode.
  */
 - (BOOL)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation error:(NSError **)errorRef;
 

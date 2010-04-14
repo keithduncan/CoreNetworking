@@ -19,7 +19,7 @@
 @interface AFHTTPTransaction : NSObject {
  @private
 	NSArray *_requestPackets;
-	__strong CFHTTPMessageRef _response;
+	NSArray *_responsePackets;
 }
 
 /*!
@@ -27,9 +27,9 @@
 	This method retains the request and creates an empty response.
 	A NULL request, will result in an empty request being allocated.
  */
-- (id)initWithRequestPackets:(NSArray *)requestPackets;
+- (id)initWithRequestPackets:(NSArray *)requestPackets responsePackets:(NSArray *)responsePackets;
 
 @property (readonly) NSArray *requestPackets;
-@property (readonly) CFHTTPMessageRef response;
+@property (readonly) NSArray *responsePackets;
 
 @end
