@@ -133,6 +133,9 @@ NS_INLINE AFPacket *_AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message) 
 	for (NSString *currentConnectionHeader in [self.messageHeaders allKeys]) {
 		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)currentConnectionHeader, (CFStringRef)[self.messageHeaders objectForKey:currentConnectionHeader]);
 	}
+	
+	NSURL *endpoint = [self peer];
+	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
 }
 
 #pragma mark -
@@ -284,7 +287,6 @@ NS_INLINE AFPacket *_AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message) 
 		NSString *currentValue = [headers objectForKey:currentKey];
 		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)currentKey, (CFStringRef)currentValue);
 	}
-	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
 	
 	CFHTTPMessageSetBody(request, (CFDataRef)body);
 	
