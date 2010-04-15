@@ -206,7 +206,7 @@
 	[self _logMessage:response];
 #endif
 	
-	[connection performResponse:response];
+	[connection performResponseMessage:response];
 	
 	if (allow && keepAlive) {
 		[connection readRequest];

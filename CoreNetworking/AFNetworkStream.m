@@ -272,7 +272,7 @@ DequeueEnd:
 	NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 							   NSLocalizedStringWithDefaultValue(@"AFNetworkStream Packet Did Timeout Error", @"AFNetworkStream", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Packet timeout.", nil), NSLocalizedDescriptionKey,
 							   nil];
-	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportTimeoutError userInfo:errorInfo];
+	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorTimeout userInfo:errorInfo];
 	
 	[self.delegate networkStream:self didReceiveError:error];
 	[self _packetDidComplete:notification];

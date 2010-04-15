@@ -334,7 +334,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 									  NSLocalizedStringWithDefaultValue(@"AFNetworkTransportTLSError", @"AFNetworkTransport", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Couldn't start TLS, the connection will remain insecure.", nil), NSLocalizedDescriptionKey,
 									  nil];
-			*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportTLSError userInfo:userInfo];
+			*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorTLS userInfo:userInfo];
 		}
 		
 		return NO;

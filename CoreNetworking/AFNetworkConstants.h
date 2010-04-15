@@ -17,7 +17,7 @@ extern NSString *const AFCoreNetworkingBundleIdentifier;
 	@enum
  */
 enum {
-	AFNetworkingErrorNone					= 0,
+	AFNetworkingErrorUnknown				= 0,
 	
 	// AFNetworkSocketError					 [100, 299]
 	AFNetworkSocketErrorUnknown				= 101,
@@ -25,11 +25,12 @@ enum {
 	
 	// AFNetworkTransportError				 [300, 499]
 	AFNetworkTransportErrorUnknown			= 301,
-	AFNetworkTransportReachabilityError		= 302,
-	AFNetworkTransportTimeoutError			= 303,
-	AFNetworkTransportTLSError				= 304,
+	AFNetworkTransportErrorReachability		= 302,
+	AFNetworkTransportErrorTimeout			= 303,
+	AFNetworkTransportErrorTLS				= 304,
 	
 	// AFPacketError						 [500, 699]
-	AFNetworkPacketParseError				= 500,
+	AFNetworkPacketErrorUnknown				= 500,
+	AFNetworkPacketErrorParse				= 501,
 };
 typedef NSInteger AFNetworkingErrorCode;

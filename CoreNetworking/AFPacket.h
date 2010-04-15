@@ -11,15 +11,6 @@
 @protocol AFPacketDelegate;
 
 /*!
-
- */
-enum {
-	AFPacketNoError			= 0,
-	AFPacketMaxedOutError	= 1,
-};
-typedef NSInteger AFPacketError;
-
-/*!
 	@brief
 	Posted when a timeout occurs, the object is the packet
  */

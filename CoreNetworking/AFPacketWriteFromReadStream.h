@@ -11,6 +11,9 @@
 @class AFNetworkReadStream;
 @class AFNetworkWriteStream;
 
+@class AFPacketRead;
+@class AFPacketWrite;
+
 /*!
 	@brief
 	Acts as an adaptor between streams, allowing you to write a large file out over the wire.
@@ -22,14 +25,12 @@
  @private
 	NSInteger _numberOfBytesToWrite;
 	
-	BOOL _opened;
+	NSUInteger _readBufferCapacity;
+	NSInputStream *_readStream;
+	NSMutableData *_readBuffer;
 	
-	AFNetworkReadStream *_readStream;
-	BOOL _readStreamDidEnd;
-	
-	id <NSStreamDelegate> _originalWriteStreamDelegate;
-	NSOutputStream *_originalWriteStream;
-	AFNetworkWriteStream *_writeStream;
+	NSOutputStream *_writeStream;
+	AFPacketWrite *_currentWrite;
 }
 
 /*!

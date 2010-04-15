@@ -122,7 +122,7 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 			CFRelease(_message);
 			_message = NULL;
 			
-			NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketParseError userInfo:nil];
+			NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorParse userInfo:nil];
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 											  error, AFPacketErrorKey,
 											  nil];
