@@ -46,7 +46,7 @@ static void _AFBackgroundRunLoopObserverCallBack(CFRunLoopObserverRef observer, 
 	pthread_setname_np([[[NSThread currentThread] name] UTF8String]);
 	
 	CFRunLoopObserverContext context = {0};
-	CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopBeforeWaiting, true, 0, (CFRunLoopObserverCallBack)_AFBackgroundRunLoopObserverCallBack, &pool);
+	CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopBeforeWaiting, true, 0, (CFRunLoopObserverCallBack)_AFBackgroundRunLoopObserverCallBack, (void *)&pool);
 	
 	CFRunLoopRun();
 	
