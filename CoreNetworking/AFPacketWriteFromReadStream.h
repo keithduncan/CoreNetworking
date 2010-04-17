@@ -25,12 +25,11 @@
  @private
 	NSInteger _numberOfBytesToWrite;
 	
-	NSUInteger _readBufferCapacity;
 	NSInputStream *_readStream;
-	NSMutableData *_readBuffer;
+	BOOL _readStreamOpened, _readStreamComplete;
 	
-	NSOutputStream *_writeStream;
-	AFPacketWrite *_currentWrite;
+	NSUInteger _currentBufferOffset, _currentBufferLength;
+	__strong uint8_t *_readBuffer;
 }
 
 /*!
