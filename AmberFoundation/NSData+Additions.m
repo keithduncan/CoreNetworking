@@ -16,16 +16,22 @@
 
 @implementation NSData (AFHashing)
 
-- (NSData *)MD5Hash {	
+- (NSData *)MD5Hash {
 	unsigned char digest[CC_MD5_DIGEST_LENGTH];
+	
+	CFRetain(self);
 	CC_MD5([self bytes], [self length], digest);
+	CFRelease(self);
 	
 	return [NSData dataWithBytes:&digest length:CC_MD5_DIGEST_LENGTH];
 }
 
 - (NSData *)SHA1Hash {
 	unsigned char digest[CC_SHA1_DIGEST_LENGTH];
+	
+	CFRetain(self);
 	CC_SHA1([self bytes], [self length], digest);
+	CFRelease(self);
 	
 	return [NSData dataWithBytes:&digest length:CC_SHA1_DIGEST_LENGTH];
 }
