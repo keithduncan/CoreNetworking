@@ -6,5 +6,5 @@
 	#import <Cocoa/Cocoa.h>
 	#import <Quartz/Quartz.h>
 	
-	#import "AmberFoundation.h"
+	#import "AmberFoundation/AmberFoundation.h"
 #endif

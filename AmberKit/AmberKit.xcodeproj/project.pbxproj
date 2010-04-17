@@ -44,6 +44,7 @@
 		533F5D470FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5D480FBF622700169C14 /* NSControl+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5D460FBF622700169C14 /* NSControl+Additions.m */; };
 		533F5D490FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5364C0D2117A687200181223 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5364C0CD117A686400181223 /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		5379174C0F7FC3560064EB92 /* AmberKit+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		537917800F7FC4BC0064EB92 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -86,6 +87,27 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
+		5364C0CC117A686400181223 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5364C0BB117A686400181223 /* AmberFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */;
+			remoteInfo = AmberFoundation;
+		};
+		5364C0CE117A686400181223 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5364C0BB117A686400181223 /* AmberFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */;
+			remoteInfo = "AmberFoundation Touch";
+		};
+		5364C0D0117A686D00181223 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5364C0BB117A686400181223 /* AmberFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			remoteInfo = AmberFoundation;
+		};
 		537917900F7FC7C20064EB92 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5343E6FD0C21FB1000B63E6E /* Project object */;
@@ -128,6 +150,7 @@
 		533F5D450FBF622700169C14 /* NSControl+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSControl+Additions.h"; sourceTree = "<group>"; };
 		533F5D460FBF622700169C14 /* NSControl+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSControl+Additions.m"; sourceTree = "<group>"; };
 		53599FA610A86D900064F48C /* libAmberKit Touch.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libAmberKit Touch.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5364C0BB117A686400181223 /* AmberFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AmberFoundation.xcodeproj; path = ../AmberFoundation/AmberFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		53692BA60F1B85B10051C367 /* AmberKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberKit_Prefix.pch; sourceTree = "<group>"; };
 		53692C180F1B87CA0051C367 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFKeyValueBinding.h; sourceTree = "<group>"; };
@@ -170,6 +193,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5364C0D2117A687200181223 /* AmberFoundation.framework in Frameworks */,
 				533D7281117A67BB005A65D3 /* AppKit.framework in Frameworks */,
 				533D7285117A67C1005A65D3 /* Foundation.framework in Frameworks */,
 				53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */,
@@ -268,6 +292,15 @@
 			name = General;
 			sourceTree = "<group>";
 		};
+		5364C0BC117A686400181223 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5364C0CD117A686400181223 /* AmberFoundation.framework */,
+				5364C0CF117A686400181223 /* libAmberFoundation.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		53692A7A0F1B7EF90051C367 /* Externals */ = {
 			isa = PBXGroup;
 			children = (
@@ -312,6 +345,7 @@
 				533D7280117A67BB005A65D3 /* AppKit.framework */,
 				533D7284117A67C1005A65D3 /* Foundation.framework */,
 				53692C180F1B87CA0051C367 /* QuartzCore.framework */,
+				5364C0BB117A686400181223 /* AmberFoundation.xcodeproj */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -444,6 +478,7 @@
 			);
 			dependencies = (
 				537917910F7FC7C20064EB92 /* PBXTargetDependency */,
+				5364C0D1117A686D00181223 /* PBXTargetDependency */,
 			);
 			name = AmberKit;
 			productName = AmberKit;
@@ -464,6 +499,12 @@
 			mainGroup = 5343E6FB0C21FB1000B63E6E;
 			productRefGroup = 5343E70F0C21FB4200B63E6E /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5364C0BC117A686400181223 /* Products */;
+					ProjectRef = 5364C0BB117A686400181223 /* AmberFoundation.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				53EE97460F190070008AD8C0 /* AmberKit */,
@@ -472,6 +513,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		5364C0CD117A686400181223 /* AmberFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = AmberFoundation.framework;
+			remoteRef = 5364C0CC117A686400181223 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		5364C0CF117A686400181223 /* libAmberFoundation.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libAmberFoundation.a;
+			remoteRef = 5364C0CE117A686400181223 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		53EE97430F190070008AD8C0 /* Resources */ = {
@@ -533,6 +591,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		5364C0D1117A686D00181223 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AmberFoundation;
+			targetProxy = 5364C0D0117A686D00181223 /* PBXContainerItemProxy */;
+		};
 		537917910F7FC7C20064EB92 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 537917740F7FC43B0064EB92 /* AmberKit (Additions) */;
