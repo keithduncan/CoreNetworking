@@ -19,6 +19,7 @@
 	This allows you to ask for -avg and will result in @avg being prepended to the next key-path component.			
  */
 @interface AFKeyPathAccumulatorProxy : NSObject {
+ @private
 	id _currentTarget;
 	NSString *_prependOperator;
 }

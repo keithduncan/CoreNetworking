@@ -19,6 +19,7 @@
 	This is particularly useful for plugin defaults, used across process boundaries.
 */
 @interface AFUserDefaults : NSObject {
+ @private
 	NSString *_identifier;
 	id _registration;
 }

@@ -13,6 +13,7 @@
 	Uses the faux implementations in the protocol to allow message-to-nil like behaviour for unimplemented selectors. It allows you to wrap a delegate in the proxy and message it without checking to see if it implements the selector.
  */
 @interface AFProtocolProxy : NSProxy {
+ @private
 	id _target;
 	Protocol *_protocol;
 }

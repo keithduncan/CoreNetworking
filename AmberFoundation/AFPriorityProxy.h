@@ -17,6 +17,7 @@
 	It is highly recommended that you either insert a catch-all object at the lowest priority (zero), or wrap this proxy in an optional proxy, otherwise message dispatch WILL throw an unrecognised selector exception if no object responds.
  */
 @interface AFPriorityProxy : NSProxy {
+ @private
 	NSMutableArray *dispatchOrder; // this is generated from the map and is relative whereas the priorityMap is absolute
 	NSMutableDictionary *dispatchMap; // keyed by selector to a pointer array of dispatch targets
 }
