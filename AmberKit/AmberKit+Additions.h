@@ -6,13 +6,13 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "AmberKit/AFKeyValueBinding.h"
-
 /*
 	General
  */
 
-#import "AmberFoundation/AFGeometry.h"
+#import "AmberKit/AFKeyValueBinding.h"
+
+#import "AmberKit/AFGeometry.h"
 
 /*
 	Categories

@@ -21,14 +21,6 @@
 #import "AmberKit/AFCalendarControl.h"
 
 //
-// Value Transformers
-//
-
-#import "AmberKit/AFBoolToColor.h"
-#import "AmberKit/AFPluralTransformer.h"
-#import "AmberKit/AFDateToString.h"
-
-//
 //	Categories
 //
 
