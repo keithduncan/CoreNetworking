@@ -1,0 +1,9 @@
+//
+// Prefix header for all source files of the 'Amber' target in the 'Amber' project.
+//
+
+#ifdef __OBJC__
+	#import <Foundation/Foundation.h>
+#endif
+
+#import "AFMacro.h"
