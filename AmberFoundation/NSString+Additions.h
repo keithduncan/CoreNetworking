@@ -42,6 +42,7 @@
 + (NSString *)stringWithKeyPathComponents:(NSString *)component, ... NS_REQUIRES_NIL_TERMINATION;
 
 - (NSString *)stringByAppendingKeyPath:(NSString *)keyPath;
+
 - (NSString *)stringByRemovingKeyPathComponentAtIndex:(NSUInteger)index;
 - (NSString *)stringByRemovingLastKeyPathComponent;
 
