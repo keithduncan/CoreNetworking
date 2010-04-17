@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "AmberFoundation/AmberFoundation.h"
+
 /*
 	Core Networking
  */
