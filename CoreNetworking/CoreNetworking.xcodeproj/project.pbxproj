@@ -54,6 +54,7 @@
 		53554A241175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53554A221175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.m */; };
 		53554A251175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 53554A211175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53554A261175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53554A221175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.m */; };
+		5364C118117A690400181223 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5364C111117A68F700181223 /* AmberFoundation.framework */; };
 		53656036116FC61B0006DCAF /* AFPacketWriteFromReadStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C0113BF96200FED57B /* AFPacketWriteFromReadStream.m */; };
 		53656037116FC6210006DCAF /* AFPacketWriteFromReadStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5BF113BF96200FED57B /* AFPacketWriteFromReadStream.h */; };
 		53656042116FC7970006DCAF /* AFPacketReadToWriteStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C6113BF98000FED57B /* AFPacketReadToWriteStream.m */; };
@@ -131,6 +132,30 @@
 		53FE19060F856A3200980D32 /* AFPacketQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FE19020F856A3200980D32 /* AFPacketQueue.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		5364C110117A68F700181223 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5364C0FF117A68F700181223 /* AmberFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */;
+			remoteInfo = AmberFoundation;
+		};
+		5364C112117A68F700181223 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5364C0FF117A68F700181223 /* AmberFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */;
+			remoteInfo = "AmberFoundation Touch";
+		};
+		5364C114117A68FC00181223 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5364C0FF117A68F700181223 /* AmberFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			remoteInfo = AmberFoundation;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		530911760F646BAA00525632 /* AFNetworkConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkConstants.h; sourceTree = "<group>"; };
 		530911770F646BAA00525632 /* AFNetworkConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkConstants.m; sourceTree = "<group>"; };
@@ -160,6 +185,7 @@
 		5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkLayer.m; sourceTree = "<group>"; };
 		53554A211175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+AFHTTPAdditions.h"; sourceTree = "<group>"; };
 		53554A221175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLRequest+AFHTTPAdditions.m"; sourceTree = "<group>"; };
+		5364C0FF117A68F700181223 /* AmberFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AmberFoundation.xcodeproj; path = ../AmberFoundation/AmberFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		5370E0710F5B0571008F5991 /* CoreNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5370E0720F5B0571008F5991 /* CoreNetworking-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CoreNetworking-Info.plist"; sourceTree = "<group>"; };
 		5370E0880F5B061D008F5991 /* AFNetworkConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkConnection.h; sourceTree = "<group>"; };
@@ -206,6 +232,7 @@
 			files = (
 				5300213A0F8819C00044D37F /* Foundation.framework in Frameworks */,
 				53C156F7104060E7008D1E82 /* CoreServices.framework in Frameworks */,
+				5364C118117A690400181223 /* AmberFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,11 +340,21 @@
 			name = Classes;
 			sourceTree = "<group>";
 		};
+		5364C100117A68F700181223 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5364C111117A68F700181223 /* AmberFoundation.framework */,
+				5364C113117A68F700181223 /* libAmberFoundation.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		537E52F10CFC89760084F920 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				532F73E20F0EB1D7004D6056 /* Foundation.framework */,
 				53C156F6104060E7008D1E82 /* CoreServices.framework */,
+				5364C0FF117A68F700181223 /* AmberFoundation.xcodeproj */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -496,6 +533,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				5364C115117A68FC00181223 /* PBXTargetDependency */,
 			);
 			name = CoreNetworking;
 			productName = CoreNetworking;
@@ -527,12 +565,18 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 			};
-			buildConfigurationList = 5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "Core Networking" */;
+			buildConfigurationList = 5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "CoreNetworking" */;
 			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 0;
 			mainGroup = 5343E6FB0C21FB1000B63E6E;
 			productRefGroup = 5343E70F0C21FB4200B63E6E /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5364C100117A68F700181223 /* Products */;
+					ProjectRef = 5364C0FF117A68F700181223 /* AmberFoundation.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				5370E0700F5B0571008F5991 /* CoreNetworking */,
@@ -540,6 +584,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		5364C111117A68F700181223 /* AmberFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = AmberFoundation.framework;
+			remoteRef = 5364C110117A68F700181223 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		5364C113117A68F700181223 /* libAmberFoundation.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libAmberFoundation.a;
+			remoteRef = 5364C112117A68F700181223 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		5370E06D0F5B0571008F5991 /* Resources */ = {
@@ -625,6 +686,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5364C115117A68FC00181223 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AmberFoundation;
+			targetProxy = 5364C114117A68FC00181223 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		5343E6FF0C21FB1000B63E6E /* Debug */ = {
@@ -737,7 +806,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "Core Networking" */ = {
+		5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "CoreNetworking" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5343E6FF0C21FB1000B63E6E /* Debug */,
