@@ -14,19 +14,17 @@
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
-
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <arpa/inet.h>
 #import <sys/socket.h>
-#import "AmberFoundation/AmberFoundation.h"
 #import <netdb.h>
 #import <SystemConfiguration/SystemConfiguration.h>
+#import "AmberFoundation/AmberFoundation.h"
 
 #import "AFNetworkSocket.h"
 #import "AFNetworkConstants.h"
 #import "AFNetworkFunctions.h"
-
 #import "AFNetworkStream.h"
 #import "AFPacketQueue.h"
 #import "AFPacketRead.h"

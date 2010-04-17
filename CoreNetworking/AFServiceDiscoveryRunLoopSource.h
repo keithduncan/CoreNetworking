@@ -32,6 +32,10 @@
  */
 - (id)initWithService:(DNSServiceRef)service;
 
+/*!
+	@brief
+	
+ */
 @property (readonly) DNSServiceRef service;
 
 /*!
@@ -46,6 +50,10 @@
  */
 - (void)unscheduleFromRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode;
 
+/*!
+	@brief
+	
+ */
 - (void)invalidate;
 
 @end

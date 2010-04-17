@@ -8,10 +8,10 @@
 
 #import "AFHTTPClient.h"
 
+#import "AmberFoundation/AmberFoundation.h"
+
 #import "AFNetworkConstants.h"
 #import "AFHTTPMessage.h"
-
-#import "AmberFoundation/AmberFoundation.h"
 
 @interface AFHTTPClient (Private)
 - (BOOL)_shouldStartTLS;

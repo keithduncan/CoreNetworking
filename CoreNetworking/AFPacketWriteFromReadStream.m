@@ -8,8 +8,6 @@
 
 #import "AFPacketWriteFromReadStream.h"
 
-#import "AFPriorityProxy.h"
-
 #import "AFPacketRead.h"
 #import "AFPacketWrite.h"
 #import "AFNetworkStream.h"

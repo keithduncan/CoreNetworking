@@ -8,18 +8,18 @@
 
 #import "AFNetworkServer.h"
 
+#import <sys/socket.h>
+#import <sys/un.h>
+#import <arpa/inet.h>
+#import <objc/runtime.h>
+#import "AmberFoundation/AmberFoundation.h"
+
 #import "AFNetworkSocket.h"
 #import "AFNetworkTransport.h"
 #import	"AFNetworkTypes.h"
 #import "AFNetworkFunctions.h"
 #import "AFNetworkPool.h"
 #import "AFNetworkConnection.h"
-
-#import <sys/socket.h>
-#import <sys/un.h>
-#import <arpa/inet.h>
-#import <objc/runtime.h>
-#import "AmberFoundation/AmberFoundation.h"
 
 // Note: import this header last, allowing for any of the previous headers to import <net/if.h> see the getifaddrs man page for details
 #import <ifaddrs.h>

@@ -8,11 +8,10 @@
 
 #import "AFNetService.h"
 
-#import <dns_sd.h>
-
 #if TARGET_OS_MAC && TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
+#import <dns_sd.h>
 
 #import "AFNetworkConstants.h"
 

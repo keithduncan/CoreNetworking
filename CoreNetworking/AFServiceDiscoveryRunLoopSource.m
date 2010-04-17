@@ -12,8 +12,7 @@
 
 /*
 	Adapted from Adium implementation, improved and simplified,
-	Modified to conform to a run loop source like API,
-	by Keith Duncan
+	Modified to conform to a run loop source like API.
  */
 
 #import "AFServiceDiscoveryRunLoopSource.h"

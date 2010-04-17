@@ -8,9 +8,9 @@
 
 #import "AFXMLElementPacket.h"
 
-#import "AFPacketRead.h"
+#import "AmberFoundation/AmberFoundation.h"
 
-#import "NSString+Additions.h"
+#import "AFPacketRead.h"
 
 @interface AFXMLElementPacket ()
 @property (retain) AFPacketRead *currentRead;

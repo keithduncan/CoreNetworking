@@ -8,11 +8,11 @@
 
 #import "AFHTTPHeadersPacket.h"
 
+#import "AmberFoundation/AmberFoundation.h"
+
 #import "AFPacketRead.h"
 #import "AFHTTPMessage.h"
 #import "AFNetworkConstants.h"
-
-#import "NSData+Additions.h"
 
 NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 	if (!CFHTTPMessageIsHeaderComplete(message)) {

@@ -16,8 +16,6 @@
 #import "AFHTTPMessage.h"
 #import "AFNetworkConstants.h"
 
-#import "NSData+Additions.h"
-
 NSSTRING_CONTEXT(_AFHTTPMessagePacketHeadersContext);
 NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 
