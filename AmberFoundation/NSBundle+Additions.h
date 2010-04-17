@@ -48,8 +48,6 @@
 
 @interface NSBundle (AFPathAdditions)
 
-- (NSString *)applicationSupportPath:(NSUInteger)searchDomain DEPRECATED_ATTRIBUTE;
-
 /*!
 	@brief
 	This returns the application support path for the receiver. You should pass a domain
