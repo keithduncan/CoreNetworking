@@ -1,0 +1,10 @@
+//
+// Prefix header for all source files of the 'Amber' target in the 'Amber' project.
+//
+
+#ifdef __OBJC__
+	#import <Cocoa/Cocoa.h>
+	#import <Quartz/Quartz.h>
+	
+	#import "AmberFoundation.h"
+#endif
