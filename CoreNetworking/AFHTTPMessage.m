@@ -37,6 +37,11 @@ extern NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message) {
 	return request;
 }
 
+AFPacket <AFPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message) {
+	NSData *messageData = [NSMakeCollectable(CFHTTPMessageCopySerializedMessage(message)) autorelease];
+	return [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:messageData] autorelease];
+}
+
 NSString *const AFHTTPMethodHEAD = @"HEAD";
 NSString *const AFHTTPMethodTRACE = @"TRACE";
 NSString *const AFHTTPMethodOPTIONS = @"OPTIONS";

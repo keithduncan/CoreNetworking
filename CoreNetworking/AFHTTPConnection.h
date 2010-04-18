@@ -14,7 +14,6 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-@class AFPacketQueue;
 @protocol AFHTTPConnectionDataDelegate;
 
 /*!
@@ -29,7 +28,6 @@
 @interface AFHTTPConnection : AFNetworkConnection <AFConnectionLayer> {
  @private
 	NSMutableDictionary *_messageHeaders;
-	AFPacketQueue *_transactionQueue;
 }
 
 /*!
@@ -55,33 +53,6 @@
 	Adds the <tt>messageHeaders</tt>.
  */
 - (void)preprocessRequest:(CFHTTPMessageRef)request;
-
-/*
-	Transaction Methods
-	 These automatically enqueue a response, and are for replacing NSURLConnection functionality.
- */
-
-/*!
-	@brief
-	This method enqueues a transaction, which pairs a request with it's response. The request may not be issued immediately.
-	You will be notified via the delegate method <tt>-connection:didReceiveResponse:</tt> when the response has been read.
- */
-- (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body;
-
-/*!
-	@brief
-	This method enqueues a transaction, which pairs a request with it's response. The request may not be issued immediately.
-	This method may assist you in moving to a request/response model from the URL loading architecture in Cocoa.
-	You will be notified via the delegate method <tt>-connection:didReceiveResponse:</tt> when the response has been read.
-	
-	@detail
-	This is likely to be most useful where you already have a web service context, which vends preconstructed requests.
-	
-	@param request
-	This method handles HTTP NSURLRequest objects with an HTTPBodyData, or HTTPBodyFile.
-	If passed an NSURLRequest with an HTTPBodyStream, and exception is thrown.
- */
-- (BOOL)performRequest:(NSURLRequest *)request error:(NSError **)errorRef;
 
 /*
 	Raw Messaging Methods
@@ -126,28 +97,12 @@
  */
 - (void)downloadResponse:(NSURL *)location;
 
-@end
-
-@interface AFHTTPConnection (AFAdditions)
-
-/*!
-	@brief
-	Replaces NSURLDownload which can't be scheduled in multiple run loops and modes.
-	
-	@detail
-	Transaction mode.
-	Will handle large files by streaming them to disk.
+/*
+	Overrides
  */
-- (void)performDownload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation;
 
-/*!
-	@brief
-	Counterpart to <tt>performDownload:onResource:withHeaders:withLocation:</tt>.
-	
-	@detail
-	Transaction mode.
- */
-- (BOOL)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation error:(NSError **)errorRef;
+- (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data context:(void *)context;
+- (void)layer:(id <AFTransportLayer>)layer didRead:(id)data context:(void *)context;
 
 @end
 
