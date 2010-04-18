@@ -10,7 +10,6 @@
 		533D71FD117A584B005A65D3 /* AmberKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D71FC117A584B005A65D3 /* AmberKit.m */; };
 		533D71FE117A584B005A65D3 /* AmberKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D71FC117A584B005A65D3 /* AmberKit.m */; };
 		533D7218117A5895005A65D3 /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 533D7216117A5895005A65D3 /* AFGeometry.h */; };
-		533D7219117A5895005A65D3 /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D7217117A5895005A65D3 /* AFGeometry.m */; };
 		533D721A117A5895005A65D3 /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 533D7216117A5895005A65D3 /* AFGeometry.h */; };
 		533D721B117A5895005A65D3 /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D7217117A5895005A65D3 /* AFGeometry.m */; };
 		533D721C117A5895005A65D3 /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 533D7216117A5895005A65D3 /* AFGeometry.h */; };
@@ -44,6 +43,11 @@
 		533F5D470FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5D480FBF622700169C14 /* NSControl+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5D460FBF622700169C14 /* NSControl+Additions.m */; };
 		533F5D490FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		535C1626117B055600F7B978 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE030F1FE2AE003C1148 /* AmberKit.h */; };
+		535C1627117B056100F7B978 /* libCoreAmberKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 537917750F7FC43B0064EB92 /* libCoreAmberKit.a */; };
+		535C162E117B05F400F7B978 /* AmberKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D71FC117A584B005A65D3 /* AmberKit.m */; };
+		535C164B117B071900F7B978 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */; };
+		535C164C117B071D00F7B978 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE6D0F5AED26008F5991 /* AFKeyValueBinding.m */; };
 		5364C0D2117A687200181223 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5364C0CD117A686400181223 /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
 		5379174C0F7FC3560064EB92 /* AmberKit+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -59,7 +63,7 @@
 		5379178B0F7FC4C50064EB92 /* NSTreeController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE8A0F5AED5D008F5991 /* NSTreeController+Additions.m */; };
 		5379178C0F7FC4C60064EB92 /* NSTreeNode+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE880F5AED5D008F5991 /* NSTreeNode+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5379178D0F7FC4C60064EB92 /* NSTreeNode+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE890F5AED5D008F5991 /* NSTreeNode+Additions.m */; };
-		537917920F7FC7C90064EB92 /* libAmberKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 537917750F7FC43B0064EB92 /* libAmberKit.a */; };
+		537917920F7FC7C90064EB92 /* libCoreAmberKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 537917750F7FC43B0064EB92 /* libCoreAmberKit.a */; };
 		5379179A0F7FC8A90064EB92 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5379179B0F7FC8AD0064EB92 /* NSBezierPath+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE9A0F5AED93008F5991 /* NSBezierPath+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5379179C0F7FC8AD0064EB92 /* NSBundle+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE950F5AED76008F5991 /* NSBundle+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -91,21 +95,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 5364C0BB117A686400181223 /* AmberFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */;
+			remoteGlobalIDString = 539A60C30D2698B7001CD14A;
 			remoteInfo = AmberFoundation;
 		};
 		5364C0CE117A686400181223 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5364C0BB117A686400181223 /* AmberFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */;
+			remoteGlobalIDString = 532F73DE0F0EB1AA004D6056;
 			remoteInfo = "AmberFoundation Touch";
 		};
 		5364C0D0117A686D00181223 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5364C0BB117A686400181223 /* AmberFoundation.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
 			remoteInfo = AmberFoundation;
 		};
 		537917900F7FC7C20064EB92 /* PBXContainerItemProxy */ = {
@@ -149,7 +153,7 @@
 		533F5C320FBF565900169C14 /* AFTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTextFieldCell.m; sourceTree = "<group>"; };
 		533F5D450FBF622700169C14 /* NSControl+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSControl+Additions.h"; sourceTree = "<group>"; };
 		533F5D460FBF622700169C14 /* NSControl+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSControl+Additions.m"; sourceTree = "<group>"; };
-		53599FA610A86D900064F48C /* libAmberKit Touch.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libAmberKit Touch.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		53599FA610A86D900064F48C /* libAmberKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAmberKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5364C0BB117A686400181223 /* AmberFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AmberFoundation.xcodeproj; path = ../AmberFoundation/AmberFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
 		53692BA60F1B85B10051C367 /* AmberKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberKit_Prefix.pch; sourceTree = "<group>"; };
 		53692C180F1B87CA0051C367 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
@@ -166,7 +170,7 @@
 		5370DE9C0F5AED93008F5991 /* NSGradient+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSGradient+Additions.m"; sourceTree = "<group>"; };
 		5370DE9D0F5AED93008F5991 /* NSGradient+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSGradient+Additions.h"; sourceTree = "<group>"; };
 		5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AmberKit+Additions.h"; sourceTree = "<group>"; };
-		537917750F7FC43B0064EB92 /* libAmberKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAmberKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		537917750F7FC43B0064EB92 /* libCoreAmberKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCoreAmberKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		539BFE030F1FE2AE003C1148 /* AmberKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberKit.h; sourceTree = "<group>"; };
 		53EE97470F190070008AD8C0 /* AmberKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmberKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53EE97480F190070008AD8C0 /* AmberKit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AmberKit-Info.plist"; sourceTree = "<group>"; };
@@ -179,6 +183,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				535C1627117B056100F7B978 /* libCoreAmberKit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,7 +202,7 @@
 				533D7281117A67BB005A65D3 /* AppKit.framework in Frameworks */,
 				533D7285117A67C1005A65D3 /* Foundation.framework in Frameworks */,
 				53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */,
-				537917920F7FC7C90064EB92 /* libAmberKit.a in Frameworks */,
+				537917920F7FC7C90064EB92 /* libCoreAmberKit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,7 +269,7 @@
 				533D71FC117A584B005A65D3 /* AmberKit.m */,
 				5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */,
 				53599FAA10A86DCB0064F48C /* General */,
-				53692CD00F1B8F2F0051C367 /* Additions */,
+				539A610F0D269C8F001CD14A /* Categories */,
 				53692A7A0F1B7EF90051C367 /* Externals */,
 				53692B960F1B85640051C367 /* Other Sources */,
 				533F61F00FC0468900169C14 /* Resources */,
@@ -277,8 +282,8 @@
 			isa = PBXGroup;
 			children = (
 				53EE97470F190070008AD8C0 /* AmberKit.framework */,
-				537917750F7FC43B0064EB92 /* libAmberKit.a */,
-				53599FA610A86D900064F48C /* libAmberKit Touch.a */,
+				537917750F7FC43B0064EB92 /* libCoreAmberKit.a */,
+				53599FA610A86D900064F48C /* libAmberKit.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -288,6 +293,8 @@
 			children = (
 				533D7216117A5895005A65D3 /* AFGeometry.h */,
 				533D7217117A5895005A65D3 /* AFGeometry.m */,
+				5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */,
+				5370DE6D0F5AED26008F5991 /* AFKeyValueBinding.m */,
 			);
 			name = General;
 			sourceTree = "<group>";
@@ -311,15 +318,6 @@
 			name = Externals;
 			sourceTree = "<group>";
 		};
-		53692B8E0F1B852C0051C367 /* General */ = {
-			isa = PBXGroup;
-			children = (
-				5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */,
-				5370DE6D0F5AED26008F5991 /* AFKeyValueBinding.m */,
-			);
-			name = General;
-			sourceTree = "<group>";
-		};
 		53692B960F1B85640051C367 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -328,15 +326,6 @@
 				53F6E3760FCB3B350009FF33 /* AFKitConstants.m */,
 			);
 			name = "Other Sources";
-			sourceTree = "<group>";
-		};
-		53692CD00F1B8F2F0051C367 /* Additions */ = {
-			isa = PBXGroup;
-			children = (
-				53692B8E0F1B852C0051C367 /* General */,
-				539A610F0D269C8F001CD14A /* Categories */,
-			);
-			name = Additions;
 			sourceTree = "<group>";
 		};
 		537E52F10CFC89760084F920 /* Frameworks */ = {
@@ -377,6 +366,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				533D721A117A5895005A65D3 /* AFGeometry.h in Headers */,
+				535C1626117B055600F7B978 /* AmberKit.h in Headers */,
+				535C164B117B071900F7B978 /* AFKeyValueBinding.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,12 +434,12 @@
 			);
 			name = "AmberKit Touch";
 			productName = "AmberKit Touch";
-			productReference = 53599FA610A86D900064F48C /* libAmberKit Touch.a */;
+			productReference = 53599FA610A86D900064F48C /* libAmberKit.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		537917740F7FC43B0064EB92 /* AmberKit (Additions) */ = {
+		537917740F7FC43B0064EB92 /* CoreAmberKit */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 537917780F7FC45F0064EB92 /* Build configuration list for PBXNativeTarget "AmberKit (Additions)" */;
+			buildConfigurationList = 537917780F7FC45F0064EB92 /* Build configuration list for PBXNativeTarget "CoreAmberKit" */;
 			buildPhases = (
 				537917710F7FC43B0064EB92 /* Headers */,
 				537917720F7FC43B0064EB92 /* Sources */,
@@ -459,9 +450,9 @@
 			comments = "This target exists purely for the controls to be implemented in a separate project, but still access the AppKit additions.";
 			dependencies = (
 			);
-			name = "AmberKit (Additions)";
+			name = CoreAmberKit;
 			productName = "AmberKit (Additions)";
-			productReference = 537917750F7FC43B0064EB92 /* libAmberKit.a */;
+			productReference = 537917750F7FC43B0064EB92 /* libCoreAmberKit.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		53EE97460F190070008AD8C0 /* AmberKit */ = {
@@ -508,8 +499,8 @@
 			projectRoot = "";
 			targets = (
 				53EE97460F190070008AD8C0 /* AmberKit */,
-				537917740F7FC43B0064EB92 /* AmberKit (Additions) */,
 				53599FA510A86D900064F48C /* AmberKit Touch */,
+				537917740F7FC43B0064EB92 /* CoreAmberKit */,
 			);
 		};
 /* End PBXProject section */
@@ -548,6 +539,7 @@
 			files = (
 				533D71FE117A584B005A65D3 /* AmberKit.m in Sources */,
 				533D721B117A5895005A65D3 /* AFGeometry.m in Sources */,
+				535C164C117B071D00F7B978 /* AFKeyValueBinding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -563,6 +555,7 @@
 				5379178D0F7FC4C60064EB92 /* NSTreeNode+Additions.m in Sources */,
 				533F5D480FBF622700169C14 /* NSControl+Additions.m in Sources */,
 				533D721D117A5895005A65D3 /* AFGeometry.m in Sources */,
+				535C162E117B05F400F7B978 /* AmberKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -584,7 +577,6 @@
 				533F5C520FBF565900169C14 /* AFTextFieldCell.m in Sources */,
 				53F6E3780FCB3B350009FF33 /* AFKitConstants.m in Sources */,
 				533D71FD117A584B005A65D3 /* AmberKit.m in Sources */,
-				533D7219117A5895005A65D3 /* AFGeometry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,7 +590,7 @@
 		};
 		537917910F7FC7C20064EB92 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 537917740F7FC43B0064EB92 /* AmberKit (Additions) */;
+			target = 537917740F7FC43B0064EB92 /* CoreAmberKit */;
 			targetProxy = 537917900F7FC7C20064EB92 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -642,7 +634,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				PREBINDING = NO;
-				PRODUCT_NAME = "AmberKit Touch";
+				PRODUCT_NAME = AmberKit;
 			};
 			name = Debug;
 		};
@@ -654,7 +646,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PREBINDING = NO;
-				PRODUCT_NAME = "AmberKit Touch";
+				PRODUCT_NAME = AmberKit;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -678,7 +670,7 @@
 				);
 				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = $PUBLIC_HEADERS_FOLDER_PATH/private;
-				PRODUCT_NAME = AmberKit;
+				PRODUCT_NAME = CoreAmberKit;
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/$PRODUCT_NAME;
 			};
 			name = Debug;
@@ -701,7 +693,7 @@
 				);
 				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = $PUBLIC_HEADERS_FOLDER_PATH/private;
-				PRODUCT_NAME = AmberKit;
+				PRODUCT_NAME = CoreAmberKit;
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/$PRODUCT_NAME;
 				ZERO_LINK = NO;
 			};
@@ -774,7 +766,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		537917780F7FC45F0064EB92 /* Build configuration list for PBXNativeTarget "AmberKit (Additions)" */ = {
+		537917780F7FC45F0064EB92 /* Build configuration list for PBXNativeTarget "CoreAmberKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				537917760F7FC43C0064EB92 /* Debug */,
