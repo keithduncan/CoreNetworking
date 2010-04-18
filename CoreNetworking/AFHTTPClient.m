@@ -39,6 +39,7 @@ NSSTRING_CONTEXT(_AFHTTPClientReadResponseContext);
 
 @implementation AFHTTPClient
 
+@synthesize userAgent=_userAgent;
 @synthesize authentication=_authentication, authenticationCredentials=_authenticationCredentials;
 @synthesize transactionQueue=_transactionQueue;
 
@@ -72,6 +73,8 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	self = [super init];
 	if (self == nil) return nil;
 	
+	_userAgent = [[[AFHTTPClient class] userAgent] copy];
+	
 	_transactionQueue = [[AFPacketQueue alloc] init];
 	[_transactionQueue addObserver:self forKeyPath:@"currentPacket" options:NSKeyValueObservingOptionNew context:&_AFHTTPClientCurrentTransactionObservationContext];
 	
@@ -88,6 +91,8 @@ static NSString *_AFHTTPClientUserAgent = nil;
 }
 
 - (void)dealloc {
+	[_userAgent release];
+	
 	if (_authentication != NULL) CFRelease(_authentication);
 	[_authenticationCredentials release];
 	
@@ -129,7 +134,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 }
 
 - (void)preprocessRequest:(CFHTTPMessageRef)request {
-	NSString *agent = [[self class] userAgent];
+	NSString *agent = [self userAgent];
 	if (agent != nil) CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageUserAgentHeader, (CFStringRef)agent);
 	
 	if (self.authentication != NULL) {

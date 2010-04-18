@@ -20,6 +20,8 @@
  */
 @interface AFHTTPClient : AFHTTPConnection {
  @private
+	NSString *_userAgent;
+	
 	__strong CFHTTPAuthenticationRef _authentication;
 	NSDictionary *_authenticationCredentials;
 	
@@ -30,6 +32,8 @@
 
 + (NSString *)userAgent;
 + (void)setUserAgent:(NSString *)userAgent;
+
+@property (copy) NSString *userAgent;
 
 @property (retain) CFHTTPAuthenticationRef authentication __attribute__((NSObject));
 @property (copy) NSDictionary *authenticationCredentials;
@@ -44,7 +48,6 @@ typedef void (^AFHTTPClientTransactionCompletionBlock)(CFHTTPMessageRef response
 /*!
 	@brief
 	This method enqueues a transaction, which pairs a request with it's response. The request may not be issued immediately.
-	You will be notified via the delegate method <tt>-connection:didReceiveResponse:</tt> when the response has been read.
  */
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body completionBlock:(AFHTTPClientTransactionCompletionBlock)completionBlock;
 
@@ -52,7 +55,6 @@ typedef void (^AFHTTPClientTransactionCompletionBlock)(CFHTTPMessageRef response
 	@brief
 	This method enqueues a transaction, which pairs a request with it's response. The request may not be issued immediately.
 	This method may assist you in moving to a request/response model from the URL loading architecture in Cocoa.
-	You will be notified via the delegate method <tt>-connection:didReceiveResponse:</tt> when the response has been read.
 	
 	@detail
 	This is likely to be most useful where you already have a web service context, which vends preconstructed requests.
