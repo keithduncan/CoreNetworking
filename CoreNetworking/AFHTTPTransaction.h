@@ -20,6 +20,8 @@
  @private
 	NSArray *_requestPackets;
 	NSArray *_responsePackets;
+	
+	id _completionBlock;
 }
 
 /*!
@@ -31,5 +33,7 @@
 
 @property (readonly) NSArray *requestPackets;
 @property (readonly) NSArray *responsePackets;
+
+@property (copy) id completionBlock;
 
 @end

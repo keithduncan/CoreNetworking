@@ -14,6 +14,10 @@
 
 @class AFPacketQueue;
 
+/*!
+	@brief
+	Replaces NSURLConnection for HTTP NSURLRequest objects.
+ */
 @interface AFHTTPClient : AFHTTPConnection {
  @private
 	__strong CFHTTPAuthenticationRef _authentication;
@@ -35,12 +39,14 @@
 		These automatically enqueue a response, and are for replacing NSURLConnection functionality.
  */
 
+typedef void (^AFHTTPClientTransactionCompletionBlock)(CFHTTPMessageRef response, NSError *error);
+
 /*!
 	@brief
 	This method enqueues a transaction, which pairs a request with it's response. The request may not be issued immediately.
 	You will be notified via the delegate method <tt>-connection:didReceiveResponse:</tt> when the response has been read.
  */
-- (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body;
+- (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body completionBlock:(AFHTTPClientTransactionCompletionBlock)completionBlock;
 
 /*!
 	@brief
@@ -55,25 +61,24 @@
 	This method handles HTTP NSURLRequest objects with an HTTPBodyData, or HTTPBodyFile.
 	If passed an NSURLRequest with an HTTPBodyStream, an exception is thrown.
  */
-- (BOOL)performRequest:(NSURLRequest *)request error:(NSError **)errorRef;
+- (void)performRequest:(NSURLRequest *)request completionBlock:(AFHTTPClientTransactionCompletionBlock)completionBlock;
 
 /*!
 	@brief
 	Replaces NSURLDownload which can't be scheduled in multiple run loops or modes.
 	
 	@detail
-	Transaction mode.
 	Will handle large files by streaming them to disk.
  */
-- (void)performDownload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation;
+- (void)performDownload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation completionBlock:(AFHTTPClientTransactionCompletionBlock)completionBlock;
 
 /*!
 	@brief
 	Counterpart to <tt>performDownload:onResource:withHeaders:withLocation:</tt>.
 	
 	@detail
-	Transaction mode.
+	Will handle large files by streaming them from disk.
  */
-- (BOOL)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation error:(NSError **)errorRef;
+- (void)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation completionBlock:(AFHTTPClientTransactionCompletionBlock)completionBlock;
 
 @end
