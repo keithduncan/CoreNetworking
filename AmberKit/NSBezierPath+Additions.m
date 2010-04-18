@@ -133,7 +133,7 @@
 
 @end
 
-extern void AKDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlignment alignment, NSRect frame) {
+void AKDrawStringAlignedInFrame(NSString *text, NSFont *font, NSTextAlignment alignment, NSRect frame) {
 	NSCParameterAssert(font != nil);
 	
 	NSBezierPath *textPath = [NSBezierPath bezierPathWithString:text inFont:font];
