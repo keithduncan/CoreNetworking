@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		533D71FD117A584B005A65D3 /* AmberKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D71FC117A584B005A65D3 /* AmberKit.m */; };
 		533D71FE117A584B005A65D3 /* AmberKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D71FC117A584B005A65D3 /* AmberKit.m */; };
-		533D7218117A5895005A65D3 /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 533D7216117A5895005A65D3 /* AFGeometry.h */; };
-		533D721A117A5895005A65D3 /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 533D7216117A5895005A65D3 /* AFGeometry.h */; };
+		533D7218117A5895005A65D3 /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 533D7216117A5895005A65D3 /* AFGeometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		533D721A117A5895005A65D3 /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 533D7216117A5895005A65D3 /* AFGeometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533D721B117A5895005A65D3 /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D7217117A5895005A65D3 /* AFGeometry.m */; };
-		533D721C117A5895005A65D3 /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 533D7216117A5895005A65D3 /* AFGeometry.h */; };
+		533D721C117A5895005A65D3 /* AFGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 533D7216117A5895005A65D3 /* AFGeometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533D721D117A5895005A65D3 /* AFGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D7217117A5895005A65D3 /* AFGeometry.m */; };
 		533D7281117A67BB005A65D3 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 533D7280117A67BB005A65D3 /* AppKit.framework */; };
 		533D7285117A67C1005A65D3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 533D7284117A67C1005A65D3 /* Foundation.framework */; };
@@ -43,10 +43,10 @@
 		533F5D470FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533F5D480FBF622700169C14 /* NSControl+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 533F5D460FBF622700169C14 /* NSControl+Additions.m */; };
 		533F5D490FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		535C1626117B055600F7B978 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE030F1FE2AE003C1148 /* AmberKit.h */; };
+		535C1626117B055600F7B978 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE030F1FE2AE003C1148 /* AmberKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535C1627117B056100F7B978 /* libCoreAmberKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 537917750F7FC43B0064EB92 /* libCoreAmberKit.a */; };
 		535C162E117B05F400F7B978 /* AmberKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D71FC117A584B005A65D3 /* AmberKit.m */; };
-		535C164B117B071900F7B978 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */; };
+		535C164B117B071900F7B978 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535C164C117B071D00F7B978 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE6D0F5AED26008F5991 /* AFKeyValueBinding.m */; };
 		5364C0D2117A687200181223 /* AmberFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5364C0CD117A686400181223 /* AmberFoundation.framework */; };
 		53692C190F1B87CA0051C367 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53692C180F1B87CA0051C367 /* QuartzCore.framework */; };
@@ -72,7 +72,7 @@
 		5379179F0F7FC8B10064EB92 /* NSTreeNode+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE880F5AED5D008F5991 /* NSTreeNode+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5379181F0F7FCAA30064EB92 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE030F1FE2AE003C1148 /* AmberKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		538AD2D50F8A81780031CFF7 /* AmberKit+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5379174A0F7FC3560064EB92 /* AmberKit+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53F6E3770FCB3B350009FF33 /* AFKitConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 53F6E3750FCB3B350009FF33 /* AFKitConstants.h */; };
+		53F6E3770FCB3B350009FF33 /* AFKitConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 53F6E3750FCB3B350009FF33 /* AFKitConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53F6E3780FCB3B350009FF33 /* AFKitConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 53F6E3760FCB3B350009FF33 /* AFKitConstants.m */; };
 /* End PBXBuildFile section */
 
