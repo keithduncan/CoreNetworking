@@ -133,9 +133,9 @@
 											  nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 			return;
-		} else {
-			_bytesRead += currentBytesRead;
 		}
+		
+		_bytesRead += currentBytesRead;
 		
 		if ([_terminator isKindOfClass:[NSData class]]) {
 			// Done when we match the byte pattern
