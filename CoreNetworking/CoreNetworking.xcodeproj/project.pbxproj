@@ -137,21 +137,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 5364C0FF117A68F700181223 /* AmberFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 539A60C30D2698B7001CD14A /* AmberFoundation.framework */;
+			remoteGlobalIDString = 539A60C30D2698B7001CD14A;
 			remoteInfo = AmberFoundation;
 		};
 		5364C112117A68F700181223 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5364C0FF117A68F700181223 /* AmberFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 532F73DE0F0EB1AA004D6056 /* libAmberFoundation.a */;
+			remoteGlobalIDString = 532F73DE0F0EB1AA004D6056;
 			remoteInfo = "AmberFoundation Touch";
 		};
 		5364C114117A68FC00181223 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5364C0FF117A68F700181223 /* AmberFoundation.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 539A60C20D2698B7001CD14A /* AmberFoundation */;
+			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
 			remoteInfo = AmberFoundation;
 		};
 /* End PBXContainerItemProxy section */
