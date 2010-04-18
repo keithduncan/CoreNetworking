@@ -72,10 +72,14 @@
 
 - (void)_readPacketDidComplete:(NSNotification *)notification {
 	AFPacketRead *packet = [notification object];
-	
-#warning detect the error condition
-	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
+	
+	NSError *packetError = [[notification userInfo] objectForKey:AFPacketErrorKey];
+	if (packetError != nil) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
+		return;
+	}
+	
 	
 	[[self xmlBuffer] appendData:packet.buffer];
 	
