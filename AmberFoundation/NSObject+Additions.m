@@ -43,7 +43,9 @@ static void _AFBackgroundRunLoopObserverCallBack(CFRunLoopObserverRef observer, 
 - (void)main {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6
 	pthread_setname_np([[[NSThread currentThread] name] UTF8String]);
+#endif
 	
 	CFRunLoopObserverContext context = {0};
 	CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopBeforeWaiting, true, 0, (CFRunLoopObserverCallBack)_AFBackgroundRunLoopObserverCallBack, (void *)&pool);
