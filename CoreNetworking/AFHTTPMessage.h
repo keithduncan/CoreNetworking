@@ -83,6 +83,8 @@ extern NSString *const AFHTTPMessageRangeHeader;
 */
 
 enum {
+	AFHTTPStatusCodeContinue		= 100, /* Continue */
+	
 	// 2xx class codes indicate the request succeeded
 	AFHTTPStatusCodeOK				= 200, /* OK */
 	AFHTTPStatusCodePartialContent	= 206, /* Partial Content */

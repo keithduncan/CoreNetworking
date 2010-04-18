@@ -73,6 +73,9 @@ NSString *const AFHTTPMessageRangeHeader = @"Range";
 
 CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 	switch (code) {
+		case AFHTTPStatusCodeContinue:
+			return CFSTR("Continue");
+			
 		case AFHTTPStatusCodeOK:
 			return CFSTR("OK");
 		case AFHTTPStatusCodePartialContent:
