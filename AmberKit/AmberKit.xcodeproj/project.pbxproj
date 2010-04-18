@@ -45,7 +45,6 @@
 		533F5D490FBF622700169C14 /* NSControl+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 533F5D450FBF622700169C14 /* NSControl+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535C1626117B055600F7B978 /* AmberKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 539BFE030F1FE2AE003C1148 /* AmberKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535C1627117B056100F7B978 /* libCoreAmberKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 537917750F7FC43B0064EB92 /* libCoreAmberKit.a */; };
-		535C162E117B05F400F7B978 /* AmberKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D71FC117A584B005A65D3 /* AmberKit.m */; };
 		535C164B117B071900F7B978 /* AFKeyValueBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DE6C0F5AED26008F5991 /* AFKeyValueBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		535C164C117B071D00F7B978 /* AFKeyValueBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DE6D0F5AED26008F5991 /* AFKeyValueBinding.m */; };
 		535C184F117B0A0A00F7B978 /* CoreAmberKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 535C184E117B0A0A00F7B978 /* CoreAmberKit.m */; };
@@ -556,7 +555,6 @@
 				5379178D0F7FC4C60064EB92 /* NSTreeNode+Additions.m in Sources */,
 				533F5D480FBF622700169C14 /* NSControl+Additions.m in Sources */,
 				533D721D117A5895005A65D3 /* AFGeometry.m in Sources */,
-				535C162E117B05F400F7B978 /* AmberKit.m in Sources */,
 				535C184F117B0A0A00F7B978 /* CoreAmberKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
