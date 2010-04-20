@@ -90,7 +90,7 @@
 	@brief
 	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
  */
-- (void)transport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context;
+- (void)transport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialBytes totalBytes:(NSUInteger)totalLength context:(void *)context;
 
 /*!
 	@brief
@@ -99,6 +99,6 @@
 	@param
 	|total| will be NSUIntegerMax if the packet terminator is a data pattern.
  */
-- (void)transport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context;
+- (void)transport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialBytes totalBytes:(NSUInteger)totalLength context:(void *)context;
 
 @end

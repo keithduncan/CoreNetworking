@@ -107,6 +107,8 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	[self doesNotRecognizeSelector:_cmd];
 }
 
+#pragma mark -
+
 - (void)performResponseMessage:(CFHTTPMessageRef)message {
 	[self performWrite:AFHTTPConnectionPacketForMessage(message) withTimeout:-1 context:&_AFHTTPConnectionWriteResponseContext];
 }

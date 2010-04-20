@@ -11,14 +11,16 @@
 @implementation AFHTTPTransaction
 
 @synthesize requestPackets=_requestPackets, responsePackets=_responsePackets;
-@synthesize completionBlock=_completionBlock;
+@synthesize context=_context;
 
-- (id)initWithRequestPackets:(NSArray *)requestPackets responsePackets:(NSArray *)responsePackets {
+- (id)initWithRequestPackets:(NSArray *)requestPackets responsePackets:(NSArray *)responsePackets context:(void *)context {
 	self = [super init];
 	if (self == nil) return nil;
 	
 	_requestPackets = [requestPackets copy];
 	_responsePackets = [responsePackets copy];
+	
+	_context = context;
 	
 	return self;
 }
@@ -26,8 +28,6 @@
 - (void)dealloc {
 	[_requestPackets release];
 	[_responsePackets release];
-	
-	[_completionBlock release];
 	
 	[super dealloc];
 }

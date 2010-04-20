@@ -55,7 +55,7 @@
 - (void)preprocessRequest:(CFHTTPMessageRef)request;
 
 /*
-	Raw Messaging Methods
+	Request
  */
 
 /*!
@@ -76,6 +76,10 @@
 	This enqueues a request reading packet, which writes the body to the location indicated, and is useful for raw messaging.
  */
 - (void)downloadRequest:(NSURL *)location;
+
+/*
+	Response
+ */
 
 /*!
 	@brief

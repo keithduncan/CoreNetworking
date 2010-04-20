@@ -40,16 +40,14 @@
 
 /*
 	Transaction Methods
-		These automatically enqueue a response, and are for replacing NSURLConnection functionality.
+		These automatically enqueue reading a response.
  */
-
-typedef void (^AFHTTPClientTransactionCompletionBlock)(CFHTTPMessageRef response, NSError *error);
 
 /*!
 	@brief
 	This method enqueues a transaction, which pairs a request with it's response. The request may not be issued immediately.
  */
-- (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body completionBlock:(AFHTTPClientTransactionCompletionBlock)completionBlock;
+- (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body context:(void *)context;
 
 /*!
 	@brief
@@ -63,7 +61,7 @@ typedef void (^AFHTTPClientTransactionCompletionBlock)(CFHTTPMessageRef response
 	This method handles HTTP NSURLRequest objects with an HTTPBodyData, or HTTPBodyFile.
 	If passed an NSURLRequest with an HTTPBodyStream, an exception is thrown.
  */
-- (void)performRequest:(NSURLRequest *)request completionBlock:(AFHTTPClientTransactionCompletionBlock)completionBlock;
+- (void)performRequest:(NSURLRequest *)request context:(void *)context;
 
 /*!
 	@brief
@@ -72,7 +70,7 @@ typedef void (^AFHTTPClientTransactionCompletionBlock)(CFHTTPMessageRef response
 	@detail
 	Will handle large files by streaming them to disk.
  */
-- (void)performDownload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation completionBlock:(AFHTTPClientTransactionCompletionBlock)completionBlock;
+- (void)performDownload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation context:(void *)context;
 
 /*!
 	@brief
@@ -81,6 +79,6 @@ typedef void (^AFHTTPClientTransactionCompletionBlock)(CFHTTPMessageRef response
 	@detail
 	Will handle large files by streaming them from disk.
  */
-- (void)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation completionBlock:(AFHTTPClientTransactionCompletionBlock)completionBlock;
+- (void)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation context:(void *)context;
 
 @end

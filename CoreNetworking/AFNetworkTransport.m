@@ -416,8 +416,8 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 
 static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFPacket *packet, NSUInteger currentPartialBytes, NSUInteger totalBytes) {
 	SEL delegateSelector = NULL;
-	if (stream == self->_writeStream) delegateSelector = @selector(transport:didWritePartialDataOfLength:total:context:);
-	else if (stream == self->_readStream) delegateSelector = @selector(transport:didReadPartialDataOfLength:total:context:);
+	if (stream == self->_writeStream) delegateSelector = @selector(transport:didWritePartialDataOfLength:totalBytes:context:);
+	else if (stream == self->_readStream) delegateSelector = @selector(transport:didReadPartialDataOfLength:totalBytes:context:);
 	NSCParameterAssert(delegateSelector != NULL);
 	
 	if (![[self delegate] respondsToSelector:delegateSelector]) return;

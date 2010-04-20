@@ -21,7 +21,7 @@
 	NSArray *_requestPackets;
 	NSArray *_responsePackets;
 	
-	id _completionBlock;
+	void *_context;
 }
 
 /*!
@@ -29,11 +29,11 @@
 	This method retains the request and creates an empty response.
 	A NULL request, will result in an empty request being allocated.
  */
-- (id)initWithRequestPackets:(NSArray *)requestPackets responsePackets:(NSArray *)responsePackets;
+- (id)initWithRequestPackets:(NSArray *)requestPackets responsePackets:(NSArray *)responsePackets context:(void *)context;
 
 @property (readonly) NSArray *requestPackets;
 @property (readonly) NSArray *responsePackets;
 
-@property (copy) id completionBlock;
+@property (readonly) void *context;
 
 @end
