@@ -98,16 +98,16 @@ bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr
 }
 
 const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen) {
-    switch (addr->sa_family) {
-        case AF_INET: 
-            return inet_ntop(AF_INET, &(((struct sockaddr_in *)addr)->sin_addr), dst, maxlen); 
-        case AF_INET6: 
+	switch (addr->sa_family) {
+		case AF_INET: 
+			return inet_ntop(AF_INET, &(((struct sockaddr_in *)addr)->sin_addr), dst, maxlen); 
+		case AF_INET6: 
 			return inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)addr)->sin6_addr), dst, maxlen); 
-        default: 
-            return strncpy(dst, "Unknown AF", maxlen);
-    } 
+		default: 
+			return strncpy(dst, "Unknown AF", maxlen);
+	}
 	
-    return NULL;
+	return NULL;
 }
 
 NSError *AFErrorFromCFStreamError(CFStreamError error) {
