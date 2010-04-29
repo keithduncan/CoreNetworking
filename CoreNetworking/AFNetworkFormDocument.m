@@ -127,7 +127,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 }
 
 - (NSString *)valueForField:(NSString *)fieldname {
-	[[self values] objectForKey:fieldname];
+	return [[self values] objectForKey:fieldname];
 }
 
 - (void)setValue:(NSString *)value forField:(NSString *)fieldname {
@@ -136,7 +136,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 }
 
 - (NSSet *)fileLocationsForField:(NSString *)fieldname {
-	[[[[self files] objectForKey:fieldname] allValues] valueForKey:_AFNetworkFormDocumentFileFieldPartLocationKey];
+	return [[[[self files] objectForKey:fieldname] allValues] valueForKey:_AFNetworkFormDocumentFileFieldPartLocationKey];
 }
 
 - (void)addFileByReferencingURL:(NSURL *)location withFilename:(NSString *)filename toField:(NSString *)fieldname {
