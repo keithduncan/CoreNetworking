@@ -47,6 +47,10 @@
 #import "CoreNetworking/AFHTTPMessage.h"
 #import "CoreNetworking/NSURLRequest+AFHTTPAdditions.h"
 
+#import "CoreNetworking/AFHTTPMessagePacket.h"
+#import "CoreNetworking/AFHTTPHeadersPacket.h"
+#import "CoreNetworking/AFHTTPBodyPacket.h"
+
 #import "CoreNetworking/AFHTTPConnection.h"
 #import "CoreNetworking/AFHTTPClient.h"
 

@@ -18,7 +18,7 @@
 	@brief
 	The defines the minimum required to create a service suitable for resolution
  
-	@detail
+	@details
 	NSNetService doesn't need to support copying because once discovered, the name, type and service are sufficient to create other classes
 	For example the AFNetService class below provides a KVO compliant presence dictionary that maps to the TXT record
 	Another class might listen for changes to the phsh TXT entry of a Bonjour peer and update the avatar (found in the NULL record)
@@ -57,7 +57,7 @@
 	@brief
 	Converts a data object containing TXT record to a dictionay.
  
-	@detail
+	@details
 	The dictionary returned by the <tt>+[NSNetService dictionaryFromTXTRecordData:]</tt> only converts the keys to UTF-8 encoded NSStrings, this function converts the data objects as UTF-8 strings too.
  
 	@param
@@ -72,7 +72,7 @@ extern NSDictionary *AFNetServicePropertyDictionaryFromTXTRecordData(NSData *TXT
 	@brief
 	Converts a key-value string pair dictionary into a data object that can be set as a TXT record.
  
-	@detail
+	@details
 	The dictionary returned by the <tt>+[NSNetService dataFromTXTRecordDictionary:]</tt> only accepts a dictionary with data objects, this function converts the data objects as UTF-8 strings into data objects for you.
  */
 extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary);
@@ -81,7 +81,7 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
     @brief
 	A replacement for a resolvable NSNetService with a KVO compliant 'presence' dictionary corresponding to the TXT record data
  
-	@detail
+	@details
 	The initialisers for this class are in <tt>AFNetServiceCommon</tt>.
 	This cannot currently be used for publishing a service, the NSNetService API is generally sufficient for that.
 */

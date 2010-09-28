@@ -20,7 +20,7 @@ extern NSString *const AFPacketDidTimeoutNotificationName;
 	@brief
 	Posted when the packet completed (successfully or otherwise).
 	
-	@detail
+	@details
 	If the packet is completing because an error was encountered, return it under the <tt>AFPacketErrorKey</tt> key.
  */
 extern NSString *const AFPacketDidCompleteNotificationName;

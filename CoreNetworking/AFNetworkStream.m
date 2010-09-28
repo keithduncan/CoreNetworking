@@ -43,6 +43,15 @@ typedef NSUInteger _AFNetworkStreamFlags;
 
 @implementation AFNetworkStream
 
+static void _AFNetworkStreamEnqueue(AFNetworkStream *self, SEL _cmd, AFPacket *packet) {
+	[self.queue enqueuePacket:packet];
+	[self _scheduleDequeuePackets];
+}
+
+static NSUInteger _AFNetworkStreamCount(AFNetworkStream *self, SEL _cmd) {
+	return [self.queue count];
+}
+
 @synthesize delegate=_delegate;
 @synthesize stream=_stream, queue=_queue;
 
@@ -307,7 +316,7 @@ DequeueEnd:
 	self = [super initWithStream:stream];
 	if (self == nil) return nil;
 	
-	_callbackSelectors[0] = @selector(networkStream:didWrite:partialDataOfLength:totalBytes:);
+	_callbackSelectors[0] = @selector(networkStream:didWrite:partialDataOfLength:totalLength:);
 	_callbackSelectors[1] = @selector(networkStream:didWrite:);
 	
 	_performSelector = @selector(performWrite:);
@@ -316,12 +325,11 @@ DequeueEnd:
 }
 
 - (void)enqueueWrite:(id <AFPacketWriting>)packet {
-	[self.queue enqueuePacket:packet];
-	[self _scheduleDequeuePackets];
+	_AFNetworkStreamEnqueue(self, _cmd, packet);
 }
 
 - (NSUInteger)countOfEnqueuedWrites {
-	return [self.queue count];
+	return _AFNetworkStreamCount(self, _cmd);
 }
 
 @end
@@ -334,7 +342,7 @@ DequeueEnd:
 	self = [super initWithStream:stream];
 	if (self == nil) return nil;
 	
-	_callbackSelectors[0] = @selector(networkStream:didRead:partialDataOfLength:totalBytes:);
+	_callbackSelectors[0] = @selector(networkStream:didRead:partialDataOfLength:totalLength:);
 	_callbackSelectors[1] = @selector(networkStream:didRead:);
 	
 	_performSelector = @selector(performRead:);
@@ -343,12 +351,11 @@ DequeueEnd:
 }
 
 - (void)enqueueRead:(id <AFPacketReading>)packet {
-	[self.queue enqueuePacket:packet];
-	[self _scheduleDequeuePackets];
+	_AFNetworkStreamEnqueue(self, _cmd, packet);
 }
 
 - (NSUInteger)countOfEnqueuedReads {
-	return [self.queue count];
+	return _AFNetworkStreamCount(self, _cmd);
 }
 
 @end

@@ -25,7 +25,7 @@
     @brief
 	An AFTransportLayer object should encapsulate data (as defined in RFC 1122)
  
-	@detail
+	@details
 	This implementation mandates that a layer pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a cluster-chain allowing for maximum flexiblity.
 */
 @protocol AFTransportLayer <NSObject>
@@ -40,7 +40,7 @@
 	@brief
 	Designated Initialiser.
 	
-	@detail
+	@details
 	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound initialisers have a more specific signatures.
  */
 - (id)initWithLowerLayer:(id <AFTransportLayer>)layer;
@@ -57,7 +57,7 @@
 	@brief
 	The delegate callbacks will convey success or failure.
  
-	@detail
+	@details
 	This is a good candidate for a block callback argument, allowing for asynchronous -open methods and eliminating the delegate callbacks.
  */
 - (void)open;
@@ -69,7 +69,7 @@
 - (BOOL)isOpen;
 
 /*!
-	@detail
+	@details
 	A layer may elect to remain open, in which case you will not receive the -layerDidClose: delegate callback until it actually closes.
  */
 - (void)close;
@@ -106,18 +106,18 @@
 #endif
 
 /*!
-	@param
-	|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length or an NSData for bit pattern.
-	This method should also accept an AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
- */
-- (void)performRead:(id)terminator withTimeout:(NSTimeInterval)duration context:(void *)context;
-
-/*!
 	@brief
 	|buffer| should be an NSData to write over the file descriptor
 	This method should accept a AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
  */
 - (void)performWrite:(id)buffer withTimeout:(NSTimeInterval)duration context:(void *)context;
+
+/*!
+	@param
+	|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length or an NSData for bit pattern.
+	This method should also accept an AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
+ */
+- (void)performRead:(id)terminator withTimeout:(NSTimeInterval)duration context:(void *)context;
 
 @end
 
@@ -171,8 +171,8 @@
  */
 @protocol AFTransportLayerDataDelegate <NSObject>
 
-- (void)layer:(id <AFTransportLayer>)layer didRead:(id)data context:(void *)context;
-
 - (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data context:(void *)context;
+
+- (void)layer:(id <AFTransportLayer>)layer didRead:(id)data context:(void *)context;
 
 @end

@@ -14,7 +14,7 @@
 	@brief
 	A very simple Objective-C wrapper around CFSocketRef.
 	
-	@detail
+	@details
 	The purpose of this class is to spawn more sockets upon revieving inbound connections.
  */
 @interface AFNetworkSocket : AFNetworkLayer <AFConnectionLayer> {
@@ -32,7 +32,7 @@
 	This is not governed by a protocol, luckily <tt>AFConnectionServer</tt> can instantiate this class specifically.
 	A socket is created with the given characteristics and the address is set.
 	
-	@detail
+	@details
 	If the socket cannot be created they return nil.
  */
 - (id)initWithHostSignature:(const CFSocketSignature *)signature;
@@ -42,7 +42,7 @@
 	Connect initialiser.
 	This is not called by the framework, it is provided for you to bring exising FDs into the object graph.
 	
-	@detail
+	@details
 	Since AFNetworkSocket doesnt actually perform any read/write operations; this method doesn't take any options.
 	This is intended to provide a socket to a higher layer.
  */

@@ -73,7 +73,7 @@ typedef struct _AFInternetTransportSignature AFInternetTransportSignature;
 	Based on CFSocketSignature allowing for higher-level functionality.
 	The un-intuitive layout of the structure is very important; because the first pointer width bits are a CFTypeRef the structure can be introspected using CFGetTypeID.
 	
-	@detail
+	@details
 	Doesn't include a |protocolFamily| field like CFSocketSignature because the |host| may resolve to a number of addresses each with a different protocol family.
 	
 	@field host

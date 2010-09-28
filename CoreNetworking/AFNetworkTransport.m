@@ -72,8 +72,8 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 + (void)initialize {
 	if (self != [AFNetworkTransport class]) return;
 	
-	class_addMethod(self, @selector(networkStream:didWrite:partialDataOfLength:totalBytes:), (IMP)_AFNetworkTransportStreamDidPartialPacket, "v@:@II");
-	class_addMethod(self, @selector(networkStream:didRead:partialDataOfLength:totalBytes:), (IMP)_AFNetworkTransportStreamDidPartialPacket, "v@:@II");
+	class_addMethod(self, @selector(networkStream:didWrite:partialDataOfLength:totalLength:), (IMP)_AFNetworkTransportStreamDidPartialPacket, "v@:@II");
+	class_addMethod(self, @selector(networkStream:didRead:partialDataOfLength:totalLength:), (IMP)_AFNetworkTransportStreamDidPartialPacket, "v@:@II");
 	
 	class_addMethod(self, @selector(networkStream:didWrite:), (IMP)_AFNetworkTransportStreamDidCompletePacket, "v@:@@");
 	class_addMethod(self, @selector(networkStream:didRead:), (IMP)_AFNetworkTransportStreamDidCompletePacket, "v@:@@");
@@ -414,14 +414,14 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 #pragma mark -
 #pragma mark Writing & Reading
 
-static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFPacket *packet, NSUInteger currentPartialBytes, NSUInteger totalBytes) {
+static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFPacket *packet, NSUInteger partialLength, NSUInteger totalLength) {
 	SEL delegateSelector = NULL;
-	if (stream == self->_writeStream) delegateSelector = @selector(transport:didWritePartialDataOfLength:totalBytes:context:);
-	else if (stream == self->_readStream) delegateSelector = @selector(transport:didReadPartialDataOfLength:totalBytes:context:);
+	if (stream == self->_writeStream) delegateSelector = @selector(transport:didWritePartialDataOfLength:totalLength:context:);
+	else if (stream == self->_readStream) delegateSelector = @selector(transport:didReadPartialDataOfLength:totalLength:context:);
 	NSCParameterAssert(delegateSelector != NULL);
 	
 	if (![[self delegate] respondsToSelector:delegateSelector]) return;
-	((void (*)(id, SEL, NSUInteger, NSUInteger, void *))objc_msgSend)([self delegate], delegateSelector, currentPartialBytes, totalBytes, [packet context]);
+	((void (*)(id, SEL, NSUInteger, NSUInteger, void *))objc_msgSend)([self delegate], delegateSelector, partialLength, totalLength, [packet context]);
 }
 
 static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFPacket *packet) {

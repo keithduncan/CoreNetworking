@@ -17,11 +17,16 @@
 /*!
 	@brief
 	This packet will read either a request or response and return a CFHTTPMessageRef as it's buffer.
+	
+	@detail
+	This is a composite packet, wrapping <tt>AFHTTPHeadersPacket</tt> and <tt>AFHTTPBodyPacket</tt>.
  */
 @interface AFHTTPMessagePacket : AFPacket <AFPacketReading> {
  @private
 	__strong CFHTTPMessageRef _message;
+	
 	NSURL *_bodyStorage;
+	NSOutputStream *_bodyStream;
 	
 	AFPacket *_currentRead;
 }
@@ -34,8 +39,9 @@
 
 /*!
 	@brief
-	If called, the body will be streamed to disk instead of loaded into memory.
+	By default, the response body is appended to the message buffer.
+	If set, the body will be streamed to disk instead of loaded into memory.
  */
-- (void)downloadBodyToURL:(NSURL *)URL;
+@property (copy) NSURL *bodyStorage;
 
 @end

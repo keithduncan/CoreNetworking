@@ -20,7 +20,7 @@
 	@brief
 	The default implementation of this method raises an exception, if you don't handle scheme passed in you should defer to the superclass' implementation.
  
-	@detail
+	@details
 	This is used by <tt>-initWithURL:</tt> to determine the socket type and port to use.
  */
 + (AFInternetTransportSignature)transportSignatureForScheme:(NSString *)scheme;
@@ -29,7 +29,7 @@
 	@brief
 	Akin to <tt>-transportSignatureForScheme:</tt>, this method tells a client how to advertise an application layer
  
-	@detail
+	@details
 	The default implementation throws an exception.
  
 	@result
@@ -43,7 +43,7 @@
 	This initialiser is essentially a psudeonym for <tt>-initWithSignature:</tt> but using either scheme-implied port number, or one provided in the URL.
 	If you use this method, you are required to override <tt>+transportSignatureForScheme:</tt> to provide the <tt>AFNetworkSocketSignature</tt> even if a port number is provided in the URL.
  
-	@detail
+	@details
 	If the URL provides a port number that one is used instead of the scheme-implied port. Scheme implied ports are looked up in /etc/services.
  */
 - (id <AFConnectionLayer>)initWithURL:(NSURL *)endpoint;

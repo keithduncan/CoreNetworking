@@ -11,8 +11,7 @@
 #import "AmberFoundation/AmberFoundation.h"
 
 #import "AFHTTPHeadersPacket.h"
-#import "AFPacketRead.h"
-#import "AFPacketReadToWriteStream.h"
+#import "AFHTTPBodyPacket.h"
 #import "AFHTTPMessage.h"
 #import "AFNetworkConstants.h"
 
@@ -21,13 +20,20 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 
 @interface AFHTTPMessagePacket ()
 @property (readonly) CFHTTPMessageRef message;
-@property (readwrite, copy) NSURL *bodyStorage;
+
+@property (readwrite, retain) NSOutputStream *bodyStream;
+
 @property (retain) AFPacket <AFPacketReading> *currentRead;
+
+- (void)_headersPacketDidComplete:(NSNotification *)notification;
+
+- (void)_bodyReadPacketDidReceiveData:(NSNotification *)notification;
+- (void)_bodyReadPacketDidComplete:(NSNotification *)notification;
 @end
 
 @implementation AFHTTPMessagePacket
 
-@synthesize message=_message, bodyStorage=_bodyStorage, currentRead=_currentRead;
+@synthesize message=_message, bodyStorage=_bodyStorage, bodyStream=_bodyStream, currentRead=_currentRead;
 
 - (id)initForRequest:(BOOL)isRequest {
 	self = [self init];
@@ -43,97 +49,104 @@ NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 		CFRelease(_message);
 		_message = NULL;
 	}
+	
 	[_bodyStorage release];
+	[_bodyStream release];
 	
 	[_currentRead release];
 	
 	[super dealloc];
 }
 
-- (void)downloadBodyToURL:(NSURL *)URL {
-	[self setBodyStorage:URL];
-}
-
 - (id)buffer {
 	return (id)_message;
 }
 
-- (AFPacket *)_nextPacket {
+- (void)_nextPacket {
 	if (!CFHTTPMessageIsHeaderComplete(self.message)) {
 		AFHTTPHeadersPacket *headersPacket = [[[AFHTTPHeadersPacket alloc] initWithMessage:self.message] autorelease];
 		headersPacket->_context = &_AFHTTPMessagePacketHeadersContext;
-		return headersPacket;
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_headersPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:headersPacket];
+		self.currentRead = headersPacket;
+		
+		return;
 	}
 	
-	NSInteger contentLength = AFHTTPMessageGetExpectedBodyLength(self.message);
-	if (contentLength <= 0) return nil;
+	AFHTTPBodyPacket *bodyPacket = [[[AFHTTPBodyPacket alloc] initWithMessage:self.message] autorelease];
+	bodyPacket->_context = &_AFHTTPMessagePacketBodyContext;
 	
-	if ([self bodyStorage] != nil) {
+	if (self.bodyStorage != nil) {
 		[[NSFileManager defaultManager] createDirectoryAtPath:[[[self bodyStorage] URLByDeletingLastPathComponent] path] withIntermediateDirectories:YES attributes:nil error:NULL];
 		
-		NSOutputStream *writeStream = [NSOutputStream outputStreamWithURL:[self bodyStorage] append:NO];
-		return [[[AFPacketReadToWriteStream alloc] initWithContext:NULL timeout:-1 writeStream:writeStream numberOfBytesToRead:contentLength] autorelease];
+		NSOutputStream *newBodyStream = [NSOutputStream outputStreamWithURL:[self bodyStorage] append:NO];
+		self.bodyStream = newBodyStream;
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_bodyReadPacketDidReceiveData:) name:AFHTTPBodyPacketDidReadNotificationName object:bodyPacket];
+		[bodyPacket setAppendBodyDataToMessage:NO];
 	}
 	
-	return [[[AFPacketRead alloc] initWithContext:&_AFHTTPMessagePacketBodyContext timeout:-1 terminator:[NSNumber numberWithInteger:contentLength]] autorelease];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_bodyReadPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:bodyPacket];
+	self.currentRead = bodyPacket;
 }
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
 
 - (void)performRead:(NSInputStream *)readStream {
 	do {
-		if (self.currentRead == nil) {
-			AFPacket *newPacket = [self _nextPacket];
-			
-			// Note: this covers reading a request where there's no body
-			if (newPacket == nil) {
-				[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
-				return;
-			}
-			
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:newPacket];
-			self.currentRead = newPacket;
-		}
-		
+		if (self.currentRead == nil) [self _nextPacket];
 		[self.currentRead performRead:readStream];
 	} while (self.currentRead == nil);
 }
 
-- (void)_readPacketDidComplete:(NSNotification *)notification {
-	AFPacket *packet = [notification object];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
+- (void)_headersPacketDidComplete:(NSNotification *)notification {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:[notification name] object:[notification object]];
 	
 	if ([[notification userInfo] objectForKey:AFPacketErrorKey] != nil) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
 		return;
 	}
 	
-	if ([packet isKindOfClass:[AFHTTPHeadersPacket class]]) {
-		self.currentRead = nil;
+	
+	if (![AFHTTPBodyPacket messageHasBody:self.message]) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 		return;
 	}
 	
-	if ([packet isKindOfClass:[AFPacketRead class]]) {
-		BOOL bytesAppended = CFHTTPMessageAppendBytes(self.message, [[packet buffer] bytes], [[packet buffer] length]);
+	self.currentRead = nil;
+}
+
+- (void)_bodyReadPacketDidReceiveData:(NSNotification *)notification {
+	NSData *bodyData = [[notification userInfo] objectForKey:AFHTTPBodyPacketDidReadDataKey];
+	
+	NSUInteger currentByte = 0;
+	while (currentByte < [bodyData length]) {
+		CFRetain(bodyData);
+		NSInteger writtenBytes = [self.bodyStream write:((const uint8_t *)[bodyData bytes]) + currentByte maxLength:([bodyData length] - currentByte)];
+		CFRelease(bodyData);
 		
-		if (!bytesAppended) {
-			CFRelease(_message);
-			_message = NULL;
-			
-			NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorParse userInfo:nil];
+		if (writtenBytes == -1) {
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-											  error, AFPacketErrorKey,
+											  [self.bodyStream streamError], AFPacketErrorKey,
 											  nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:[notification object] userInfo:notificationInfo];
 			return;
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+		currentByte += writtenBytes;
+	}
+}
+
+- (void)_bodyReadPacketDidComplete:(NSNotification *)notification {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFHTTPBodyPacketDidReadNotificationName object:[notification object]];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:[notification name] object:[notification object]];
+	
+	if ([[notification userInfo] objectForKey:AFPacketErrorKey] != nil) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
+		return;
 	}
 	
-	if ([packet isKindOfClass:[AFPacketReadToWriteStream class]]) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
-	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 }
 
 @end

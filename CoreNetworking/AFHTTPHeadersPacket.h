@@ -23,6 +23,10 @@
  */
 extern NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message);
 
+/*!
+	@brief
+	
+ */
 @interface AFHTTPHeadersPacket : AFPacket <AFPacketReading> {
  @private
 	__strong CFHTTPMessageRef _message;

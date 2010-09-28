@@ -20,6 +20,10 @@
 		53151A450FC49A300026E2F1 /* AFHTTPTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 532AA48B0FC206FD000FCC3F /* AFHTTPTransaction.m */; };
 		53151A460FC49A340026E2F1 /* AFHTTPTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 532AA48B0FC206FD000FCC3F /* AFHTTPTransaction.m */; };
 		53151A470FC49A350026E2F1 /* AFHTTPTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 532AA48A0FC206FD000FCC3F /* AFHTTPTransaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5315B13E124DF1AF009A6280 /* AFHTTPBodyPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5315B13C124DF1AF009A6280 /* AFHTTPBodyPacket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5315B13F124DF1AF009A6280 /* AFHTTPBodyPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5315B13D124DF1AF009A6280 /* AFHTTPBodyPacket.m */; };
+		5315B140124DF1AF009A6280 /* AFHTTPBodyPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5315B13C124DF1AF009A6280 /* AFHTTPBodyPacket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5315B141124DF1AF009A6280 /* AFHTTPBodyPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5315B13D124DF1AF009A6280 /* AFHTTPBodyPacket.m */; };
 		5333F83C0F82CB7A00A9AF8A /* AFConnectionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5333F83E0F82CB7A00A9AF8A /* AFConnectionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5333F83A0F82CB7A00A9AF8A /* AFConnectionLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533508260FD6FC4E004FFF97 /* AFHTTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 533508240FD6FC4E004FFF97 /* AFHTTPClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -30,9 +34,9 @@
 		533AD5C4113BF96200FED57B /* AFPacketWriteFromReadStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C0113BF96200FED57B /* AFPacketWriteFromReadStream.m */; };
 		533AD5C9113BF98000FED57B /* AFPacketReadToWriteStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5C5113BF98000FED57B /* AFPacketReadToWriteStream.h */; };
 		533AD5CA113BF98000FED57B /* AFPacketReadToWriteStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C6113BF98000FED57B /* AFPacketReadToWriteStream.m */; };
-		533AD715113C81A200FED57B /* AFHTTPHeadersPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD713113C81A200FED57B /* AFHTTPHeadersPacket.h */; };
+		533AD715113C81A200FED57B /* AFHTTPHeadersPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD713113C81A200FED57B /* AFHTTPHeadersPacket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533AD716113C81A200FED57B /* AFHTTPHeadersPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD714113C81A200FED57B /* AFHTTPHeadersPacket.m */; };
-		533AD717113C81A200FED57B /* AFHTTPHeadersPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD713113C81A200FED57B /* AFHTTPHeadersPacket.h */; };
+		533AD717113C81A200FED57B /* AFHTTPHeadersPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD713113C81A200FED57B /* AFHTTPHeadersPacket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533AD718113C81A200FED57B /* AFHTTPHeadersPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD714113C81A200FED57B /* AFHTTPHeadersPacket.m */; };
 		533D6E72117A4B93005A65D3 /* CoreNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D6E71117A4B93005A65D3 /* CoreNetworking.m */; };
 		533D6E73117A4B93005A65D3 /* CoreNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 533D6E71117A4B93005A65D3 /* CoreNetworking.m */; };
@@ -105,7 +109,7 @@
 		53C0B640113DAD360011A604 /* AFNetworkStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C0B63C113DAD360011A604 /* AFNetworkStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53C0B641113DAD360011A604 /* AFNetworkStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C0B63D113DAD360011A604 /* AFNetworkStream.m */; };
 		53C156F7104060E7008D1E82 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C156F6104060E7008D1E82 /* CoreServices.framework */; };
-		53D25F670FEAFED200490AA8 /* AFHTTPMessagePacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5354C6980FE661FE0003621D /* AFHTTPMessagePacket.h */; };
+		53D25F670FEAFED200490AA8 /* AFHTTPMessagePacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5354C6980FE661FE0003621D /* AFHTTPMessagePacket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53D25F680FEAFED200490AA8 /* AFHTTPMessagePacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5354C6990FE661FE0003621D /* AFHTTPMessagePacket.m */; };
 		53D25F690FEAFED600490AA8 /* AFHTTPMessagePacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5354C6980FE661FE0003621D /* AFHTTPMessagePacket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53D25F6A0FEAFED700490AA8 /* AFHTTPMessagePacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5354C6990FE661FE0003621D /* AFHTTPMessagePacket.m */; };
@@ -154,11 +158,20 @@
 			remoteGlobalIDString = 539A60C20D2698B7001CD14A;
 			remoteInfo = AmberFoundation;
 		};
+		536534ED124BD7FD008A109F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5364C0FF117A68F700181223 /* AmberFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 532F73DD0F0EB1AA004D6056;
+			remoteInfo = "AmberFoundation Touch";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		530911760F646BAA00525632 /* AFNetworkConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkConstants.h; sourceTree = "<group>"; };
 		530911770F646BAA00525632 /* AFNetworkConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkConstants.m; sourceTree = "<group>"; };
+		5315B13C124DF1AF009A6280 /* AFHTTPBodyPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPBodyPacket.h; sourceTree = "<group>"; };
+		5315B13D124DF1AF009A6280 /* AFHTTPBodyPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPBodyPacket.m; sourceTree = "<group>"; };
 		532AA4840FC206C2000FCC3F /* AFHTTPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPConnection.h; sourceTree = "<group>"; };
 		532AA4850FC206C2000FCC3F /* AFHTTPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPConnection.m; sourceTree = "<group>"; };
 		532AA48A0FC206FD000FCC3F /* AFHTTPTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPTransaction.h; sourceTree = "<group>"; };
@@ -268,10 +281,12 @@
 				532AA48B0FC206FD000FCC3F /* AFHTTPTransaction.m */,
 				5349CAAC1040245A0030FD57 /* AFHTTPServer.h */,
 				5349CAAD1040245A0030FD57 /* AFHTTPServer.m */,
-				533AD713113C81A200FED57B /* AFHTTPHeadersPacket.h */,
-				533AD714113C81A200FED57B /* AFHTTPHeadersPacket.m */,
 				5354C6980FE661FE0003621D /* AFHTTPMessagePacket.h */,
 				5354C6990FE661FE0003621D /* AFHTTPMessagePacket.m */,
+				533AD713113C81A200FED57B /* AFHTTPHeadersPacket.h */,
+				533AD714113C81A200FED57B /* AFHTTPHeadersPacket.m */,
+				5315B13C124DF1AF009A6280 /* AFHTTPBodyPacket.h */,
+				5315B13D124DF1AF009A6280 /* AFHTTPBodyPacket.m */,
 				53554A211175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.h */,
 				53554A221175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.m */,
 			);
@@ -284,7 +299,7 @@
 				5355141D0FAF6A35004F8FC5 /* AFNetworkLayer.h */,
 				5355141E0FAF6A35004F8FC5 /* AFNetworkLayer.m */,
 				535511F70FAF4C18004F8FC5 /* Prototypes */,
-				535511F80FAF4C1F004F8FC5 /* Classes */,
+				535511F80FAF4C1F004F8FC5 /* Implementations */,
 			);
 			name = Layers;
 			sourceTree = "<group>";
@@ -325,7 +340,7 @@
 			name = Prototypes;
 			sourceTree = "<group>";
 		};
-		535511F80FAF4C1F004F8FC5 /* Classes */ = {
+		535511F80FAF4C1F004F8FC5 /* Implementations */ = {
 			isa = PBXGroup;
 			children = (
 				53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */,
@@ -337,7 +352,7 @@
 				5370E0880F5B061D008F5991 /* AFNetworkConnection.h */,
 				5370E0890F5B061D008F5991 /* AFNetworkConnection.m */,
 			);
-			name = Classes;
+			name = Implementations;
 			sourceTree = "<group>";
 		};
 		5364C100117A68F700181223 /* Products */ = {
@@ -477,6 +492,7 @@
 				53656037116FC6210006DCAF /* AFPacketWriteFromReadStream.h in Headers */,
 				53656043116FC7990006DCAF /* AFPacketReadToWriteStream.h in Headers */,
 				53554A251175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.h in Headers */,
+				5315B140124DF1AF009A6280 /* AFHTTPBodyPacket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -515,6 +531,7 @@
 				53C0B63E113DAD360011A604 /* AFNetworkStream.h in Headers */,
 				538EC15E115D6E5A00A8E8F9 /* AFNetworkFormDocument.h in Headers */,
 				53554A231175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.h in Headers */,
+				5315B13E124DF1AF009A6280 /* AFHTTPBodyPacket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,6 +568,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				536534EE124BD7FD008A109F /* PBXTargetDependency */,
 			);
 			name = "CoreNetworking Touch";
 			productName = "CoreNetworking Touch";
@@ -568,6 +586,12 @@
 			buildConfigurationList = 5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "CoreNetworking" */;
 			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 5343E6FB0C21FB1000B63E6E;
 			productRefGroup = 5343E70F0C21FB4200B63E6E /* Products */;
 			projectDirPath = "";
@@ -646,6 +670,7 @@
 				53656042116FC7970006DCAF /* AFPacketReadToWriteStream.m in Sources */,
 				53554A261175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.m in Sources */,
 				533D6E73117A4B93005A65D3 /* CoreNetworking.m in Sources */,
+				5315B141124DF1AF009A6280 /* AFHTTPBodyPacket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -682,6 +707,7 @@
 				538EC15F115D6E5A00A8E8F9 /* AFNetworkFormDocument.m in Sources */,
 				53554A241175BE37005DD3A7 /* NSURLRequest+AFHTTPAdditions.m in Sources */,
 				533D6E72117A4B93005A65D3 /* CoreNetworking.m in Sources */,
+				5315B13F124DF1AF009A6280 /* AFHTTPBodyPacket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -692,6 +718,11 @@
 			isa = PBXTargetDependency;
 			name = AmberFoundation;
 			targetProxy = 5364C114117A68FC00181223 /* PBXContainerItemProxy */;
+		};
+		536534EE124BD7FD008A109F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "AmberFoundation Touch";
+			targetProxy = 536534ED124BD7FD008A109F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -776,6 +807,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				HEADER_SEARCH_PATHS = "$CONFIGURATION_BUILD_DIR/usr/**";
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(PUBLIC_HEADERS_FOLDER_PATH)/private\n";
@@ -794,6 +826,7 @@
 				"GCC_ENABLE_OBJC_GC[sdk=macosx*][arch=*]" = supported;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				HEADER_SEARCH_PATHS = "$CONFIGURATION_BUILD_DIR/usr/**";
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(PUBLIC_HEADERS_FOLDER_PATH)/private\n";

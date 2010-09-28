@@ -24,7 +24,7 @@
 	2. <element> </element>
 	3. </element>
 	
-	@detail
+	@details
 	The completed buffer is an NSString, allowing the caller to use whatever XML library is available.
  */
 @interface AFXMLElementPacket : AFPacket <AFPacketReading> {

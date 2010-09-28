@@ -14,7 +14,7 @@
 	@brief
 	Allows for asynchronous DNSService API callbacks.
  
-	@detail
+	@details
 	This class doesn't take ownership of the DNSServiceRef it is instantiated with, it is still the client's responsibility to deallocate the DNSServiceRef once it is no longer needed.
 */
 @interface AFServiceDiscoveryRunLoopSource : NSObject {
@@ -63,9 +63,9 @@
 /*!
 	@brief
 	Create and schedule a dispatch source for the mDNSResponder socket held by the service argument.
- 
-	@detail
-	This source acts like the Cocoa <tt>-performSelector:...</tt> methods, it creates and destroys a behind the scenes source for you.
+	
+	@details
+	This source acts like the Cocoa <tt>-performSelector:…</tt> methods, it creates and destroys a behind the scenes source for you.
  */
 extern void AFServiceDiscoveryScheduleQueueSource(DNSServiceRef service, dispatch_queue_t queue);
 

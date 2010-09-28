@@ -16,7 +16,7 @@
 	@brief
 	This is the parent class for all the network stack objects. You are unlikely to use it directly.
 	
-	@detail
+	@details
 	This class configures a bidirectional proxying system. Unimplemented methods are forwarded to the |lowerLayer|, and the delegate accessor returns a proxy that forwards messages up the delegate chain.
 	CFHostRef and CFNetServiceRef are both first class citizens in Core Networking, and you can easily bring a stack online using either. (You should also consider NSURL/CFURL as a stand in for CFHostRef.)
 	
@@ -54,7 +54,7 @@
 	@brief
 	Outbound Initialiser.
  
-	@detail
+	@details
 	You can provide either a host + transport details, or <AFNetServiceCommon> compilant class.
 	
 	If you provide a host, the details are captured and the host copied.
@@ -74,7 +74,7 @@
 	@brief
 	This isn't used by the framework, it is intended for use like <tt>-[NSThread threadDictionary]</tt> to store miscellaneous data.
 	
-	@detail
+	@details
 	The network layers are KVC containers, much like a CALayer. Values for undefined keys are stored in this property.
 	
 	The dictionary returned is the result of reducing the |transportInfo| onto the |lowerLayer.transportInfo|. This takes place recursively.

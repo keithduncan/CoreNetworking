@@ -30,7 +30,7 @@
 	@brief
 	The objects in this collection must implement the AFHTTPServerRenderer protocol.
 	
-	@detail
+	@details
 	Each of these objects is consulted in order to render the resource, if NULL is returned the next is consulted.
  */
 @property (copy) NSArray *renderers;

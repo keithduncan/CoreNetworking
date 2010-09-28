@@ -20,7 +20,7 @@
 	@brief
 	This class is indended to sit on top of AFNetworkTransport and provides HTTP messaging semantics.
  
-	@detail
+	@details
 	It handles each request in series; and includes automatic behaviour for serveral responses:
  
 	- 
@@ -40,7 +40,7 @@
 	@brief
 	These headers will be added to each request/response written to the connection.
  
-	@detail
+	@details
 	A client could add a 'User-Agent' header, likewise a server could add a 'Server' header.
  */
 @property (readonly, retain) NSMutableDictionary *messageHeaders;
@@ -49,7 +49,7 @@
 	@brief
 	Overridable for subclasses, called for every request.
 	
-	@detail
+	@details
 	Adds the <tt>messageHeaders</tt>.
  */
 - (void)preprocessRequest:(CFHTTPMessageRef)request;
@@ -60,7 +60,6 @@
 
 /*!
 	@brief
-	This method doesn't enqueue a transaction; it simply passes the data on to the |lowerLayer| for writing.
 	This method allows for raw HTTP messaging without starting the internal request/response matching.
  */
 - (void)performRequestMessage:(CFHTTPMessageRef)message;
@@ -91,7 +90,6 @@
 /*!
 	@brief
 	This enqueues a response reading packet, and is useful for raw messaging.
-	The transaction enqueuing methods will call this after writing a request.
  */
 - (void)readResponse;
 

@@ -121,7 +121,7 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	NSParameterAssert([location isFileURL]);
 	
 	AFHTTPMessagePacket *messagePacket = [[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease];
-	[messagePacket downloadBodyToURL:location];
+	[messagePacket setBodyStorage:location];
 	[self performRead:messagePacket withTimeout:-1 context:&_AFHTTPConnectionReadResponseContext];
 }
 

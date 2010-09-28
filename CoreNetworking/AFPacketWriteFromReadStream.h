@@ -18,7 +18,7 @@
 	@brief
 	Acts as an adaptor between streams, allowing you to write a large file out over the wire.
 	
-	@detail
+	@details
 	Currently, all read stream operations are blocking, this restricts practical usage to file streams.
  */
 @interface AFPacketWriteFromReadStream : AFPacket <AFPacketWriting> {

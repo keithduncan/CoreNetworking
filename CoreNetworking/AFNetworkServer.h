@@ -27,7 +27,7 @@
 	@brief
 	You can return FALSE to deny connectivity.
  
-	@detail
+	@details
 	This is sent before the first layer is encapsulated.
  */
 - (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection;
@@ -45,7 +45,7 @@
 	@brief
 	This is a generic construct for spawning new client layers.
 	
-	@detail
+	@details
 	After instantiating the server you can use one of the convenience methods to open socket(s)
  */
 @interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFConnectionLayerHostDelegate> {
@@ -61,7 +61,7 @@
  */
 
 /*!
-	@detail
+	@details
 	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6), however you shouldn't <em>need</em> to know this.
 	This is likely only to be useful for testing your server, since it won't be accessable from another computer.
  
@@ -72,7 +72,7 @@
 + (NSSet *)localhostInternetSocketAddresses;
 
 /*!
-	@detail
+	@details
 	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6).
 	
 	@result
@@ -88,7 +88,7 @@
 	@brief
 	Designated Constructor.
 	
-	@detail
+	@details
 	This should call the designated initialiser with an appropriate encapsulation class. By default this creates a server with <tt>AFNetworkTransport</tt> as the encapsulation class.
  */
 + (id)server;
@@ -135,7 +135,7 @@
 	@brief
 	This method opens a UNIX socket at the specified path.
 	
-	@detail
+	@details
 	This method makes no provisions for deleting an existing socket should it exist, and will fail if one does.
 	
 	@param |location|
@@ -150,7 +150,7 @@
 	@brief
 	This is a funnel method, all the socket opening methods call this one.
 	
-	@detail
+	@details
 	This method is rarely applicable to higher-level servers, sockets are opened on the lowest layer of the stack.
  */
 - (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature)signature address:(NSData *)address;
@@ -163,7 +163,7 @@
 	@brief
 	This method determines the class of the |layer| parameter and wraps it in the encapsulation class one higher than it.
 	
-	@detail
+	@details
 	Override point, if you need to customize layers before they are added to their connection pool, call super for creation first.
  */
 - (void)encapsulateNetworkLayer:(id <AFConnectionLayer>)layer;

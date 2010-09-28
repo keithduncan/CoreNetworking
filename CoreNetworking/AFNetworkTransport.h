@@ -27,10 +27,10 @@
     @brief
 	Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the name was changed so not to imply the exclusive use of SOCK_STREAM.
 	
-    @detail
+    @details
 	This class is a mix of two of the primary patterns:
 	• Internally, it acts an adaptor between the CFSocketRef and CFStreamRef API.
-	• Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and CFStreamRef providing a CFStreamRef like API.
+	• Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and CFStreamRef providing an asyncronous CFStreamRef like API.
 */
 @interface AFNetworkTransport : AFNetworkLayer <AFConnectionLayer> {
  @private
@@ -39,13 +39,13 @@
 		AFNetworkTransportHostSignature _host;
 	} _signature;
 	
-	NSUInteger _connectionFlags;
-	
 	AFNetworkWriteStream *_writeStream;
 	NSUInteger _writeFlags;
 	
 	AFNetworkReadStream *_readStream;
 	NSUInteger _readFlags;
+	
+	NSUInteger _connectionFlags;
 }
 
 @property (assign) id <AFNetworkTransportDataDelegate, AFNetworkTransportControlDelegate, AFTransportLayerDataDelegate> delegate;
@@ -90,7 +90,7 @@
 	@brief
 	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
  */
-- (void)transport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialBytes totalBytes:(NSUInteger)totalLength context:(void *)context;
+- (void)transport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialBytes totalLength:(NSUInteger)totalLength context:(void *)context;
 
 /*!
 	@brief
@@ -99,6 +99,6 @@
 	@param
 	|total| will be NSUIntegerMax if the packet terminator is a data pattern.
  */
-- (void)transport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialBytes totalBytes:(NSUInteger)totalLength context:(void *)context;
+- (void)transport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialBytes totalLength:(NSUInteger)totalLength context:(void *)context;
 
 @end

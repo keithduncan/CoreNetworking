@@ -12,7 +12,7 @@
 #import "AFPacketWriteFromReadStream.h"
 #import "NSURLRequest+AFHTTPAdditions.h"
 
-extern CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request) {
+CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request) {
 	NSCParameterAssert([request HTTPBodyStream] == nil);
 	NSCParameterAssert([request HTTPBodyFile] == nil);
 	
@@ -26,7 +26,7 @@ extern CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request) {
 	return message;
 }
 
-extern NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message) {
+NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message) {
 	NSURL *messageURL = [NSMakeCollectable(CFHTTPMessageCopyRequestURL(message)) autorelease];
 	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:messageURL];
@@ -35,6 +35,22 @@ extern NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message) {
 	[request setHTTPBody:[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease]];
 	
 	return request;
+}
+
+CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response) {
+	CFHTTPMessageRef message = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, [response statusCode], (CFStringRef)[NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]], kCFHTTPVersion1_1)) autorelease];
+	[[response allHeaderFields] enumerateKeysAndObjectsUsingBlock:^ (id key, id obj, BOOL *stop) {
+		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)key, (CFStringRef)obj);
+	}];
+	return message;
+}
+
+void _AFHTTPPrintRequest(NSURLRequest *request) {
+	printf("%s", [[[NSString alloc] initWithData:NSMakeCollectable(CFHTTPMessageCopySerializedMessage((CFHTTPMessageRef)CFMakeCollectable(AFHTTPMessageCreateForRequest(request)))) encoding:NSMacOSRomanStringEncoding] UTF8String]);
+}
+
+void _AFHTTPPrintResponse(NSURLResponse *response) {
+	printf("%s", [[[NSString alloc] initWithData:NSMakeCollectable(CFHTTPMessageCopySerializedMessage((CFHTTPMessageRef)CFMakeCollectable(AFHTTPMessageCreateForResponse((id)response)))) encoding:NSMacOSRomanStringEncoding] UTF8String]);
 }
 
 AFPacket <AFPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message) {
@@ -65,6 +81,9 @@ NSString *const AFHTTPMessageContentLengthHeader = @"Content-Length";
 NSString *const AFHTTPMessageContentTypeHeader = @"Content-Type";
 NSString *const AFHTTPMessageContentRangeHeader = @"Content-Range";
 NSString *const AFHTTPMessageContentMD5Header = @"Content-MD5";
+NSString *const AFHTTPMessageContentTransferEncodingHeader = @"Content-Transfer-Encoding";
+
+NSString *const AFHTTPMessageTransferEncodingHeader = @"Transfer-Encoding";
 
 NSString *const AFHTTPMessageAllowHeader = @"Allow";
 NSString *const AFHTTPMessageLocationHeader = @"Location";

@@ -12,7 +12,7 @@
 	@brief
 	This format is described in RFC 2388 [http://tools.ietf.org/html/rfc2388]
 	
-	@detail
+	@details
 	The order you add values in is unpreserved.
  */
 @interface AFNetworkFormDocument : NSObject {
@@ -56,10 +56,10 @@
 	An ordered collection of <AFPacketWriting> conforming objects which should be replayed over the wire.
 	Nil return value means the document couldn't be converted.
 	
-	@param  MIMEType
+	@param contentTypeRef
 	The document type.
 	
-	@param lengthRef
+	@param frameLengthRef
 	Used for frame headers.
  */
 - (NSArray *)documentPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef;

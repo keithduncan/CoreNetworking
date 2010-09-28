@@ -29,10 +29,10 @@
 	
 	NSUInteger _flags;
 	
-	CFMutableDictionaryRef _runLoopSources;
+	__strong CFMutableDictionaryRef _runLoopSources;
 	void *_dispatchSource;
 	
-	__strong AFPacketQueue *_queue;
+	AFPacketQueue *_queue;
 	BOOL _dequeuing;
 }
 
@@ -115,7 +115,7 @@
 
  @optional
 
-- (void)networkStream:(AFNetworkWriteStream *)stream didWrite:(id <AFPacketWriting>)packet partialDataOfLength:(NSUInteger)partialLength totalBytes:(NSUInteger)totalLength;
+- (void)networkStream:(AFNetworkWriteStream *)stream didWrite:(id <AFPacketWriting>)packet partialDataOfLength:(NSUInteger)partialLength totalLength:(NSUInteger)totalLength;
 
  @required
 
@@ -129,7 +129,7 @@
 
  @optional
 
-- (void)networkStream:(AFNetworkReadStream *)readStream didRead:(id <AFPacketReading>)packet partialDataOfLength:(NSUInteger)partialLength totalBytes:(NSUInteger)totalLength;
+- (void)networkStream:(AFNetworkReadStream *)readStream didRead:(id <AFPacketReading>)packet partialDataOfLength:(NSUInteger)partialLength totalLength:(NSUInteger)totalLength;
 
  @required
 

@@ -201,30 +201,29 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	CFHTTPMessageRef requestMessage = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:nil];
 	
 	AFHTTPMessagePacket *messagePacket = [[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease];
-	[messagePacket downloadBodyToURL:fileLocation];
+	[messagePacket setBodyStorage:fileLocation];
 	
 	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequestPackets:[NSArray arrayWithObject:AFHTTPConnectionPacketForMessage(requestMessage)] responsePackets:[NSArray arrayWithObject:messagePacket] context:context] autorelease];
 	[self _enqueueTransaction:transaction];
 }
 
-- (void)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation context:(void *)context {
+- (BOOL)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation context:(void *)context error:(NSError **)errorRef {
 	NSParameterAssert([fileLocation isFileURL]);
 	
-	NSError *fileAttributesError = nil;
-	NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileLocation path] error:&fileAttributesError];
-	if (fileAttributes == nil) {
-		completionBlock(NULL, fileAttributesError);
-		return;
-	}
+	NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileLocation path] error:errorRef];
+	NSNumber *fileSize = [fileAttributes objectForKey:NSFileSize];
+	if (fileAttributes == nil || fileSize == nil) return NO;
 	
 	CFHTTPMessageRef requestMessage = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:nil];
-	CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[fileAttributes objectForKey:NSFileSize] stringValue]);
+	CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[fileSize stringValue]);
 	
 	AFPacket *headersPacket = AFHTTPConnectionPacketForMessage(requestMessage);
-	AFPacketWriteFromReadStream *bodyPacket = [[[AFPacketWriteFromReadStream alloc] initWithContext:NULL timeout:-1 readStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:[[fileAttributes objectForKey:NSFileSize] unsignedIntegerValue]] autorelease];
+	AFPacketWriteFromReadStream *bodyPacket = [[[AFPacketWriteFromReadStream alloc] initWithContext:NULL timeout:-1 readStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:[fileSize unsignedIntegerValue]] autorelease];
 	
 	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequestPackets:[NSArray arrayWithObjects:headersPacket, bodyPacket, nil] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]] context:context] autorelease];
 	[self _enqueueTransaction:transaction];
+	
+	return YES;
 }
 
 - (void)layerDidOpen:(id <AFConnectionLayer>)layer {
@@ -235,9 +234,9 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		
 		NSError *TLSError = nil;
 		BOOL secureNegotiation = [self startTLS:securityOptions error:&TLSError];
-		if (secureNegotiation) return;
-		
-		[self.delegate layer:self didReceiveError:TLSError];
+		if (!secureNegotiation) {
+			[self.delegate layer:self didReceiveError:TLSError];
+		}
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])
@@ -251,7 +250,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		AFHTTPTransaction *currentTransaction = [self currentTransaction];
 		[self _partialCurrentTransaction:[currentTransaction requestPackets] selector:_cmd];
 	} else {
-		[(id)[self delegate] transport:transport didWritePartialDataOfLength:partialLength totalBytes:totalLength context:context];
+		[(id)[self delegate] transport:transport didWritePartialDataOfLength:partialLength totalLength:totalLength context:context];
 	}
 }
 
@@ -278,7 +277,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	if (context == &_AFHTTPClientReadPartialResponseContext) {
 		// nop
 	} else if (context == &_AFHTTPClientReadResponseContext) {
-#error context callback
+		[self.delegate connection:self didReadResponse:(CFHTTPMessageRef)data context:context];
 		
 		[self.transactionQueue dequeued];
 		[self.transactionQueue tryDequeue];
