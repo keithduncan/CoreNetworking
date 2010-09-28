@@ -11,7 +11,7 @@
 #define AF_SECT_METADATA "__class_metadata"
 
 /*!
-	@detail
+	@details
 	Assumes that the provided bundle contains a Mach-O binary.
 	The data is looked for in the bundle's primary executable.
 	In order to map the section into memory, this function first loads the bundle if it hasn't been already.
@@ -20,7 +20,7 @@
 extern NSData *AFBundleSectionData(NSBundle *bundle, const char *segmentName, const char *sectionName);
 
 /*!
-	@detail
+	@details
 	Does NOT consider inheritance when looking up a value.
 	It assumes the bundle containing the class implementation contains the required __OBJC,__class_metadata segment in the main executable.
 	It will throw an exception of the [NSBundle bundleForClass:class] doesn't include the prerequsite metadata.

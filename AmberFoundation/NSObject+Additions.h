@@ -45,7 +45,7 @@
 	@brief
 	The proxy returned will only forward selectors that the target returns true for <tt>-respondsToSelector:</tt>.
  
-	@detail
+	@details
 	This allows you to send unimplemented selectors without throwing an exception.
  
 	@result
