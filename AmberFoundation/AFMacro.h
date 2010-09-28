@@ -14,8 +14,10 @@
 	@file
  */
 
+#define NSSTRING_CONSTANT(var) NSString *const var = @#var
+
 #define NSSTRING_CONTEXT(var) static NSString *var = @#var
 
-NS_INLINE BOOL AFFileExistsAtLocation(NSURL *location) {
+static inline BOOL AFFileExistsAtLocation(NSURL *location) {
 	return (location != nil && ![[location path] isEmpty] && [[NSFileManager defaultManager] fileExistsAtPath:[location path]]);
 }
