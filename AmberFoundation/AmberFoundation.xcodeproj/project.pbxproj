@@ -579,7 +579,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmberFoundation_Prefix.pch;
 				INFOPLIST_FILE = "AmberFoundation-Info.plist";
-				INSTALL_PATH = "@rpath";
+				INSTALL_PATH = "@rpath/";
 				OTHER_LDFLAGS = "-lcrypto";
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
@@ -597,7 +597,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmberFoundation_Prefix.pch;
 				INFOPLIST_FILE = "AmberFoundation-Info.plist";
-				INSTALL_PATH = "@rpath";
+				INSTALL_PATH = "@rpath/";
 				OTHER_LDFLAGS = "-lcrypto";
 				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
