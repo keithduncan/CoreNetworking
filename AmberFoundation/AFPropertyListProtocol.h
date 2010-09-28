@@ -16,7 +16,7 @@
 	@brief
 	Check the plist serialisability of the object passed in.
  
-	@detail
+	@details
 	The plist objects are NSString, NSArray, NSDictionary, NSDate, NSData, NSNumber.
 	In the case of NSDictionary, the keys must be NSString object mapping to another plist object.
  

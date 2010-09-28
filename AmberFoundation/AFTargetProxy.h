@@ -12,7 +12,7 @@
 	@brief
 	Returns the result of -[self.target valueForKeyPath:self.keyPath] as it's forwarding target.
 	
-	@detail
+	@details
 	Allows you to dynamically proxy a delegate, without regenerating proxy chains each time one changes.
  */
 @interface AFTargetProxy : NSProxy {

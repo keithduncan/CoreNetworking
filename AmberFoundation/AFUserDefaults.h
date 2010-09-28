@@ -14,7 +14,7 @@
 	@brief
 	Essentailly NSUserDefaults for an arbitary bundle identifer, it doesn't restrict you to working with the current application identifer.
 	
-	@detail
+	@details
 	This class doesn't register for termination notifications nor does it save the  values occasionally, this must be handled externally. It does propogate synchronization notifications like NSUserDefaults does.
 	This is particularly useful for plugin defaults, used across process boundaries.
 */

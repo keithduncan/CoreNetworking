@@ -14,7 +14,7 @@
 	The return value is used as the new |currentTarget| and self is returned.
 	Once you've traversed the key path, you should extract the final object using the |currentTarget| property, this will apply any pending operators that don't require a second key to compute, such as @count.
  
-	@detail
+	@details
 	The collection key-paths will be caught if the |currentTarget| is an array or set.
 	This allows you to ask for -avg and will result in @avg being prepended to the next key-path component.			
  */

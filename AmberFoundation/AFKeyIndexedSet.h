@@ -14,7 +14,7 @@
  
 	See <tt>AFKeyIndexedArray</tt> for more detailed documentation, the two classes are nearly identical.
  
-	@detail
+	@details
 	Like its sibling class the AFKeyIndexedArray it maintains an internal dictionary index for an arbitrary key, thus providing O(1) access to members if the key is known in advance and dictionary like removal.
 */
 @interface AFKeyIndexedSet : NSMutableSet <NSFastEnumeration> {

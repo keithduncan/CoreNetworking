@@ -12,7 +12,7 @@
 	@brief
 	Allows for complex message routing. Can be used to create a delegate-chain, or an improved responder chain which may be useful for a view controller architecture.
 	
-	@detail
+	@details
 	Recursive-safe, whilst a selector is on the stack it won't be called again on the same target twice. Calling an in-dispatch selector will route it to the next target in the list.
 	It is highly recommended that you either insert a catch-all object at the lowest priority (zero), or wrap this proxy in an optional proxy, otherwise message dispatch WILL throw an unrecognised selector exception if no object responds.
  */
