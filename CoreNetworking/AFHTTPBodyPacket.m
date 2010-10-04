@@ -67,7 +67,7 @@ NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	}
 	
 	AFPacketRead *chunkDataPacket = [[AFPacketRead alloc] initWithContext:NULL timeout:-1 terminator:[NSNumber numberWithInteger:packetSize]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(JSONDataPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:chunkDataPacket];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_chunkDataPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:chunkDataPacket];
 	[self setCurrentPacket:chunkDataPacket];
 }
 
@@ -136,7 +136,7 @@ NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 }
 
 + (AFHTTPBodyPacket *)parseBodyPacketFromMessage:(CFHTTPMessageRef)message error:(NSError **)errorRef {
-	NSString *transferEncoding = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease];
+	NSString *transferEncoding = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageTransferEncodingHeader)) autorelease];
 	if (transferEncoding != nil) {
 		if ([transferEncoding caseInsensitiveCompare:@"identity"] == NSOrderedSame) {
 			// nop
