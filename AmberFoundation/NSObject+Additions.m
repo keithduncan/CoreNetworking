@@ -42,6 +42,7 @@ static void _AFBackgroundRunLoopObserverCallBack(CFRunLoopObserverRef observer, 
 
 - (void)main {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
+#warning this pool isn't drained inside the loop, it will accumulate objects
 	
 	pthread_setname_np([[[NSThread currentThread] name] UTF8String]);
 	
