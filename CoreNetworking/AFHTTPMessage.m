@@ -46,15 +46,15 @@ CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response) {
 }
 
 void _AFHTTPPrintMessage(CFHTTPMessageRef message) {
-	printf("%s", [[[NSString alloc] initWithData:NSMakeCollectable(CFHTTPMessageCopySerializedMessage(message)) encoding:NSMacOSRomanStringEncoding] UTF8String]);
+	printf("%s", [[[[NSString alloc] initWithData:[NSMakeCollectable(CFHTTPMessageCopySerializedMessage(message)) autorelease] encoding:NSMacOSRomanStringEncoding] autorelease] UTF8String]);
 }
 
 void _AFHTTPPrintRequest(NSURLRequest *request) {
-	_AFHTTPPrintMessage((CFHTTPMessageRef)CFMakeCollectable(AFHTTPMessageCreateForRequest((id)request)));
+	_AFHTTPPrintMessage((CFHTTPMessageRef)[NSMakeCollectable(AFHTTPMessageCreateForRequest((id)request)) autorelease]);
 }
 
 void _AFHTTPPrintResponse(NSURLResponse *response) {
-	_AFHTTPPrintMessage((CFHTTPMessageRef)CFMakeCollectable(AFHTTPMessageCreateForResponse((id)response)));
+	_AFHTTPPrintMessage((CFHTTPMessageRef)[NSMakeCollectable(AFHTTPMessageCreateForResponse((id)response)) autorelease]);
 }
 
 AFPacket <AFPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message) {
