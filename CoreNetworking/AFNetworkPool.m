@@ -34,7 +34,7 @@
 }
 
 - (NSSet *)connections {
-	return [_connections copy];
+	return [[_connections copy] autorelease];
 }
 
 - (void)addConnectionsObject:(id <AFTransportLayer>)connection {
