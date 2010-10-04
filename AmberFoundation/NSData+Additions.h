@@ -16,6 +16,8 @@
 @interface NSData (AFHashing)
 - (NSData *)MD5Hash;
 - (NSData *)SHA1Hash;
+
+- (NSData *)HMACUsingSHA1_withSecretKey:(NSData *)secretKey;
 @end
 
 /*!

@@ -13,6 +13,7 @@
 #import "NSData+Additions.h"
 
 #import <CommonCrypto/CommonDigest.h>
+#import <CommonCrypto/CommonHMAC.h>
 
 @implementation NSData (AFHashing)
 
@@ -34,6 +35,22 @@
 	CFRelease(self);
 	
 	return [NSData dataWithBytes:&digest length:CC_SHA1_DIGEST_LENGTH];
+}
+
+- (NSData *)HMACUsingSHA1_withSecretKey:(NSData *)secretKey {
+	unsigned char digest[CC_SHA1_DIGEST_LENGTH];
+	
+	NSData *keyData = [key dataUsingEncoding:NSUTF8StringEncoding];
+	
+	CFRetain(self);
+	CFRetain(keyData);
+	
+	CCHmac(kCCHmacAlgSHA1, [secretKey bytes], [secretKey length], [self bytes], [self length], &digest);
+	
+	CFRelease(keyData);
+	CFRelease(self);
+	
+	return [NSData dataWithBytes:digest length:CC_SHA1_DIGEST_LENGTH];
 }
 
 @end
