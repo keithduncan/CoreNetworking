@@ -33,6 +33,7 @@ extern NSString *const AFHTTPBodyPacketDidReadNotificationName;
  @protected
 	__strong CFHTTPMessageRef _message;
 	AFPacket <AFPacketReading> *_currentPacket;
+	BOOL _appendBodyDataToMessage;
 }
 
 /*!
