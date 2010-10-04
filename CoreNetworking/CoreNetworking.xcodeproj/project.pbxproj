@@ -585,6 +585,7 @@
 			};
 			buildConfigurationList = 5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "CoreNetworking" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				English,
