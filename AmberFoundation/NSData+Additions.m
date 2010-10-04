@@ -40,15 +40,11 @@
 - (NSData *)HMACUsingSHA1_withSecretKey:(NSData *)secretKey {
 	unsigned char digest[CC_SHA1_DIGEST_LENGTH];
 	
-	NSData *keyData = [key dataUsingEncoding:NSUTF8StringEncoding];
-	
-	CFRetain(self);
-	CFRetain(keyData);
+	CFRetain(self); CFRetain(secretKey);
 	
 	CCHmac(kCCHmacAlgSHA1, [secretKey bytes], [secretKey length], [self bytes], [self length], &digest);
 	
-	CFRelease(keyData);
-	CFRelease(self);
+	CFRelease(self); CFRelease(secretKey);
 	
 	return [NSData dataWithBytes:digest length:CC_SHA1_DIGEST_LENGTH];
 }
