@@ -72,6 +72,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	
 	int sockoptError = 0;
 	sockoptError = setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_REUSEADDR, &reuseAddr, sizeof(reuseAddr));
+#pragma unused (sockoptError)
 #endif
 	
 	if (_socket == NULL) {
