@@ -94,8 +94,6 @@ NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 - (void)_chunksDidComplete:(NSNotification *)notification {
 	if (![self _processDidCompleteNotification:notification]) return;
 	
-#warning 
-	
 	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
 }
 
