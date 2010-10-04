@@ -22,6 +22,8 @@
 
 @interface AFNetworkStream : NSObject {
  @protected
+	id <AFNetworkStreamDelegate> _delegate;
+	
 	NSStream *_stream;
 	
 	SEL _callbackSelectors[2];
