@@ -109,7 +109,7 @@ static NSUInteger _AFNetworkStreamCount(AFNetworkStream *self, SEL _cmd) {
 }
 
 - (NSString *)description {
-	NSMutableString *description = [[super description] mutableCopy];
+	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	
 	static const char *StreamStatusStrings[] = { "not open", "opening", "open", "reading", "writing", "at end", "closed", "has error" };
 	[description appendFormat:@"\tStream: %p %s, ", self.stream, (self.stream != nil ? StreamStatusStrings[[self.stream streamStatus]] : ""), nil];
@@ -276,8 +276,6 @@ DequeueEnd:
 }
 
 - (void)_packetDidTimeout:(NSNotification *)notification {
-	AFPacket *packet = [notification object];
-	
 	NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 							   NSLocalizedStringWithDefaultValue(@"AFNetworkStream Packet Did Timeout Error", @"AFNetworkStream", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Packet timeout.", nil), NSLocalizedDescriptionKey,
 							   nil];
