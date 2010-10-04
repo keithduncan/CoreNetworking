@@ -26,10 +26,10 @@
 	NSInteger _numberOfBytesToWrite;
 	
 	NSInputStream *_readStream;
-	BOOL _readStreamOpened, _readStreamComplete;
+	BOOL _readStreamOpen;
 	
-	NSUInteger _currentBufferOffset, _currentBufferLength;
 	__strong uint8_t *_readBuffer;
+	NSUInteger _currentBufferOffset, _currentBufferLength;
 }
 
 /*!

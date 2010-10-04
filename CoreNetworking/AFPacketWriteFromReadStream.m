@@ -19,14 +19,8 @@
 @interface AFPacketWriteFromReadStream ()
 @property (readonly) NSInteger numberOfBytesToWrite;
 
-@property (assign) BOOL readStreamOpen;
 @property (assign) NSInputStream *readStream;
-@property (retain) NSMutableData *currentRead;
-@property (retain) NSData *bufferedRead;
-@property (assign) BOOL readStreamComplete;
-
-@property (assign) NSOutputStream *writeStream;
-@property (retain) AFPacketWrite *currentWrite;
+@property (assign) BOOL readStreamOpen;
 @end
 
 @interface AFPacketWriteFromReadStream (Private)
@@ -36,8 +30,7 @@
 @implementation AFPacketWriteFromReadStream
 
 @synthesize numberOfBytesToWrite=_numberOfBytesToWrite;
-@synthesize readStreamOpen=_readStreamOpen, readStream=_readStream, currentRead=_currentRead, bufferedRead=_bufferedRead, readStreamComplete=_readStreamComplete;
-@synthesize writeStream=_writeStream, currentWrite=_currentWrite;
+@synthesize readStream=_readStream, readStreamOpen=_readStreamOpen;
 
 - (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration readStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite {
 	NSParameterAssert(readStream != nil && [readStream streamStatus] == NSStreamStatusNotOpen);
@@ -64,7 +57,7 @@
 }
 
 - (void)performWrite:(NSOutputStream *)writeStream {
-	if (!_readStreamOpened) {
+	if (![self readStreamOpen]) {
 		Boolean opened = CFReadStreamOpen((CFReadStreamRef)_readStream);
 		
 		if (!opened) {
@@ -82,7 +75,7 @@
 			// nop
 		} while (CFReadStreamGetStatus((CFReadStreamRef)_readStream) != kCFStreamStatusOpen && CFReadStreamGetStatus((CFReadStreamRef)_readStream) != kCFStreamStatusError);
 		
-		_readStreamOpened = YES;
+		[self setReadStreamOpen:YES];
 	}
 	
 	
