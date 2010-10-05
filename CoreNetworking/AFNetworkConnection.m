@@ -48,7 +48,7 @@
 }
 
 - (id <AFConnectionLayer>)initWithService:(id <AFNetServiceCommon>)service {
-	CFNetServiceRef netService = (CFNetServiceRef)CFMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)[(id)service valueForKey:@"domain"], (CFStringRef)[(id)service valueForKey:@"type"], (CFStringRef)[(id)service valueForKey:@"name"], 0));
+	CFNetServiceRef netService = (CFNetServiceRef)[NSMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)[(id)service valueForKey:@"domain"], (CFStringRef)[(id)service valueForKey:@"type"], (CFStringRef)[(id)service valueForKey:@"name"], 0)) autorelease];
 	
 	AFNetworkTransportServiceSignature serviceSignature = {
 		.service = netService,
