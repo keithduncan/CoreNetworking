@@ -137,7 +137,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	if (socketError == kCFSocketTimeout) errorCode = AFNetworkSocketErrorTimeout;
 	
 	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:userInfo];
-	[self.delegate layer:self didNotOpen:error];
+	[self.delegate layer:self didReceiveError:error];
 }
 
 - (BOOL)isOpen {

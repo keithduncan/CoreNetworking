@@ -139,29 +139,29 @@
 
 - (void)layerDidOpen:(id <AFTransportLayer>)layer;
 
-- (void)layerDidStartTLS:(id <AFTransportLayer>)layer;
-
 - (void)layerDidClose:(id <AFTransportLayer>)layer;
 
  @required
 
 /*!
 	@brief
-	This is called if opening the layer fails asynchronously.
- */
-- (void)layer:(id <AFTransportLayer>)layer didNotOpen:(NSError *)error;
-
-/*!
-	@brief
-	This is called if the TLS fails, the error should be suitable for presenting.
- */
-- (void)layer:(id <AFTransportLayer>)layer didNotStartTLS:(NSError *)error;
-
-/*!
-	@brief
 	This is called for already opened stream errors.
  */
 - (void)layer:(id <AFTransportLayer>)layer didReceiveError:(NSError *)error;
+
+ @optional
+
+/*!
+	@brief
+	Called if TLS setup succeeded.
+ */
+- (void)layerDidStartTLS:(id <AFTransportLayer>)layer;
+
+/*!
+	@brief
+	Called if the TLS fails.
+ */
+- (void)layer:(id <AFTransportLayer>)layer didNotStartTLS:(NSError *)error;
 
 @end
 
