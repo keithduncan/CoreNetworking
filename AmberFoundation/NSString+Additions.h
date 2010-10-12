@@ -11,22 +11,10 @@
 @interface NSString (AFAdditions)
 
 /*!
-	@result
-	A copy of the receiver, with CFStringTimeWhitespace applied.
- */
-- (NSString *)stringByTrimmingWhiteSpace;
-
-/*!
 	@brief
 	Compares the receiver, after trimming whitespace, to @"".
  */
 - (BOOL)isEmpty;
-
-/*!
-	@result
-	A substring from index zero to |count| characters and then appends @"..."
- */
-- (NSString *)stringByAppendingElipsisAfterCharacters:(NSUInteger)count;
 
 @end
 

@@ -12,19 +12,8 @@
 
 @implementation NSString (AFAdditions)
 
-- (NSString *)stringByTrimmingWhiteSpace {
-	NSMutableString *newString = [[self mutableCopy] autorelease];
-	CFStringTrimWhitespace((CFMutableStringRef)newString);
-	return newString;
-}
-
 - (BOOL)isEmpty {
-	return [[self stringByTrimmingWhiteSpace] isEqualToString:@""];
-}
-
-- (NSString *)stringByAppendingElipsisAfterCharacters:(NSUInteger)count {
-	if ([self length] <= count) return self;
-	else return [[self substringToIndex:count] stringByAppendingString:@"..."];
+	return [[self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""];
 }
 
 @end
