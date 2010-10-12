@@ -46,13 +46,16 @@ NSSTRING_CONTEXT(_AFHTTPClientReadResponseContext);
 @synthesize authentication=_authentication, authenticationCredentials=_authenticationCredentials;
 @synthesize transactionQueue=_transactionQueue;
 
-static inline NSString *_AFHTTPConnectionUserAgentFromBundle(NSBundle *bundle) {
+static NSString *_AFHTTPConnectionUserAgentFromBundle(NSBundle *bundle) {
+	if (bundle == nil) return nil;
 	return [NSString stringWithFormat:@"%@/%@", [[bundle displayName] stringByReplacingOccurrencesOfString:@" " withString:@"-"], [[bundle displayVersion] stringByReplacingOccurrencesOfString:@" " withString:@"-"], nil];
 }
 
 + (void)initialize {
-	NSString *userAgent = [NSString stringWithFormat:@"%@ %@", _AFHTTPConnectionUserAgentFromBundle([NSBundle mainBundle]), _AFHTTPConnectionUserAgentFromBundle([NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier]), nil];
-	[self setUserAgent:userAgent];
+	NSMutableArray *components = [NSMutableArray array];
+	[components addObjectsFromArray:[NSArray arrayWithObjects:_AFHTTPConnectionUserAgentFromBundle([NSBundle mainBundle]), nil]];
+	[components addObjectsFromArray:[NSArray arrayWithObjects:_AFHTTPConnectionUserAgentFromBundle([NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier]), nil]];
+	[self setUserAgent:([components count] > 0 ? [components componentsJoinedByString:@" "] : nil)];
 }
 
 static NSString *_AFHTTPClientUserAgent = nil;
@@ -76,7 +79,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	self = [super init];
 	if (self == nil) return nil;
 	
-	_userAgent = [[[AFHTTPClient class] userAgent] copy];
+	_userAgent = [[AFHTTPClient userAgent] copy];
 	
 	_transactionQueue = [[AFPacketQueue alloc] init];
 	[_transactionQueue addObserver:self forKeyPath:@"currentPacket" options:NSKeyValueObservingOptionNew context:&_AFHTTPClientCurrentTransactionObservationContext];
