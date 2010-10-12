@@ -31,7 +31,7 @@ typedef struct _AFSocketSignature AFSocketSignature;
 	@brief
 	Simple equality test, to be used for determining the Bonjour protocol string to advertise with @"_tcp" ot @"_udp".
  */
-NS_INLINE BOOL AFSocketSignatureEqualToSignature(AFSocketSignature lhs, AFSocketSignature rhs) {
+static inline BOOL AFSocketSignatureEqualToSignature(AFSocketSignature lhs, AFSocketSignature rhs) {
 	return (memcmp(&lhs, &rhs, sizeof(AFSocketSignature)) == 0);
 }
 
