@@ -8,13 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface NSURLRequest (AFHTTPAdditions)
+@interface NSURLRequest (AFCoreNetworkingHTTPAdditions)
 
 @property (readonly) NSURL *HTTPBodyFile;
 
 @end
 
-@interface NSMutableURLRequest (AFHTTPAdditions)
+@interface NSMutableURLRequest (AFCoreNetworkingHTTPAdditions)
 
 @property (readwrite, copy) NSURL *HTTPBodyFile;
 

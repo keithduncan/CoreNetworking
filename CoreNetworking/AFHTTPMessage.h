@@ -32,7 +32,7 @@ extern CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request);
 	@brief
 	Converts from a CFHTTPMessage request to an NSURLRequest.
  */
-extern NSURLRequest *AFURLRequestForHTTPMessage(CFHTTPMessageRef message);
+extern NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message);
 
 /*!
 	@brief

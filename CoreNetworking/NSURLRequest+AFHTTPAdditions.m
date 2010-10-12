@@ -10,7 +10,7 @@
 
 static NSString *const AFHTTPBodyFileLocationKey = @"AFHTTPBodyFileLocation";
 
-@implementation NSURLRequest (AFHTTPAdditions)
+@implementation NSURLRequest (AFCoreNetworkingHTTPAdditions)
 
 - (NSURL *)HTTPBodyFile {
 	return [NSURLProtocol propertyForKey:AFHTTPBodyFileLocationKey inRequest:self];
@@ -18,7 +18,7 @@ static NSString *const AFHTTPBodyFileLocationKey = @"AFHTTPBodyFileLocation";
 
 @end
 
-@implementation NSMutableURLRequest (AFHTTPAdditions)
+@implementation NSMutableURLRequest (AFCoreNetworkingHTTPAdditions)
 
 @dynamic HTTPBodyFile;
 
