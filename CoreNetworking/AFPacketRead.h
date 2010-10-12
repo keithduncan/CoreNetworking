@@ -10,7 +10,11 @@
 
 /*!
 	@brief
-	This is a standard read packet. It may be instantiated with either a NSNumber or an NSData terminator; indicating the number of bytes to read or the pattern to read up to, respectively.
+	This is a standard read packet.
+	
+	@param terminator
+	If you pass an <tt>NSNumber</tt> object, the packet reads a fixed number of bytes. If the <tt>-integerValue</tt> is -1, it reads all immediately available data.
+	If you pass an <tt>NSData</tt> object, the byte pattern is matched, all data upto and including the byte pattern is returned.
  */
 @interface AFPacketRead : AFPacket <AFPacketReading> {
  @private

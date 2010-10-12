@@ -11,9 +11,14 @@
 #import "AFNetworkConstants.h"
 #import "AFNetworkFunctions.h"
 
+@interface AFPacketRead ()
+@property (assign) NSUInteger bytesRead;
+@property (copy) id terminator;
+@end
+
 @implementation AFPacketRead
 
-@synthesize buffer=_buffer;
+@synthesize bytesRead=_bytesRead, buffer=_buffer, terminator=_terminator;
 
 - (id)init {
 	self = [super init];
@@ -45,10 +50,10 @@
 }
 
 - (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {	
-	BOOL hasTotal = ([_terminator isKindOfClass:[NSNumber class]]);
+	BOOL hasTotal = ([[self terminator] isKindOfClass:[NSNumber class]]);
 	
-	NSUInteger done = _bytesRead;
-	NSUInteger total = [self.buffer length];
+	NSUInteger done = [self bytesRead];
+	NSUInteger total = [[self buffer] length];
 	
 	if (bytesDone != NULL) *bytesDone = done;
 	if (bytesTotal != NULL) *bytesTotal = (hasTotal ? total : NSUIntegerMax);
@@ -58,19 +63,23 @@
 }
 
 - (NSUInteger)_maximumReadLength {
-	NSAssert(_terminator != nil, @"searching for nil terminator");
+	NSAssert([self terminator] != nil, @"searching for nil terminator");
 	
-	if ([_terminator isKindOfClass:[NSNumber class]]) {
-		return ([_terminator unsignedIntegerValue] - _bytesRead);
+	if ([[self terminator] isKindOfClass:[NSNumber class]]) {
+		if ([[self terminator] integerValue] == -1) {
+			
+		}
+		
+		return ([[self terminator] integerValue] - [self bytesRead]);
 	}
 	
-	if ([_terminator isKindOfClass:[NSData class]]) {
+	if ([[self terminator] isKindOfClass:[NSData class]]) {
 		// What we're going to do is look for a partial sequence of the terminator at the end of the buffer.
 		// If a partial sequence occurs, then we must assume the next bytes to arrive will be the rest of the term,
 		// and we can only read that amount.
 		// Otherwise, we're safe to read the entire length of the term.
 		
-		unsigned result = [_terminator length];
+		unsigned result = [[self terminator] length];
 		
 		// i = index within buffer at which to check data
 		// j = length of term to check against
@@ -78,14 +87,14 @@
 		// Note: Beware of implicit casting rules
 		// This could give you -1: MAX(0, (0 - [term length] + 1));
 		
-		CFIndex i = MAX(0, (CFIndex)(_bytesRead - [_terminator length] + 1));
-		CFIndex j = MIN([_terminator length] - 1, _bytesRead);
+		CFIndex i = MAX(0, (CFIndex)([self bytesRead] - [[self terminator] length] + 1));
+		CFIndex j = MIN([[self terminator] length] - 1, [self bytesRead]);
 		
-		while (i < _bytesRead) {
-			const void *subBuffer = ([self.buffer bytes] + i);
+		while (i < [self bytesRead]) {
+			const void *subBuffer = ([[self buffer] bytes] + i);
 			
-			if (memcmp(subBuffer, [_terminator bytes], j) == 0) {
-				result = [_terminator length] - j;
+			if (memcmp(subBuffer, [[self terminator] bytes], j) == 0) {
+				result = [[self terminator] length] - j;
 				break;
 			}
 			
@@ -103,12 +112,12 @@
 - (NSUInteger)_increaseBuffer {
 	NSUInteger maximumReadLength = [self _maximumReadLength];
 	
-	if ([_terminator isKindOfClass:[NSNumber class]]) {
+	if ([[self terminator] isKindOfClass:[NSNumber class]]) {
 		return maximumReadLength;
 	}
 	
-	if ([_terminator isKindOfClass:[NSData class]]) {
-		[_buffer increaseLengthBy:maximumReadLength];
+	if ([[self terminator] isKindOfClass:[NSData class]]) {
+		[[self buffer] increaseLengthBy:maximumReadLength];
 		return maximumReadLength;
 	}
 	
@@ -120,7 +129,7 @@
 	while ([readStream hasBytesAvailable]) {
 		NSUInteger maximumReadLength = [self _increaseBuffer];
 		
-		uint8_t *readBuffer = (uint8_t *)([_buffer mutableBytes] + _bytesRead);
+		uint8_t *readBuffer = (uint8_t *)([[self buffer] mutableBytes] + [self bytesRead]);
 		NSUInteger currentBytesRead = [readStream read:readBuffer maxLength:maximumReadLength];
 		
 		if (currentBytesRead < 0) {
@@ -133,22 +142,22 @@
 			return;
 		}
 		
-		_bytesRead += currentBytesRead;
+		[self setBytesRead:([self bytesRead] + currentBytesRead)];
 		
 		BOOL packetComplete = NO;
-		if ([_terminator isKindOfClass:[NSData class]]) {
+		if ([[self terminator] isKindOfClass:[NSData class]]) {
 			// Done when we match the byte pattern
-			int terminatorLength = [_terminator length];
+			int terminatorLength = [[self terminator] length];
 			
-			if (_bytesRead >= terminatorLength) {
-				const void *buf = [self.buffer bytes] + (_bytesRead - terminatorLength);
-				const void *seq = [_terminator bytes];
+			if ([self bytesRead] >= terminatorLength) {
+				void *buf = (uint8_t *)[[self buffer] bytes] + ([self bytesRead] - terminatorLength);
+				void *seq = (uint8_t *)[[self terminator] bytes];
 				
 				packetComplete = (memcmp(buf, seq, terminatorLength) == 0);
 			}
 		} else {
 			// Done when sized buffer is full
-			packetComplete = (_bytesRead == [self.buffer length]);
+			packetComplete = ([self bytesRead] == [[self buffer] length]);
 		}
 		if (packetComplete) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
