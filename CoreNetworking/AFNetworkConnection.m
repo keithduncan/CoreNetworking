@@ -68,7 +68,7 @@
 		CFHostRef host = (CFHostRef)peer;
 		
 		NSArray *hostnames = (NSArray *)CFHostGetNames(host, NULL);
-		NSParameterAssert([hostnames count] == 1);
+		if ([hostnames count] != 1) return nil;
 		
 		return [NSURL URLWithString:[hostnames objectAtIndex:0]];
 	} else if (CFGetTypeID(peer) == CFNetServiceGetTypeID()) {
@@ -78,10 +78,10 @@
 		CFStringRef host = CFNetServiceGetTargetHost(service);
 		SInt32 port = CFNetServiceGetPortNumber(service);
 		
-		return [NSURL URLWithString:[NSString stringWithFormat:@"%@:%ld", host, port, nil]];
+		return [NSURL URLWithString:[NSString stringWithFormat:@"%@:%lu", host, port, nil]];
 	}
 	
-	[NSException raise:NSInternalInconsistencyException format:@"%s, cannot determine the peer name.", __PRETTY_FUNCTION__, nil];
+	[NSException raise:NSInternalInconsistencyException format:@"%s, unsupported peer type %@", __PRETTY_FUNCTION__, peer, nil];
 	return nil;
 }
 
