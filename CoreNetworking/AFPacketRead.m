@@ -117,9 +117,7 @@
 }
 
 - (void)performRead:(NSInputStream *)readStream {
-	BOOL packetComplete = NO;
-	
-	while (!packetComplete && [readStream hasBytesAvailable]) {
+	while ([readStream hasBytesAvailable]) {
 		NSUInteger maximumReadLength = [self _increaseBuffer];
 		
 		uint8_t *readBuffer = (uint8_t *)([_buffer mutableBytes] + _bytesRead);
@@ -137,6 +135,7 @@
 		
 		_bytesRead += currentBytesRead;
 		
+		BOOL packetComplete = NO;
 		if ([_terminator isKindOfClass:[NSData class]]) {
 			// Done when we match the byte pattern
 			int terminatorLength = [_terminator length];
@@ -148,12 +147,16 @@
 				packetComplete = (memcmp(buf, seq, terminatorLength) == 0);
 			}
 		} else {
-			// Done when sized buffer is full.
+			// Done when sized buffer is full
 			packetComplete = (_bytesRead == [self.buffer length]);
 		}
+		if (packetComplete) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+			break;
+		}
+		
+		continue;
 	}
-	
-	if (packetComplete) [[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 }
 
 @end
