@@ -12,7 +12,7 @@ static NSString * (^URLEncodeString)(NSString *) = ^ NSString * (NSString *strin
 	return NSMakeCollectable(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR("!*'();:@&=+$,/?%#[]"), kCFStringEncodingUTF8));
 };
 
-@implementation NSURLRequest (TwitterConsoleStreamAdditions)
+@implementation NSURLRequest (AFAdditions)
 
 + (NSDictionary *)parametersFromString:(NSString *)parameterString {
 	NSArray *parameterPairs = [parameterString componentsSeparatedByString:@"&"];
@@ -34,7 +34,7 @@ static NSString * (^URLEncodeString)(NSString *) = ^ NSString * (NSString *strin
 
 @end
 
-@implementation NSMutableURLRequest (TwitterConsoleStreamAdditions)
+@implementation NSMutableURLRequest (AFAdditions)
 
 - (void)appendQueryParameters:(NSDictionary *)parameters {
 	// Note: this ensures duplicate parameters aren't added
