@@ -84,7 +84,7 @@
 	[[self xmlBuffer] appendData:packet.buffer];
 	
 	NSString *xmlString = [[[NSString alloc] initWithData:self.currentRead.buffer encoding:_encoding] autorelease];
-	xmlString = [xmlString stringByTrimmingWhiteSpace];
+	xmlString = [xmlString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	
 	if (!NSEqualRanges([xmlString rangeOfString:@"</"], NSMakeRange(NSNotFound, 0))) _depth--;
 	else if (!NSEqualRanges([xmlString rangeOfString:@"/>"], NSMakeRange(NSNotFound, 0))) _depth;
