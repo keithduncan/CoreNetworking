@@ -47,13 +47,17 @@
 //	Categories
 //
 
+#import "AmberFoundation/NSObject+Additions.h"
+#import "AmberFoundation/NSObject+Metadata.h"
+
 #import "AmberFoundation/NSArray+Additions.h"
 #import "AmberFoundation/NSSet+Additions.h"
 #import "AmberFoundation/NSDictionary+Additions.h"
-#import "AmberFoundation/NSObject+Metadata.h"
-#import "AmberFoundation/NSObject+Additions.h"
 #import "AmberFoundation/NSData+Additions.h"
 #import "AmberFoundation/NSDate+Additions.h"
-#import "AmberFoundation/NSSortDescriptor+Additions.h"
 #import "AmberFoundation/NSString+Additions.h"
+
+#import "AmberFoundation/NSSortDescriptor+Additions.h"
 #import "AmberFoundation/NSBundle+Additions.h"
+
+#import "AmberFoundation/NSURLRequest+Additions.h"
