@@ -341,6 +341,11 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	return YES;
 }
 
+- (BOOL)isSecure {
+	[self doesNotRecognizeSelector:_cmd];
+	return NO;
+}
+
 #pragma mark -
 
 - (void)networkStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event {
