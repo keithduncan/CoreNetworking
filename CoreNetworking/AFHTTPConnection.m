@@ -87,7 +87,9 @@ NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	}
 	
 	NSURL *endpoint = [self peer];
-	CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
+	if ([endpoint isKindOfClass:[NSURL class]]) {
+		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint host]);
+	}
 }
 
 #pragma mark -
