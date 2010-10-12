@@ -36,7 +36,7 @@
 	_terminator = [terminator copy];
 	
 	if ([_terminator isKindOfClass:[NSNumber class]]) {
-		[_buffer setLength:[_terminator unsignedIntegerValue]];
+		[_buffer setLength:[_terminator integerValue]];
 	}
 	
 	return self;
@@ -63,13 +63,15 @@
 }
 
 - (NSUInteger)_maximumReadLength {
-	NSAssert([self terminator] != nil, @"searching for nil terminator");
+	NSParameterAssert([self terminator] != nil);
+	
+	if ([[self terminator] isEqual:[NSNull null]]) {
+		NSUInteger bytes = 1024;
+		[_buffer increaseLengthBy:bytes];
+		return bytes;
+	}
 	
 	if ([[self terminator] isKindOfClass:[NSNumber class]]) {
-		if ([[self terminator] integerValue] == -1) {
-			
-		}
-		
 		return ([[self terminator] integerValue] - [self bytesRead]);
 	}
 	
@@ -116,7 +118,8 @@
 		return maximumReadLength;
 	}
 	
-	if ([[self terminator] isKindOfClass:[NSData class]]) {
+	if ([[self terminator] isKindOfClass:[NSData class]] ||
+		[[self terminator] isEqual:[NSNull null]]) {
 		[[self buffer] increaseLengthBy:maximumReadLength];
 		return maximumReadLength;
 	}
@@ -143,6 +146,8 @@
 		}
 		
 		[self setBytesRead:([self bytesRead] + currentBytesRead)];
+		// Note: this re-scales the receiver for the NSNull case, where the buffer is increased an arbitrary amount
+		[[self buffer] setLength:[self bytesRead]];
 		
 		BOOL packetComplete = NO;
 		if ([[self terminator] isKindOfClass:[NSData class]]) {
