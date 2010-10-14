@@ -19,7 +19,7 @@
 	@field socketType
 	One of the socket types defined in <sys/socket.h>
 	@field protocol
-	One of the IP protocols defined in RFC 1700 see http://www.faqs.org/rfcs/rfc1700.html - it is important that an appropriate .socketType is also provided.
+	One of the 'PROTOCOL NUMBERS' defined in IETF-RFC-1700 http://tools.ietf.org/html/rfc1700 - it is important that an appropriate `socketType` is also provided.
  */
 struct _AFSocketSignature {
 	const SInt32 socketType;
@@ -60,7 +60,7 @@ extern const AFSocketSignature AFSocketSignatureLocalPath;
 	@field type
 	See the documentation on <tt>AFSocketType</tt>.
 	@field port
-	Identifies the Transport Layer address to communicate using (see RFC 1122) in network byte order.
+	Identifies the Transport Layer address to communicate using (see IETF-RFC-1122 http://tools.ietf.org/html/rfc1122) in network byte order.
  */
 struct _AFInternetTransportSignature {
 	const AFSocketSignature type;
