@@ -27,14 +27,14 @@
  */
 @interface NSData (AFBaseConversion)
 
-+ (id)dataWithBase32String:(NSString *)string;
-- (NSString *)base32String;
-
 + (id)dataWithBase64String:(NSString *)string;
 - (NSString *)base64String;
 
-+ (id)dataWithHexString:(NSString *)string;
-- (NSString *)hexString;
++ (id)dataWithBase32String:(NSString *)string;
+- (NSString *)base32String;
+
++ (id)dataWithBase16String:(NSString *)string;
+- (NSString *)base16String;
 
 @end
 
