@@ -30,7 +30,7 @@ static void	AFServiceDiscoveryProcessResult(CFFileDescriptorRef fileDescriptor, 
 	(void)error; // Note: keep clang happy
 }
 
-- (id)initWithService:(DNSServiceRef)service {
+- (id)initWithDNSService:(DNSServiceRef)service {
 	self = [self init];
 	if (self == nil) return nil;
 	
