@@ -8,31 +8,11 @@
 
 #import "NSURLRequest+Additions.h"
 
+#import "NSString+Additions.h"
+
 static NSString * (^URLEncodeString)(NSString *) = ^ NSString * (NSString *string) {
 	return NSMakeCollectable(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR("!*'();:@&=+$,/?%#[]"), kCFStringEncodingUTF8));
 };
-
-@implementation NSURLRequest (AFAdditions)
-
-+ (NSDictionary *)parametersFromString:(NSString *)parameterString {
-	NSArray *parameterPairs = [parameterString componentsSeparatedByString:@"&"];
-	
-	NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:[parameterPairs count]];
-	
-	for (NSString *currentPair in parameterPairs) {
-		NSArray *pairComponents = [currentPair componentsSeparatedByString:@"="];
-		
-		NSString *key = ([pairComponents count] >= 1 ? [pairComponents objectAtIndex:0] : nil);
-		if (key == nil) continue;
-		
-		NSString *value = ([pairComponents count] >= 2 ? [pairComponents objectAtIndex:1] : [NSNull null]);
-		[parameters setObject:value forKey:key];
-	}
-	
-	return parameters;
-}
-
-@end
 
 @implementation NSMutableURLRequest (AFAdditions)
 
@@ -70,17 +50,21 @@ static NSString * (^URLEncodeString)(NSString *) = ^ NSString * (NSString *strin
 	[self setURL:[NSURL URLWithString:absoluteURLString]];
 }
 
+- (NSDictionary *)_parametersFromString:(NSString *)string {
+	return [string parametersWithSeparator:@"=" delimiter:@"&"];
+}
+
 - (NSDictionary *)parametersFromQuery {
 	NSString *query = [[self URL] query];
 	if (query == nil) return nil;
-	return [NSURLRequest parametersFromString:query];
+	return [self _parametersFromString:query];
 }
 
 - (NSDictionary *)parametersFromBody {
 	if (![[self valueForHTTPHeaderField:@"Content-Type"] isEqualToString:@"application/x-www-form-urlencoded"]) return nil;
 	
 	NSString *bodyString = [[NSString alloc] initWithData:[self HTTPBody] encoding:NSUTF8StringEncoding];
-	return [NSURLRequest parametersFromString:bodyString];
+	return [self _parametersFromString:bodyString];
 }
 
 @end

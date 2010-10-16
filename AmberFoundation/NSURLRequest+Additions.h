@@ -12,23 +12,6 @@
 	\brief
 	
  */
-@interface NSURLRequest (AFAdditions)
-
-/*!
-	\brief
-	Parses <tt>&</tt> separated <tt>key=value</tt> pairs.
-	
-	\details
-	Can be used to parse an <tt>NSURL</tt> query string, or a <tt>application/x-www-form-urlencoded</tt> body.
- */
-+ (NSDictionary *)parametersFromString:(NSString *)parameterString;
-
-@end
-
-/*!
-	\brief
-	
- */
 @interface NSMutableURLRequest (AFAdditions)
 
 /*!
