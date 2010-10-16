@@ -11,7 +11,7 @@
 @protocol AFHTTPServerDataDelegate;
 
 /*!
-	@brief
+	\brief
 	This is a simple HTTP server which attempts to return resources sourced through two means.
 	It first consults the delegate to return a CFHTTPMessageRef response for a given request, if NULL 
  */
@@ -21,16 +21,16 @@
 }
 
 /*!
-	@brief
+	\brief
 	The HTTP server delegate participates in the response rendering process.
  */
 @property (assign) id <AFHTTPServerDataDelegate> delegate;
 
 /*!
-	@brief
+	\brief
 	The objects in this collection must implement the AFHTTPServerRenderer protocol.
 	
-	@details
+	\details
 	Each of these objects is consulted in order to render the resource, if NULL is returned the next is consulted.
  */
 @property (copy) NSArray *renderers;
@@ -42,7 +42,7 @@
  @optional
 
 /*!
-	@brief
+	\brief
 	The delegate is asked last, after each of the renderers.
  */
 - (CFHTTPMessageRef)server:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;

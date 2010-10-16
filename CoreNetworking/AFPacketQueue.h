@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 /*!
-	@brief
+	\brief
 	The intended usage is that you add packets using <tt>-enqueuePacket:</tt>.
 	You observe the <tt>currentWritePacket</tt> property to learn when there's a new packet to process.
 	Then call <tt>-dequeuePacket</tt> once you've finished processing the <tt>currentPacket</tt>.
@@ -21,41 +21,41 @@
 }
 
 /*!
-	@brief
+	\brief
 	Accommodates for the packet shifted into the |currentPacket| position too.
  */
 - (NSUInteger)count;
 
 /*!
-	@brief
+	\brief
 	Appends to the internal ordered collection.
  */
 - (void)enqueuePacket:(id)packet;
 
 /*!
-	@brief
+	\brief
 	This property will change when a packet is dequeued, you can observe it to determine when there is work to be done.
  */
 @property (readonly, retain) id currentPacket;
 
 /*!
-	@brief
+	\brief
 	Call this method to shift a packet out of the queue into the currentPacket position.
 	If the queue is empty, or there is already a |currentPacket| this method returns false. 
 	
-	@return
+	\return
 	(self.currentPacket != nil)
  */
 - (BOOL)tryDequeue;
 
 /*!
-	@brief
+	\brief
 	This method should be called once you have processed the |currentPacket| to allow another to be shifted into the |currentPacket| position.
  */
 - (void)dequeued;
 
 /*!
-	@brief
+	\brief
 	The method first removes all queued packets, then calls <tt>-dequeuePacket</tt>. This ensures that when terminating, you can flush the queue, without starting a new packet.
  */
 - (void)emptyQueue;

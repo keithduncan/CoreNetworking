@@ -15,7 +15,7 @@
 @class AFPacketRead;
 
 /*!
-	@brief
+	\brief
 	This packet will read a complete XML chunk and it's contents.
  
 	Return Examples:
@@ -24,7 +24,7 @@
 	2. <element> </element>
 	3. </element>
 	
-	@details
+	\details
 	The completed buffer is an NSString, allowing the caller to use whatever XML library is available.
  */
 @interface AFXMLElementPacket : AFPacket <AFPacketReading> {
@@ -38,13 +38,13 @@
 }
 
 /*!
-	@brief
+	\brief
 	Designated Initializer.
  */
 - (id)initWithStringEncoding:(NSStringEncoding)encoding;
 
 /*!
-	@brief
+	\brief
 	This returns the XML buffer as a string, encoded as you specified at initialization.
  */
 - (NSString *)buffer;

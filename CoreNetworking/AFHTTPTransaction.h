@@ -13,7 +13,7 @@
 #endif
 
 /*!
-	@brief
+	\brief
 	This class encapsulates a request/response pair.
  */
 @interface AFHTTPTransaction : NSObject {
@@ -25,7 +25,7 @@
 }
 
 /*!
-	@brief
+	\brief
 	This method retains the request and creates an empty response.
 	A NULL request, will result in an empty request being allocated.
  */

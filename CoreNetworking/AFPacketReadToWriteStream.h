@@ -12,10 +12,10 @@
 @class AFPacketRead;
 
 /*!
-	@brief
+	\brief
 	Acts as an adaptor between streams, allowing you to read a large file over the wire to disk.
 	
-	@details
+	\details
 	Currently, all write stream operations are blocking, this restricts practical usage to file streams.
  */
 @interface AFPacketReadToWriteStream : AFPacket <AFPacketReading> {
@@ -29,7 +29,7 @@
 }
 
 /*!
-	@brief
+	\brief
 	Designated Initialiser.
  */
 - (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration writeStream:(NSOutputStream *)writeStream numberOfBytesToRead:(NSInteger)numberOfBytesToRead;

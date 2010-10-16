@@ -13,12 +13,12 @@
 #endif
 
 /*!
-	@brief
+	\brief
 	Common transport layer types can be defined using these two fields.
 	
-	@field socketType
+	\field socketType
 	One of the socket types defined in <sys/socket.h>
-	@field protocol
+	\field protocol
 	One of the 'PROTOCOL NUMBERS' defined in IETF-RFC-1700 http://tools.ietf.org/html/rfc1700 - it is important that an appropriate `socketType` is also provided.
  */
 struct _AFSocketSignature {
@@ -28,7 +28,7 @@ struct _AFSocketSignature {
 typedef struct _AFSocketSignature AFSocketSignature;
 
 /*!
-	@brief
+	\brief
 	Simple equality test, to be used for determining the Bonjour protocol string to advertise with @"_tcp" ot @"_udp".
  */
 static inline BOOL AFSocketSignatureEqualToSignature(AFSocketSignature lhs, AFSocketSignature rhs) {
@@ -36,30 +36,31 @@ static inline BOOL AFSocketSignatureEqualToSignature(AFSocketSignature lhs, AFSo
 }
 
 /*!
-    @brief
+    \brief
 	This is suitable for creating a network TCP socket.
 */
 extern const AFSocketSignature AFSocketSignatureNetworkTCP;
 
 /*!
-	@brief
+	\brief
 	This is suitable for creating a network UDP socket.
  */
 extern const AFSocketSignature AFSocketSignatureNetworkUDP;
 
 /*!
-	@brief
+	\brief
 	This is suitable for creating a local UNIX path socket.
  */
 extern const AFSocketSignature AFSocketSignatureLocalPath;
 
 /*!
-	@brief
+	\brief
 	A transport layer struct simply includes the post number too, the port number isn't included in the <tt>AFSocketType</tt> because it is useful without it.
  
-	@field type
+	\field type
 	See the documentation on <tt>AFSocketType</tt>.
-	@field port
+	
+	\field port
 	Identifies the Transport Layer address to communicate using (see IETF-RFC-1122 http://tools.ietf.org/html/rfc1122) in network byte order.
  */
 struct _AFInternetTransportSignature {
@@ -69,16 +70,16 @@ struct _AFInternetTransportSignature {
 typedef struct _AFInternetTransportSignature AFInternetTransportSignature;
 
 /*!
-	@brief
+	\brief
 	Based on CFSocketSignature allowing for higher-level functionality.
 	The un-intuitive layout of the structure is very important; because the first pointer width bits are a CFTypeRef the structure can be introspected using CFGetTypeID.
 	
-	@details
+	\details
 	Doesn't include a |protocolFamily| field like CFSocketSignature because the |host| may resolve to a number of addresses each with a different protocol family.
 	
-	@field host
+	\field host
 	This should be copied using CFHostCreateCopy(). The addresses property should be resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap or as an instance variable, it won't be reclaimed.
-	@field transport
+	\field transport
 	See the documentation for <tt>AFNetworkTransportLayer</tt>, it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc) and the port.
  */
 struct _AFNetworkTransportHostSignature {
@@ -94,7 +95,7 @@ struct _AFNetworkTransportHostSignature {
 typedef struct _AFNetworkTransportHostSignature AFNetworkTransportHostSignature;
 
 /*!
-	@brief
+	\brief
 	This is a partner to <tt>AFNetworkTransportHostSignature</tt> except that a CFNetServiceRef contains all the information required.
  */
 struct _AFNetworkTransportServiceSignature {
@@ -106,7 +107,7 @@ struct _AFNetworkTransportServiceSignature {
 typedef struct _AFNetworkTransportServiceSignature AFNetworkTransportServiceSignature;
 
 /*!
-	@brief
+	\brief
 	This struct allows for arguments to be either <tt>AFNetworkTransportHostSignature</tt> or <tt>AFNetworkTransportServiceSignature</tt>.
 	A receiver will introspect the type using <tt>CFGetTypeID</tt> to determine which has been passed.
  */

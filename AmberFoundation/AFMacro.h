@@ -11,7 +11,7 @@
 #import "AmberFoundation/NSString+Additions.h"
 
 /*!
-	@file
+	\file
  */
 
 #define NSSTRING_CONSTANT(var) NSString *const var = @#var

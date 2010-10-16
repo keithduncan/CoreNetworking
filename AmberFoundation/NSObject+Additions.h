@@ -9,19 +9,19 @@
 #import <Foundation/Foundation.h>
 
 /*!
-	@brief
+	\brief
 	<b>Note: experimental interface, be prepared for it to break.</b>
  */
 @interface NSObject (AFAdditions)
 
 /*!
-	@brief
+	\brief
 	This is a primitive method.
 	
-	@param thread
+	\param thread
 	This thread must service it's runloop, otherwise the message will not be executed.
 	
-	@param waitUntilDone
+	\param waitUntilDone
 	If true, the caller will block until the target thread has executes each message.
 	This is provided for executing work on the main thread and blocking until complation.
 */
@@ -42,13 +42,13 @@
 - (id)asyncBackgroundThreadProxy;
 
 /*!
-	@brief
+	\brief
 	The proxy returned will only forward selectors that the target returns true for <tt>-respondsToSelector:</tt>.
  
-	@details
+	\details
 	This allows you to send unimplemented selectors without throwing an exception.
  
-	@result
+	\return
 	An <tt>AFProtocolProxy</tt> with the receiver as the target.
  */
 - (id)protocolProxy:(Protocol *)protocol;

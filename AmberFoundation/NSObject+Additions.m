@@ -78,7 +78,7 @@ static void _AFBackgroundRunLoopObserverCallBack(CFRunLoopObserverRef observer, 
 #pragma mark -
 
 /*!
-	@brief
+	\brief
 	This proxy is private, as such it doesn't implement anything beyond NSProxy.
  */
 

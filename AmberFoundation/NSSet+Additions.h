@@ -11,7 +11,7 @@
 @interface NSSet (AFAdditions)
 
 /*!
-	@result
+	\return
 	A copy of the receiver with the provided objects appended to the collection.
  */
 - (NSSet *)setByAddingObjects:(id)firstObject, ... NS_REQUIRES_NIL_TERMINATION;

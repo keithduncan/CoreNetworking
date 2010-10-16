@@ -13,10 +13,10 @@
 #import "CoreNetworking/AFTransportLayer.h"
 
 /*!
-	@brief
+	\brief
 	This is the parent class for all the network stack objects. You are unlikely to use it directly.
 	
-	@details
+	\details
 	This class configures a bidirectional proxying system. Unimplemented methods are forwarded to the |lowerLayer|, and the delegate accessor returns a proxy that forwards messages up the delegate chain.
 	CFHostRef and CFNetServiceRef are both first class citizens in Core Networking, and you can easily bring a stack online using either. (You should also consider NSURL/CFURL as a stand in for CFHostRef.)
 	
@@ -33,28 +33,28 @@
 }
 
 /*!
-	@brief
+	\brief
 	This method chains the layer classes.
  */
 + (Class)lowerLayer;
 
 /*!
-	@brief
+	\brief
 	Designated Initialiser.
  */
 - (id)initWithLowerLayer:(id <AFTransportLayer>)layer;
 
 /*!
-	@brief
+	\brief
 	Data should be passed onto the lowerLayer for further processing.
  */
 - (AFNetworkLayer *)lowerLayer;
 
 /*!
-	@brief
+	\brief
 	Outbound Initialiser.
  
-	@details
+	\details
 	You can provide either a host + transport details, or <AFNetServiceCommon> compilant class.
 	
 	If you provide a host, the details are captured and the host copied.
@@ -65,16 +65,16 @@
 - (AFNetworkLayer *)initWithTransportSignature:(AFNetworkTransportSignature)signature;
 
 /*!
-	@brief
+	\brief
 	When accessing this property, you will not recieve the same object you passed in, this method returns a transparent proxy that allows a caller to forward messages up the delegate stack.
  */
 @property (assign) id delegate;
 
 /*!
-	@brief
+	\brief
 	This isn't used by the framework, it is intended for use like <tt>-[NSThread threadDictionary]</tt> to store miscellaneous data.
 	
-	@details
+	\details
 	The network layers are KVC containers, much like a CALayer. Values for undefined keys are stored in this property.
 	
 	The dictionary returned is the result of reducing the |transportInfo| onto the |lowerLayer.transportInfo|. This takes place recursively.

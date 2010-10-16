@@ -15,10 +15,10 @@
 @class AFPacketWrite;
 
 /*!
-	@brief
+	\brief
 	Acts as an adaptor between streams, allowing you to write a large file out over the wire.
 	
-	@details
+	\details
 	Currently, all read stream operations are blocking, this restricts practical usage to file streams.
  */
 @interface AFPacketWriteFromReadStream : AFPacket <AFPacketWriting> {
@@ -33,13 +33,13 @@
 }
 
 /*!
-	@brief
+	\brief
 	Designated Initialiser.
 	
-	@param readStream
+	\param readStream
 	Ownership is taken of the read stream and a new client set, the stream should be closed when passing it.
 	
-	@param numberOfBytesToRead
+	\param numberOfBytesToRead
 	Pass -1 to read until the stream is empty.
  */
 - (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration readStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite;

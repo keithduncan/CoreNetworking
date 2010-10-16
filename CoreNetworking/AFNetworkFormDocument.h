@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 
 /*!
-	@brief
+	\brief
 	This format is described in IETF-RFC-2388 http://tools.ietf.org/html/rfc2388
 	
-	@details
+	\details
 	The order you add values in is unpreserved.
  */
 @interface AFNetworkFormDocument : NSObject {
@@ -22,44 +22,44 @@
 }
 
 /*!
-	@brief
+	\brief
 	Fetch a previously stored value for the field key.
  */
 - (NSString *)valueForField:(NSString *)fieldname;
 
 /*!
-	@brief
+	\brief
 	The fieldname must be unique per document, setting a value for an existing fieldname will overwrite the previous value.
  */
 - (void)setValue:(NSString *)value forField:(NSString *)fieldname;
 
 /*!
-	@brief
+	\brief
 	Unordered collection of previously added URLs using <tt>-addFileByReferencingURL:withFilename:toField:</tt>.
  */
 - (NSSet *)fileLocationsForField:(NSString *)fieldname;
 
 /*!
-	@brief
+	\brief
 	Form documents support multiple files per-fieldname.
 	
-	@param filename
+	\param filename
 	This is optional, excluding it will use the last path component.
  */
 - (void)addFileByReferencingURL:(NSURL *)location withFilename:(NSString *)filename toField:(NSString *)fieldname;
 
 /*!
-	@brief
+	\brief
 	Used to convert the document into a wire format.
 	
-	@return writePackets
+	\return writePackets
 	An ordered collection of <AFPacketWriting> conforming objects which should be replayed over the wire.
 	Nil return value means the document couldn't be converted.
 	
-	@param contentTypeRef
+	\param contentTypeRef
 	The document type.
 	
-	@param frameLengthRef
+	\param frameLengthRef
 	Used for frame headers.
  */
 - (NSArray *)documentPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef;

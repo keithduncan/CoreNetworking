@@ -15,10 +15,10 @@
 @class AFPacketRead;
 
 /*!
-	@brief
+	\brief
 	This packet will read either a request or response and return a CFHTTPMessageRef as it's buffer.
 	
-	@detail
+	\details
 	This is a composite packet, wrapping <tt>AFHTTPHeadersPacket</tt> and <tt>AFHTTPBodyPacket</tt>.
  */
 @interface AFHTTPMessagePacket : AFPacket <AFPacketReading> {
@@ -32,13 +32,13 @@
 }
 
 /*!
-	@brief
+	\brief
 	Designated Initialiser.
  */
 - (id)initForRequest:(BOOL)isRequest;
 
 /*!
-	@brief
+	\brief
 	By default, the response body is appended to the message buffer.
 	If set, the body will be streamed to disk instead of loaded into memory.
  */

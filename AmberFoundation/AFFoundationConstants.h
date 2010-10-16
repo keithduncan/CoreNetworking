@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 /*!
-	@file
+	\file
  */
 
 extern NSString *const AFAmberFoundationBundleIdentifier;

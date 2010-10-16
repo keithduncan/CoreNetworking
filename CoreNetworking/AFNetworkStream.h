@@ -43,7 +43,7 @@
  */
 
 /*!
-	@brief
+	\brief
 	The stream MUST be unopened, this is asserted.
  */
 - (id)initWithStream:(NSStream *)stream;

@@ -11,7 +11,7 @@
 @interface NSSortDescriptor (AFAdditions)
 
 /*!
-	@brief
+	\brief
 	Simplifies the creation of multiple sort descriptors, by creating them inline.
  */
 + (NSArray *)ascending:(BOOL)ascending descriptorsForKeys:(NSString *)firstKey, ... NS_REQUIRES_NIL_TERMINATION;

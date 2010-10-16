@@ -9,10 +9,10 @@
 #import <Cocoa/Cocoa.h>
 
 /*!
-	@brief
+	\brief
 	Returns the result of -[self.target valueForKeyPath:self.keyPath] as it's forwarding target.
 	
-	@details
+	\details
 	Allows you to dynamically proxy a delegate, without regenerating proxy chains each time one changes.
  */
 @interface AFTargetProxy : NSProxy {
@@ -22,13 +22,13 @@
 }
 
 /*!
-	@brief
+	\brief
 	Designated Initialiser.
 	
-	@param target
+	\param target
 	Retained.
 	
-	@param keyPath
+	\param keyPath
 	Copied.
  */
 - (id)initWithTarget:(id)target keyPath:(NSString *)keyPath;

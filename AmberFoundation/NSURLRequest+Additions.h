@@ -9,16 +9,16 @@
 #import <Cocoa/Cocoa.h>
 
 /*!
-	@brief
+	\brief
 	
  */
 @interface NSURLRequest (AFAdditions)
 
 /*!
-	@brief
+	\brief
 	Parses <tt>&</tt> separated <tt>key=value</tt> pairs.
 	
-	@detail
+	\details
 	Can be used to parse an <tt>NSURL</tt> query string, or a <tt>application/x-www-form-urlencoded</tt> body.
  */
 + (NSDictionary *)parametersFromString:(NSString *)parameterString;
@@ -26,34 +26,34 @@
 @end
 
 /*!
-	@brief
+	\brief
 	
  */
 @interface NSMutableURLRequest (AFAdditions)
 
 /*!
-	@brief
+	\brief
 	Appends the query parameters to <tt>URL</tt> property.
 	
-	@param parameters
+	\param parameters
 	This value must map <tt>NSString</tt> keys to <tt>NSString</tt> objects.
  */
 - (void)appendQueryParameters:(NSDictionary *)parameters;
 
 /*!
-	@brief
+	\brief
 	Parses the parameter list in the <tt>URL</tt> property.
 	
-	@return
+	\result
 	Returns nil if there are no parameters.
  */
 - (NSDictionary *)parametersFromQuery;
 
 /*!
-	@brief
+	\brief
 	Parses the parameter list in the <tt>HTTPBody</tt> property if the <tt>Content-Type</tt> header is <tt>application/x-www-form-urlencoded</tt>.
 	
-	@return
+	\result
 	Returns nil if there are no parameters.
  */
 - (NSDictionary *)parametersFromBody;

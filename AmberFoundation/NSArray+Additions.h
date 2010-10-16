@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 /*!
-	@brief
+	\brief
 	This returns whether or not it is safe to use <tt>-objectAtIndex:</tt> for a given index.
  */
 NS_INLINE BOOL AFArrayContainsIndex(NSArray *array, NSUInteger index) {
@@ -17,7 +17,7 @@ NS_INLINE BOOL AFArrayContainsIndex(NSArray *array, NSUInteger index) {
 }
 
 /*!
-	@brief
+	\brief
 	This returns nil of the index isn't present in the array.
  */
 NS_INLINE id AFSafeObjectAtIndex(NSArray *array, NSUInteger index) {
@@ -31,7 +31,7 @@ NS_INLINE id AFSafeObjectAtIndex(NSArray *array, NSUInteger index) {
 - (NSArray *)subarrayFromIndex:(NSUInteger)index;
 
 /*!
-	@brief
+	\brief
 	This returns the only object in the array, or nil if the receiver doesn't contain exactly one object.
  */
 - (id)onlyObject;

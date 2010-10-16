@@ -19,7 +19,7 @@
 #pragma mark -
 
 /*!
-	@brief
+	\brief
 	An AFConnectionLayer should maintain a stateful connection between endpoints.
  */
 @protocol AFConnectionLayer <AFTransportLayer>
@@ -29,16 +29,16 @@
  @optional
 
 /*!
-	@brief
+	\brief
 	Pass a dictionary with the SSL keys specified in CFSocketStream.h
 	
-	@details
+	\details
 	Any immediate error is returned by reference, if negotiation fails the error will be delivered by 
  */
 - (BOOL)startTLS:(NSDictionary *)options error:(NSError **)errorRef;
 
 /*!
-	@brief
+	\brief
 	This method can be used to determine if SSL/TLS has been started on the connection.
  */
 - (BOOL)isSecure;
@@ -49,7 +49,7 @@
 @protocol AFConnectionLayerHostDelegate <AFTransportLayerHostDelegate>
 
 /*!
-	@param layer
+	\param layer
 	Could be the host that spawned it or an intermediate object.
  */
 - (void)layer:(id)layer didAcceptConnection:(id <AFTransportLayer>)layer;

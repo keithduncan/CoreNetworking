@@ -9,24 +9,24 @@
 #import <Foundation/Foundation.h>
 
 /*!
-	@file
+	\file
  */
 
 /*!
-	@brief
+	\brief
 	Check the plist serialisability of the object passed in.
  
-	@details
+	\details
 	The plist objects are NSString, NSArray, NSDictionary, NSDate, NSData, NSNumber.
 	In the case of NSDictionary, the keys must be NSString object mapping to another plist object.
  
-	@result
+	\return
 	If the object is, or is wholly consituted of, plist objects.
  */
 BOOL AFObjectIsPlistSerialisable(id object);
 
 /*!
-	@brief
+	\brief
 	An <tt>NSCoding</tt> like method pair. Unlike NSCoding it is designed to produce human-readable archives.
  */
 @protocol AFPropertyList <NSObject>
@@ -46,7 +46,7 @@ BOOL AFObjectIsPlistSerialisable(id object);
 @end
 
 /*!
-	@brief
+	\brief
 	This function returns a property list object which combines the <tt>-propertyListRepresentation</tt>
 	of |object| and the data required to reinstantiate it. The archive can be reinstantiated using
 	<tt>AFPropertyListRepresenationUnarchive</tt>.
@@ -54,7 +54,7 @@ BOOL AFObjectIsPlistSerialisable(id object);
 extern CFPropertyListRef AFPropertyListRepresentationArchive(id <AFPropertyList> object);
 
 /*!
-	@brief
+	\brief
 	This function unarchives a property list archive, returned from <tt>AFPropertyListRepresentationArchive()</tt>,
 	back into a live object.
  */

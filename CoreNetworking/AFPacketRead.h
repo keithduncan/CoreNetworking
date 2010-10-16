@@ -9,10 +9,10 @@
 #import "CoreNetworking/AFPacket.h"
 
 /*!
-	@brief
+	\brief
 	This is a standard read packet.
 	
-	@param terminator
+	\param terminator
 	If you pass an <tt>NSNumber</tt> object, the packet reads a fixed number of bytes.
 	If you pass an <tt>NSData</tt> object, the byte pattern is matched, all data upto and including the byte pattern is returned.
 	If you pass an <tt>NSNull</tt> object, all available data is read.
@@ -26,7 +26,7 @@
 }
 
 /*!
-	@brief
+	\brief
 	Designated initialiser.
  */
 - (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration terminator:(id)terminator;

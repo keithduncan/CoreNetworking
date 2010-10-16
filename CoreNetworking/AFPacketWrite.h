@@ -9,7 +9,7 @@
 #import "CoreNetworking/AFPacket.h"
 
 /*!
-	@brief
+	\brief
 	This is a standard write packet.
  */
 @interface AFPacketWrite : AFPacket <AFPacketWriting> {
@@ -23,10 +23,10 @@
 - (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration data:(NSData *)buffer;
 
 /*!
-	@brief
+	\brief
 	This property allows you to simulate a smaller socket buffer when using the CFStreamRef subclasses.
 	
-	@details
+	\details
 	The default value of this property is -1 which limits each write to the maximum size of the kernel buffer.
  */
 @property (assign) NSInteger chunkSize;

@@ -17,10 +17,10 @@
 @protocol AFHTTPConnectionDataDelegate;
 
 /*!
-	@brief
+	\brief
 	This class is indended to sit on top of AFNetworkTransport and provides HTTP messaging semantics.
  
-	@details
+	\details
 	It handles each request in series; and includes automatic behaviour for serveral responses:
  
 	- 
@@ -31,25 +31,25 @@
 }
 
 /*!
-	@brief
+	\brief
 	This property adds HTTP message data callbacks to the delegate.
  */
 @property (assign) id <AFConnectionLayerControlDelegate, AFHTTPConnectionDataDelegate> delegate;
 
 /*!
-	@brief
+	\brief
 	These headers will be added to each request/response written to the connection.
  
-	@details
+	\details
 	A client could add a 'User-Agent' header, likewise a server could add a 'Server' header.
  */
 @property (readonly, retain) NSMutableDictionary *messageHeaders;
 
 /*!
-	@brief
+	\brief
 	Overridable for subclasses, called for every request.
 	
-	@details
+	\details
 	Adds the <tt>messageHeaders</tt>.
  */
 - (void)preprocessRequest:(CFHTTPMessageRef)request;
@@ -59,19 +59,19 @@
  */
 
 /*!
-	@brief
+	\brief
 	This method allows for raw HTTP messaging without starting the internal request/response matching.
  */
 - (void)performRequestMessage:(CFHTTPMessageRef)message;
 
 /*!
-	@brief
+	\brief
 	This enqueues a request reading packet, and is useful for servers and raw messaging.
  */
 - (void)readRequest;
 
 /*!
-	@brief
+	\brief
 	This enqueues a request reading packet, which writes the body to the location indicated, and is useful for raw messaging.
  */
 - (void)downloadRequest:(NSURL *)location;
@@ -81,20 +81,20 @@
  */
 
 /*!
-	@brief
+	\brief
 	This serialises the response and writes it out over the wire.
 	The connection wide headers will be appended to it.
  */
 - (void)performResponseMessage:(CFHTTPMessageRef)message;
 
 /*!
-	@brief
+	\brief
 	This enqueues a response reading packet, and is useful for raw messaging.
  */
 - (void)readResponse;
 
 /*!
-	@brief
+	\brief
 	This enqueues a response reading packet, which writes the body to the location indicated, and is useful for raw messaging.
  */
 - (void)downloadResponse:(NSURL *)location;

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 /*!
-	@file
+	\file
  */
 
 enum {
@@ -24,7 +24,7 @@ enum {
 typedef NSUInteger AFWeekday;
 
 /*!
-	@brief
+	\brief
 	This function returns a key suitable for use in a dictionary or NSUserDefaults.
 	It is not localised and must not be displayed to the user. Use NSDateFormatter to access localised date strings.
  */
@@ -50,19 +50,19 @@ typedef NSUInteger AFMonth;
 @interface NSDate (AFAdditions)
 
 /*!
-	@result
+	\return
 	The day of the month.
  */
 - (NSUInteger)day;
 
 /*!
-	@brief
+	\brief
 	Simple convenience method, I found myself frequently fetching the day, month and year from NSDateComponents.
  */
 - (void)getDay:(NSUInteger *)day month:(NSUInteger *)month year:(NSUInteger *)year;
 
 /*!
-	@brief
+	\brief
 	Creates NSDateComponents for each the receiver and |otherDate| using the flags, and returns the result of <tt>-[NSDateComponents components:match:]</tt>.
  */
 - (BOOL)components:(NSUInteger)flags matchDate:(NSDate *)otherDate;
@@ -75,7 +75,7 @@ typedef NSUInteger AFMonth;
 @interface NSDateComponents (AFAdditions)
 
 /*!
-	@brief
+	\brief
 	Checks each of the components in |flags| for equality against |components|.
  */
 - (BOOL)components:(NSUInteger)flags match:(NSDateComponents *)components;

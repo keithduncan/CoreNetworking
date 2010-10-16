@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 
 /*!
-	@file
+	\file
  */
 
 /*!
-	@brief
+	\brief
 	A range with location and length equal {0, 0}.
  */
 extern const NSRange AFEmptyRange;

@@ -15,7 +15,7 @@
 @class AFPacketRead;
 
 /*!
-	@brief
+	\brief
 	This function returns the expected body length of the provided CFHTTPMessageRef.
  
 	This method uses the "Content-Length" header of the response to determine how much more a client should read to complete the packet.
@@ -24,7 +24,7 @@
 extern NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message);
 
 /*!
-	@brief
+	\brief
 	
  */
 @interface AFHTTPHeadersPacket : AFPacket <AFPacketReading> {
@@ -34,7 +34,7 @@ extern NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message);
 }
 
 /*!
-	@brief
+	\brief
 	Designated Initialiser.
  */
 - (id)initWithMessage:(CFHTTPMessageRef)message;

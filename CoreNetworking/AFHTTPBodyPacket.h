@@ -15,7 +15,7 @@
 #import "CoreNetworking/AFPacket.h"
 
 /*!
-	@brief
+	\brief
 	Posted as for each piece of data read from the input stream.
  */
 extern NSString *const AFHTTPBodyPacketDidReadNotificationName;
@@ -23,10 +23,10 @@ extern NSString *const AFHTTPBodyPacketDidReadNotificationName;
 	extern NSString *const AFHTTPBodyPacketDidReadDataKey;
 
 /*!
-	@brief
+	\brief
 	This is a versatile packet for handling HTTP bodies.
 	
-	@details
+	\details
 	It will handle full or chunked bodies.
  */
 @interface AFHTTPBodyPacket : AFPacket <AFPacketReading> {
@@ -37,31 +37,31 @@ extern NSString *const AFHTTPBodyPacketDidReadNotificationName;
 }
 
 /*!
-	@brief
+	\brief
 	Should be called before creating a body packet, this is asserted in the constructor.
 	
-	@details
+	\details
 	This doesn't indicate that the body <em>can</em> be parsed, just that a body is present.
  
-	@param message
+	\param message
 	The message MUST have a complete header, or an exception is thrown.
  */
 + (BOOL)messageHasBody:(CFHTTPMessageRef)message;
 
 /*!
-	@brief
+	\brief
 	Attempts to interpret the message header and generate an appropriate packet.
 	
-	@details
+	\details
 	If the message has an incomplete header, or <tt>+messageHasBody:</tt> returns NO, an exception is thrown.
  */
 + (AFHTTPBodyPacket *)parseBodyPacketFromMessage:(CFHTTPMessageRef)message error:(NSError **)errorRef;
 
 /*!
-	@brief
+	\brief
 	Configures whether the body data should be appended to the message body passed in.
 	
-	@detail
+	\details
 	Defaults to YES.
  */
 @property (assign) BOOL appendBodyDataToMessage;

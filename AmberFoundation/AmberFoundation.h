@@ -8,8 +8,10 @@
  */
 
 /*!
-	@header
-    @brief	This framework reserves the (AFAdditions) category namespace, don't use it!
+	\file
+	
+    \brief
+	This framework reserves the <tt>AFAdditions<tt> category namespace.
 */
 
 //

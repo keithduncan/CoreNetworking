@@ -15,7 +15,7 @@
 
 #if !TARGET_OS_IPHONE
 
-NSString *const AFUserDefaultsDidChangeNotification = @"AFUserDefaultsDidChangeNotification";
+NSString *const AFUserDefaultsDidChangeNotificationName = @"AFUserDefaultsDidChangeNotification";
 
 static NSString *const kAFBundleIdentifierDefaults = @"kIdentifierDefaults";
 static NSString *const kAFBundleRegisteredDefaults = @"kRegisteredDefaults";
@@ -59,7 +59,7 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 	
 	_identifier = [identifier copy];
 	
-	[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_preferencesDidChange:) name:AFUserDefaultsDidChangeNotification object:self.identifier suspensionBehavior:NSNotificationSuspensionBehaviorHold];
+	[[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_preferencesDidChange:) name:AFUserDefaultsDidChangeNotificationName object:self.identifier suspensionBehavior:NSNotificationSuspensionBehaviorHold];
 	
 	return self;
 }
@@ -148,7 +148,7 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 	BOOL result = [self _synchronize];
 	
 	if (result)
-		[[NSDistributedNotificationCenter defaultCenter] postNotificationName:AFUserDefaultsDidChangeNotification object:self.identifier userInfo:nil options:0];
+		[[NSDistributedNotificationCenter defaultCenter] postNotificationName:AFUserDefaultsDidChangeNotificationName object:self.identifier userInfo:nil options:0];
 	
 	return result;
 }

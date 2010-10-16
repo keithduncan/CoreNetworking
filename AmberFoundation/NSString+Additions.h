@@ -11,7 +11,7 @@
 @interface NSString (AFAdditions)
 
 /*!
-	@brief
+	\brief
 	Compares the receiver, after trimming whitespace, to @"".
  */
 - (BOOL)isEmpty;
@@ -19,7 +19,7 @@
 @end
 
 /*!
-	@brief
+	\brief
 	Assists in manipulating KVC dotted paths.
  */
 @interface NSString (AFKeyValueCoding)
