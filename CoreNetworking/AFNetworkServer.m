@@ -169,7 +169,7 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 	
 	unsigned int maximumLength = sizeof(address.sun_path);
 	if (strlen([[location path] fileSystemRepresentation]) >= maximumLength) {
-		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) must be < %ld characters including the NULL terminator", __PRETTY_FUNCTION__, [location path], maximumLength, nil];
+		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) must be < %ld characters including the NUL terminator", __PRETTY_FUNCTION__, [location path], maximumLength, nil];
 		return NO;
 	}
 	
@@ -181,7 +181,7 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 }
 
 - (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature)signature address:(NSData *)address {	
-	struct sockaddr addr;
+	struct sockaddr addr = {0};
 	[address getBytes:&addr length:sizeof(struct sockaddr)];
 	
 	CFSocketSignature socketSignature = {
