@@ -62,7 +62,7 @@
 
 #import "CoreNetworking/AFXMLElementPacket.h"
 
-// See http://code.google.com/p/objectivexmpp/ for implementation.
+// See http://code.google.com/p/objectivexmpp/ for implementation
 
 /* AMQP */
 // Not Yet Implemented
@@ -81,6 +81,9 @@
 
 /* LDAP */
 // Not Yet Implemented
+
+/* AFP */
+// Not Yet Implememted
 
 /*
 	MIME Documents
