@@ -43,7 +43,7 @@
 	Call this method to shift a packet out of the queue into the currentPacket position.
 	If the queue is empty, or there is already a |currentPacket| this method returns false. 
 	
-	@result
+	@return
 	(self.currentPacket != nil)
  */
 - (BOOL)tryDequeue;

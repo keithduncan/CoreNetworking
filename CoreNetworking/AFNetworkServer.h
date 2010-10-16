@@ -65,7 +65,7 @@
 	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6), however you shouldn't <em>need</em> to know this.
 	This is likely only to be useful for testing your server, since it won't be accessable from another computer.
  
-	@result
+	@return
 	All the localhost socket addresses, these are only accessible from the local machine.
 	This allows you to create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to 127.0.0.1 and ::1).
  */
@@ -75,7 +75,7 @@
 	@details
 	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6).
 	
-	@result
+	@return
 	All the network socket addresses, these may be accessable from other network clients (ignoring firewall restrictions).
  */
 + (NSSet *)allInternetSocketAddresses;
@@ -123,10 +123,10 @@
 	@brief
 	This method will open IP sockets, the addresses passed in |sockaddrs| should be either (struct sockaddr_in) or (struct sockaddr_in6) or another future IP socket address, so long as there's a sixteen bit port number at an offset of (((uint8_t)(struct sockaddr_sa *))+16)
 	
-	@param |port|
+	@param port
 	This is an in-out parameter, passing zero in by reference will have the kernel allocate a port number, the location you provide will contain that number on return
  
-	@result
+	@return
 	NO if any of the sockets couldn't be created, this will be expanded in future to allow delegate interaction to determine failure.
  */
 - (BOOL)openInternetSocketsWithSocketSignature:(const AFSocketSignature)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs;
@@ -138,10 +138,10 @@
 	@details
 	This method makes no provisions for deleting an existing socket should it exist, and will fail if one does.
 	
-	@param |location|
+	@param location
 	Only file:// URLs are supported, an exception is thrown if you profide another scheme.
 	
-	@result
+	@return
 	NO if the socket couldn't be created
  */
 - (BOOL)openPathSocketWithLocation:(NSURL *)location;

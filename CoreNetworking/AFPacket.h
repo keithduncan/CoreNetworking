@@ -79,7 +79,7 @@ extern NSString *const AFPacketDidCompleteNotificationName;
 /*!
 	@brief
 	This is an override point
-	@result
+	@return
 	Values in the range [0.0, 1.0], this method returns 0.0 by default
  */
 - (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal;

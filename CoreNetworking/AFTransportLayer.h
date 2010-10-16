@@ -63,7 +63,7 @@
 - (void)open;
 
 /*!
-	@result
+	@return
 	YES if the layer is currently open.
  */
 - (BOOL)isOpen;
@@ -113,8 +113,8 @@
 - (void)performWrite:(id)buffer withTimeout:(NSTimeInterval)duration context:(void *)context;
 
 /*!
-	@param
-	|terminator| provide a pattern to match for the delegate to be called. This can be an NSNumber for length or an NSData for bit pattern.
+	@param terminator
+	Provide a pattern to match for the delegate to be called. This can be an NSNumber for length or an NSData for bit pattern.
 	This method should also accept an AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
  */
 - (void)performRead:(id)terminator withTimeout:(NSTimeInterval)duration context:(void *)context;

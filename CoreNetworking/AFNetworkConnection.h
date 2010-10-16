@@ -32,7 +32,7 @@
 	@details
 	The default implementation throws an exception.
  
-	@result
+	@return
 	You only need to return the application type, excluding the transport type where @"_<application protocol>._<transport protocol>".
  */
 + (NSString *)serviceDiscoveryType;

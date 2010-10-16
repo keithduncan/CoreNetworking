@@ -16,13 +16,12 @@
 
 /*!
 	@brief
-	The defines the minimum required to create a service suitable for resolution
- 
+	The defines the minimum required to create a service suitable for resolution.
+	
 	@details
-	NSNetService doesn't need to support copying because once discovered, the name, type and service are sufficient to create other classes
-	For example the AFNetService class below provides a KVO compliant presence dictionary that maps to the TXT record
-	Another class might listen for changes to the phsh TXT entry of a Bonjour peer and update the avatar (found in the NULL record)
-	Important: if a class is passed an (id <AFNetServiceCommon) to create a new service, you MUST use <tt>-valueForKey:</tt> allowing for a dictionary (or other serialized reference) to be used in place of an actual service object.
+	<tt>NSNetService</tt> doesn't need to support copying because once discovered, the name, type and service are sufficient to create other classes.
+	For example the <tt>AFNetService</tt> class below provides a KVO compliant presence dictionary that maps to the TXT record.
+	Important: if a class is passed an (id <AFNetServiceCommon>) to create a new service, you <b>must</b> use <tt>-valueForKey:</tt> allowing for a dictionary (or other serialized reference) to be used in place of an actual service object.
  */
 @protocol AFNetServiceCommon <NSObject>
 
@@ -40,13 +39,13 @@
 
 /*!
 	@brief
-	Implementors MUST use <tt>-valueForKey:</tt> to extract the |name|, |type| and |domain| as documented in the <tt>AFNetServiceCommon</tt> description.
+	Implementors <b>must</b> use <tt>-valueForKey:</tt> to extract the <tt>name<tt>, <tt>type</tt> and <tt>domain</tt> as documented in the <tt>AFNetServiceCommon</tt> description.
  */
 - (id)initWithNetService:(id <AFNetServiceCommon>)service;
 
 /*!
 	@brief
-	This method is optional, though it should simply be a concatenation of the |name|, |type| and |domain| suitable for resolution.
+	This method is optional, though it should simply be a concatenation of the <tt>name</tt>, <tt>type</tt> and <tt>domain</tt> suitable for resolution.
  */
 - (NSString *)fullName;
 
@@ -55,16 +54,16 @@
 
 /*!
 	@brief
-	Converts a data object containing TXT record to a dictionay.
- 
+	Convert an <tt>NSData</tt> object containing TXT record data into an <tt>NSDictionay</tt>.
+	
 	@details
-	The dictionary returned by the <tt>+[NSNetService dictionaryFromTXTRecordData:]</tt> only converts the keys to UTF-8 encoded NSStrings, this function converts the data objects as UTF-8 strings too.
- 
-	@param
-	|TXTRecordData| should be the raw NSData object as returned by <tt>-[NSNetService TXTRecordData]</tt>.
- 
-	@result
-	A dictionary of NSString key-value pairs.
+	The dictionary returned by the <tt>+[NSNetService dictionaryFromTXTRecordData:]</tt> only converts the keys to UTF-8 encoded <tt>NSString</tt> objects, this function converts the data objects as UTF-8 strings too.
+	
+	@param TXTRecordData
+	The raw NSData object as returned by <tt>-[NSNetService TXTRecordData]</tt>.
+	
+	@return
+	An <tt>NSDictionary</tt> object of <tt>NSString</tt> key-value pairs.
 */
 extern NSDictionary *AFNetServicePropertyDictionaryFromTXTRecordData(NSData *TXTRecordData);
 
@@ -79,8 +78,8 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 
 /*!
     @brief
-	A replacement for a resolvable NSNetService with a KVO compliant 'presence' dictionary corresponding to the TXT record data
- 
+	A replacement for a resolvable <tt>NSNetService</tt> with a KVO compliant 'presence' dictionary corresponding to the TXT record data.
+	
 	@details
 	The initialisers for this class are in <tt>AFNetServiceCommon</tt>.
 	This cannot currently be used for publishing a service, the NSNetService API is generally sufficient for that.
@@ -94,27 +93,50 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 	NSDictionary *presence;
 }
 
+/*!
+	@brief
+	The delegate is called when resolution discovers an address or fails to.
+ */
 @property (assign) id <AFNetServiceDelegate> delegate;
 
+/*!
+	@brief
+	The TXT record decoded into key=value pairs.
+ */
 @property (readonly, retain) NSDictionary *presence;
 
 /*!
 	@brief
-	This starts observing the TXT record of the service. Interested parties will be notified using the KVO compliant |persence| dictionary property
+	Start monitoring the TXT record of the service.
+	Interested parties will be notified using the KVO compliant <tt>persence</tt> <tt>NSDictionary</tt> property.
  */
 - (void)startMonitoring;
 
+/*!
+	@brief
+	Stop monitoring the TXT record of the service.
+ */
 - (void)stopMonitoring;
 
 /*!
 	@brief
+	Called when a new TXT record has been received.
+	
+	@details
 	If one of the TXT dicrionary keys has a knock-on effect, like the phsh key for P2P XMPP documented in XEP-0174, you can detect that in an overridden implementation.
-	This will serve as a useful override point for protocol specific subclasses.
  */
 - (void)updatePresenceWithValuesForKeys:(NSDictionary *)newPresence;
 
+/*!
+	@brief
+	Starts lookup for the addresses of the service.
+ */
 - (void)resolveWithTimeout:(NSTimeInterval)delta;
 
+/*!
+	@brief
+	Stops lookup for the addresses of the service.
+ */
 - (void)stopResolve;
 
 /*!
@@ -134,7 +156,16 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 
 @protocol AFNetServiceDelegate <NSObject>
 
+/*!
+	@brief
+	
+ */
 - (void)netServiceDidResolveAddress:(AFNetService *)service;
+
+/*!
+	@brief
+	
+ */
 - (void)netService:(AFNetService *)service didNotResolveAddress:(NSError *)error;
 
 @end

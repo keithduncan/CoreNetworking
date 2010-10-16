@@ -52,7 +52,7 @@
 	@brief
 	Used to convert the document into a wire format.
 	
-	@result writePackets
+	@return writePackets
 	An ordered collection of <AFPacketWriting> conforming objects which should be replayed over the wire.
 	Nil return value means the document couldn't be converted.
 	

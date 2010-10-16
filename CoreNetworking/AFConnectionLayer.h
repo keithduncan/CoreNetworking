@@ -49,8 +49,8 @@
 @protocol AFConnectionLayerHostDelegate <AFTransportLayerHostDelegate>
 
 /*!
-	@param
-	|layer| could be the host that spawned it or an intermediate object.
+	@param layer
+	Could be the host that spawned it or an intermediate object.
  */
 - (void)layer:(id)layer didAcceptConnection:(id <AFTransportLayer>)layer;
 

@@ -96,8 +96,8 @@
 	@brief
 	Instead of calling <tt>-currentReadProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of read progress.
 	
-	@param
-	|total| will be NSUIntegerMax if the packet terminator is a data pattern.
+	@param total
+	Will be <tt>NSUIntegerMax</tt> if the packet terminator is a data pattern.
  */
 - (void)transport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialBytes totalLength:(NSUInteger)totalLength context:(void *)context;
 
