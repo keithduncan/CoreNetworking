@@ -18,10 +18,13 @@ CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request) {
 	
 	CFHTTPMessageRef message = CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)[request HTTPMethod], (CFURLRef)[request URL], kCFHTTPVersion1_1);
 	
-	for (NSString *currentHeader in [request allHTTPHeaderFields])
+	for (NSString *currentHeader in [request allHTTPHeaderFields]) {
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)currentHeader, (CFStringRef)[[request allHTTPHeaderFields] objectForKey:currentHeader]);
+	}
 	
-	CFHTTPMessageSetBody(message, (CFDataRef)[request HTTPBody]);
+	if ([request HTTPBody] != nil) {
+		CFHTTPMessageSetBody(message, (CFDataRef)[request HTTPBody]);
+	}
 	
 	return message;
 }
@@ -43,6 +46,10 @@ CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response) {
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)key, (CFStringRef)obj);
 	}];
 	return message;
+}
+
+NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(CFHTTPMessageRef message) {
+	
 }
 
 void _AFHTTPPrintMessage(CFHTTPMessageRef message) {

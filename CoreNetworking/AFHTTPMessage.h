@@ -21,27 +21,33 @@
 
 /*!
 	\brief
-	Converts from an NSURLRequest to a CFHTTPMessage request.
- 
+	Convert an <tt>NSURLRequest</tt> object to a <tt>CFHTTPMessageRef</tt> request.
+	
 	\details
-	If the request parameter uses a stream for the body, this function will throw an exception.
+	If the request uses a stream for the body, an exception is thrown.
  */
 extern CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request);
 
 /*!
 	\brief
-	Converts from a CFHTTPMessage request to an NSURLRequest.
+	Convert a <tt>CFHTTPMessageRef</tt> request to an <tt>NSURLRequest</tt> object.
  */
 extern NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message);
 
 /*!
 	\brief
-	Converts an NSHTTPURLResponse into a CFHTTPMessageRef.
+	Convert an <tt>NSHTTPURLResponse</tt> object to a <tt>CFHTTPMessageRef</tt> response.
 	
 	\details
-	The message will not have a body, since that is captured separately from the NSHTTPURLResponse.
+	The message will not have a body, since that is captured separately from the <tt>NSHTTPURLResponse</tt> object.
  */
 extern CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response);
+
+/*!
+	\brief
+	Convert a <tt>CFHTTPMessageRef</tt> response to an <tt>NSHTTPURLResponse</tt> object.
+ */
+extern NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(CFHTTPMessageRef message);
 
 /*!
 	\brief
