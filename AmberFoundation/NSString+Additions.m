@@ -16,24 +16,6 @@
 	return [[self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""];
 }
 
-- (NSDictionary *)parametersWithSeparator:(NSString *)separator delimiter:(NSString *)delimiter {
-	NSArray *parameterPairs = [self componentsSeparatedByString:delimiter];
-	
-	NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:[parameterPairs count]];
-	
-	for (NSString *currentPair in parameterPairs) {
-		NSArray *pairComponents = [currentPair componentsSeparatedByString:separator];
-		
-		NSString *key = ([pairComponents count] >= 1 ? [pairComponents objectAtIndex:0] : nil);
-		if (key == nil) continue;
-		
-		NSString *value = ([pairComponents count] >= 2 ? [pairComponents objectAtIndex:1] : [NSNull null]);
-		[parameters setObject:value forKey:key];
-	}
-	
-	return parameters;
-}
-
 @end
 
 @implementation NSString (AFKeyValueCoding)

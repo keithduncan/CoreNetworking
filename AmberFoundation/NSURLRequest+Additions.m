@@ -8,7 +8,7 @@
 
 #import "NSURLRequest+Additions.h"
 
-#import "NSString+Additions.h"
+#import "NSDictionary+Additions.h"
 
 static NSString * (^URLEncodeString)(NSString *) = ^ NSString * (NSString *string) {
 	return NSMakeCollectable(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR("!*'();:@&=+$,/?%#[]"), kCFStringEncodingUTF8));
@@ -51,7 +51,7 @@ static NSString * (^URLEncodeString)(NSString *) = ^ NSString * (NSString *strin
 }
 
 - (NSDictionary *)_parametersFromString:(NSString *)string {
-	return [string parametersWithSeparator:@"=" delimiter:@"&"];
+	return [NSDictionary dictionaryWithString:string separator:@"=" delimiter:@"&"];
 }
 
 - (NSDictionary *)parametersFromQuery {

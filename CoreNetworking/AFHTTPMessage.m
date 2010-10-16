@@ -36,7 +36,7 @@
 		} else {
 			MIMEType = [contentType substringToIndex:parameterSeparator.location];
 			
-			NSDictionary *contentTypeParameters = [[MIMEType substringFromIndex:(parameterSeparator.location + 1)] parametersWithSeparator:@"=" delimiter:@";"];
+			NSDictionary *contentTypeParameters = [NSDictionary dictionaryWithString:[MIMEType substringFromIndex:(parameterSeparator.location + 1)] separator:@"=" delimiter:@";"];
 			
 			for (NSString *currentContentTypeParameter in contentTypeParameters) {
 				if ([currentContentTypeParameter caseInsensitiveCompare:@"charset"] != NSOrderedSame) continue;
