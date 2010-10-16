@@ -21,7 +21,7 @@
  @private
 	DNSServiceRef _service;
 	
-	__strong CFSocketRef _socket;	
+	__strong CFFileDescriptorRef _fileDescriptor;
 	__strong CFRunLoopSourceRef _source;
 }
 

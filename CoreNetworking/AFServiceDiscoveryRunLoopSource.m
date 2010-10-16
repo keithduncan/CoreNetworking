@@ -21,8 +21,8 @@
 
 @synthesize service=_service;
 
-static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
-	if (type != kCFSocketReadCallBack) return;
+static void	AFServiceDiscoveryProcessResult(CFFileDescriptorRef fileDescriptor, CFOptionFlags callBackTypes, void *info) {
+	if ((callBackTypes & kCFFileDescriptorReadCallBack) != kCFFileDescriptorReadCallBack) return;
 	AFServiceDiscoveryRunLoopSource *self = info;
 	
 	DNSServiceErrorType error = kDNSServiceErr_NoError;
@@ -36,19 +36,18 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 	
 	_service = service;
 	
-	CFSocketContext context = {0};
+	CFFileDescriptorContext context = {0};
 	context.info = self;
 	
-	_socket = (CFSocketRef)NSMakeCollectable(CFSocketCreateWithNative(kCFAllocatorDefault, DNSServiceRefSockFD(_service), kCFSocketReadCallBack, AFServiceDiscoveryProcessResult, &context));
-	CFSocketSetSocketFlags(_socket, (CFOptionFlags)0); // Note: don't close the underlying socket
+	_fileDescriptor = (CFFileDescriptorRef)CFMakeCollectable(CFFileDescriptorCreate(kCFAllocatorDefault, DNSServiceRefSockFD(_service), false, AFServiceDiscoveryProcessResult, &context));
 	
-	_source = (CFRunLoopSourceRef)NSMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, (CFIndex)0));
+	_source = (CFRunLoopSourceRef)CFMakeCollectable(CFFileDescriptorCreateRunLoopSource(kCFAllocatorDefault, _fileDescriptor, 0));
 	
 	return self;
 }
 
 - (void)dealloc {
-	CFRelease(_socket);
+	CFRelease(_fileDescriptor);
 	CFRelease(_source);
 	
 	[super dealloc];
@@ -63,7 +62,7 @@ static void	AFServiceDiscoveryProcessResult(CFSocketRef socket, CFSocketCallBack
 }
 
 - (void)invalidate {
-	CFSocketInvalidate(_socket);
+	CFFileDescriptorInvalidate(_fileDescriptor);
 }
 
 @end
