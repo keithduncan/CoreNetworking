@@ -12,7 +12,13 @@
 
 /*!
 	\brief
-	Parse a string for key value pairs.
+	Parse a string for key value pairs using the separator and delimeters given.
+	
+	\param separator
+	The '=' in key=value
+	
+	\param delimiter
+	The '&' in key1=value1&key2=value2
 	
 	\details
 	If a pair has no value, <tt>[NSNull null]</tt> is used.

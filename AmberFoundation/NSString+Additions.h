@@ -16,18 +16,6 @@
  */
 - (BOOL)isEmpty;
 
-/*!
-	\brief
-	Parses parameters in the prescribed format.
-	
-	\param separator
-	The '=' in key=value
-	
-	\param delimiter
-	The '&' in key1=value1&key2=value2
- */
-- (NSDictionary *)parametersWithSeparator:(NSString *)separator delimiter:(NSString *)delimiter;
-
 @end
 
 /*!
