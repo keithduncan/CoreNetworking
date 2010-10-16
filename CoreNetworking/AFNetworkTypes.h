@@ -94,11 +94,11 @@ typedef struct _AFNetworkInternetTransportSignature AFNetworkInternetTransportSi
  */
 struct _AFNetworkHostSignature {
 	/*
-	 *	This defines _where_ to communicate
+		This defines _where_ to communicate
 	 */
 	__strong CFHostRef host;
 	/*
-	 *	This defines _how_ to communicate (and may allow for the return of a specific handler subclass from the creation methods)
+		This defines _how_ to communicate.
 	 */
 	const AFNetworkInternetTransportSignature transport;
 };
@@ -110,7 +110,7 @@ typedef struct _AFNetworkHostSignature AFNetworkHostSignature;
  */
 struct _AFNetworkServiceSignature {
 	/*
-	 *	This defines _where_ and _how_ to communicate
+		This defines _where_ and _how_ to communicate
 	 */
 	__strong CFNetServiceRef service;
 };
