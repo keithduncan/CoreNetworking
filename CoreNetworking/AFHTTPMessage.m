@@ -37,13 +37,7 @@
 			MIMEType = [contentType substringToIndex:parameterSeparator.location];
 			
 			NSDictionary *contentTypeParameters = [NSDictionary dictionaryWithString:[MIMEType substringFromIndex:(parameterSeparator.location + 1)] separator:@"=" delimiter:@";"];
-			
-			for (NSString *currentContentTypeParameter in contentTypeParameters) {
-				if ([currentContentTypeParameter caseInsensitiveCompare:@"charset"] != NSOrderedSame) continue;
-				
-				textEncodingName = [contentTypeParameters objectForKey:currentContentTypeParameter];
-				break;
-			}
+			textEncodingName = [contentTypeParameters objectForCaseInsensitiveKey:@"charset"];
 			
 			if ([textEncodingName characterAtIndex:0] == '"' && [textEncodingName characterAtIndex:([textEncodingName length] - 1)] == '"') {
 				textEncodingName = [textEncodingName substringWithRange:NSMakeRange(1, [textEncodingName length] - 2)];
