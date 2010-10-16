@@ -85,7 +85,6 @@ NSString *const AFHTTPMessageContentLengthHeader = @"Content-Length";
 NSString *const AFHTTPMessageContentTypeHeader = @"Content-Type";
 NSString *const AFHTTPMessageContentRangeHeader = @"Content-Range";
 NSString *const AFHTTPMessageContentMD5Header = @"Content-MD5";
-NSString *const AFHTTPMessageContentTransferEncodingHeader = @"Content-Transfer-Encoding";
 
 NSString *const AFHTTPMessageTransferEncodingHeader = @"Transfer-Encoding";
 

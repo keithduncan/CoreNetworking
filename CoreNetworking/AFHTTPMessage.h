@@ -82,7 +82,6 @@ extern NSString *const AFHTTPMessageContentLengthHeader;
 extern NSString *const AFHTTPMessageContentTypeHeader;
 extern NSString *const AFHTTPMessageContentRangeHeader;
 extern NSString *const AFHTTPMessageContentMD5Header;
-extern NSString *const AFHTTPMessageContentTransferEncodingHeader;
 
 extern NSString *const AFHTTPMessageTransferEncodingHeader;
 
@@ -95,23 +94,24 @@ extern NSString *const AFHTTPMessageRangeHeader;
 */
 
 enum {
+	// 1xx class, informational
 	AFHTTPStatusCodeContinue		= 100, /* Continue */
 	
-	// 2xx class codes indicate the request succeeded
+	// 2xx class, request succeeded
 	AFHTTPStatusCodeOK				= 200, /* OK */
 	AFHTTPStatusCodePartialContent	= 206, /* Partial Content */
 	
-	// 3xx class codes indicate a redirection
+	// 3xx class, redirection
 	AFHTTPStatusCodeFound			= 302, /* Found */
 	AFHTTPStatusCodeSeeOther		= 303, /* See Other */
 	
-	// 4xx class codes indicate a client error
+	// 4xx class, client error
 	AFHTTPStatusCodeBadRequest		= 400, /* Bad Request */
 	AFHTTPStatusCodeNotFound		= 404, /* Not Found */
 	AFHTTPStatusCodeNotAllowed		= 405, /* Not Allowed */
 	AFHTTPStatusCodeUpgradeRequired = 426, /* Upgrade Required */
 	
-	// 5xx class codes indicate a server error
+	// 5xx class, server error
 	AFHTTPStatusCodeServerError		= 500, /* Server Error */
 	AFHTTPStatusCodeNotImplemented	= 501, /* Not Implemented */
 };
@@ -119,10 +119,10 @@ typedef NSInteger AFHTTPStatusCode;
 
 /*!
 	\brief
-	This returns a description string for a given code.
-	It will throw an exception if passed a code not listed in the AFHTTPStatusCode enumeration.
+	Returns a description string for the given code.
+	It will throw an exception if passed a code not listed in the <tt>AFHTTPStatusCode<tt> enum.
 	
 	\details
-	This is typed to return a CFStringRef to minimise the impedance mismatch with CFHTTPMessageCreate.
+	This is typed to return a CFStringRef to minimise the impedance mismatch with <tt>CFHTTPMessageCreate()</tt>.
  */
 extern CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code);
