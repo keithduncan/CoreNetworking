@@ -731,13 +731,16 @@
 		5343E6FF0C21FB1000B63E6E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = (
+					x84_64,
+					i386,
+				);
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DEBUGGING_SYMBOLS = full;
-				GCC_ENABLE_OBJC_GC = supported;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx10.6;
 			};
@@ -746,14 +749,17 @@
 		5343E7000C21FB1000B63E6E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = (
+					x84_64,
+					i386,
+				);
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DEBUGGING_SYMBOLS = full;
-				GCC_ENABLE_OBJC_GC = supported;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				SDKROOT = macosx10.6;
 			};
 			name = Release;
@@ -769,6 +775,7 @@
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "CoreNetworking-Info.plist";
@@ -789,6 +796,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = "CoreNetworking-Info.plist";
 				INSTALL_PATH = "@rpath/";
@@ -803,7 +811,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_ENABLE_OBJC_GC = unsupported;
 				"GCC_ENABLE_OBJC_GC[sdk=macosx*][arch=*]" = supported;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -823,7 +830,6 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_ENABLE_OBJC_GC = unsupported;
 				"GCC_ENABLE_OBJC_GC[sdk=macosx*][arch=*]" = supported;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
