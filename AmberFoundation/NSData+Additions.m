@@ -341,6 +341,8 @@ static const char _base32Padding[1] = "=";
 static const char _base16Alphabet[16] = "0123456789ABCDEF";
 
 + (id)dataWithBase16String:(NSString *)base16String {
+	if (([base16String length] % 2) != 0) return nil;
+	
 	NSMutableCharacterSet *base16CharacterSet = [[NSMutableCharacterSet alloc] init];
 	[base16CharacterSet addCharactersInString:@"0123456789"];
 	[base16CharacterSet addCharactersInString:@"abcdef"];
