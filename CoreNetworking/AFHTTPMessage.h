@@ -47,7 +47,7 @@ extern CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *respon
 	\brief
 	Convert a <tt>CFHTTPMessageRef</tt> response to an <tt>NSHTTPURLResponse</tt> object.
  */
-extern NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(CFHTTPMessageRef message);
+extern NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(NSURL *URL, CFHTTPMessageRef message);
 
 /*!
 	\brief

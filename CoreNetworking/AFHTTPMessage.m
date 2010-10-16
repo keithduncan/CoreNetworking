@@ -8,9 +8,74 @@
 
 #import "AFHTTPMessage.h"
 
+#import "AmberFoundation/AmberFoundation.h"
+
 #import "AFPacketWrite.h"
 #import "AFPacketWriteFromReadStream.h"
 #import "NSURLRequest+AFHTTPAdditions.h"
+
+@interface _AFHTTPURLResponse : NSHTTPURLResponse
+
+- (id)initWithURL:(NSURL *)URL message:(CFHTTPMessageRef)message;
+
+@property (retain) CFHTTPMessageRef message __attribute__((NSObject));
+
+@end
+
+@implementation _AFHTTPURLResponse
+
+@synthesize message=_message;
+
+- (id)initWithURL:(NSURL *)URL message:(CFHTTPMessageRef)message {
+	NSString *MIMEType = nil; NSString *textEncodingName = nil;
+	NSString *contentType = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentTypeHeader)) autorelease];
+	if (contentType != nil) {
+		NSRange parameterSeparator = [contentType rangeOfString:@";"];
+		if (parameterSeparator.location == NSNotFound) {
+			MIMEType = contentType;
+		} else {
+			MIMEType = [contentType substringToIndex:parameterSeparator.location];
+			
+			NSDictionary *contentTypeParameters = [[MIMEType substringFromIndex:(parameterSeparator.location + 1)] parametersWithSeparator:@"=" delimiter:@";"];
+			
+			for (NSString *currentContentTypeParameter in contentTypeParameters) {
+				if ([currentContentTypeParameter caseInsensitiveCompare:@"charset"] != NSOrderedSame) continue;
+				
+				textEncodingName = [contentTypeParameters objectForKey:currentContentTypeParameter];
+				break;
+			}
+			
+			if ([textEncodingName characterAtIndex:0] == '"' && [textEncodingName characterAtIndex:([textEncodingName length] - 1)] == '"') {
+				textEncodingName = [textEncodingName substringWithRange:NSMakeRange(1, [textEncodingName length] - 2)];
+			}
+		}
+	}
+	
+	NSString *contentLength = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease];
+	
+	self = [self initWithURL:URL MIMEType:MIMEType expectedContentLength:(contentLength != nil ? [contentLength integerValue] : -1) textEncodingName:textEncodingName];
+	if (self == nil) return nil;
+	
+	_message = (CFHTTPMessageRef)CFMakeCollectable(CFRetain(message));
+	
+	return self;
+}
+
+- (void)dealloc {
+	CFRelease(_message);
+	
+	[super dealloc];
+}
+
+- (NSInteger)statusCode {
+	return CFHTTPMessageGetResponseStatusCode([self message]);
+}
+
+- (NSDictionary *)allHeaderFields {
+	return [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields([self message])) autorelease];
+}
+
+@end
 
 CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request) {
 	NSCParameterAssert([request HTTPBodyStream] == nil);
@@ -48,8 +113,8 @@ CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response) {
 	return message;
 }
 
-NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(CFHTTPMessageRef message) {
-	
+NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(NSURL *URL, CFHTTPMessageRef message) {
+	return [[[_AFHTTPURLResponse alloc] initWithURL:URL message:message] autorelease];
 }
 
 void _AFHTTPPrintMessage(CFHTTPMessageRef message) {
