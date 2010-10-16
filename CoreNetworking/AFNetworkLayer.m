@@ -45,7 +45,7 @@
 	return self;
 }
 
-- (AFNetworkLayer *)initWithTransportSignature:(AFNetworkTransportSignature)signature {
+- (AFNetworkLayer *)initWithTransportSignature:(AFNetworkSignature)signature {
 	AFNetworkLayer *lowerLayer = [[[(id)[[self class] lowerLayer] alloc] initWithTransportSignature:signature] autorelease];
 	return [self initWithLowerLayer:(id)lowerLayer];
 }

@@ -117,7 +117,7 @@
 	\brief
 	See <tt>-openInternetSocketsWithSocketSignature:port:addresses:</tt>.
  */
-- (BOOL)openInternetSocketsWithTransportSignature:(const AFInternetTransportSignature)signature addresses:(NSSet *)sockaddrs;
+- (BOOL)openInternetSocketsWithTransportSignature:(const AFNetworkInternetTransportSignature)signature addresses:(NSSet *)sockaddrs;
 
 /*!
 	\brief
@@ -129,7 +129,7 @@
 	\return
 	NO if any of the sockets couldn't be created, this will be expanded in future to allow delegate interaction to determine failure.
  */
-- (BOOL)openInternetSocketsWithSocketSignature:(const AFSocketSignature)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs;
+- (BOOL)openInternetSocketsWithSocketSignature:(const AFNetworkSocketSignature)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs;
 
 /*!
 	\brief
@@ -153,7 +153,7 @@
 	\details
 	This method is rarely applicable to higher-level servers, sockets are opened on the lowest layer of the stack.
  */
-- (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature)signature address:(NSData *)address;
+- (AFNetworkSocket *)openSocketWithSignature:(const AFNetworkSocketSignature)signature address:(NSData *)address;
 
 /*
 	Server Clients

@@ -62,7 +62,7 @@
 	
 	The default implementation creates a lower-layer using <tt>+lowerLayerClass</tt> and calls the same initialiser on the new object.
  */
-- (AFNetworkLayer *)initWithTransportSignature:(AFNetworkTransportSignature)signature;
+- (AFNetworkLayer *)initWithTransportSignature:(AFNetworkSignature)signature;
 
 /*!
 	\brief

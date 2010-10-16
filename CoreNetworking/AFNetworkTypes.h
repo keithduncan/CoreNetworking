@@ -12,46 +12,50 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
+/*
+	AFNetworkSocket types
+ */
+
 /*!
 	\brief
 	Common transport layer types can be defined using these two fields.
 	
 	\field socketType
 	One of the socket types defined in <sys/socket.h>
+	
 	\field protocol
 	One of the 'PROTOCOL NUMBERS' defined in IETF-RFC-1700 http://tools.ietf.org/html/rfc1700 - it is important that an appropriate `socketType` is also provided.
  */
-struct _AFSocketSignature {
+struct _AFNetworkSocketSignature {
 	const SInt32 socketType;
 	const SInt32 protocol;
 };
-typedef struct _AFSocketSignature AFSocketSignature;
+typedef struct _AFNetworkSocketSignature AFNetworkSocketSignature;
 
 /*!
 	\brief
-	Simple equality test, to be used for determining the Bonjour protocol string to advertise with @"_tcp" ot @"_udp".
+	Simple equality test.
  */
-static inline BOOL AFSocketSignatureEqualToSignature(AFSocketSignature lhs, AFSocketSignature rhs) {
-	return (memcmp(&lhs, &rhs, sizeof(AFSocketSignature)) == 0);
+static inline BOOL AFNetworkSocketSignatureEqualToSignature(AFNetworkSocketSignature lhs, AFNetworkSocketSignature rhs) {
+	return (memcmp(&lhs, &rhs, sizeof(AFNetworkSocketSignature)) == 0);
 }
 
 /*!
     \brief
 	This is suitable for creating a network TCP socket.
 */
-extern const AFSocketSignature AFSocketSignatureNetworkTCP;
+extern const AFNetworkSocketSignature AFNetworkSocketSignatureInternetTCP;
 
 /*!
 	\brief
 	This is suitable for creating a network UDP socket.
  */
-extern const AFSocketSignature AFSocketSignatureNetworkUDP;
+extern const AFNetworkSocketSignature AFNetworkSocketSignatureInternetUDP;
 
-/*!
-	\brief
-	This is suitable for creating a local UNIX path socket.
+
+/*
+	AFNetworkTransport types
  */
-extern const AFSocketSignature AFSocketSignatureLocalPath;
 
 /*!
 	\brief
@@ -63,26 +67,32 @@ extern const AFSocketSignature AFSocketSignatureLocalPath;
 	\field port
 	Identifies the Transport Layer address to communicate using (see IETF-RFC-1122 http://tools.ietf.org/html/rfc1122) in network byte order.
  */
-struct _AFInternetTransportSignature {
-	const AFSocketSignature type;
+struct _AFNetworkInternetTransportSignature {
+	const AFNetworkSocketSignature type;
 	SInt32 port;
 };
-typedef struct _AFInternetTransportSignature AFInternetTransportSignature;
+typedef struct _AFNetworkInternetTransportSignature AFNetworkInternetTransportSignature;
+
+
+/*
+	AFNetwork types
+ */
 
 /*!
 	\brief
 	Based on CFSocketSignature allowing for higher-level functionality.
-	The un-intuitive layout of the structure is very important; because the first pointer width bits are a CFTypeRef the structure can be introspected using CFGetTypeID.
+	The un-intuitive layout of the structure is very important; because the first pointer-width bits are a <tt>CFType</tt>, the structure can be introspected using <tt>CFGetTypeID()</tt>.
 	
 	\details
-	Doesn't include a |protocolFamily| field like CFSocketSignature because the |host| may resolve to a number of addresses each with a different protocol family.
+	Doesn't include a <tt>protocolFamily</tt> field like CFSocketSignature because a host may resolve to a number of addresses each with a different protocol family.
 	
 	\field host
-	This should be copied using CFHostCreateCopy(). The addresses property should be resolved if it hasn't been already. The member is qualified __strong, so that if this struct is stored on the heap or as an instance variable, it won't be reclaimed.
+	Clients receiving this struct should should copy this field using <tt>CFHostCreateCopy()</tt>. The addresses property should be resolved if it hasn't been already.
+	
 	\field transport
-	See the documentation for <tt>AFNetworkTransportLayer</tt>, it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc) and the port.
+	See the documentation for <tt>AFNetworkTransportLayer</tt>, it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc.) and the port.
  */
-struct _AFNetworkTransportHostSignature {
+struct _AFNetworkHostSignature {
 	/*
 	 *	This defines _where_ to communicate
 	 */
@@ -90,28 +100,28 @@ struct _AFNetworkTransportHostSignature {
 	/*
 	 *	This defines _how_ to communicate (and may allow for the return of a specific handler subclass from the creation methods)
 	 */
-	const AFInternetTransportSignature transport;
+	const AFNetworkInternetTransportSignature transport;
 };
-typedef struct _AFNetworkTransportHostSignature AFNetworkTransportHostSignature;
+typedef struct _AFNetworkHostSignature AFNetworkHostSignature;
 
 /*!
 	\brief
-	This is a partner to <tt>AFNetworkTransportHostSignature</tt> except that a CFNetServiceRef contains all the information required.
+	This is a partner to <tt>AFNetworkTransportHostSignature</tt> except that a <tt>CFNetServiceRef</tt> is self describing and doesn't require a <tt>transport</tt> field.
  */
-struct _AFNetworkTransportServiceSignature {
+struct _AFNetworkServiceSignature {
 	/*
 	 *	This defines _where_ and _how_ to communicate
 	 */
 	__strong CFNetServiceRef service;
 };
-typedef struct _AFNetworkTransportServiceSignature AFNetworkTransportServiceSignature;
+typedef struct _AFNetworkServiceSignature AFNetworkServiceSignature;
 
 /*!
 	\brief
-	This struct allows for arguments to be either <tt>AFNetworkTransportHostSignature</tt> or <tt>AFNetworkTransportServiceSignature</tt>.
-	A receiver will introspect the type using <tt>CFGetTypeID</tt> to determine which has been passed.
+	Allows for implemetations to accept either <tt>AFNetworkTransportHostSignature</tt> or <tt>AFNetworkTransportServiceSignature</tt>.
+	A receiver will introspect the type using <tt>CFGetTypeID()</tt> to determine which has been passed.
  */
-typedef union _AFNetworkTransportSignature {
-	AFNetworkTransportHostSignature *_host;
-	AFNetworkTransportServiceSignature *_service;
-} AFNetworkTransportSignature __attribute__((transparent_union));
+typedef union _AFNetworkSignature {
+	AFNetworkHostSignature *_host;
+	AFNetworkServiceSignature *_service;
+} AFNetworkSignature __attribute__((transparent_union));

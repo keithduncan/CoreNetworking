@@ -130,11 +130,11 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 	return [self delegateProxy:nil];
 }
 
-- (BOOL)openInternetSocketsWithTransportSignature:(AFInternetTransportSignature)signature addresses:(NSSet *)sockaddrs {
+- (BOOL)openInternetSocketsWithTransportSignature:(AFNetworkInternetTransportSignature)signature addresses:(NSSet *)sockaddrs {
 	return [self openInternetSocketsWithSocketSignature:signature.type port:&signature.port addresses:sockaddrs];
 }
 
-- (BOOL)openInternetSocketsWithSocketSignature:(const AFSocketSignature)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs {
+- (BOOL)openInternetSocketsWithSocketSignature:(const AFNetworkSocketSignature)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs {
 	BOOL completeSuccess = YES;
 	
 	for (NSData *currentAddress in sockaddrs) {
@@ -165,6 +165,11 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 - (BOOL)openPathSocketWithLocation:(NSURL *)location {
 	NSParameterAssert([location isFileURL]);
 	
+	AFNetworkSocketSignature signature = (AFNetworkSocketSignature){
+		.socketType = SOCK_STREAM,
+		.protocol = 0,
+	};
+	
 	struct sockaddr_un address = {0};
 	
 	unsigned int maximumLength = sizeof(address.sun_path);
@@ -177,10 +182,10 @@ NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 	strcpy(address.sun_path, [[location path] fileSystemRepresentation]);
 	address.sun_len = SUN_LEN(&address);
 	
-	return ([self openSocketWithSignature:AFSocketSignatureLocalPath address:[NSData dataWithBytes:&address length:address.sun_len]] != nil);
+	return ([self openSocketWithSignature:signature address:[NSData dataWithBytes:&address length:address.sun_len]] != nil);
 }
 
-- (AFNetworkSocket *)openSocketWithSignature:(const AFSocketSignature)signature address:(NSData *)address {	
+- (AFNetworkSocket *)openSocketWithSignature:(const AFNetworkSocketSignature)signature address:(NSData *)address {	
 	struct sockaddr addr = {0};
 	[address getBytes:&addr length:sizeof(struct sockaddr)];
 	

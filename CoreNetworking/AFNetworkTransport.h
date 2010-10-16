@@ -35,8 +35,8 @@
 @interface AFNetworkTransport : AFNetworkLayer <AFConnectionLayer> {
  @private
 	union {
-		AFNetworkTransportServiceSignature _service;
-		AFNetworkTransportHostSignature _host;
+		AFNetworkServiceSignature _service;
+		AFNetworkHostSignature _host;
 	} _signature;
 	
 	AFNetworkWriteStream *_writeStream;

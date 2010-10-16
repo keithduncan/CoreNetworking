@@ -119,11 +119,11 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	return self;
 }
 
-- (id <AFConnectionLayer>)_initWithHostSignature:(AFNetworkTransportHostSignature *)signature {
+- (id <AFConnectionLayer>)_initWithHostSignature:(AFNetworkHostSignature *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
-	memcpy(&_signature._host, signature, sizeof(AFNetworkTransportHostSignature));
+	memcpy(&_signature._host, signature, sizeof(AFNetworkHostSignature));
 	
 	CFHostRef *host = &_signature._host.host;
 	*host = (CFHostRef)NSMakeCollectable(CFRetain(signature->host));
@@ -141,7 +141,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	return self;
 }
 
-- (id <AFConnectionLayer>)_initWithServiceSignature:(AFNetworkTransportServiceSignature *)signature {
+- (id <AFConnectionLayer>)_initWithServiceSignature:(AFNetworkServiceSignature *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
@@ -161,7 +161,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	return self;
 }
 
-- (AFNetworkLayer *)initWithTransportSignature:(AFNetworkTransportSignature)signature {
+- (AFNetworkLayer *)initWithTransportSignature:(AFNetworkSignature)signature {
 	if (CFGetTypeID(*(CFTypeRef *)*(void **)&signature) == CFHostGetTypeID()) {
 		return [self _initWithHostSignature:signature._host];
 	}
