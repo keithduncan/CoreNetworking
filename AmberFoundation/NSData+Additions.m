@@ -341,6 +341,13 @@ static const char _base32Padding[1] = "=";
 static const char _base16Alphabet[16] = "0123456789ABCDEF";
 
 + (id)dataWithBase16String:(NSString *)base16String {
+	NSMutableCharacterSet *base16CharacterSet = [[NSMutableCharacterSet alloc] init];
+	[base16CharacterSet addCharactersInString:@"0123456789"];
+	[base16CharacterSet addCharactersInString:@"abcdef"];
+	[base16CharacterSet addCharactersInString:@"ABCDEF"];
+	if ([[base16String stringByTrimmingCharactersInSet:base16CharacterSet] length] != 0) return nil;
+	
+	
 	NSMutableData *data = [NSMutableData dataWithCapacity:([base16String length] / 2)];
 	
 	CFRetain(base16String);
@@ -352,7 +359,7 @@ static const char _base16Alphabet[16] = "0123456789ABCDEF";
 		uint8_t values[2] = {0};
 		for (NSUInteger valueIndex = 0; valueIndex < 2; valueIndex++) {
 			unichar currentCharacter = [base16String characterAtIndex:(characterOffset + valueIndex)];
-			values[valueIndex] = (uint8_t)[base16Alphabet rangeOfString:[NSString stringWithFormat:@"%C", currentCharacter]].location;
+			values[valueIndex] = (uint8_t)[base16Alphabet rangeOfString:[NSString stringWithFormat:@"%C", currentCharacter] options:NSCaseInsensitiveSearch].location;
 		}
 		
 		uint8_t byte = 0;
