@@ -400,19 +400,3 @@ static const char _base16Alphabet[16] = "0123456789ABCDEF";
 }
 
 @end
-
-@implementation NSData (AFPacketTerminator)
-
-+ (NSData *)CRLF {
-	return [NSData dataWithBytes:"\x0D\x0A" length:2];
-}
-
-+ (NSData *)CR {
-	return [NSData dataWithBytes:"\x0D" length:1];
-}
-
-+ (NSData *)LF {
-	return [NSData dataWithBytes:"\x0A" length:1];
-}
-
-@end

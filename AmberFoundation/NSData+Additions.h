@@ -75,15 +75,3 @@
 - (NSString *)base16String;
 
 @end
-
-/*!
-	\brief
-	Network packet terminators.
- */
-@interface NSData (AFPacketTerminator)
-
-+ (NSData *)CRLF;
-+ (NSData *)CR;
-+ (NSData *)LF;
-
-@end
