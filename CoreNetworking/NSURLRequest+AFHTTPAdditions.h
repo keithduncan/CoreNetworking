@@ -6,7 +6,7 @@
 //  Copyright 2010 Realmac Software. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 @interface NSURLRequest (AFCoreNetworkingHTTPAdditions)
 
