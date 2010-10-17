@@ -197,7 +197,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	*cumulativeFrameLengthRef += partFrameLength;
 }
 
-- (NSArray *)documentPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef {
+- (NSArray *)decomposeIntoPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef {
 	NSMutableArray *cumulativePackets = [NSMutableArray array];
 	NSUInteger cumulativeFrameLength = 0;
 	
