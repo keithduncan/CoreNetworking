@@ -17,7 +17,7 @@
 	\details
 	The order you add values in is unpreserved.
  */
-@interface AFNetworkFormDocument : NSObject <AFNetworkDocument> {
+@interface AFNetworkFormDocument : AFNetworkDocument {
  @private
 	NSMutableDictionary *_values;
 	NSMutableDictionary *_files;

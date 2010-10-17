@@ -27,6 +27,16 @@ static NSData *_AFNetworkFormDocumentHeadersDataFromDictionary(NSDictionary *hea
 	return data;
 }
 
+static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeaderAndFooter(NSData **multipartHeaderRef, NSData **multipartFooterRef) {
+	NSString *multipartBoundary = [[NSProcessInfo processInfo] globallyUniqueString];
+	multipartBoundary = [multipartBoundary stringByReplacingOccurrencesOfString:@"-" withString:@""];
+	
+	*multipartHeaderRef = [[NSString stringWithFormat:@"--%@\r\n", multipartBoundary] dataUsingEncoding:_AFNetworkFormEncoding];
+	*multipartFooterRef = [[NSString stringWithFormat:@"--%@--\r\n", multipartBoundary] dataUsingEncoding:_AFNetworkFormEncoding];
+	
+	return multipartBoundary;
+}
+
 #pragma mark -
 
 @interface _AFNetworkDocumentPart : NSObject
@@ -212,16 +222,6 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	[[self values] removeObjectForKey:fieldname];
 }
 
-- (NSString *)_generateMultipartBoundaryWithHeader:(NSData **)multipartHeaderRef footer:(NSData **)multipartFooterRef {
-	NSString *multipartBoundary = [[NSProcessInfo processInfo] globallyUniqueString];
-	multipartBoundary = [multipartBoundary stringByReplacingOccurrencesOfString:@"-" withString:@""];
-	
-	*multipartHeaderRef = [[NSString stringWithFormat:@"--%@\r\n", multipartBoundary] dataUsingEncoding:_AFNetworkFormEncoding];
-	*multipartFooterRef = [[NSString stringWithFormat:@"--%@--\r\n", multipartBoundary] dataUsingEncoding:_AFNetworkFormEncoding];
-	
-	return multipartBoundary;
-}
-
 - (void)_appendPart:(_AFNetworkDocumentPart *)part toCumulativePackets:(NSMutableArray *)cumulativePackets cumulativeFrameLength:(NSUInteger *)cumulativeFrameLengthRef withContentDisposition:(NSString *)contentDisposition {
 	NSUInteger partFrameLength = 0;
 	NSMutableArray *partPackets = [NSMutableArray array];
@@ -259,7 +259,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	
 	
 	NSData *multipartHeader = nil, *multipartFooter = nil;
-	NSString *multipartBoundary = [self _generateMultipartBoundaryWithHeader:&multipartHeader footer:&multipartFooter];
+	NSString *multipartBoundary = _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeaderAndFooter(&multipartHeader, &multipartFooter);
 	
 	
 	for (NSString *currentFieldname in [self values]) {
@@ -297,7 +297,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 		
 		
 		NSData *innerMultipartHeader = nil, *innerMultipartFooter = nil;
-		NSString *innerMultipartBoundary = [self _generateMultipartBoundaryWithHeader:&innerMultipartHeader footer:&innerMultipartFooter];
+		NSString *innerMultipartBoundary = _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeaderAndFooter(&innerMultipartHeader, &innerMultipartFooter);
 		
 		
 		NSDictionary *innerDocumentHeaders = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -335,41 +335,6 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	
 	
 	return cumulativePackets;
-}
-
-- (NSData *)serialisedDataWithContentType:(NSString **)contentTypeRef {
-	NSUInteger frameLength = 0;
-	NSArray *writePackets = [self serialisedPacketsWithContentType:contentTypeRef frameLength:&frameLength];
-	if (writePackets == nil) return nil;
-	
-	uint8_t *buffer = (uint8_t *)malloc(frameLength);
-	NSOutputStream *memoryStream = [NSOutputStream outputStreamToBuffer:buffer capacity:frameLength];
-	
-	// Note: this ensures the buffer is free()'d if we bail inside the loop
-	NSData *dataBuffer = [NSData dataWithBytesNoCopy:buffer length:frameLength freeWhenDone:YES];
-	
-	for (AFPacket <AFPacketWriting> *currentPacket in writePackets) {
-		__block NSNotification *completionNotification = nil;
-		id completionListener = [[NSNotificationCenter defaultCenter] addObserverForName:AFPacketDidCompleteNotificationName object:currentPacket queue:nil usingBlock:^ (NSNotification *notification) {
-			completionNotification = notification;
-		}];
-		
-		while (completionListener == nil) {
-			[currentPacket performWrite:memoryStream];
-		}
-		
-		[[NSNotificationCenter defaultCenter] removeObserver:completionListener];
-		
-		
-		NSError *completionError = [[completionNotification userInfo] objectForKey:AFPacketErrorKey];
-		if (completionError != nil) {
-			return nil;
-		}
-		
-		continue;
-	}
-	
-	return dataBuffer;
 }
 
 @end
