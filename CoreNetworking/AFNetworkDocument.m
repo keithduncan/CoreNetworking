@@ -10,3 +10,4 @@
 
 NSString *const AFNetworkDocumentMIMEContentType = @"Content-Type";
 NSString *const AFNetworkDocumentMIMEContentTransferEncoding = @"Content-Transfer-Encoding";
+NSString *const AFNetworkDocumentMIMEContentDisposition = @"Content-Disposition";

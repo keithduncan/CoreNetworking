@@ -10,6 +10,7 @@
 
 extern NSString *const AFNetworkDocumentMIMEContentType;
 extern NSString *const AFNetworkDocumentMIMEContentTransferEncoding;
+extern NSString *const AFNetworkDocumentMIMEContentDisposition;
 
 @protocol AFNetworkDocument <NSObject>
 

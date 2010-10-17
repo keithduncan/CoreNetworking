@@ -175,7 +175,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	NSArray *currentValuePackets = [part documentPacketsWithMutableHeaders:currentValueHeaders frameLength:&currentValueFrameLength];
 	
 	[currentValueHeaders addEntriesFromDictionary:[NSDictionary	dictionaryWithObjectsAndKeys:
-												   contentDisposition, @"Content-Disposition",
+												   contentDisposition, AFNetworkDocumentMIMEContentDisposition,
 												   nil]
 	 ];
 	
@@ -215,8 +215,8 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 		NSMutableData *currentValueData = [NSMutableData data];
 		
 		NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-										[NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname], @"Content-Disposition",
-										@"text/plain", @"Content-Type",
+										[NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname], AFNetworkDocumentMIMEContentDisposition,
+										@"text/plain", AFNetworkDocumentMIMEContentType,
 										nil];
 		[currentValueData appendData:_AFNetworkFormDocumentHeadersDataFromDictionary(headers)];
 		
@@ -255,8 +255,8 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 		
 		
 		NSDictionary *innerDocumentHeaders = [NSDictionary dictionaryWithObjectsAndKeys:
-											  [NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname], @"Content-Disposition",
-											  [NSString stringWithFormat:@"multipart/mixed; boundary=%@", innerMultipartBoundary], @"Content-Type",
+											  [NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname], AFNetworkDocumentMIMEContentDisposition,
+											  [NSString stringWithFormat:@"multipart/mixed; boundary=%@", innerMultipartBoundary], AFNetworkDocumentMIMEContentType,
 											  nil];
 		NSData *innerDocumentHeadersData = _AFNetworkFormDocumentHeadersDataFromDictionary(innerDocumentHeaders);
 		AFPacketWrite *innerDocumentHeadersPacket = [[[AFPacketWrite alloc] initWithData:innerDocumentHeadersData] autorelease];
