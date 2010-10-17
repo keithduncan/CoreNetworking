@@ -17,7 +17,7 @@
 	\details
 	This class doesn't take ownership of the DNSServiceRef it is instantiated with, it is still the client's responsibility to deallocate the DNSServiceRef once it is no longer needed.
 */
-@interface AFServiceDiscoveryRunLoopSource : NSObject {
+@interface AFNetworkServiceDiscoveryRunLoopSource : NSObject {
  @private
 	DNSServiceRef _service;
 	

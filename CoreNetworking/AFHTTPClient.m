@@ -14,23 +14,23 @@
 #import "AFNetworkConstants.h"
 #import "AFHTTPMessage.h"
 #import "AFHTTPMessagePacket.h"
-#import "AFPacketQueue.h"
+#import "AFNetworkPacketQueue.h"
 #import "AFHTTPTransaction.h"
-#import "AFPacketWriteFromReadStream.h"
+#import "AFNetworkPacketWriteFromReadStream.h"
 #import "NSURLRequest+AFNetworkAdditions.h"
 
 #import "AFNetworkMacros.h"
 
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPClientCurrentTransactionObservationContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPClientCurrentTransactionObservationContext);
 
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPClientWritePartialRequestContext);
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPClientWriteRequestContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPClientWritePartialRequestContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPClientWriteRequestContext);
 
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPClientReadPartialResponseContext);
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPClientReadResponseContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPClientReadPartialResponseContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPClientReadResponseContext);
 
 @interface AFHTTPClient ()
-@property (retain) AFPacketQueue *transactionQueue;
+@property (retain) AFNetworkPacketQueue *transactionQueue;
 @property (readonly) AFHTTPTransaction *currentTransaction;
 @end
 
@@ -82,7 +82,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	
 	_userAgent = [[AFHTTPClient userAgent] copy];
 	
-	_transactionQueue = [[AFPacketQueue alloc] init];
+	_transactionQueue = [[AFNetworkPacketQueue alloc] init];
 	[_transactionQueue addObserver:self forKeyPath:@"currentPacket" options:NSKeyValueObservingOptionNew context:&_AFHTTPClientCurrentTransactionObservationContext];
 	
 	return self;
@@ -120,13 +120,13 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		AFHTTPTransaction *newPacket = [change objectForKey:NSKeyValueChangeNewKey];
 		if (newPacket == nil || [newPacket isEqual:[NSNull null]]) return;
 		
-		for (id <AFPacketWriting> currentPacket in [newPacket requestPackets]) {
+		for (id <AFNetworkPacketWriting> currentPacket in [newPacket requestPackets]) {
 			void *context = &_AFHTTPClientWritePartialRequestContext;
 			if (currentPacket == [[newPacket requestPackets] lastObject]) context = &_AFHTTPClientWriteRequestContext;
 			[self performWrite:currentPacket withTimeout:-1 context:context];
 		}
 		
-		if ([newPacket responsePackets] != nil) for (id <AFPacketReading> currentPacket in [newPacket responsePackets]) {
+		if ([newPacket responsePackets] != nil) for (id <AFNetworkPacketReading> currentPacket in [newPacket responsePackets]) {
 			void *context = &_AFHTTPClientReadPartialResponseContext;
 			if (currentPacket == [[newPacket responsePackets] lastObject]) context = &_AFHTTPClientReadResponseContext;
 			[self performRead:currentPacket withTimeout:-1 context:context];
@@ -184,7 +184,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		CFHTTPMessageRef requestMessage = [self _requestForMethod:[request HTTPMethod] onResource:[[request URL] path] withHeaders:[request allHTTPHeaderFields] withBody:nil];
 		CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[fileAttributes objectForKey:NSFileSize] stringValue]);
 		
-		AFPacketWriteFromReadStream *streamPacket = [[[AFPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:-1] autorelease];
+		AFNetworkPacketWriteFromReadStream *streamPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:-1] autorelease];
 		
 		AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequestPackets:[NSArray arrayWithObjects:AFHTTPConnectionPacketForMessage(requestMessage), streamPacket, nil] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]] context:context] autorelease];
 		[self _enqueueTransaction:transaction];
@@ -221,8 +221,8 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	CFHTTPMessageRef requestMessage = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:nil];
 	CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[fileSize stringValue]);
 	
-	AFPacket *headersPacket = AFHTTPConnectionPacketForMessage(requestMessage);
-	AFPacketWriteFromReadStream *bodyPacket = [[[AFPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:[fileSize unsignedIntegerValue]] autorelease];
+	AFNetworkPacket *headersPacket = AFHTTPConnectionPacketForMessage(requestMessage);
+	AFNetworkPacketWriteFromReadStream *bodyPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:[fileSize unsignedIntegerValue]] autorelease];
 	
 	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequestPackets:[NSArray arrayWithObjects:headersPacket, bodyPacket, nil] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]] context:context] autorelease];
 	[self _enqueueTransaction:transaction];
@@ -230,7 +230,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	return YES;
 }
 
-- (void)layerDidOpen:(id <AFConnectionLayer>)layer {
+- (void)layerDidOpen:(id <AFNetworkConnectionLayer>)layer {
 	if ([self _shouldStartTLS]) {
 		NSDictionary *securityOptions = [NSDictionary dictionaryWithObjectsAndKeys:
 										 (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
@@ -258,7 +258,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	}
 }
 
-- (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data context:(void *)context {
+- (void)layer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context {
 	if (context == &_AFHTTPClientWritePartialRequestContext) {
 		// nop
 	} else if (context == &_AFHTTPClientWriteRequestContext) {
@@ -277,7 +277,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	}
 }
 
-- (void)layer:(id <AFTransportLayer>)layer didRead:(id)data context:(void *)context {
+- (void)layer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context {
 	if (context == &_AFHTTPClientReadPartialResponseContext) {
 		// nop
 	} else if (context == &_AFHTTPClientReadResponseContext) {
@@ -326,7 +326,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 
 - (void)_partialCurrentTransaction:(NSArray *)packets selector:(SEL)selector {
 	NSUInteger currentTransactionPartial = 0, currentTransactionTotal = 0;
-	for (AFPacket *currentPacket in packets) {
+	for (AFNetworkPacket *currentPacket in packets) {
 		NSUInteger currentPacketPartial = 0, currentPacketTotal = 0;
 		float percentage = [currentPacket currentProgressWithBytesDone:&currentPacketPartial bytesTotal:&currentPacketTotal];
 		

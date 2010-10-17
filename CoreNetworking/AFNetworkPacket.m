@@ -6,13 +6,13 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "AFPacket.h"
+#import "AFNetworkPacket.h"
 
-NSString *const AFPacketDidTimeoutNotificationName = @"AFPacketDidTimeoutNotification";
-NSString *const AFPacketDidCompleteNotificationName = @"AFPacketDidCompleteNotification";
-NSString *const AFPacketErrorKey = @"AFPacketError";
+NSString *const AFNetworkPacketDidTimeoutNotificationName = @"AFPacketDidTimeoutNotification";
+NSString *const AFNetworkPacketDidCompleteNotificationName = @"AFPacketDidCompleteNotification";
+NSString *const AFNetworkPacketErrorKey = @"AFPacketError";
 
-@implementation AFPacket
+@implementation AFNetworkPacket
 
 @synthesize context=_context;
 @synthesize duration=_duration;
@@ -46,7 +46,7 @@ NSString *const AFPacketErrorKey = @"AFPacketError";
 }
 
 - (void)_timeout:(NSTimer *)sender {
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidTimeoutNotificationName object:self userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidTimeoutNotificationName object:self userInfo:nil];
 }
 
 - (void)startTimeout {

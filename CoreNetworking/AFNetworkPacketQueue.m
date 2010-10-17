@@ -6,14 +6,14 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "AFPacketQueue.h"
+#import "AFNetworkPacketQueue.h"
 
-@interface AFPacketQueue ()
+@interface AFNetworkPacketQueue ()
 @property (retain) NSMutableArray *packets;
 @property (readwrite, retain) id currentPacket;
 @end
 
-@implementation AFPacketQueue
+@implementation AFNetworkPacketQueue
 
 @synthesize packets=_packets;
 @synthesize currentPacket=_currentPacket;

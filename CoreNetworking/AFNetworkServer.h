@@ -9,7 +9,7 @@
 #import "CoreNetworking/AFNetworkLayer.h"
 
 #import "CoreNetworking/AFNetworkTypes.h"
-#import "CoreNetworking/AFConnectionLayer.h"
+#import "CoreNetworking/AFNetworkConnectionLayer.h"
 
 @class AFNetworkSocket;
 @class AFNetworkPool;
@@ -19,7 +19,7 @@
 	\brief
 	The server should consult the delegate for conditional operations. If your subclass provides a delegate protocol, it should conform to this one too.
  */
-@protocol AFNetworkServerDelegate <AFConnectionLayerHostDelegate>
+@protocol AFNetworkServerDelegate <AFNetworkConnectionLayerHostDelegate>
 
  @optional
 
@@ -30,13 +30,13 @@
 	\details
 	This is sent before the first layer is encapsulated.
  */
-- (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFConnectionLayer>)connection;
+- (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFNetworkConnectionLayer>)connection;
 
 /*!
 	\brief
 	This is sent after each layer is encapsulated; before it is opened.
  */
-- (void)server:(AFNetworkServer *)server didEncapsulateLayer:(id <AFConnectionLayer>)connection;
+- (void)server:(AFNetworkServer *)server didEncapsulateLayer:(id <AFNetworkConnectionLayer>)connection;
 
 @end
 
@@ -48,7 +48,7 @@
 	\details
 	After instantiating the server you can use one of the convenience methods to open socket(s)
  */
-@interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFConnectionLayerHostDelegate> {
+@interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFNetworkConnectionLayerHostDelegate> {
  @private
 	id <AFNetworkServerDelegate> _delegate;
 	
@@ -166,7 +166,7 @@
 	\details
 	Override point, if you need to customize layers before they are added to their connection pool, call super for creation first.
  */
-- (void)encapsulateNetworkLayer:(id <AFConnectionLayer>)layer;
+- (void)encapsulateNetworkLayer:(id <AFNetworkConnectionLayer>)layer;
 
 /*!
 	\brief

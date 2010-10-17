@@ -25,9 +25,9 @@
 #import "AFNetworkConstants.h"
 #import "AFNetworkFunctions.h"
 #import "AFNetworkStream.h"
-#import "AFPacketQueue.h"
-#import "AFPacketRead.h"
-#import "AFPacketWrite.h"
+#import "AFNetworkPacketQueue.h"
+#import "AFNetworkPacketRead.h"
+#import "AFNetworkPacketWrite.h"
 
 enum {
 	_kConnectionDidOpen			= 1UL << 0, // connection has been established
@@ -47,8 +47,8 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 @interface AFNetworkTransport ()
 @property (readonly) AFNetworkWriteStream *writeStream;
 @property (readonly) AFNetworkReadStream *readStream;
-static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFPacket *packet, NSUInteger currentPartialBytes, NSUInteger totalBytes);
-static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFPacket *packet);
+static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet, NSUInteger currentPartialBytes, NSUInteger totalBytes);
+static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet);
 @end
 
 // Note: the selectors aren't all actually implemented, some are added dynamically
@@ -82,7 +82,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	return [AFNetworkSocket class];
 }
 
-- (id)initWithLowerLayer:(id <AFTransportLayer>)layer {
+- (id)initWithLowerLayer:(id <AFNetworkTransportLayer>)layer {
 	NSParameterAssert([layer isKindOfClass:[AFNetworkSocket class]]);
 	
 	self = [super initWithLowerLayer:layer];
@@ -118,7 +118,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	return self;
 }
 
-- (id <AFConnectionLayer>)_initWithHostSignature:(AFNetworkHostSignature *)signature {
+- (id <AFNetworkConnectionLayer>)_initWithHostSignature:(AFNetworkHostSignature *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
@@ -140,7 +140,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	return self;
 }
 
-- (id <AFConnectionLayer>)_initWithServiceSignature:(AFNetworkServiceSignature *)signature {
+- (id <AFNetworkConnectionLayer>)_initWithServiceSignature:(AFNetworkServiceSignature *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
@@ -383,9 +383,9 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	if ((_connectionFlags & _kConnectionCloseSoon) == _kConnectionCloseSoon) return;
 	NSParameterAssert(buffer != nil);
 	
-	AFPacketWrite *packet = nil;
-	if (![buffer isKindOfClass:[AFPacket class]]) {
-		packet = [[[AFPacketWrite alloc] initWithData:buffer] autorelease];
+	AFNetworkPacketWrite *packet = nil;
+	if (![buffer isKindOfClass:[AFNetworkPacket class]]) {
+		packet = [[[AFNetworkPacketWrite alloc] initWithData:buffer] autorelease];
 	} else {
 		packet = buffer;
 	}
@@ -402,9 +402,9 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	if ((_connectionFlags & _kConnectionCloseSoon) == _kConnectionCloseSoon) return;
 	NSParameterAssert(terminator != nil);
 	
-	AFPacketRead *packet = nil;
-	if (![terminator isKindOfClass:[AFPacket class]]) {
-		packet = [[[AFPacketRead alloc] initWithTerminator:terminator] autorelease];
+	AFNetworkPacketRead *packet = nil;
+	if (![terminator isKindOfClass:[AFNetworkPacket class]]) {
+		packet = [[[AFNetworkPacketRead alloc] initWithTerminator:terminator] autorelease];
 	} else {
 		packet = terminator;
 	}
@@ -418,7 +418,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 #pragma mark -
 #pragma mark Writing & Reading
 
-static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFPacket *packet, NSUInteger partialLength, NSUInteger totalLength) {
+static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet, NSUInteger partialLength, NSUInteger totalLength) {
 	SEL delegateSelector = NULL;
 	if (stream == self->_writeStream) delegateSelector = @selector(transport:didWritePartialDataOfLength:totalLength:context:);
 	else if (stream == self->_readStream) delegateSelector = @selector(transport:didReadPartialDataOfLength:totalLength:context:);
@@ -428,7 +428,7 @@ static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, 
 	((void (*)(id, SEL, NSUInteger, NSUInteger, void *))objc_msgSend)([self delegate], delegateSelector, partialLength, totalLength, [packet context]);
 }
 
-static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFPacket *packet) {
+static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet) {
 	SEL delegateSelector = NULL;
 	if (stream == self->_writeStream) delegateSelector = @selector(layer:didWrite:context:);
 	else if (stream == self->_readStream) delegateSelector = @selector(layer:didRead:context:);

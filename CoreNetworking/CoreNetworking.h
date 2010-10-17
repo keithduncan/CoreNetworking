@@ -17,24 +17,24 @@
 #import "CoreNetworking/AFNetworkConstants.h"
 
 #import "CoreNetworking/AFNetworkLayer.h"
-#import "CoreNetworking/AFTransportLayer.h"
-#import "CoreNetworking/AFConnectionLayer.h"
+#import "CoreNetworking/AFNetworkTransportLayer.h"
+#import "CoreNetworking/AFNetworkConnectionLayer.h"
 
 #import "CoreNetworking/AFNetworkSocket.h"
 #import "CoreNetworking/AFNetworkTransport.h"
 #import "CoreNetworking/AFNetworkStream.h"
 #import "CoreNetworking/AFNetworkConnection.h"
 
-#import "CoreNetworking/AFPacket.h"
-#import "CoreNetworking/AFPacketRead.h"
-#import "CoreNetworking/AFPacketWrite.h"
-#import "CoreNetworking/AFPacketQueue.h"
+#import "CoreNetworking/AFNetworkPacket.h"
+#import "CoreNetworking/AFNetworkPacketRead.h"
+#import "CoreNetworking/AFNetworkPacketWrite.h"
+#import "CoreNetworking/AFNetworkPacketQueue.h"
 
 #import "CoreNetworking/AFNetworkServer.h"
 #import "CoreNetworking/AFNetworkPool.h"
 
-#import "CoreNetworking/AFNetService.h"
-#import "CoreNetworking/AFServiceDiscoveryRunLoopSource.h"
+#import "CoreNetworking/AFNetworkService.h"
+#import "CoreNetworking/AFNetworkServiceDiscoveryRunLoopSource.h"
 
 /*
 	Network Protocols

@@ -6,13 +6,13 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "CoreNetworking/AFPacket.h"
+#import "CoreNetworking/AFNetworkPacket.h"
 
 /*!
 	\brief
 	This is a standard write packet.
  */
-@interface AFPacketWrite : AFPacket <AFPacketWriting> {
+@interface AFNetworkPacketWrite : AFNetworkPacket <AFNetworkPacketWriting> {
  @private
 	NSData *_buffer;
 	NSUInteger _bytesWritten;

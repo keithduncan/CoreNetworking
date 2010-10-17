@@ -8,8 +8,8 @@
 
 #import "AFNetworkFormDocument.h"
 
-#import "AFPacketWrite.h"
-#import "AFPacketWriteFromReadStream.h"
+#import "AFNetworkPacketWrite.h"
+#import "AFNetworkPacketWriteFromReadStream.h"
 
 const NSStringEncoding _AFNetworkFormEncoding = NSUTF8StringEncoding;
 
@@ -94,7 +94,7 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 		*frameLengthRef = [[self data] length];
 	}
 	
-	return [[AFPacketWrite alloc] initWithData:[self data]];
+	return [[AFNetworkPacketWrite alloc] initWithData:[self data]];
 }
 
 @end
@@ -152,7 +152,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	
 #if 1
 	NSInputStream *readStream = [[[NSInputStream alloc] initWithURL:[self location]] autorelease];
-	AFPacketWriteFromReadStream *filePacket = [[[AFPacketWriteFromReadStream alloc] initWithReadStream:readStream numberOfBytesToWrite:[resourceLength unsignedIntegerValue]] autorelease];
+	AFNetworkPacketWriteFromReadStream *filePacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:readStream numberOfBytesToWrite:[resourceLength unsignedIntegerValue]] autorelease];
 #else
 	NSData *fileData = [NSData dataWithContentsOfURL:[self location]];
 	AFPacketWrite *filePacket = [[[AFPacketWrite alloc] initWithData:fileData] autorelease];
@@ -236,7 +236,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	 ];
 	
 	NSData *currentValueHeadersData = _AFNetworkFormDocumentHeadersDataFromDictionary(currentValueHeaders);
-	AFPacketWrite *currentValueHeadersPacket = [[[AFPacketWrite alloc] initWithData:currentValueHeadersData] autorelease];
+	AFNetworkPacketWrite *currentValueHeadersPacket = [[[AFNetworkPacketWrite alloc] initWithData:currentValueHeadersData] autorelease];
 	[partPackets addObject:currentValueHeadersPacket];
 	partFrameLength += [currentValueHeadersData length];
 	
@@ -244,7 +244,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	partFrameLength += currentValueFrameLength;
 	
 	NSData *newLineData = [@"\r\n" dataUsingEncoding:_AFNetworkFormEncoding];
-	AFPacketWrite *newLinePacket = [[[AFPacketWrite alloc] initWithData:newLineData] autorelease];
+	AFNetworkPacketWrite *newLinePacket = [[[AFNetworkPacketWrite alloc] initWithData:newLineData] autorelease];
 	[partPackets addObject:newLinePacket];
 	partFrameLength += [newLineData length];
 	
@@ -263,7 +263,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	
 	
 	for (NSString *currentFieldname in [self values]) {
-		AFPacketWrite *headerPacket = [[[AFPacketWrite alloc] initWithData:multipartHeader] autorelease];
+		AFNetworkPacketWrite *headerPacket = [[[AFNetworkPacketWrite alloc] initWithData:multipartHeader] autorelease];
 		[cumulativePackets addObject:headerPacket];
 		cumulativeFrameLength += [multipartHeader length];
 		
@@ -277,7 +277,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	
 	
 	for (NSString *currentFieldname in [self files]) {
-		AFPacketWrite *headerPacket = [[[AFPacketWrite alloc] initWithData:multipartHeader] autorelease];
+		AFNetworkPacketWrite *headerPacket = [[[AFNetworkPacketWrite alloc] initWithData:multipartHeader] autorelease];
 		[cumulativePackets addObject:headerPacket];
 		cumulativeFrameLength += [multipartHeader length];
 		
@@ -305,12 +305,12 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 											  [NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname], AFNetworkDocumentMIMEContentDisposition,
 											  nil];
 		NSData *innerDocumentHeadersData = _AFNetworkFormDocumentHeadersDataFromDictionary(innerDocumentHeaders);
-		AFPacketWrite *innerDocumentHeadersPacket = [[[AFPacketWrite alloc] initWithData:innerDocumentHeadersData] autorelease];
+		AFNetworkPacketWrite *innerDocumentHeadersPacket = [[[AFNetworkPacketWrite alloc] initWithData:innerDocumentHeadersData] autorelease];
 		[cumulativePackets addObject:innerDocumentHeadersPacket];
 		cumulativeFrameLength += [innerDocumentHeadersData length];
 		
 		for (NSString *currentFilename in currentLocations) {
-			AFPacketWrite *innerHeaderPacket = [[[AFPacketWrite alloc] initWithData:innerMultipartHeader] autorelease];
+			AFNetworkPacketWrite *innerHeaderPacket = [[[AFNetworkPacketWrite alloc] initWithData:innerMultipartHeader] autorelease];
 			[cumulativePackets addObject:innerHeaderPacket];
 			cumulativeFrameLength += [innerMultipartHeader length];
 			
@@ -319,13 +319,13 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 			[self _appendPart:currentValue toCumulativePackets:cumulativePackets cumulativeFrameLength:&cumulativeFrameLength withContentDisposition:contentDisposition];
 		}
 		
-		AFPacketWrite *innerFooterPacket = [[[AFPacketWrite alloc] initWithData:innerMultipartFooter] autorelease];
+		AFNetworkPacketWrite *innerFooterPacket = [[[AFNetworkPacketWrite alloc] initWithData:innerMultipartFooter] autorelease];
 		[cumulativePackets addObject:innerFooterPacket];
 		cumulativeFrameLength += [innerMultipartFooter length];
 	}
 	
 	
-	AFPacketWrite *footerPacket = [[[AFPacketWrite alloc] initWithData:multipartFooter] autorelease];
+	AFNetworkPacketWrite *footerPacket = [[[AFNetworkPacketWrite alloc] initWithData:multipartFooter] autorelease];
 	[cumulativePackets addObject:footerPacket];
 	cumulativeFrameLength += [multipartFooter length];
 	

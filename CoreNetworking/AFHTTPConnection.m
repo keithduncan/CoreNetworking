@@ -11,16 +11,16 @@
 #import "AFNetworkTransport.h"
 #import "AFHTTPMessage.h"
 #import "AFHTTPMessagePacket.h"
-#import "AFPacketWrite.h"
-#import "AFPacketWriteFromReadStream.h"
+#import "AFNetworkPacketWrite.h"
+#import "AFNetworkPacketWriteFromReadStream.h"
 
 #import "AFNetworkMacros.h"
 
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPConnectionWriteRequestContext);
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionWriteRequestContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
 
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPConnectionReadRequestContext);
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadRequestContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 @interface AFHTTPConnection ()
 @property (readwrite, retain) NSMutableDictionary *messageHeaders;
@@ -129,7 +129,7 @@ CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 #pragma mark -
 
-- (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data context:(void *)context {
+- (void)layer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context {
 	if (context == &_AFHTTPConnectionWriteRequestContext) {
 		// nop
 	} else if (context == &_AFHTTPConnectionWriteResponseContext) {
@@ -139,7 +139,7 @@ CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	}
 }
 
-- (void)layer:(id <AFTransportLayer>)layer didRead:(id)data context:(void *)context {
+- (void)layer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context {
 	if (context == &_AFHTTPConnectionReadRequestContext) {
 		if ([self.delegate respondsToSelector:@selector(connection:didReceiveRequest:)])
 			[self.delegate connection:self didReceiveRequest:(CFHTTPMessageRef)data];

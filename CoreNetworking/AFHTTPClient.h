@@ -12,7 +12,7 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-@class AFPacketQueue;
+@class AFNetworkPacketQueue;
 
 /*!
 	\brief
@@ -27,7 +27,7 @@
 	
 	BOOL _shouldStartTLS;
 	
-	AFPacketQueue *_transactionQueue;
+	AFNetworkPacketQueue *_transactionQueue;
 }
 
 + (NSString *)userAgent;

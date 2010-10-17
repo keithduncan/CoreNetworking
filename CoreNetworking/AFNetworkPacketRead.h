@@ -6,7 +6,7 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "CoreNetworking/AFPacket.h"
+#import "CoreNetworking/AFNetworkPacket.h"
 
 /*!
 	\brief
@@ -17,7 +17,7 @@
 	If you pass an <tt>NSData</tt> object, the byte pattern is matched, all data upto and including the byte pattern is returned.
 	If you pass an <tt>NSNull</tt> object, all available data is read.
  */
-@interface AFPacketRead : AFPacket <AFPacketReading> {
+@interface AFNetworkPacketRead : AFNetworkPacket <AFNetworkPacketReading> {
  @private
 	id _terminator;
 	

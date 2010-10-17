@@ -19,15 +19,15 @@
 #import "AFNetworkFunctions.h"
 #import "AFNetworkPool.h"
 #import "AFNetworkConnection.h"
-
+#import "AFNetworkDelegateProxy.h"
 #import "AFNetworkMacros.h"
 
 // Note: import this header last, allowing for any of the previous headers to import <net/if.h> see the getifaddrs man page for details
 #import <ifaddrs.h>
 
-CORENETWORKING_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
+AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 
-@interface AFNetworkServer () <AFConnectionLayerControlDelegate>
+@interface AFNetworkServer () <AFNetworkConnectionLayerControlDelegate>
 @property (readonly) NSArray *encapsulationClasses;
 @end
 
@@ -116,10 +116,10 @@ CORENETWORKING_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservatio
 	} else [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
-- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {	
+- (AFNetworkDelegateProxy *)delegateProxy:(AFNetworkDelegateProxy *)proxy {	
 	if (_delegate == nil) return proxy;
 	
-	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
+	if (proxy == nil) proxy = [[[AFNetworkDelegateProxy alloc] init] autorelease];
 	
 	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
 	[proxy insertTarget:_delegate];
@@ -209,13 +209,13 @@ CORENETWORKING_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservatio
 	return socket;
 }
 
-- (void)encapsulateNetworkLayer:(id <AFConnectionLayer>)layer {
+- (void)encapsulateNetworkLayer:(id <AFNetworkConnectionLayer>)layer {
 	NSUInteger nextBucket = ([self.encapsulationClasses indexOfObject:[layer class]] + 1);
 	if (nextBucket >= [self.encapsulationClasses count]) return;
 	
 	Class encapsulationClass = [self.encapsulationClasses objectAtIndex:nextBucket];
 	
-	id <AFConnectionLayer> newConnection = [[[encapsulationClass alloc] initWithLowerLayer:layer] autorelease];
+	id <AFNetworkConnectionLayer> newConnection = [[[encapsulationClass alloc] initWithLowerLayer:layer] autorelease];
 	
 	[[self.clientPools objectAtIndex:nextBucket] addConnectionsObject:newConnection];
 	
@@ -229,7 +229,7 @@ CORENETWORKING_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservatio
 #pragma mark -
 #pragma mark Delegate
 
-- (void)layer:(id)layer didAcceptConnection:(id <AFConnectionLayer>)newLayer {
+- (void)layer:(id)layer didAcceptConnection:(id <AFNetworkConnectionLayer>)newLayer {
 	NSUInteger bucket = [self _bucketContainingLayer:layer];
 	
 	if (bucket == NSUIntegerMax || bucket == [self.clientPools count]) {
@@ -248,16 +248,16 @@ CORENETWORKING_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservatio
 	[self encapsulateNetworkLayer:newLayer];
 }
 
-- (void)layerDidOpen:(id <AFTransportLayer>)layer {
+- (void)layerDidOpen:(id <AFNetworkTransportLayer>)layer {
 	if ([self _bucketContainingLayer:layer] == 0) return; // Note: these are the initial socket layers opening, nothing else is spawned at this layer
 	[self encapsulateNetworkLayer:(id)layer];
 }
 
-- (void)layerDidClose:(id <AFConnectionLayer>)layer {
+- (void)layerDidClose:(id <AFNetworkConnectionLayer>)layer {
 	NSUInteger bucket = [self _bucketContainingLayer:layer];
 	
 	if (layer.lowerLayer != nil) {
-		id <AFTransportLayer> lowerLayer = [layer lowerLayer];
+		id <AFNetworkTransportLayer> lowerLayer = [layer lowerLayer];
 		
 		lowerLayer.delegate = (id)self;
 		[lowerLayer close];

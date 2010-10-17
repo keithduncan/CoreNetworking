@@ -30,7 +30,7 @@
 	return nil;
 }
 
-- (id <AFConnectionLayer>)initWithURL:(NSURL *)endpoint {
+- (id <AFNetworkConnectionLayer>)initWithURL:(NSURL *)endpoint {
 	CFHostRef host = (CFHostRef)[NSMakeCollectable(CFHostCreateWithName(kCFAllocatorDefault, (CFStringRef)[endpoint host])) autorelease];
 	
 	AFNetworkInternetTransportSignature transportSignature = [[self class] transportSignatureForScheme:[endpoint scheme]];
@@ -47,7 +47,7 @@
 	return (id)[self initWithTransportSignature:&hostSignature];
 }
 
-- (id <AFConnectionLayer>)initWithService:(id <AFNetServiceCommon>)service {
+- (id <AFNetworkConnectionLayer>)initWithService:(id <AFNetworkServiceCommon>)service {
 	CFNetServiceRef netService = (CFNetServiceRef)[NSMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)[(id)service valueForKey:@"domain"], (CFStringRef)[(id)service valueForKey:@"type"], (CFStringRef)[(id)service valueForKey:@"name"], 0)) autorelease];
 	
 	AFNetworkServiceSignature serviceSignature = {
@@ -57,7 +57,7 @@
 	return (id)[self initWithTransportSignature:&serviceSignature];
 }
 
-- (AFNetworkLayer <AFConnectionLayer> *)lowerLayer {
+- (AFNetworkLayer <AFNetworkConnectionLayer> *)lowerLayer {
 	return [super lowerLayer];
 }
 

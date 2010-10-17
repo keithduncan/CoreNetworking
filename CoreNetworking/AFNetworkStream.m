@@ -11,9 +11,9 @@
 #import <objc/message.h>
 
 #import "AFNetworkTransport.h"
-#import "AFPacketQueue.h"
-#import "AFPacket.h"
+#import "AFNetworkPacketQueue.h"
 #import "AFNetworkConstants.h"
+#import "AFNetworkDelegateProxy.h"
 
 enum {
 	_kStreamDidOpen = 1UL << 0,
@@ -22,15 +22,15 @@ typedef NSUInteger _AFNetworkStreamFlags;
 
 @interface AFNetworkStream () <NSStreamDelegate>
 @property (readonly) NSStream *stream;
-@property (readonly) AFPacketQueue *queue;
+@property (readonly) AFNetworkPacketQueue *queue;
 @end
 
 @interface AFNetworkStream (_Queue)
 - (void)_scheduleDequeuePackets;
 - (BOOL)_canDequeuePackets;
 - (void)_tryDequeuePackets;
-- (void)_startPacket:(AFPacket *)packet;
-- (void)_stopPacket:(AFPacket *)packet;
+- (void)_startPacket:(AFNetworkPacket *)packet;
+- (void)_stopPacket:(AFNetworkPacket *)packet;
 - (void)_shouldTryDequeuePacket;
 - (void)_packetDidTimeout:(NSNotification *)notification;
 - (void)_packetDidComplete:(NSNotification *)notification;
@@ -42,7 +42,7 @@ typedef NSUInteger _AFNetworkStreamFlags;
 
 @implementation AFNetworkStream
 
-static void _AFNetworkStreamEnqueue(AFNetworkStream *self, SEL _cmd, AFPacket *packet) {
+static void _AFNetworkStreamEnqueue(AFNetworkStream *self, SEL _cmd, AFNetworkPacket *packet) {
 	[self.queue enqueuePacket:packet];
 	[self _scheduleDequeuePackets];
 }
@@ -63,7 +63,7 @@ static NSUInteger _AFNetworkStreamCount(AFNetworkStream *self, SEL _cmd) {
 	
 	if ([_stream streamStatus] >= NSStreamStatusOpen) _flags = (_flags | _kStreamDidOpen);
 	
-	_queue = [[AFPacketQueue alloc] init];
+	_queue = [[AFNetworkPacketQueue alloc] init];
 	
 	return self;
 }
@@ -92,10 +92,10 @@ static NSUInteger _AFNetworkStreamCount(AFNetworkStream *self, SEL _cmd) {
 	[super finalize];
 }
 
-- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {
+- (AFNetworkDelegateProxy *)delegateProxy:(AFNetworkDelegateProxy *)proxy {
 	if (_delegate == nil) return proxy;
 	
-	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
+	if (proxy == nil) proxy = [[[AFNetworkDelegateProxy alloc] init] autorelease];
 	
 	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
 	[proxy insertTarget:_delegate];
@@ -246,22 +246,22 @@ DequeueEnd:
 	_dequeuing = NO;
 }
 
-- (void)_startPacket:(AFPacket *)packet {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetDidComplete:) name:AFPacketDidCompleteNotificationName object:packet];
+- (void)_startPacket:(AFNetworkPacket *)packet {
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:packet];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetDidTimeout:) name:AFPacketDidTimeoutNotificationName object:packet];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_packetDidTimeout:) name:AFNetworkPacketDidTimeoutNotificationName object:packet];
 	[packet startTimeout];
 }
 
-- (void)_stopPacket:(AFPacket *)packet {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
+- (void)_stopPacket:(AFNetworkPacket *)packet {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFNetworkPacketDidCompleteNotificationName object:packet];
 	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidTimeoutNotificationName object:packet];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFNetworkPacketDidTimeoutNotificationName object:packet];
 	[packet stopTimeout];
 }
 
 - (void)_shouldTryDequeuePacket {
-	AFPacket *packet = [self.queue currentPacket];
+	AFNetworkPacket *packet = [self.queue currentPacket];
 	((void (*)(id, SEL, id))objc_msgSend)(packet, _performSelector, self.stream);
 	
 	if (self.queue.currentPacket == nil) return;
@@ -285,12 +285,12 @@ DequeueEnd:
 }
 
 - (void)_packetDidComplete:(NSNotification *)notification {
-	AFPacket *packet = [notification object];
+	AFNetworkPacket *packet = [notification object];
 	
 	[self _stopPacket:packet];
 	[self.queue dequeued];
 	
-	NSError *packetError = [[notification userInfo] objectForKey:AFPacketErrorKey];
+	NSError *packetError = [[notification userInfo] objectForKey:AFNetworkPacketErrorKey];
 	if (packetError != nil) [[self delegate] networkStream:self didReceiveError:packetError];
 	
 	((void (*)(id, SEL, id, id))objc_msgSend)(self.delegate, _callbackSelectors[1], self, packet);
@@ -321,7 +321,7 @@ DequeueEnd:
 	return self;
 }
 
-- (void)enqueueWrite:(id <AFPacketWriting>)packet {
+- (void)enqueueWrite:(id <AFNetworkPacketWriting>)packet {
 	_AFNetworkStreamEnqueue(self, _cmd, packet);
 }
 
@@ -347,7 +347,7 @@ DequeueEnd:
 	return self;
 }
 
-- (void)enqueueRead:(id <AFPacketReading>)packet {
+- (void)enqueueRead:(id <AFNetworkPacketReading>)packet {
 	_AFNetworkStreamEnqueue(self, _cmd, packet);
 }
 

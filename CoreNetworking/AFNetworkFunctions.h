@@ -21,4 +21,4 @@ const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen)
 //	Cocoa Networking
 //
 
-extern NSError *AFErrorFromCFStreamError(CFStreamError error);
+extern NSError *AFNetworkErrorFromCFStreamError(CFStreamError error);

@@ -8,15 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-@class AFPacketQueue;
+@class AFNetworkPacketQueue;
 
 @protocol AFNetworkStreamDelegate;
 @protocol AFNetworkWriteStreamDelegate;
 @protocol AFNetworkReadStreamDelegate;
 
-@class AFPacket;
-@protocol AFPacketReading;
-@protocol AFPacketWriting;
+@class AFNetworkPacket;
+@protocol AFNetworkPacketReading;
+@protocol AFNetworkPacketWriting;
 
 #pragma mark -
 
@@ -34,7 +34,7 @@
 	__strong CFMutableDictionaryRef _runLoopSources;
 	void *_dispatchSource;
 	
-	AFPacketQueue *_queue;
+	AFNetworkPacketQueue *_queue;
 	BOOL _dequeuing;
 }
 
@@ -77,7 +77,7 @@
 
 @property (assign) id <AFNetworkWriteStreamDelegate> delegate;
 
-- (void)enqueueWrite:(id <AFPacketWriting>)packet;
+- (void)enqueueWrite:(id <AFNetworkPacketWriting>)packet;
 
 @property (readonly) NSUInteger countOfEnqueuedWrites;
 
@@ -87,7 +87,7 @@
 
 @property (assign) id <AFNetworkReadStreamDelegate> delegate;
 
-- (void)enqueueRead:(id <AFPacketReading>)packet;
+- (void)enqueueRead:(id <AFNetworkPacketReading>)packet;
 
 @property (readonly) NSUInteger countOfEnqueuedReads;
 
@@ -117,11 +117,11 @@
 
  @optional
 
-- (void)networkStream:(AFNetworkWriteStream *)stream didWrite:(id <AFPacketWriting>)packet partialDataOfLength:(NSUInteger)partialLength totalLength:(NSUInteger)totalLength;
+- (void)networkStream:(AFNetworkWriteStream *)stream didWrite:(id <AFNetworkPacketWriting>)packet partialDataOfLength:(NSUInteger)partialLength totalLength:(NSUInteger)totalLength;
 
  @required
 
-- (void)networkStream:(AFNetworkWriteStream *)stream didWrite:(id <AFPacketWriting>)packet;
+- (void)networkStream:(AFNetworkWriteStream *)stream didWrite:(id <AFNetworkPacketWriting>)packet;
 
 @end
 
@@ -131,11 +131,10 @@
 
  @optional
 
-- (void)networkStream:(AFNetworkReadStream *)readStream didRead:(id <AFPacketReading>)packet partialDataOfLength:(NSUInteger)partialLength totalLength:(NSUInteger)totalLength;
+- (void)networkStream:(AFNetworkReadStream *)readStream didRead:(id <AFNetworkPacketReading>)packet partialDataOfLength:(NSUInteger)partialLength totalLength:(NSUInteger)totalLength;
 
  @required
 
-- (void)networkStream:(AFNetworkReadStream *)readStream didRead:(id <AFPacketReading>)packet;
+- (void)networkStream:(AFNetworkReadStream *)readStream didRead:(id <AFNetworkPacketReading>)packet;
 
 @end
-

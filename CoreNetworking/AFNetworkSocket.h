@@ -8,7 +8,7 @@
 
 #import "CoreNetworking/AFNetworkLayer.h"
 
-#import "CoreNetworking/AFConnectionLayer.h"
+#import "CoreNetworking/AFNetworkConnectionLayer.h"
 
 /*!
 	\brief
@@ -17,7 +17,7 @@
 	\details
 	The purpose of this class is to spawn more sockets upon revieving inbound connections.
  */
-@interface AFNetworkSocket : AFNetworkLayer <AFConnectionLayer> {
+@interface AFNetworkSocket : AFNetworkLayer <AFNetworkConnectionLayer> {
  @private
 	__strong CFSocketSignature *_signature;
 	
@@ -52,7 +52,7 @@
 	\brief
 	
  */
-@property (assign) id <AFConnectionLayerHostDelegate, AFConnectionLayerControlDelegate> delegate;
+@property (assign) id <AFNetworkConnectionLayerHostDelegate, AFNetworkConnectionLayerControlDelegate> delegate;
 
 /*!
 	\brief

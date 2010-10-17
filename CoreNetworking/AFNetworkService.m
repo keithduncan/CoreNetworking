@@ -6,7 +6,7 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "AFNetService.h"
+#import "AFNetworkService.h"
 
 #if TARGET_OS_MAC && TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
@@ -15,7 +15,7 @@
 
 #import "AFNetworkConstants.h"
 
-NSDictionary *AFNetServicePropertyDictionaryFromTXTRecordData(NSData *TXTRecordData) {
+NSDictionary *AFNetworkServicePropertyDictionaryFromTXTRecordData(NSData *TXTRecordData) {
 	NSMutableDictionary *TXTDictionary = [[[NSNetService dictionaryFromTXTRecordData:TXTRecordData] mutableCopy] autorelease];
 	
 	for (NSString *currentKey in [TXTDictionary allKeys]) {
@@ -26,7 +26,7 @@ NSDictionary *AFNetServicePropertyDictionaryFromTXTRecordData(NSData *TXTRecordD
 	return TXTDictionary;
 }
 
-NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary) {
+NSData *AFNetworkServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary) {
 	NSMutableDictionary *dataDictionary = [NSMutableDictionary dictionaryWithCapacity:[TXTRecordDictionary count]];
 	
 	for (NSString *currentKey in [TXTRecordDictionary allKeys]) {
@@ -39,43 +39,43 @@ NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordD
 	return [NSNetService dataFromTXTRecordDictionary:dataDictionary];
 }
 
-@interface AFNetService ()
+@interface AFNetworkService ()
 @property (readwrite, retain) NSDictionary *presence;
 @end
 
-@implementation AFNetService
+@implementation AFNetworkService
 
 @synthesize delegate;
 @synthesize presence;
 
-- (id)initWithNetService:(id <AFNetServiceCommon>)service {
+- (id)initWithNetService:(id <AFNetworkServiceCommon>)service {
 	return [self initWithDomain:[(id)service valueForKey:@"domain"] type:[(id)service valueForKey:@"type"] name:[(id)service valueForKey:@"name"]];
 }
 
-static void AFNetServiceMonitorClientCallBack(CFNetServiceMonitorRef monitor, CFNetServiceRef service, CFNetServiceMonitorType typeInfo, CFDataRef rdata, CFStreamError *error, AFNetService *self) {
-	NSDictionary *values = AFNetServicePropertyDictionaryFromTXTRecordData((NSData *)rdata);
+static void AFNetServiceMonitorClientCallBack(CFNetServiceMonitorRef monitor, CFNetServiceRef service, CFNetServiceMonitorType typeInfo, CFDataRef rdata, CFStreamError *error, AFNetworkService *self) {
+	NSDictionary *values = AFNetworkServicePropertyDictionaryFromTXTRecordData((NSData *)rdata);
 	[self updatePresenceWithValuesForKeys:values];
 }
 
-static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *error, AFNetService *self) {
+static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *error, AFNetworkService *self) {
 	NSArray *resolvedAddresses = [self addresses];
 	
 	if (resolvedAddresses == nil) {
-		if ([self->delegate respondsToSelector:@selector(netService:didNotResolveAddress:)]) {
+		if ([self->delegate respondsToSelector:@selector(networkService:didNotResolveAddress:)]) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 									  NSLocalizedString(@"Couldn't resolve the remote client's address.", @"AFNetService resolve failure"), NSLocalizedDescriptionKey,
 									  nil];
 			
 			NSError *error = [[[NSError alloc] initWithDomain:AFCoreNetworkingBundleIdentifier code:0 userInfo:userInfo] autorelease];
 			
-			[self->delegate netService:self didNotResolveAddress:error];
+			[self->delegate networkService:self didNotResolveAddress:error];
 		}
 		
 		return;
 	}
 	
-	if ([self->delegate respondsToSelector:@selector(netServiceDidResolveAddress:)])
-		[self->delegate netServiceDidResolveAddress:self];
+	if ([self->delegate respondsToSelector:@selector(networkServiceDidResolveAddress:)])
+		[self->delegate networkServiceDidResolveAddress:self];
 }
 
 - (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name {
@@ -186,12 +186,12 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 
 @implementation NSNetService (_AFAdditions)
 
-- (id)initWithNetService:(id <AFNetServiceCommon>)service {
-	return (id)(*[AFNetService instanceMethodForSelector:_cmd])(self, _cmd, service);
+- (id)initWithNetService:(id <AFNetworkServiceCommon>)service {
+	return (id)(*[AFNetworkService instanceMethodForSelector:_cmd])(self, _cmd, service);
 }
 
 - (NSString *)fullName {
-	return (id)(*[AFNetService instanceMethodForSelector:_cmd])(self, _cmd);
+	return (id)(*[AFNetworkService instanceMethodForSelector:_cmd])(self, _cmd);
 }
 
 @end

@@ -14,7 +14,7 @@
 	You observe the <tt>currentWritePacket</tt> property to learn when there's a new packet to process.
 	Then call <tt>-dequeuePacket</tt> once you've finished processing the <tt>currentPacket</tt>.
  */
-@interface AFPacketQueue : NSObject {
+@interface AFNetworkPacketQueue : NSObject {
  @private
 	NSMutableArray *_packets;
 	id _currentPacket;

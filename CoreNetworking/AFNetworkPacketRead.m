@@ -6,17 +6,17 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "AFPacketRead.h"
+#import "AFNetworkPacketRead.h"
 
 #import "AFNetworkConstants.h"
 #import "AFNetworkFunctions.h"
 
-@interface AFPacketRead ()
+@interface AFNetworkPacketRead ()
 @property (assign) NSUInteger bytesRead;
 @property (copy) id terminator;
 @end
 
-@implementation AFPacketRead
+@implementation AFNetworkPacketRead
 
 @synthesize bytesRead=_bytesRead, buffer=_buffer, terminator=_terminator;
 
@@ -139,9 +139,9 @@
 #warning check if this error is reported by event to the stream delegate, making this redundant? also in AFPacketWrite
 			NSError *error = [readStream streamError];
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-											  error, AFPacketErrorKey,
+											  error, AFNetworkPacketErrorKey,
 											  nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 			return;
 		}
 		
@@ -165,7 +165,7 @@
 			packetComplete = ([self bytesRead] == [[self buffer] length]);
 		}
 		if (packetComplete) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 			break;
 		}
 		

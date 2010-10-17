@@ -8,8 +8,8 @@
 
 #import "AFHTTPMessage.h"
 
-#import "AFPacketWrite.h"
-#import "AFPacketWriteFromReadStream.h"
+#import "AFNetworkPacketWrite.h"
+#import "AFNetworkPacketWriteFromReadStream.h"
 
 #import "NSDictionary+AFNetworkAdditions.h"
 #import "NSURLRequest+AFNetworkAdditions.h"
@@ -123,9 +123,9 @@ void _AFHTTPPrintResponse(NSURLResponse *response) {
 	_AFHTTPPrintMessage((CFHTTPMessageRef)[NSMakeCollectable(AFHTTPMessageCreateForResponse((id)response)) autorelease]);
 }
 
-AFPacket <AFPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message) {
+AFNetworkPacket <AFNetworkPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message) {
 	NSData *messageData = [NSMakeCollectable(CFHTTPMessageCopySerializedMessage(message)) autorelease];
-	return [[[AFPacketWrite alloc] initWithData:messageData] autorelease];
+	return [[[AFNetworkPacketWrite alloc] initWithData:messageData] autorelease];
 }
 
 NSString *const AFHTTPMethodHEAD = @"HEAD";

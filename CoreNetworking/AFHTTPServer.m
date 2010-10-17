@@ -172,7 +172,7 @@
 	[pool drain];
 }
 
-- (void)layer:(id <AFConnectionLayer>)layer didReceiveError:(NSError *)error {
+- (void)layer:(id <AFNetworkConnectionLayer>)layer didReceiveError:(NSError *)error {
 	[layer close];
 }
 

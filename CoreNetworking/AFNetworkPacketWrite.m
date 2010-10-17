@@ -6,11 +6,11 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "AFPacketWrite.h"
+#import "AFNetworkPacketWrite.h"
 
 #import "AFNetworkFunctions.h"
 
-@implementation AFPacketWrite
+@implementation AFNetworkPacketWrite
 
 @synthesize buffer=_buffer;
 
@@ -49,9 +49,9 @@
 		if (actualBytesWritten < 0) {
 			NSError *error = [writeStream streamError];
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-											  error, AFPacketErrorKey,
+											  error, AFNetworkPacketErrorKey,
 											  nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 			return;
 		}
 		
@@ -61,7 +61,7 @@
 		packetComplete = (_bytesWritten == [self.buffer length]);
 		
 		if (packetComplete) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 			return;
 		}
 	}

@@ -15,15 +15,15 @@
 	Modified to conform to a run loop source like API.
  */
 
-#import "AFServiceDiscoveryRunLoopSource.h"
+#import "AFNetworkServiceDiscoveryRunLoopSource.h"
 
-@implementation AFServiceDiscoveryRunLoopSource
+@implementation AFNetworkServiceDiscoveryRunLoopSource
 
 @synthesize service=_service;
 
 static void	AFServiceDiscoveryProcessResult(CFFileDescriptorRef fileDescriptor, CFOptionFlags callBackTypes, void *info) {
 	if ((callBackTypes & kCFFileDescriptorReadCallBack) != kCFFileDescriptorReadCallBack) return;
-	AFServiceDiscoveryRunLoopSource *self = info;
+	AFNetworkServiceDiscoveryRunLoopSource *self = info;
 	
 	DNSServiceErrorType error = kDNSServiceErr_NoError;
 	error = DNSServiceProcessResult(self->_service);

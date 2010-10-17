@@ -6,28 +6,28 @@
 //  Copyright 2010. All rights reserved.
 //
 
-#import "AFPacketWriteFromReadStream.h"
+#import "AFNetworkPacketWriteFromReadStream.h"
 
-#import "AFPacketRead.h"
-#import "AFPacketWrite.h"
+#import "AFNetworkPacketRead.h"
+#import "AFNetworkPacketWrite.h"
 #import "AFNetworkStream.h"
 #import "AFNetworkFunctions.h"
 #import "AFNetworkConstants.h"
 
 #define READ_BUFFER_SIZE (64 * 1024)
 
-@interface AFPacketWriteFromReadStream ()
+@interface AFNetworkPacketWriteFromReadStream ()
 @property (readonly) NSInteger numberOfBytesToWrite;
 
 @property (assign) NSInputStream *readStream;
 @property (assign) BOOL readStreamOpen;
 @end
 
-@interface AFPacketWriteFromReadStream (Private)
+@interface AFNetworkPacketWriteFromReadStream (Private)
 - (void)_postReadStreamCompletionNotification;
 @end
 
-@implementation AFPacketWriteFromReadStream
+@implementation AFNetworkPacketWriteFromReadStream
 
 @synthesize numberOfBytesToWrite=_numberOfBytesToWrite;
 @synthesize readStream=_readStream, readStreamOpen=_readStreamOpen;
@@ -65,9 +65,9 @@
 			if (readStreamError == nil) readStreamError = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorUnknown userInfo:nil];
 			
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-											  readStreamError, AFPacketErrorKey,
+											  readStreamError, AFNetworkPacketErrorKey,
 											  nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 			return;
 		}
 		
@@ -109,9 +109,9 @@
 	if ([[self readStream] streamStatus] == NSStreamStatusError) readStreamError = [[self readStream] streamError];
 	
 	NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									  readStreamError, AFPacketErrorKey,
+									  readStreamError, AFNetworkPacketErrorKey,
 									  nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 }
 
 @end

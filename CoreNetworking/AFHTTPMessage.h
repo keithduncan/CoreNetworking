@@ -12,8 +12,8 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-@class AFPacket;
-@protocol AFPacketWriting;
+@class AFNetworkPacket;
+@protocol AFNetworkPacketWriting;
 
 /*
 	Message Functions
@@ -53,7 +53,7 @@ extern NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(NSURL *URL, CFHTTPMess
 	\brief
 	Packetises a message.
  */
-extern AFPacket <AFPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message);
+extern AFNetworkPacket <AFNetworkPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message);
 
 /*
 	HTTP verbs

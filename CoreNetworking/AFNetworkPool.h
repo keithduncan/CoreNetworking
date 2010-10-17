@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CoreNetworking/AFTransportLayer.h"
+#import "CoreNetworking/AFNetworkTransportLayer.h"
 
 @class AFNetworkConnection;
 
@@ -23,10 +23,10 @@
 
 @property (readonly) NSSet *connections;
 
-- (void)addConnectionsObject:(id <AFTransportLayer>)proxy;
-- (void)removeConnectionsObject:(id <AFTransportLayer>)proxy;
+- (void)addConnectionsObject:(id <AFNetworkTransportLayer>)proxy;
+- (void)removeConnectionsObject:(id <AFNetworkTransportLayer>)proxy;
 
-- (id <AFTransportLayer>)layerWithValue:(id)value forKey:(NSString *)key;
+- (id <AFNetworkTransportLayer>)layerWithValue:(id)value forKey:(NSString *)key;
 
 - (void)close;
 

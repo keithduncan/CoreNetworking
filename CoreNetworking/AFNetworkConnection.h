@@ -8,13 +8,13 @@
 
 #import "CoreNetworking/AFNetworkLayer.h"
 
-#import "CoreNetworking/AFNetService.h"
-#import "CoreNetworking/AFConnectionLayer.h"
+#import "CoreNetworking/AFNetworkService.h"
+#import "CoreNetworking/AFNetworkConnectionLayer.h"
 
 /*!
 	\brief	Your subclass should encapsulate Application Layer data (as defined in IETF-RFC-1122 http://tools.ietf.org/html/rfc1122) and pass it to the superclass for further processing.
 */
-@interface AFNetworkConnection : AFNetworkLayer <AFConnectionLayer>
+@interface AFNetworkConnection : AFNetworkLayer <AFNetworkConnectionLayer>
 
 /*!
 	\brief
@@ -46,24 +46,24 @@
 	\details
 	If the URL provides a port number that one is used instead of the scheme-implied port. Scheme implied ports are looked up in /etc/services.
  */
-- (id <AFConnectionLayer>)initWithURL:(NSURL *)endpoint;
+- (id <AFNetworkConnectionLayer>)initWithURL:(NSURL *)endpoint;
 
 /*!
 	\brief
 	Outbound Initialiser.
 	This initialiser is shorthand for creating a AFNetworkTransportServiceSignature.
  */
-- (id <AFConnectionLayer>)initWithService:(id <AFNetServiceCommon>)service;
+- (id <AFNetworkConnectionLayer>)initWithService:(id <AFNetworkServiceCommon>)service;
 
 /*!
 	\brief
  */
-- (AFNetworkLayer <AFConnectionLayer> *)lowerLayer;
+- (AFNetworkLayer <AFNetworkConnectionLayer> *)lowerLayer;
 
 /*!
  
  */
-@property (assign) id <AFConnectionLayerDataDelegate, AFConnectionLayerControlDelegate> delegate;
+@property (assign) id <AFNetworkConnectionLayerDataDelegate, AFNetworkConnectionLayerControlDelegate> delegate;
 
 /*!
 	\brief

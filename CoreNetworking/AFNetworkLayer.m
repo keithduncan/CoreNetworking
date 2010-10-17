@@ -10,6 +10,8 @@
 
 #import <objc/runtime.h>
 
+#import "AFNetworkDelegateProxy.h"
+
 @interface AFNetworkLayer ()
 @property (readwrite, retain) AFNetworkLayer *lowerLayer;
 @end
@@ -33,7 +35,7 @@
 	return self;
 }
 
-- (id)initWithLowerLayer:(id <AFTransportLayer>)layer {
+- (id)initWithLowerLayer:(id <AFNetworkTransportLayer>)layer {
 	self = [self init];
 	if (self == nil) return nil;
 	
@@ -63,10 +65,10 @@
 	return ([super respondsToSelector:selector] || [[self forwardingTargetForSelector:selector] respondsToSelector:selector]);
 }
 
-- (AFPriorityProxy *)delegateProxy:(AFPriorityProxy *)proxy {	
+- (AFNetworkDelegateProxy *)delegateProxy:(AFNetworkDelegateProxy *)proxy {	
 	if (_delegate == nil) return proxy;
 	
-	if (proxy == nil) proxy = [[[AFPriorityProxy alloc] init] autorelease];
+	if (proxy == nil) proxy = [[[AFNetworkDelegateProxy alloc] init] autorelease];
 	
 	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
 	[proxy insertTarget:_delegate];

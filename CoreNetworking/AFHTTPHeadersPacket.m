@@ -8,7 +8,7 @@
 
 #import "AFHTTPHeadersPacket.h"
 
-#import "AFPacketRead.h"
+#import "AFNetworkPacketRead.h"
 #import "AFHTTPMessage.h"
 #import "AFNetworkConstants.h"
 
@@ -29,7 +29,7 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 
 @interface AFHTTPHeadersPacket ()
 @property (retain) CFHTTPMessageRef message __attribute__((NSObject));
-@property (retain) AFPacketRead *currentRead;
+@property (retain) AFNetworkPacketRead *currentRead;
 @end
 
 @implementation AFHTTPHeadersPacket
@@ -64,9 +64,9 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 			[headersTerminator appendData:CRLF];
 			[headersTerminator appendData:CRLF];
 			
-			AFPacketRead *newReadPacket = [[[AFPacketRead alloc] initWithTerminator:headersTerminator] autorelease];
+			AFNetworkPacketRead *newReadPacket = [[[AFNetworkPacketRead alloc] initWithTerminator:headersTerminator] autorelease];
 			
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:newReadPacket];
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:newReadPacket];
 			self.currentRead = newReadPacket;
 		}
 		
@@ -77,13 +77,13 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 - (void)_readPacketDidComplete:(NSNotification *)notification {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:[notification name] object:[notification object]];
 	
-	if ([[notification userInfo] objectForKey:AFPacketErrorKey] != nil) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
+	if ([[notification userInfo] objectForKey:AFNetworkPacketErrorKey] != nil) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
 		return;
 	}
 	
 	
-	AFPacketRead *packet = [notification object];
+	AFNetworkPacketRead *packet = [notification object];
 	NSData *buffer = [packet buffer];
 	
 	CFRetain(buffer);
@@ -97,13 +97,13 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 		NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorParse userInfo:errorInfo];
 		
 		NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-										  error, AFPacketErrorKey,
+										  error, AFNetworkPacketErrorKey,
 										  nil];
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 		return;
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 }
 
 @end

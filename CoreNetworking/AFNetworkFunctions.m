@@ -110,7 +110,7 @@ const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen)
 	return NULL;
 }
 
-NSError *AFErrorFromCFStreamError(CFStreamError error) {
+NSError *AFNetworkErrorFromCFStreamError(CFStreamError error) {
 	if (error.domain == 0 && error.error == 0) return nil;
 	NSString *domain = @"Unlisted CFStreamError Domain", *message = nil;
 	

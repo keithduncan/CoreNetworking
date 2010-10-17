@@ -6,13 +6,13 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "CoreNetworking/AFPacket.h"
+#import "CoreNetworking/AFNetworkPacket.h"
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-@class AFPacketRead;
+@class AFNetworkPacketRead;
 
 /*!
 	\brief
@@ -27,11 +27,11 @@
 	\details
 	The completed buffer is an NSString, allowing the caller to use whatever XML library is available.
  */
-@interface AFXMLElementPacket : AFPacket <AFPacketReading> {
+@interface AFXMLElementPacket : AFNetworkPacket <AFNetworkPacketReading> {
  @private
 	NSStringEncoding _encoding;
 	
-	AFPacketRead *_currentRead;
+	AFNetworkPacketRead *_currentRead;
 	
 	NSMutableData *_xmlBuffer;
 	NSInteger _depth;

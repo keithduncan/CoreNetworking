@@ -37,4 +37,4 @@ enum {
 	AFNetworkPacketErrorTimeout				= 601,
 	AFNetworkPacketErrorParse				= 602,
 };
-typedef NSInteger AFNetworkingErrorCode;
+typedef NSInteger AFNetworkErrorCode;

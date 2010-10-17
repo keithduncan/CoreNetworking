@@ -8,13 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol AFPacketDelegate;
-
 /*!
 	\brief
 	Posted when a timeout occurs, the object is the packet
  */
-extern NSString *const AFPacketDidTimeoutNotificationName;
+extern NSString *const AFNetworkPacketDidTimeoutNotificationName;
 
 /*!
 	\brief
@@ -23,15 +21,15 @@ extern NSString *const AFPacketDidTimeoutNotificationName;
 	\details
 	If the packet is completing because an error was encountered, return it under the <tt>AFPacketErrorKey</tt> key.
  */
-extern NSString *const AFPacketDidCompleteNotificationName;
+extern NSString *const AFNetworkPacketDidCompleteNotificationName;
 
-	extern NSString *const AFPacketErrorKey;
+	extern NSString *const AFNetworkPacketErrorKey;
 
 /*!
 	\brief
 	This is an abstract packet superclass. It provides simple functionality such as tagging and timeouts.
  */
-@interface AFPacket : NSObject {
+@interface AFNetworkPacket : NSObject {
  @package
 	void *_context;
 	NSTimeInterval _duration;
@@ -84,7 +82,7 @@ extern NSString *const AFPacketDidCompleteNotificationName;
 	\brief
 	Any read packet you enqueue must conform to this protocol.
  */
-@protocol AFPacketReading <NSObject>
+@protocol AFNetworkPacketReading <NSObject>
 
 /*!
 	\brief
@@ -98,7 +96,7 @@ extern NSString *const AFPacketDidCompleteNotificationName;
 	\brief
 	Any write packet you enqueue must conform to this protocol.
  */
-@protocol AFPacketWriting <NSObject>
+@protocol AFNetworkPacketWriting <NSObject>
 
 /*!
 	\brief

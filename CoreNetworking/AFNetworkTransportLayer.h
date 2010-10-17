@@ -8,33 +8,33 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CoreNetworking/AFPacket.h"
+#import "CoreNetworking/AFNetworkPacket.h"
 
 /*
  *	Network Layers
  *		Transport + Internetwork
  */
 
-@protocol AFNetworkLayerHostDelegate;
-@protocol AFNetworkLayerControlDelegate;
-@protocol AFNetworkLayerDataDelegate;
+@protocol AFNetworkTransportLayerHostDelegate;
+@protocol AFNetworkTransportLayerControlDelegate;
+@protocol AFNetworkTransportLayerDataDelegate;
 
 #pragma mark -
 
 /*!
     \brief
-	An AFTransportLayer object should encapsulate data (as defined in RFC 1122)
+	An AFNetworkTransportLayer object should encapsulate data (as defined in IETF-RFC-1122 http://tools.ietf.org/html/rfc1122)
  
 	\details
 	This implementation mandates that a layer pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a cluster-chain allowing for maximum flexiblity.
 */
-@protocol AFTransportLayer <NSObject>
+@protocol AFNetworkTransportLayer <NSObject>
 
 /*!
 	\brief
 	Currently the control and data delegates share the same property.
  */
-@property (assign) id <AFNetworkLayerDataDelegate, AFNetworkLayerControlDelegate> delegate;
+@property (assign) id <AFNetworkTransportLayerDataDelegate, AFNetworkTransportLayerControlDelegate> delegate;
 
 /*!
 	\brief
@@ -43,13 +43,13 @@
 	\details
 	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound initialisers have a more specific signatures.
  */
-- (id)initWithLowerLayer:(id <AFTransportLayer>)layer;
+- (id)initWithLowerLayer:(id <AFNetworkTransportLayer>)layer;
 
 /*!
 	\brief
 	This method is useful for accessing lower level properties.
  */
-- (id <AFTransportLayer>)lowerLayer;
+- (id <AFNetworkTransportLayer>)lowerLayer;
 
  @optional
 
@@ -125,7 +125,7 @@
 	\brief
 	This is intentionally empty.
  */
-@protocol AFTransportLayerHostDelegate <NSObject>
+@protocol AFNetworkTransportLayerHostDelegate <NSObject>
 
 @end
 
@@ -133,13 +133,13 @@
 	\brief
 	The negative case handling methods are required, otherwise you can assume the connection succeeds.
  */
-@protocol AFTransportLayerControlDelegate <NSObject>
+@protocol AFNetworkTransportLayerControlDelegate <NSObject>
 
  @optional
 
-- (void)layerDidOpen:(id <AFTransportLayer>)layer;
+- (void)layerDidOpen:(id <AFNetworkTransportLayer>)layer;
 
-- (void)layerDidClose:(id <AFTransportLayer>)layer;
+- (void)layerDidClose:(id <AFNetworkTransportLayer>)layer;
 
  @required
 
@@ -147,7 +147,7 @@
 	\brief
 	This is called for already opened stream errors.
  */
-- (void)layer:(id <AFTransportLayer>)layer didReceiveError:(NSError *)error;
+- (void)layer:(id <AFNetworkTransportLayer>)layer didReceiveError:(NSError *)error;
 
  @optional
 
@@ -155,13 +155,13 @@
 	\brief
 	Called if TLS setup succeeded.
  */
-- (void)layerDidStartTLS:(id <AFTransportLayer>)layer;
+- (void)layerDidStartTLS:(id <AFNetworkTransportLayer>)layer;
 
 /*!
 	\brief
 	Called if the TLS fails.
  */
-- (void)layer:(id <AFTransportLayer>)layer didNotStartTLS:(NSError *)error;
+- (void)layer:(id <AFNetworkTransportLayer>)layer didNotStartTLS:(NSError *)error;
 
 @end
 
@@ -169,10 +169,10 @@
 	\brief
 	These methods inform the data delegate of successful reads and writes.
  */
-@protocol AFTransportLayerDataDelegate <NSObject>
+@protocol AFNetworkTransportLayerDataDelegate <NSObject>
 
-- (void)layer:(id <AFTransportLayer>)layer didWrite:(id)data context:(void *)context;
+- (void)layer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context;
 
-- (void)layer:(id <AFTransportLayer>)layer didRead:(id)data context:(void *)context;
+- (void)layer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context;
 
 @end

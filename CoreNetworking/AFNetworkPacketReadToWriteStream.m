@@ -6,22 +6,21 @@
 //  Copyright 2010. All rights reserved.
 //
 
-#import "AFPacketReadToWriteStream.h"
+#import "AFNetworkPacketReadToWriteStream.h"
 
-#import "AFPacket.h"
-#import "AFPacketRead.h"
-#import "AFPacketWrite.h"
+#import "AFNetworkPacketRead.h"
+#import "AFNetworkPacketWrite.h"
 #import "AFNetworkFunctions.h"
 #import "AFNetworkStream.h"
 
 // Note: this doesn't simply reuse the AFNetworkTransport with provided write and read streams since the base packets would read and then write the whole packet. This adaptor class minimises the memory footprint.
 
-@interface AFPacketReadToWriteStream () <AFNetworkWriteStreamDelegate>
+@interface AFNetworkPacketReadToWriteStream () <AFNetworkWriteStreamDelegate>
 @property (readonly) AFNetworkWriteStream *writeStream;
-@property (retain) AFPacketRead *currentRead;
+@property (retain) AFNetworkPacketRead *currentRead;
 @end
 
-@implementation AFPacketReadToWriteStream
+@implementation AFNetworkPacketReadToWriteStream
 
 @synthesize writeStream=_writeStream, currentRead=_currentRead;
 
@@ -67,9 +66,9 @@
 		
 		if (bytesRead < 0) {
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-											  [readStream streamError], AFPacketErrorKey,
+											  [readStream streamError], AFNetworkPacketErrorKey,
 											  nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 			break;
 		}
 		
@@ -77,7 +76,7 @@
 		_numberOfBytesToRead -= bytesRead;
 	}
 	
-	AFPacketWrite *writePacket = [[[AFPacketWrite alloc] initWithData:writeBuffer] autorelease];
+	AFNetworkPacketWrite *writePacket = [[[AFNetworkPacketWrite alloc] initWithData:writeBuffer] autorelease];
 	[[self writeStream] enqueueWrite:writePacket];
 	
 	free(readBuffer);
@@ -89,16 +88,16 @@
 
 - (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
 	NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									  error, AFPacketErrorKey,
+									  error, AFNetworkPacketErrorKey,
 									  nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 }
 
-- (void)networkStream:(AFNetworkWriteStream *)stream didWrite:(id <AFPacketWriting>)packet {
+- (void)networkStream:(AFNetworkWriteStream *)stream didWrite:(id <AFNetworkPacketWriting>)packet {
 	if ([[self writeStream] countOfEnqueuedWrites] != 0) return;
 	if (_numberOfBytesToRead != 0) return;
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 }
 
 @end

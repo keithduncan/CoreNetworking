@@ -8,8 +8,6 @@
 
 #import "AFNetworkPool.h"
 
-#import "AFConnectionLayer.h"
-
 @interface AFNetworkPool ()
 @property (retain) NSMutableSet *mutableConnections;
 @end
@@ -37,20 +35,20 @@
 	return [[_connections copy] autorelease];
 }
 
-- (void)addConnectionsObject:(id <AFTransportLayer>)connection {
+- (void)addConnectionsObject:(id <AFNetworkTransportLayer>)connection {
 	[self.mutableConnections addObject:connection];
 	[connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
-- (void)removeConnectionsObject:(id <AFTransportLayer>)connection {
+- (void)removeConnectionsObject:(id <AFNetworkTransportLayer>)connection {
 	[connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[self.mutableConnections removeObject:connection];
 }
 
-- (id <AFTransportLayer>)layerWithValue:(id)value forKey:(NSString *)key {
-	id <AFConnectionLayer> connection = nil;
+- (id <AFNetworkTransportLayer>)layerWithValue:(id)value forKey:(NSString *)key {
+	id <AFNetworkTransportLayer> connection = nil;
 	
-	for (id <AFConnectionLayer> currentConnection in self.connections) {
+	for (id <AFNetworkTransportLayer> currentConnection in self.connections) {
 		id connectionValue = [(id)currentConnection valueForKey:key];
 		if (![connectionValue isEqual:value]) continue;
 		

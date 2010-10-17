@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CoreNetworking/AFNetService.h"
+#import "CoreNetworking/AFNetworkService.h"
 #import "CoreNetworking/AFNetworkTypes.h"
-#import "CoreNetworking/AFTransportLayer.h"
+#import "CoreNetworking/AFNetworkTransportLayer.h"
 
 /*!
 	\brief
@@ -26,7 +26,7 @@
  */
 @interface AFNetworkLayer : NSObject {
  @private
-	id <AFTransportLayer> _lowerLayer;
+	id <AFNetworkTransportLayer> _lowerLayer;
 	id _delegate;
 	
 	NSMutableDictionary *_transportInfo;
@@ -42,7 +42,7 @@
 	\brief
 	Designated Initialiser.
  */
-- (id)initWithLowerLayer:(id <AFTransportLayer>)layer;
+- (id)initWithLowerLayer:(id <AFNetworkTransportLayer>)layer;
 
 /*!
 	\brief

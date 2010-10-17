@@ -12,7 +12,7 @@
 #import "CoreNetworking/AFNetworkLayer.h"
 
 #import "CoreNetworking/AFNetworkTypes.h"
-#import "CoreNetworking/AFConnectionLayer.h"
+#import "CoreNetworking/AFNetworkConnectionLayer.h"
 
 @protocol AFNetworkTransportDataDelegate;
 @protocol AFNetworkTransportControlDelegate;
@@ -20,8 +20,8 @@
 @class AFNetworkWriteStream;
 @class AFNetworkReadStream;
 
-@class AFPacketWrite;
-@class AFPacketRead;
+@class AFNetworkPacketWrite;
+@class AFNetworkPacketRead;
 
 /*!
     \brief
@@ -32,7 +32,7 @@
 	• Internally, it acts an adaptor between the CFSocketRef and CFStreamRef API.
 	• Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and CFStreamRef providing an asyncronous CFStreamRef like API.
 */
-@interface AFNetworkTransport : AFNetworkLayer <AFConnectionLayer> {
+@interface AFNetworkTransport : AFNetworkLayer <AFNetworkConnectionLayer> {
  @private
 	union {
 		AFNetworkServiceSignature _service;
@@ -48,7 +48,7 @@
 	NSUInteger _connectionFlags;
 }
 
-@property (assign) id <AFNetworkTransportDataDelegate, AFNetworkTransportControlDelegate, AFTransportLayerDataDelegate> delegate;
+@property (assign) id <AFNetworkTransportDataDelegate, AFNetworkTransportControlDelegate, AFNetworkTransportLayerDataDelegate> delegate;
 
 /*!
 	\brief
@@ -71,7 +71,7 @@
 
 @end
 
-@protocol AFNetworkTransportControlDelegate <AFConnectionLayerControlDelegate>
+@protocol AFNetworkTransportControlDelegate <AFNetworkConnectionLayerControlDelegate>
 
  @optional
 

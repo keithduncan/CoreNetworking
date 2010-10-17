@@ -8,10 +8,10 @@
 
 #import "AFXMLElementPacket.h"
 
-#import "AFPacketRead.h"
+#import "AFNetworkPacketRead.h"
 
 @interface AFXMLElementPacket ()
-@property (retain) AFPacketRead *currentRead;
+@property (retain) AFNetworkPacketRead *currentRead;
 @property (readonly) NSMutableData *xmlBuffer;
 @end
 
@@ -48,9 +48,9 @@
 	return [[[NSString alloc] initWithData:_xmlBuffer encoding:_encoding] autorelease];
 }
 
-- (AFPacketRead *)_nextReadPacket {
+- (AFNetworkPacketRead *)_nextReadPacket {
 	id terminator = [@">" dataUsingEncoding:_encoding];
-	return [[[AFPacketRead alloc] initWithTerminator:terminator] autorelease];
+	return [[[AFNetworkPacketRead alloc] initWithTerminator:terminator] autorelease];
 }
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
@@ -58,9 +58,9 @@
 - (void)performRead:(NSInputStream *)readStream {
 	do {
 		if (self.currentRead == nil) {
-			AFPacketRead *newPacket = [self _nextReadPacket];
+			AFNetworkPacketRead *newPacket = [self _nextReadPacket];
 			
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:newPacket];
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:newPacket];
 			self.currentRead = newPacket;
 		}
 		
@@ -69,12 +69,12 @@
 }
 
 - (void)_readPacketDidComplete:(NSNotification *)notification {
-	AFPacketRead *packet = [notification object];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFPacketDidCompleteNotificationName object:packet];
+	AFNetworkPacketRead *packet = [notification object];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFNetworkPacketDidCompleteNotificationName object:packet];
 	
-	NSError *packetError = [[notification userInfo] objectForKey:AFPacketErrorKey];
+	NSError *packetError = [[notification userInfo] objectForKey:AFNetworkPacketErrorKey];
 	if (packetError != nil) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
 		return;
 	}
 	
@@ -89,7 +89,7 @@
 	else _depth++;
 	
 	if (_depth <= 0) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 		return;
 	}
 	

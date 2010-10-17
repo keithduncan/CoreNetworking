@@ -8,6 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-#define CORENETWORKING_NSSTRING_CONSTANT(var) NSString *const var = @#var
+#define AFNETWORK_NSSTRING_CONSTANT(var) NSString *const var = @#var
 
-#define CORENETWORKING_NSSTRING_CONTEXT(var) static NSString *var = @#var
+#define AFNETWORK_NSSTRING_CONTEXT(var) static NSString *var = @#var

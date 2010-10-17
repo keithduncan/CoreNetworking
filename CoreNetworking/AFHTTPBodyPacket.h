@@ -12,7 +12,7 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-#import "CoreNetworking/AFPacket.h"
+#import "CoreNetworking/AFNetworkPacket.h"
 
 /*!
 	\brief
@@ -27,12 +27,12 @@ extern NSString *const AFHTTPBodyPacketDidReadNotificationName;
 	This is a versatile packet for handling HTTP bodies.
 	
 	\details
-	It will handle full or chunked bodies.
+	It will handle identity or chunked bodies.
  */
-@interface AFHTTPBodyPacket : AFPacket <AFPacketReading> {
+@interface AFHTTPBodyPacket : AFNetworkPacket <AFNetworkPacketReading> {
  @protected
 	__strong CFHTTPMessageRef _message;
-	AFPacket <AFPacketReading> *_currentPacket;
+	AFNetworkPacket <AFNetworkPacketReading> *_currentPacket;
 	BOOL _appendBodyDataToMessage;
 }
 

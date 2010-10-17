@@ -6,13 +6,13 @@
 //  Copyright 2010. All rights reserved.
 //
 
-#import "CoreNetworking/AFPacket.h"
+#import "CoreNetworking/AFNetworkPacket.h"
 
 @class AFNetworkReadStream;
 @class AFNetworkWriteStream;
 
-@class AFPacketRead;
-@class AFPacketWrite;
+@class AFNetworkPacketRead;
+@class AFNetworkPacketWrite;
 
 /*!
 	\brief
@@ -21,7 +21,7 @@
 	\details
 	Currently, all read stream operations are blocking, this restricts practical usage to file streams.
  */
-@interface AFPacketWriteFromReadStream : AFPacket <AFPacketWriting> {
+@interface AFNetworkPacketWriteFromReadStream : AFNetworkPacket <AFNetworkPacketWriting> {
  @private
 	NSInteger _numberOfBytesToWrite;
 	

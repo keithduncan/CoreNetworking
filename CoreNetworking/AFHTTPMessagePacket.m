@@ -15,15 +15,15 @@
 
 #import "AFNetworkMacros.h"
 
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPMessagePacketHeadersContext);
-CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketHeadersContext);
+AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 
 @interface AFHTTPMessagePacket ()
 @property (readonly) CFHTTPMessageRef message;
 
 @property (readwrite, retain) NSOutputStream *bodyStream;
 
-@property (retain) AFPacket <AFPacketReading> *currentRead;
+@property (retain) AFNetworkPacket <AFNetworkPacketReading> *currentRead;
 
 - (void)_headersPacketDidComplete:(NSNotification *)notification;
 
@@ -67,7 +67,7 @@ CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 		AFHTTPHeadersPacket *headersPacket = [[[AFHTTPHeadersPacket alloc] initWithMessage:self.message] autorelease];
 		headersPacket->_context = &_AFHTTPMessagePacketHeadersContext;
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_headersPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:headersPacket];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_headersPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:headersPacket];
 		self.currentRead = headersPacket;
 		
 		return;
@@ -86,7 +86,7 @@ CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 		[bodyPacket setAppendBodyDataToMessage:NO];
 	}
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_bodyReadPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:bodyPacket];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_bodyReadPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:bodyPacket];
 	self.currentRead = bodyPacket;
 }
 
@@ -102,14 +102,14 @@ CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 - (void)_headersPacketDidComplete:(NSNotification *)notification {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:[notification name] object:[notification object]];
 	
-	if ([[notification userInfo] objectForKey:AFPacketErrorKey] != nil) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
+	if ([[notification userInfo] objectForKey:AFNetworkPacketErrorKey] != nil) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
 		return;
 	}
 	
 	
 	if (![AFHTTPBodyPacket messageHasBody:self.message]) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 		return;
 	}
 	
@@ -127,9 +127,9 @@ CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 		
 		if (writtenBytes == -1) {
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-											  [self.bodyStream streamError], AFPacketErrorKey,
+											  [self.bodyStream streamError], AFNetworkPacketErrorKey,
 											  nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:[notification object] userInfo:notificationInfo];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:[notification object] userInfo:notificationInfo];
 			return;
 		}
 		
@@ -141,12 +141,12 @@ CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFHTTPBodyPacketDidReadNotificationName object:[notification object]];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:[notification name] object:[notification object]];
 	
-	if ([[notification userInfo] objectForKey:AFPacketErrorKey] != nil) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
+	if ([[notification userInfo] objectForKey:AFNetworkPacketErrorKey] != nil) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
 		return;
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 }
 
 @end

@@ -6,13 +6,13 @@
 //  Copyright 2010. All rights reserved.
 //
 
-#import "CoreNetworking/AFPacket.h"
+#import "CoreNetworking/AFNetworkPacket.h"
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-@class AFPacketRead;
+@class AFNetworkPacketRead;
 
 /*!
 	\brief
@@ -27,10 +27,10 @@ extern NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message);
 	\brief
 	
  */
-@interface AFHTTPHeadersPacket : AFPacket <AFPacketReading> {
+@interface AFHTTPHeadersPacket : AFNetworkPacket <AFNetworkPacketReading> {
  @private
 	__strong CFHTTPMessageRef _message;
-	AFPacketRead *_currentRead;
+	AFNetworkPacketRead *_currentRead;
 }
 
 /*!

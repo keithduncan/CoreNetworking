@@ -12,7 +12,7 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-@protocol AFNetServiceDelegate;
+@protocol AFNetworkServiceDelegate;
 
 /*!
 	\brief
@@ -23,7 +23,7 @@
 	For example the <tt>AFNetService</tt> class below provides a KVO compliant presence dictionary that maps to the TXT record.
 	Important: if a class is passed an (id <AFNetServiceCommon>) to create a new service, you <b>must</b> use <tt>-valueForKey:</tt> allowing for a dictionary (or other serialized reference) to be used in place of an actual service object.
  */
-@protocol AFNetServiceCommon <NSObject>
+@protocol AFNetworkServiceCommon <NSObject>
 
 /*!
 	\brief
@@ -41,7 +41,7 @@
 	\brief
 	Implementors <b>must</b> use <tt>-valueForKey:</tt> to extract the <tt>name<tt>, <tt>type</tt> and <tt>domain</tt> as documented in the <tt>AFNetServiceCommon</tt> description.
  */
-- (id)initWithNetService:(id <AFNetServiceCommon>)service;
+- (id)initWithNetService:(id <AFNetworkServiceCommon>)service;
 
 /*!
 	\brief
@@ -65,7 +65,7 @@
 	\return
 	An <tt>NSDictionary</tt> object of <tt>NSString</tt> key-value pairs.
 */
-extern NSDictionary *AFNetServicePropertyDictionaryFromTXTRecordData(NSData *TXTRecordData);
+extern NSDictionary *AFNetworkServicePropertyDictionaryFromTXTRecordData(NSData *TXTRecordData);
 
 /*!
 	\brief
@@ -74,7 +74,7 @@ extern NSDictionary *AFNetServicePropertyDictionaryFromTXTRecordData(NSData *TXT
 	\details
 	The dictionary returned by the <tt>+[NSNetService dataFromTXTRecordDictionary:]</tt> only accepts a dictionary with data objects, this function converts the data objects as UTF-8 strings into data objects for you.
  */
-extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary);
+extern NSData *AFNetworkServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary);
 
 /*!
     \brief
@@ -84,12 +84,12 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 	The initialisers for this class are in <tt>AFNetServiceCommon</tt>.
 	This cannot currently be used for publishing a service, the NSNetService API is generally sufficient for that.
 */
-@interface AFNetService : NSObject <AFNetServiceCommon> {
+@interface AFNetworkService : NSObject <AFNetworkServiceCommon> {
  @private
 	__strong CFNetServiceRef _service;
 	__strong CFNetServiceMonitorRef _monitor;
 	
-	id <AFNetServiceDelegate> delegate;
+	id <AFNetworkServiceDelegate> delegate;
 	NSDictionary *presence;
 }
 
@@ -97,7 +97,7 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 	\brief
 	The delegate is called when resolution discovers an address or fails to.
  */
-@property (assign) id <AFNetServiceDelegate> delegate;
+@property (assign) id <AFNetworkServiceDelegate> delegate;
 
 /*!
 	\brief
@@ -154,18 +154,18 @@ extern NSData *AFNetServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXT
 @end
 
 
-@protocol AFNetServiceDelegate <NSObject>
+@protocol AFNetworkServiceDelegate <NSObject>
 
 /*!
 	\brief
 	
  */
-- (void)netServiceDidResolveAddress:(AFNetService *)service;
+- (void)networkServiceDidResolveAddress:(AFNetworkService *)service;
 
 /*!
 	\brief
 	
  */
-- (void)netService:(AFNetService *)service didNotResolveAddress:(NSError *)error;
+- (void)networkService:(AFNetworkService *)service didNotResolveAddress:(NSError *)error;
 
 @end

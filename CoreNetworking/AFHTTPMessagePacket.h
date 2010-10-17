@@ -6,13 +6,13 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "CoreNetworking/AFPacket.h"
+#import "CoreNetworking/AFNetworkPacket.h"
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-@class AFPacketRead;
+@class AFNetworkPacketRead;
 
 /*!
 	\brief
@@ -21,14 +21,14 @@
 	\details
 	This is a composite packet, wrapping <tt>AFHTTPHeadersPacket</tt> and <tt>AFHTTPBodyPacket</tt>.
  */
-@interface AFHTTPMessagePacket : AFPacket <AFPacketReading> {
+@interface AFHTTPMessagePacket : AFNetworkPacket <AFNetworkPacketReading> {
  @private
 	__strong CFHTTPMessageRef _message;
 	
 	NSURL *_bodyStorage;
 	NSOutputStream *_bodyStream;
 	
-	AFPacket *_currentRead;
+	AFNetworkPacket *_currentRead;
 }
 
 /*!
