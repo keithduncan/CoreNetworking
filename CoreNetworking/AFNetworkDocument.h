@@ -25,8 +25,7 @@ extern NSString *const AFNetworkDocumentMIMEContentDisposition;
 	The combined frame length of the packets. Must not be NULL.
 	
 	\return
-	An ordered collection of <tt>AFPacket <AFPacketWriting></tt> objects which should be replayed over a write stream.
-	nil if the document couldn't be serialised.
+	An ordered collection of <tt>AFPacket <AFPacketWriting></tt> objects which should be replayed over a write stream, nil if the document couldn't be serialised.
  */
 - (NSArray *)serialisedPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef;
 
@@ -34,12 +33,14 @@ extern NSString *const AFNetworkDocumentMIMEContentDisposition;
 	\brief
 	Used to convert the document into a wire format. This inefficiently decomposes the document into a single data object.
 	
+	\details
+	The default implementation is suitable for inheriting, it uses <tt>serialisedPacketsWithContentType:frameLength:</tt> to generate the packets, then accumulates them in an in-memory stream returning the result.
+ 
 	\param contentTypeRef
 	The MIME type of the serialised document. Must not be NULL.
 	
 	\return
-	The serialised document.
-	nil if the document couldn't be serialised.
+	The serialised document, nil if the document couldn't be serialised.
  */
 - (NSData *)serialisedDataWithContentType:(NSString **)contentTypeRef;
 
