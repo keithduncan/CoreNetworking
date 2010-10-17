@@ -11,9 +11,7 @@
 #import "AFPacketWrite.h"
 #import "AFPacketWriteFromReadStream.h"
 
-const NSStringEncoding _FormEncoding = NSUTF8StringEncoding;
-
-#pragma mark -
+const NSStringEncoding _AFNetworkFormEncoding = NSUTF8StringEncoding;
 
 static NSData *_AFNetworkFormDocumentHeadersDataFromDictionary(NSDictionary *headers) {
 	NSMutableData *data = [NSMutableData data];
@@ -22,18 +20,78 @@ static NSData *_AFNetworkFormDocumentHeadersDataFromDictionary(NSDictionary *hea
 		NSString *currentValue = [headers objectForKey:currentKey];
 		
 		NSString *currentHeader = [NSString stringWithFormat:@"%@: %@\r\n", currentKey, currentValue];
-		[data appendData:[currentHeader dataUsingEncoding:_FormEncoding]];
+		[data appendData:[currentHeader dataUsingEncoding:_AFNetworkFormEncoding]];
 	}
-	[data appendData:[@"\r\n" dataUsingEncoding:_FormEncoding]];
+	[data appendData:[@"\r\n" dataUsingEncoding:_AFNetworkFormEncoding]];
 	
 	return data;
 }
 
 #pragma mark -
 
+@interface _AFNetworkDocumentPart : NSObject
+
+- (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef;
+
+@end
+
+@implementation _AFNetworkDocumentPart
+
+- (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef {
+	[self doesNotRecognizeSelector:_cmd];
+	return nil;
+}
+
+@end
+
+@interface _AFNetworkFormDocumentDataFieldPart : _AFNetworkDocumentPart
+
+- (id)initWithData:(NSData *)data contentType:(NSString *)contentType;
+
+@property (readonly) NSData *data;
+@property (readonly) NSString *contentType;
+
+@end
+
+@implementation _AFNetworkFormDocumentDataFieldPart
+
+@synthesize data=_data, contentType=_contentType;
+
+- (id)initWithData:(NSData *)data contentType:(NSString *)contentType {
+	NSParameterAssert(data != nil);
+	
+	
+	self = [self init];
+	if (self == nil) return nil;
+	
+	_data = data;
+	_contentType = [contentType copy];
+	
+	return self;
+}
+
+- (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef {
+	NSString *MIMEType = [self contentType];
+	MIMEType = (MIMEType ? : @"application/octet-stream");
+	
+	[headers addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:
+									   @"binary", AFNetworkDocumentMIMEContentTransferEncoding,
+									   MIMEType, AFNetworkDocumentMIMEContentType,
+									   nil]
+	 ];
+	
+	if (frameLengthRef != NULL) {
+		*frameLengthRef = [[self data] length];
+	}
+	
+	return [[AFPacketWrite alloc] initWithData:[self data]];
+}
+
+@end
+
 static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"location";
 
-@interface _AFNetworkFormDocumentFileFieldPart : NSObject {
+@interface _AFNetworkFormDocumentFileFieldPart : _AFNetworkDocumentPart {
  @private
 	NSURL *_location;
 }
@@ -41,8 +99,6 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 - (id)initWithLocation:(NSURL *)location;
 
 @property (readonly) NSURL *location;
-
-- (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef;
 
 @end
 
@@ -160,13 +216,13 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	NSString *multipartBoundary = [[NSProcessInfo processInfo] globallyUniqueString];
 	multipartBoundary = [multipartBoundary stringByReplacingOccurrencesOfString:@"-" withString:@""];
 	
-	*multipartHeaderRef = [[NSString stringWithFormat:@"--%@\r\n", multipartBoundary] dataUsingEncoding:_FormEncoding];
-	*multipartFooterRef = [[NSString stringWithFormat:@"--%@--\r\n", multipartBoundary] dataUsingEncoding:_FormEncoding];
+	*multipartHeaderRef = [[NSString stringWithFormat:@"--%@\r\n", multipartBoundary] dataUsingEncoding:_AFNetworkFormEncoding];
+	*multipartFooterRef = [[NSString stringWithFormat:@"--%@--\r\n", multipartBoundary] dataUsingEncoding:_AFNetworkFormEncoding];
 	
 	return multipartBoundary;
 }
 
-- (void)_appendPart:(_AFNetworkFormDocumentFileFieldPart *)part toCumulativePackets:(NSMutableArray *)cumulativePackets cumulativeFrameLength:(NSUInteger *)cumulativeFrameLengthRef withContentDisposition:(NSString *)contentDisposition {
+- (void)_appendPart:(_AFNetworkDocumentPart *)part toCumulativePackets:(NSMutableArray *)cumulativePackets cumulativeFrameLength:(NSUInteger *)cumulativeFrameLengthRef withContentDisposition:(NSString *)contentDisposition {
 	NSUInteger partFrameLength = 0;
 	NSMutableArray *partPackets = [NSMutableArray array];
 	
@@ -187,7 +243,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	[partPackets addObjectsFromArray:currentValuePackets];
 	partFrameLength += currentValueFrameLength;
 	
-	NSData *newLineData = [@"\r\n" dataUsingEncoding:_FormEncoding];
+	NSData *newLineData = [@"\r\n" dataUsingEncoding:_AFNetworkFormEncoding];
 	AFPacketWrite *newLinePacket = [[[AFPacketWrite alloc] initWithData:newLineData] autorelease];
 	[partPackets addObject:newLinePacket];
 	partFrameLength += [newLineData length];
@@ -212,21 +268,11 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 		cumulativeFrameLength += [multipartHeader length];
 		
 		
-		NSMutableData *currentValueData = [NSMutableData data];
-		
-		NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-										[NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname], AFNetworkDocumentMIMEContentDisposition,
-										@"text/plain", AFNetworkDocumentMIMEContentType,
-										nil];
-		[currentValueData appendData:_AFNetworkFormDocumentHeadersDataFromDictionary(headers)];
-		
 		NSString *currentValue = [[self values] objectForKey:currentFieldname];
-		[currentValueData appendData:[currentValue dataUsingEncoding:_FormEncoding]];
-		[currentValueData appendData:[@"\r\n" dataUsingEncoding:_FormEncoding]];
+		_AFNetworkFormDocumentDataFieldPart *currentValuePart = [[[_AFNetworkFormDocumentDataFieldPart alloc] initWithData:[currentValue dataUsingEncoding:_AFNetworkFormEncoding] contentType:@"text/plain"] autorelease];
 		
-		AFPacketWrite *currentValuePacket = [[[AFPacketWrite alloc] initWithData:currentValueData] autorelease];
-		[cumulativePackets addObject:currentValuePacket];
-		cumulativeFrameLength += [currentValueData length];
+		NSString *contentDisposition = [NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname];
+		[self _appendPart:currentValuePart toCumulativePackets:cumulativePackets cumulativeFrameLength:&cumulativeFrameLength withContentDisposition:contentDisposition];
 	}
 	
 	
@@ -255,8 +301,8 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 		
 		
 		NSDictionary *innerDocumentHeaders = [NSDictionary dictionaryWithObjectsAndKeys:
-											  [NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname], AFNetworkDocumentMIMEContentDisposition,
 											  [NSString stringWithFormat:@"multipart/mixed; boundary=%@", innerMultipartBoundary], AFNetworkDocumentMIMEContentType,
+											  [NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname], AFNetworkDocumentMIMEContentDisposition,
 											  nil];
 		NSData *innerDocumentHeadersData = _AFNetworkFormDocumentHeadersDataFromDictionary(innerDocumentHeaders);
 		AFPacketWrite *innerDocumentHeadersPacket = [[[AFPacketWrite alloc] initWithData:innerDocumentHeadersData] autorelease];
