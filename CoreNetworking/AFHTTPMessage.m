@@ -10,6 +10,8 @@
 
 #import "AFPacketWrite.h"
 #import "AFPacketWriteFromReadStream.h"
+
+#import "NSDictionary+AFNetworkAdditions.h"
 #import "NSURLRequest+AFNetworkAdditions.h"
 
 @interface _AFHTTPURLResponse : NSHTTPURLResponse

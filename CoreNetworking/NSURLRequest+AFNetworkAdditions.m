@@ -8,6 +8,8 @@
 
 #import "NSURLRequest+AFNetworkAdditions.h"
 
+#import "NSDictionary+AFNetworkAdditions.h"
+
 static NSString * (^URLEncodeString)(NSString *) = ^ NSString * (NSString *string) {
 	return NSMakeCollectable(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR("!*'();:@&=+$,/?%#[]"), kCFStringEncodingUTF8));
 };

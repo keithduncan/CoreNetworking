@@ -14,6 +14,8 @@
 #import "AFHTTPConnection.h"
 #import "AFHTTPMessage.h"
 
+#import "NSDictionary+AFNetworkAdditions.h"
+
 #define ENABLE_REQUEST_LOGGING 1
 #define ENABLE_RESPONSE_LOGGING 1
 

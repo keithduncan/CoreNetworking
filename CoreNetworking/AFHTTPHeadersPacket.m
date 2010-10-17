@@ -58,9 +58,11 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 - (void)performRead:(NSInputStream *)readStream {
 	do {
 		if (self.currentRead == nil) {
+			NSData *CRLF = [NSData dataWithBytes:"\x0D\x0A" length:2];
+			
 			NSMutableData *headersTerminator = [NSMutableData data];
-			[headersTerminator appendData:[NSData CRLF]];
-			[headersTerminator appendData:[NSData CRLF]];
+			[headersTerminator appendData:CRLF];
+			[headersTerminator appendData:CRLF];
 			
 			AFPacketRead *newReadPacket = [[[AFPacketRead alloc] initWithTerminator:headersTerminator] autorelease];
 			
