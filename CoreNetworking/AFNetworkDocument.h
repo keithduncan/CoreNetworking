@@ -8,6 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *const AFNetworkDocumentMIMEContentType;
+extern NSString *const AFNetworkDocumentMIMEContentTransferEncoding;
+
 @protocol AFNetworkDocument <NSObject>
 
 /*!
@@ -23,7 +26,7 @@
 	\return
 	YES if the document could be decomposed, NO otherwise.
  */
-- (BOOL)getData:(NSData **)dataRef contentType:(NSString **)contentTypeRef;
+- (NSData *)composeDataByContentType:(NSString **)contentTypeRef;
 
 /*!
 	\brief
@@ -39,6 +42,6 @@
 	An ordered collection of <AFPacketWriting> conforming objects which should be replayed over the wire.
 	Nil return value means the document couldn't be converted.
  */
-- (NSArray *)decomposeIntoPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef;
+- (NSArray *)composePacketsByContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef;
 
 @end

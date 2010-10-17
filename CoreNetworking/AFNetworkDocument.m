@@ -8,4 +8,5 @@
 
 #import "AFNetworkDocument.h"
 
-
+NSString *const AFNetworkDocumentMIMEContentType = @"Content-Type";
+NSString *const AFNetworkDocumentMIMEContentTransferEncoding = @"Content-Transfer-Encoding";
