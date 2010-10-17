@@ -41,11 +41,15 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 
 @interface _AFNetworkDocumentPart : NSObject
 
+@property (readonly) NSString *contentType;
+
 - (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef;
 
 @end
 
 @implementation _AFNetworkDocumentPart
+
+@dynamic contentType;
 
 - (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef {
 	[self doesNotRecognizeSelector:_cmd];
@@ -59,8 +63,11 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 - (id)initWithData:(NSData *)data contentType:(NSString *)contentType;
 
 @property (readonly) NSData *data;
-@property (readonly) NSString *contentType;
 
+@end
+
+@interface _AFNetworkFormDocumentDataFieldPart ()
+@property (readwrite, copy) NSString *contentType;
 @end
 
 @implementation _AFNetworkFormDocumentDataFieldPart
@@ -131,18 +138,26 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	[super dealloc];
 }
 
-- (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef {
+- (NSString *)contentType {
+	NSString *defaultMIMEType = @"application/octet-stream";
+	
 	NSString *resourceType = nil;
 	BOOL getMIMEType = [[self location] getResourceValue:&resourceType forKey:NSURLTypeIdentifierKey error:NULL];
-	
-	NSNumber *resourceLength = nil;
-	BOOL getResourceLength = [[self location] getResourceValue:&resourceLength forKey:NSURLFileSizeKey error:NULL];
-	
-	if (!getMIMEType || !getResourceLength) return nil;
-	
+	if (!getMIMEType) return defaultMIMEType;
 	
 	NSString *MIMEType = [NSMakeCollectable(UTTypeCopyPreferredTagWithClass((CFStringRef)resourceType, kUTTagClassMIMEType)) autorelease];
-	MIMEType = (MIMEType ? : @"application/octet-stream");
+	if (MIMEType == nil) return defaultMIMEType;
+	
+	return MIMEType;
+}
+
+- (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef {
+	NSNumber *resourceLength = nil;
+	BOOL getResourceLength = [[self location] getResourceValue:&resourceLength forKey:NSURLFileSizeKey error:NULL];
+	if (!getResourceLength) return nil;
+	
+	
+	NSString *MIMEType = [self contentType];
 	
 	[headers addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:
 									   @"binary", AFNetworkDocumentMIMEContentTransferEncoding,
