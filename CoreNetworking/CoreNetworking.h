@@ -37,13 +37,19 @@
 #import "CoreNetworking/AFNetworkServiceDiscoveryRunLoopSource.h"
 
 /*
+	Categories
+ */
+
+#import "CoreNetworking/NSDictionary+AFNetworkAdditions.h"
+#import "CoreNetworking/NSURLRequest+AFNetworkAdditions.h"
+
+/*
 	Network Protocols
  */
 
 /* HTTP */
 
 #import "CoreNetworking/AFHTTPMessage.h"
-#import "CoreNetworking/NSURLRequest+AFNetworkAdditions.h"
 
 #import "CoreNetworking/AFHTTPMessagePacket.h"
 #import "CoreNetworking/AFHTTPHeadersPacket.h"
