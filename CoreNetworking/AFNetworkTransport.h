@@ -6,7 +6,7 @@
 //	Although the class is now much departed from the original codebase.
 //
 //  Created by Keith Duncan
-//  Copyright 2008 software. All rights reserved.
+//  Copyright 2008. All rights reserved.
 //
 
 #import "CoreNetworking/AFNetworkLayer.h"

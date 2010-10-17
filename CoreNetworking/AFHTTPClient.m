@@ -8,7 +8,6 @@
 
 #import "AFHTTPClient.h"
 
-#import "AmberFoundation/AmberFoundation.h"
 #import <objc/message.h>
 
 #import "AFNetworkTransport.h"
@@ -18,15 +17,17 @@
 #import "AFPacketQueue.h"
 #import "AFHTTPTransaction.h"
 #import "AFPacketWriteFromReadStream.h"
-#import "NSURLRequest+AFHTTPAdditions.h"
+#import "NSURLRequest+AFNetworkAdditions.h"
 
-NSSTRING_CONTEXT(_AFHTTPClientCurrentTransactionObservationContext);
+#import "AFNetworkMacros.h"
 
-NSSTRING_CONTEXT(_AFHTTPClientWritePartialRequestContext);
-NSSTRING_CONTEXT(_AFHTTPClientWriteRequestContext);
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPClientCurrentTransactionObservationContext);
 
-NSSTRING_CONTEXT(_AFHTTPClientReadPartialResponseContext);
-NSSTRING_CONTEXT(_AFHTTPClientReadResponseContext);
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPClientWritePartialRequestContext);
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPClientWriteRequestContext);
+
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPClientReadPartialResponseContext);
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPClientReadResponseContext);
 
 @interface AFHTTPClient ()
 @property (retain) AFPacketQueue *transactionQueue;
@@ -48,7 +49,7 @@ NSSTRING_CONTEXT(_AFHTTPClientReadResponseContext);
 
 static NSString *_AFHTTPConnectionUserAgentFromBundle(NSBundle *bundle) {
 	if (bundle == nil) return nil;
-	return [NSString stringWithFormat:@"%@/%@", [[bundle displayName] stringByReplacingOccurrencesOfString:@" " withString:@"-"], [[bundle displayVersion] stringByReplacingOccurrencesOfString:@" " withString:@"-"], nil];
+	return [NSString stringWithFormat:@"%@/%@", [[bundle objectForInfoDictionaryKey:(id)@"CFBundleDisplayName"] stringByReplacingOccurrencesOfString:@" " withString:@"-"], [[bundle objectForInfoDictionaryKey:(id)kCFBundleVersionKey] stringByReplacingOccurrencesOfString:@" " withString:@"-"], nil];
 }
 
 + (void)initialize {
@@ -302,7 +303,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 
 - (CFHTTPMessageRef)_requestForMethod:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body {
 	NSURL *endpoint = [self peer];
-	NSURL *resourcePath = [NSURL URLWithString:([resource isEmpty] ? @"/" : resource) relativeToURL:endpoint];
+	NSURL *resourcePath = [NSURL URLWithString:([[resource stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length] == 0 ? @"/" : resource) relativeToURL:endpoint];
 	
 	CFHTTPMessageRef request = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateRequest(kCFAllocatorDefault, (CFStringRef)HTTPMethod, (CFURLRef)resourcePath, kCFHTTPVersion1_1)) autorelease];
 	

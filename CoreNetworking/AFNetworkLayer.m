@@ -10,8 +10,6 @@
 
 #import <objc/runtime.h>
 
-#import "AmberFoundation/AFPriorityProxy.h"
-
 @interface AFNetworkLayer ()
 @property (readwrite, retain) AFNetworkLayer *lowerLayer;
 @end

@@ -8,8 +8,6 @@
 
 #import "AFHTTPHeadersPacket.h"
 
-#import "AmberFoundation/AmberFoundation.h"
-
 #import "AFPacketRead.h"
 #import "AFHTTPMessage.h"
 #import "AFNetworkConstants.h"

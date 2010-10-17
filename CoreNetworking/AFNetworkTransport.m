@@ -6,7 +6,7 @@
 //	Although the class is now much departed from the original codebase.
 //
 //  Created by Keith Duncan
-//  Copyright 2008 software. All rights reserved.
+//  Copyright 2008. All rights reserved.
 //
 
 #import "AFNetworkTransport.h"
@@ -20,7 +20,6 @@
 #import <sys/socket.h>
 #import <netdb.h>
 #import <SystemConfiguration/SystemConfiguration.h>
-#import "AmberFoundation/AmberFoundation.h"
 
 #import "AFNetworkSocket.h"
 #import "AFNetworkConstants.h"

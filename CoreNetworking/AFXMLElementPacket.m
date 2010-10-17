@@ -8,8 +8,6 @@
 
 #import "AFXMLElementPacket.h"
 
-#import "AmberFoundation/AmberFoundation.h"
-
 #import "AFPacketRead.h"
 
 @interface AFXMLElementPacket ()

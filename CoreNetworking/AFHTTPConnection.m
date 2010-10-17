@@ -8,19 +8,19 @@
 
 #import "AFHTTPConnection.h"
 
-#import "AmberFoundation/AmberFoundation.h"
-
 #import "AFNetworkTransport.h"
 #import "AFHTTPMessage.h"
 #import "AFHTTPMessagePacket.h"
 #import "AFPacketWrite.h"
 #import "AFPacketWriteFromReadStream.h"
 
-NSSTRING_CONTEXT(_AFHTTPConnectionWriteRequestContext);
-NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
+#import "AFNetworkMacros.h"
 
-NSSTRING_CONTEXT(_AFHTTPConnectionReadRequestContext);
-NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPConnectionWriteRequestContext);
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
+
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPConnectionReadRequestContext);
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 @interface AFHTTPConnection ()
 @property (readwrite, retain) NSMutableDictionary *messageHeaders;

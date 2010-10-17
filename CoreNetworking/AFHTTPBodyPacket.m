@@ -3,16 +3,20 @@
 //  TwitterLiveStream
 //
 //  Created by Keith Duncan on 23/09/2010.
-//  Copyright 2010 Realmac Software. All rights reserved.
+//  Copyright 2010. All rights reserved.
 //
 
 #import "AFHTTPBodyPacket.h"
 
-#import "AmberFoundation/AmberFoundation.h"
-#import "CoreNetworking/CoreNetworking.h"
+#import "AFPacket.h"
+#import "AFPacketRead.h"
+#import "AFHTTPMessage.h"
+#import "AFNetworkConstants.h"
 
-NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadNotificationName);
-NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
+#import "AFNetworkMacros.h"
+
+CORENETWORKING_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadNotificationName);
+CORENETWORKING_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 
 @interface AFHTTPBodyPacket ()
 - (id)initWithMessage:(CFHTTPMessageRef)message;

@@ -3,7 +3,7 @@
 //  TwitterLiveStream
 //
 //  Created by Keith Duncan on 23/09/2010.
-//  Copyright 2010 Realmac Software. All rights reserved.
+//  Copyright 2010. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

@@ -8,15 +8,15 @@
 
 #import "AFHTTPMessagePacket.h"
 
-#import "AmberFoundation/AmberFoundation.h"
-
 #import "AFHTTPHeadersPacket.h"
 #import "AFHTTPBodyPacket.h"
 #import "AFHTTPMessage.h"
 #import "AFNetworkConstants.h"
 
-NSSTRING_CONTEXT(_AFHTTPMessagePacketHeadersContext);
-NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
+#import "AFNetworkMacros.h"
+
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPMessagePacketHeadersContext);
+CORENETWORKING_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 
 @interface AFHTTPMessagePacket ()
 @property (readonly) CFHTTPMessageRef message;

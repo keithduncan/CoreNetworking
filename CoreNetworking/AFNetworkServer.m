@@ -3,7 +3,7 @@
 //  Amber
 //
 //  Created by Keith Duncan on 25/12/2008.
-//  Copyright 2008 software. All rights reserved.
+//  Copyright 2008. All rights reserved.
 //
 
 #import "AFNetworkServer.h"
@@ -12,7 +12,6 @@
 #import <sys/un.h>
 #import <arpa/inet.h>
 #import <objc/runtime.h>
-#import "AmberFoundation/AmberFoundation.h"
 
 #import "AFNetworkSocket.h"
 #import "AFNetworkTransport.h"
@@ -21,10 +20,12 @@
 #import "AFNetworkPool.h"
 #import "AFNetworkConnection.h"
 
+#import "AFNetworkMacros.h"
+
 // Note: import this header last, allowing for any of the previous headers to import <net/if.h> see the getifaddrs man page for details
 #import <ifaddrs.h>
 
-NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
+CORENETWORKING_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);
 
 @interface AFNetworkServer () <AFConnectionLayerControlDelegate>
 @property (readonly) NSArray *encapsulationClasses;

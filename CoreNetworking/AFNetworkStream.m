@@ -9,7 +9,6 @@
 #import "AFNetworkStream.h"
 
 #import <objc/message.h>
-#import "AmberFoundation/AmberFoundation.h"
 
 #import "AFNetworkTransport.h"
 #import "AFPacketQueue.h"

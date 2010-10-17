@@ -8,11 +8,9 @@
 
 #import "AFHTTPMessage.h"
 
-#import "AmberFoundation/AmberFoundation.h"
-
 #import "AFPacketWrite.h"
 #import "AFPacketWriteFromReadStream.h"
-#import "NSURLRequest+AFHTTPAdditions.h"
+#import "NSURLRequest+AFNetworkAdditions.h"
 
 @interface _AFHTTPURLResponse : NSHTTPURLResponse
 
