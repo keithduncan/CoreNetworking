@@ -125,7 +125,7 @@ void _AFHTTPPrintResponse(NSURLResponse *response) {
 
 AFPacket <AFPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message) {
 	NSData *messageData = [NSMakeCollectable(CFHTTPMessageCopySerializedMessage(message)) autorelease];
-	return [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:messageData] autorelease];
+	return [[[AFPacketWrite alloc] initWithData:messageData] autorelease];
 }
 
 NSString *const AFHTTPMethodHEAD = @"HEAD";

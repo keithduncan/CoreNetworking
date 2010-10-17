@@ -47,7 +47,7 @@ NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 }
 
 - (void)_startChunkRead {
-	AFPacketRead *newlinePacket = [[[AFPacketRead alloc] initWithContext:NULL timeout:-1 terminator:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
+	AFPacketRead *newlinePacket = [[[AFPacketRead alloc] initWithTerminator:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_chunkSizePacketDidComplete:) name:AFPacketDidCompleteNotificationName object:newlinePacket];
 	[self setCurrentPacket:newlinePacket];
 }
@@ -66,7 +66,7 @@ NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 		return;
 	}
 	
-	AFPacketRead *chunkDataPacket = [[AFPacketRead alloc] initWithContext:NULL timeout:-1 terminator:[NSNumber numberWithInteger:packetSize]];
+	AFPacketRead *chunkDataPacket = [[AFPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:packetSize]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_chunkDataPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:chunkDataPacket];
 	[self setCurrentPacket:chunkDataPacket];
 }
@@ -80,7 +80,7 @@ NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 }
 
 - (void)_startChunkFooterRead:(SEL)completionSelector {
-	AFPacketRead *newlinePacket = [[[AFPacketRead alloc] initWithContext:NULL timeout:-1 terminator:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
+	AFPacketRead *newlinePacket = [[[AFPacketRead alloc] initWithTerminator:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:completionSelector name:AFPacketDidCompleteNotificationName object:newlinePacket];
 	[self setCurrentPacket:newlinePacket];
 }
@@ -154,7 +154,7 @@ NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	NSString *contentLength = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease];
 	if (contentLength != nil) {
 		AFHTTPBodyPacket *packet = [[[AFHTTPBodyPacket alloc] initWithMessage:message] autorelease];
-		AFPacket *dataPacket = [[[AFPacketRead alloc] initWithContext:NULL timeout:-1 terminator:[NSNumber numberWithInteger:[contentLength integerValue]]] autorelease];
+		AFPacket *dataPacket = [[[AFPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:[contentLength integerValue]]] autorelease];
 		[[NSNotificationCenter defaultCenter] addObserver:packet selector:@selector(_dataPacketDidComplete:) name:AFPacketDidCompleteNotificationName object:dataPacket];
 		[packet setCurrentPacket:dataPacket];
 		return packet;

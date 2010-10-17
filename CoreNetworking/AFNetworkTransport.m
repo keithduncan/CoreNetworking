@@ -385,14 +385,14 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	NSParameterAssert(buffer != nil);
 	
 	AFPacketWrite *packet = nil;
-	if ([buffer isKindOfClass:[AFPacket class]]) {
-		packet = buffer;
-		
-		packet->_duration = duration;
-		packet->_context = context;
+	if (![buffer isKindOfClass:[AFPacket class]]) {
+		packet = [[[AFPacketWrite alloc] initWithData:buffer] autorelease];
 	} else {
-		packet = [[[AFPacketWrite alloc] initWithContext:context timeout:duration data:buffer] autorelease];
+		packet = buffer;
 	}
+	
+	packet->_duration = duration;
+	packet->_context = context;
 	
 	[self.writeStream enqueueWrite:packet];
 }
@@ -404,14 +404,14 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	NSParameterAssert(terminator != nil);
 	
 	AFPacketRead *packet = nil;
-	if ([terminator isKindOfClass:[AFPacket class]]) {
-		packet = terminator;
-		
-		packet->_duration = duration;
-		packet->_context = context;
+	if (![terminator isKindOfClass:[AFPacket class]]) {
+		packet = [[[AFPacketRead alloc] initWithTerminator:terminator] autorelease];
 	} else {
-		packet = [[[AFPacketRead alloc] initWithContext:context timeout:duration terminator:terminator] autorelease];
+		packet = terminator;
 	}
+	
+	packet->_duration = duration;
+	packet->_context = context;
 	
 	[self.readStream enqueueRead:packet];
 }
