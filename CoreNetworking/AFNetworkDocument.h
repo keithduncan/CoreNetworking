@@ -15,10 +15,10 @@
 	Used to convert the document into a wire format. This inefficiently decomposes the document into a single data object.
 	
 	\param dataRef
-	Must not be NULL.
+	The serialised document. Must not be NULL.
 	
 	\param contentTypeRef
-	Must not be NULL.
+	The MIME type of the serialised document. Must not be NULL.
 	
 	\return
 	YES if the document could be decomposed, NO otherwise.
@@ -30,10 +30,10 @@
 	Used to convert the document into a wire format. This efficiently decomposes the document into multiple packets.
 	
 	\param contentTypeRef
-	The document type.
+	The MIME type of the serialised document. Must not be NULL.
 	
 	\param frameLengthRef
-	Used for frame headers.
+	The combined frame length of the packets. Must not be NULL.
 	
 	\return
 	An ordered collection of <AFPacketWriting> conforming objects which should be replayed over the wire.
