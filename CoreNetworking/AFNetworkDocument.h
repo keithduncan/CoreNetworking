@@ -24,8 +24,8 @@ extern NSString *const AFNetworkDocumentMIMEContentTransferEncoding;
 	The combined frame length of the packets. Must not be NULL.
 	
 	\return
-	An ordered collection of <AFPacketWriting> conforming objects which should be replayed over the wire.
-	Nil return value means the document couldn't be converted.
+	An ordered collection of <tt>AFPacket <AFPacketWriting></tt> objects which should be replayed over a write stream.
+	nil if the document couldn't be serialised.
  */
 - (NSArray *)serialisedPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef;
 
@@ -33,14 +33,12 @@ extern NSString *const AFNetworkDocumentMIMEContentTransferEncoding;
 	\brief
 	Used to convert the document into a wire format. This inefficiently decomposes the document into a single data object.
 	
-	\param dataRef
-	The serialised document. Must not be NULL.
-	
 	\param contentTypeRef
 	The MIME type of the serialised document. Must not be NULL.
 	
 	\return
-	YES if the document could be decomposed, NO otherwise.
+	The serialised document.
+	nil if the document couldn't be serialised.
  */
 - (NSData *)serialisedDataWithContentType:(NSString **)contentTypeRef;
 
