@@ -197,7 +197,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	*cumulativeFrameLengthRef += partFrameLength;
 }
 
-- (NSArray *)_composePacketsByContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef {
+- (NSArray *)serialisedPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef {
 	NSMutableArray *cumulativePackets = [NSMutableArray array];
 	NSUInteger cumulativeFrameLength = 0;
 	
@@ -291,14 +291,39 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	return cumulativePackets;
 }
 
-- (NSData *)composeDataByContentType:(NSString **)contentTypeRef {
-	NSArray *packets = [self _composePacketsByContentType:contentTypeRef frameLength:NULL];
+- (NSData *)serialisedDataWithContentType:(NSString **)contentTypeRef {
+	NSUInteger frameLength = 0;
+	NSArray *writePackets = [self serialisedPacketsWithContentType:contentTypeRef frameLength:&frameLength];
+	if (writePackets == nil) return nil;
 	
-	NSMutableData *
-}
-
-- (NSArray *)composePacketsByContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef {
-	return [self _composePacketsByContentType:contentTypeRef frameLength:frameLengthRef];
+	uint8_t *buffer = (uint8_t *)malloc(frameLength);
+	NSOutputStream *memoryStream = [NSOutputStream outputStreamToBuffer:buffer capacity:frameLength];
+	
+	// Note: this ensures the buffer is free()'d if we bail inside the loop
+	NSData *dataBuffer = [NSData dataWithBytesNoCopy:buffer length:frameLength freeWhenDone:YES];
+	
+	for (AFPacket <AFPacketWriting> *currentPacket in writePackets) {
+		__block NSNotification *completionNotification = nil;
+		id completionListener = [[NSNotificationCenter defaultCenter] addObserverForName:AFPacketDidCompleteNotificationName object:currentPacket queue:nil usingBlock:^ (NSNotification *notification) {
+			completionNotification = notification;
+		}];
+		
+		while (completionListener == nil) {
+			[currentPacket performWrite:memoryStream];
+		}
+		
+		[[NSNotificationCenter defaultCenter] removeObserver:completionListener];
+		
+		
+		NSError *completionError = [[completionNotification userInfo] objectForKey:AFPacketErrorKey];
+		if (completionError != nil) {
+			return nil;
+		}
+		
+		continue;
+	}
+	
+	return dataBuffer;
 }
 
 @end

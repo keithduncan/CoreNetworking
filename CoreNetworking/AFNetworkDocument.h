@@ -15,21 +15,6 @@ extern NSString *const AFNetworkDocumentMIMEContentTransferEncoding;
 
 /*!
 	\brief
-	Used to convert the document into a wire format. This inefficiently decomposes the document into a single data object.
-	
-	\param dataRef
-	The serialised document. Must not be NULL.
-	
-	\param contentTypeRef
-	The MIME type of the serialised document. Must not be NULL.
-	
-	\return
-	YES if the document could be decomposed, NO otherwise.
- */
-- (NSData *)composeDataByContentType:(NSString **)contentTypeRef;
-
-/*!
-	\brief
 	Used to convert the document into a wire format. This efficiently decomposes the document into multiple packets.
 	
 	\param contentTypeRef
@@ -42,6 +27,21 @@ extern NSString *const AFNetworkDocumentMIMEContentTransferEncoding;
 	An ordered collection of <AFPacketWriting> conforming objects which should be replayed over the wire.
 	Nil return value means the document couldn't be converted.
  */
-- (NSArray *)composePacketsByContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef;
+- (NSArray *)serialisedPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef;
+
+/*!
+	\brief
+	Used to convert the document into a wire format. This inefficiently decomposes the document into a single data object.
+	
+	\param dataRef
+	The serialised document. Must not be NULL.
+	
+	\param contentTypeRef
+	The MIME type of the serialised document. Must not be NULL.
+	
+	\return
+	YES if the document could be decomposed, NO otherwise.
+ */
+- (NSData *)serialisedDataWithContentType:(NSString **)contentTypeRef;
 
 @end
