@@ -75,9 +75,9 @@
 		535677D2126B8DC8002872B2 /* AFNetworkDelegateProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 535677CE126B8DC8002872B2 /* AFNetworkDelegateProxy.h */; };
 		535677D3126B8DC8002872B2 /* AFNetworkDelegateProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 535677CF126B8DC8002872B2 /* AFNetworkDelegateProxy.m */; };
 		53656036116FC61B0006DCAF /* AFNetworkPacketWriteFromReadStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C0113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.m */; };
-		53656037116FC6210006DCAF /* AFNetworkPacketWriteFromReadStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5BF113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.h */; };
+		53656037116FC6210006DCAF /* AFNetworkPacketWriteFromReadStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5BF113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53656042116FC7970006DCAF /* AFNetworkPacketReadToWriteStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C6113BF98000FED57B /* AFNetworkPacketReadToWriteStream.m */; };
-		53656043116FC7990006DCAF /* AFNetworkPacketReadToWriteStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5C5113BF98000FED57B /* AFNetworkPacketReadToWriteStream.h */; };
+		53656043116FC7990006DCAF /* AFNetworkPacketReadToWriteStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5C5113BF98000FED57B /* AFNetworkPacketReadToWriteStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370E0AC0F5B061D008F5991 /* AFNetworkConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0880F5B061D008F5991 /* AFNetworkConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370E0AD0F5B061D008F5991 /* AFNetworkConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0890F5B061D008F5991 /* AFNetworkConnection.m */; };
 		5370E0AE0F5B061D008F5991 /* AFNetworkPool.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E08A0F5B061D008F5991 /* AFNetworkPool.h */; settings = {ATTRIBUTES = (Public, ); }; };

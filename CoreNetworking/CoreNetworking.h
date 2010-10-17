@@ -25,10 +25,13 @@
 #import "CoreNetworking/AFNetworkStream.h"
 #import "CoreNetworking/AFNetworkConnection.h"
 
-#import "CoreNetworking/AFNetworkPacket.h"
-#import "CoreNetworking/AFNetworkPacketRead.h"
-#import "CoreNetworking/AFNetworkPacketWrite.h"
 #import "CoreNetworking/AFNetworkPacketQueue.h"
+#import "CoreNetworking/AFNetworkPacket.h"
+
+#import "CoreNetworking/AFNetworkPacketRead.h"
+#import "CoreNetworking/AFNetworkPacketReadToWriteStream.h"
+#import "CoreNetworking/AFNetworkPacketWrite.h"
+#import "CoreNetworking/AFNetworkPacketWriteFromReadStream.h"
 
 #import "CoreNetworking/AFNetworkServer.h"
 #import "CoreNetworking/AFNetworkPool.h"
