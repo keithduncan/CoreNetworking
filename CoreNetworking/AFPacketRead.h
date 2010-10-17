@@ -29,6 +29,6 @@
 	\brief
 	Designated initialiser.
  */
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration terminator:(id)terminator;
+- (id)initWithTerminator:(id)terminator;
 
 @end

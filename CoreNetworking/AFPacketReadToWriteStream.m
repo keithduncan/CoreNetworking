@@ -25,10 +25,10 @@
 
 @synthesize writeStream=_writeStream, currentRead=_currentRead;
 
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration writeStream:(NSOutputStream *)writeStream numberOfBytesToRead:(NSInteger)numberOfBytesToRead {
+- (id)initWithWriteStream:(NSOutputStream *)writeStream numberOfBytesToRead:(NSInteger)numberOfBytesToRead {
 	NSParameterAssert(writeStream != nil && [writeStream streamStatus] == NSStreamStatusNotOpen);
 	
-	self = [self initWithContext:context timeout:duration];
+	self = [self init];
 	if (self == nil) return nil;
 	
 	_numberOfBytesToRead = numberOfBytesToRead;
@@ -77,7 +77,7 @@
 		_numberOfBytesToRead -= bytesRead;
 	}
 	
-	AFPacketWrite *writePacket = [[[AFPacketWrite alloc] initWithContext:NULL timeout:-1 data:writeBuffer] autorelease];
+	AFPacketWrite *writePacket = [[[AFPacketWrite alloc] initWithData:writeBuffer] autorelease];
 	[[self writeStream] enqueueWrite:writePacket];
 	
 	free(readBuffer);

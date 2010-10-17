@@ -29,8 +29,8 @@
 	return self;
 }
 
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration terminator:(id)terminator {
-	self = [self initWithContext:context timeout:duration];
+- (id)initWithTerminator:(id)terminator {
+	self = [self init];
 	if (self == nil) return nil;
 	
 	_terminator = [terminator copy];

@@ -13,19 +13,9 @@
 @implementation AFPacketWrite
 
 @synthesize buffer=_buffer;
-@synthesize chunkSize=_chunkSize;
 
-- (id)init {
-	self = [super init];
-	if (self == nil) return nil;
-	
-	_chunkSize = -1;
-	
-	return self;
-}
-
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration data:(NSData *)buffer {
-	self = [self initWithContext:context timeout:duration];
+- (id)initWithData:(NSData *)buffer {
+	self = [self init];
 	if (self == nil) return self;
 	
 	_buffer = [buffer copy];
@@ -50,11 +40,8 @@
 }
 
 - (void)performWrite:(NSOutputStream *)writeStream {
-	BOOL packetComplete = NO;
-	
-	while (!packetComplete && [writeStream hasSpaceAvailable]) {
+	while ([writeStream hasSpaceAvailable]) {
 		NSUInteger bytesRemaining = ([self.buffer length] - _bytesWritten);
-		if (self.chunkSize > 0 && bytesRemaining > self.chunkSize) bytesRemaining = self.chunkSize;
 		
 		uint8_t *writeBuffer = (uint8_t *)([self.buffer bytes] + _bytesWritten);
 		NSUInteger actualBytesWritten = [writeStream write:writeBuffer maxLength:bytesRemaining];
@@ -69,11 +56,15 @@
 		}
 		
 		_bytesWritten += actualBytesWritten;
+		
+		BOOL packetComplete = NO;
 		packetComplete = (_bytesWritten == [self.buffer length]);
-		if (self.chunkSize > 0) break;
+		
+		if (packetComplete) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
+			return;
+		}
 	}
-	
-	if (packetComplete) [[NSNotificationCenter defaultCenter] postNotificationName:AFPacketDidCompleteNotificationName object:self];
 }
 
 @end

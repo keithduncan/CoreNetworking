@@ -17,16 +17,6 @@ NSString *const AFPacketErrorKey = @"AFPacketError";
 @synthesize context=_context;
 @synthesize duration=_duration;
 
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration {
-	self = [self init];
-	if (self == nil) return nil;
-	
-	_context = context;
-	_duration = duration;
-	
-	return self;
-}
-
 - (void)dealloc {
 	[self stopTimeout];
 	
@@ -52,8 +42,7 @@ NSString *const AFPacketErrorKey = @"AFPacketError";
 - (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {
 	if (bytesDone != NULL) *bytesDone = 0;
 	if (bytesTotal != NULL) *bytesTotal = 0;
-	
-	return 0.0;
+	return 0.;
 }
 
 - (void)_timeout:(NSTimer *)sender {

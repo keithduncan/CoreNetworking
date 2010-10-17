@@ -32,10 +32,10 @@
 @synthesize numberOfBytesToWrite=_numberOfBytesToWrite;
 @synthesize readStream=_readStream, readStreamOpen=_readStreamOpen;
 
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration readStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite {
+- (id)initWithReadStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite {
 	NSParameterAssert(readStream != nil && [readStream streamStatus] == NSStreamStatusNotOpen);
 	
-	self = [self initWithContext:context timeout:duration];
+	self = [self init];
 	if (self == nil) return nil;
 	
 	_numberOfBytesToWrite = numberOfBytesToWrite;

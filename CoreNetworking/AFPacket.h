@@ -40,12 +40,6 @@ extern NSString *const AFPacketDidCompleteNotificationName;
 }
 
 /*!
-	\param context
-	The value is not retained, it should be a compile time constant.
- */
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration;
-
-/*!
 	\brief
 	The context passed in at instantiation.
  */

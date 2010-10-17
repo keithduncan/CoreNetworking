@@ -16,19 +16,12 @@
  @private
 	NSData *_buffer;
 	NSUInteger _bytesWritten;
-	
-	NSInteger _chunkSize;
 }
-
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration data:(NSData *)buffer;
 
 /*!
 	\brief
-	This property allows you to simulate a smaller socket buffer when using the CFStreamRef subclasses.
-	
-	\details
-	The default value of this property is -1 which limits each write to the maximum size of the kernel buffer.
+	Designated Initialiser.
  */
-@property (assign) NSInteger chunkSize;
+- (id)initWithData:(NSData *)buffer;
 
 @end

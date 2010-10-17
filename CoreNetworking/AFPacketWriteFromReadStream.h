@@ -42,6 +42,6 @@
 	\param numberOfBytesToRead
 	Pass -1 to read until the stream is empty.
  */
-- (id)initWithContext:(void *)context timeout:(NSTimeInterval)duration readStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite;
+- (id)initWithReadStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite;
 
 @end
