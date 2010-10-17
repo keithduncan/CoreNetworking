@@ -411,12 +411,12 @@
 				53B2014B0F6D7739001DC8E7 /* AFPacket.m */,
 				53B2014C0F6D7739001DC8E7 /* AFPacketRead.h */,
 				53B2014D0F6D7739001DC8E7 /* AFPacketRead.m */,
+				533AD5C5113BF98000FED57B /* AFPacketReadToWriteStream.h */,
+				533AD5C6113BF98000FED57B /* AFPacketReadToWriteStream.m */,
 				53B2014E0F6D7739001DC8E7 /* AFPacketWrite.h */,
 				53B2014F0F6D7739001DC8E7 /* AFPacketWrite.m */,
 				533AD5BF113BF96200FED57B /* AFPacketWriteFromReadStream.h */,
 				533AD5C0113BF96200FED57B /* AFPacketWriteFromReadStream.m */,
-				533AD5C5113BF98000FED57B /* AFPacketReadToWriteStream.h */,
-				533AD5C6113BF98000FED57B /* AFPacketReadToWriteStream.m */,
 			);
 			name = Packets;
 			sourceTree = "<group>";
