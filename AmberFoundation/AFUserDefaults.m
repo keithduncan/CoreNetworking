@@ -8,12 +8,14 @@
 
 #import "AFUserDefaults.h"
 
-#import "AFPropertyListProtocol.h"
+#if !TARGET_OS_IPHONE
 
 #import <objc/runtime.h>
 #import <CoreFoundation/CFPreferences.h>
 
-#if !TARGET_OS_IPHONE
+#import "AFPropertyListProtocol.h"
+
+#import "NSString+Additions.h"
 
 NSString *const AFUserDefaultsDidChangeNotificationName = @"AFUserDefaultsDidChangeNotification";
 
