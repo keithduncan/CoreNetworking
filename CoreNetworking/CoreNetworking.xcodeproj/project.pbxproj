@@ -66,7 +66,7 @@
 		53567740126B8933002872B2 /* AFNetworkMacros.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356773E126B8933002872B2 /* AFNetworkMacros.m */; };
 		53567741126B8933002872B2 /* AFNetworkMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 5356773D126B8933002872B2 /* AFNetworkMacros.h */; };
 		53567742126B8933002872B2 /* AFNetworkMacros.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356773E126B8933002872B2 /* AFNetworkMacros.m */; };
-		53567751126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5356774F126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h */; };
+		53567751126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5356774F126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53567752126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53567750126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.m */; };
 		53567753126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5356774F126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h */; };
 		53567754126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53567750126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.m */; };
@@ -562,10 +562,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5370E0750F5B0573008F5991 /* Build configuration list for PBXNativeTarget "CoreNetworking" */;
 			buildPhases = (
-				5370E06C0F5B0571008F5991 /* Headers */,
 				5370E06D0F5B0571008F5991 /* Resources */,
 				5370E06E0F5B0571008F5991 /* Sources */,
 				5370E06F0F5B0571008F5991 /* Frameworks */,
+				5370E06C0F5B0571008F5991 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -580,9 +580,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 53BEF6A40F5B6A4A00063B8D /* Build configuration list for PBXNativeTarget "CoreNetworking Touch" */;
 			buildPhases = (
-				53BEF69D0F5B6A2700063B8D /* Headers */,
 				53BEF69E0F5B6A2700063B8D /* Sources */,
 				53BEF69F0F5B6A2700063B8D /* Frameworks */,
+				53BEF69D0F5B6A2700063B8D /* Headers */,
 			);
 			buildRules = (
 			);
@@ -759,10 +759,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				COPY_PHASE_STRIP = NO;
 				DOXYGEN_PATH = /Developer/Applications/Doxygen.app/Contents/Resources/doxygen;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -784,10 +780,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DOXYGEN_PATH = /Developer/Applications/Doxygen.app/Contents/Resources/doxygen;
