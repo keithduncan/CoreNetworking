@@ -68,7 +68,7 @@
 		53567742126B8933002872B2 /* AFNetworkMacros.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356773E126B8933002872B2 /* AFNetworkMacros.m */; };
 		53567751126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5356774F126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53567752126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53567750126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.m */; };
-		53567753126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5356774F126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h */; };
+		53567753126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5356774F126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53567754126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 53567750126B89AB002872B2 /* NSDictionary+AFNetworkAdditions.m */; };
 		535677D0126B8DC8002872B2 /* AFNetworkDelegateProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 535677CE126B8DC8002872B2 /* AFNetworkDelegateProxy.h */; };
 		535677D1126B8DC8002872B2 /* AFNetworkDelegateProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 535677CF126B8DC8002872B2 /* AFNetworkDelegateProxy.m */; };
