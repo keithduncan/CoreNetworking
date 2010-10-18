@@ -101,7 +101,7 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 		*frameLengthRef = [[self data] length];
 	}
 	
-	return [[AFNetworkPacketWrite alloc] initWithData:[self data]];
+	return [NSArray arrayWithObject:[[AFNetworkPacketWrite alloc] initWithData:[self data]]];
 }
 
 @end
