@@ -92,6 +92,12 @@
 /* AFP */
 // Not Yet Implememted
 
+/* SVN */
+// Not Yet Implememted
+
+/* Git */
+// Not Yet Implememted
+
 /*
 	MIME Documents
  */
