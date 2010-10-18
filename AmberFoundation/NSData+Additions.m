@@ -53,7 +53,7 @@
 
 @implementation NSData (AFBaseConversion)
 
-static const char _base64Alphabet[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrztuvwxyz0123456789+/";
+static const char _base64Alphabet[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const char _base64Padding[1] = "=";
 
 + (NSData *)dataWithBase64String:(NSString *)base64String {
