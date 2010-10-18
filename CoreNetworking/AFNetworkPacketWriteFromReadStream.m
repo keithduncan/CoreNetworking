@@ -98,6 +98,7 @@
 				_bytesWritten += maximumReadSize;
 			}
 			
+			// Note: this is intentionally blocking
 			_currentBufferOffset = 0;
 			_currentBufferLength = [[self readStream] read:_readBuffer maxLength:maximumReadSize];
 			
