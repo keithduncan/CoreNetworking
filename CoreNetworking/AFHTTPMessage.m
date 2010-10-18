@@ -36,7 +36,18 @@
 		} else {
 			MIMEType = [contentType substringToIndex:parameterSeparator.location];
 			
-			NSDictionary *contentTypeParameters = [NSDictionary dictionaryWithString:[MIMEType substringFromIndex:(parameterSeparator.location + 1)] separator:@"=" delimiter:@";"];
+			NSMutableDictionary *contentTypeParameters = [NSMutableDictionary dictionaryWithString:[contentType substringFromIndex:(parameterSeparator.location + 1)] separator:@"=" delimiter:@";"];
+			[[contentTypeParameters copy] enumerateKeysAndObjectsUsingBlock:^ (id key, id obj, BOOL *stop) {
+				[contentTypeParameters removeObjectForKey:key];
+				
+				key = [key mutableCopy];
+				CFStringTrimWhitespace((CFMutableStringRef)key);
+				
+				obj = [obj mutableCopy];
+				CFStringTrimWhitespace((CFMutableStringRef)obj);
+				
+				[contentTypeParameters setObject:obj forKey:key];
+			}];
 			textEncodingName = [contentTypeParameters objectForCaseInsensitiveKey:@"charset"];
 			
 			if ([textEncodingName characterAtIndex:0] == '"' && [textEncodingName characterAtIndex:([textEncodingName length] - 1)] == '"') {
