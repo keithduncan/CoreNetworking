@@ -425,7 +425,7 @@ static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, 
 	NSCParameterAssert(delegateSelector != NULL);
 	
 	if (![[self delegate] respondsToSelector:delegateSelector]) return;
-	((void (*)(id, SEL, NSUInteger, NSUInteger, void *))objc_msgSend)([self delegate], delegateSelector, partialLength, totalLength, [packet context]);
+	((void (*)(id, SEL, id, NSUInteger, NSUInteger, void *))objc_msgSend)([self delegate], delegateSelector, self, partialLength, totalLength, [packet context]);
 }
 
 static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet) {
