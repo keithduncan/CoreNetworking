@@ -28,6 +28,7 @@ NSString *const AFNetworkDocumentMIMEContentDisposition = @"Content-Disposition"
 	
 	uint8_t *buffer = (uint8_t *)malloc(frameLength);
 	NSOutputStream *memoryStream = [NSOutputStream outputStreamToBuffer:buffer capacity:frameLength];
+	[memoryStream open];
 	
 	// Note: this ensures the buffer is free()'d if we bail inside the loop
 	NSData *dataBuffer = [NSData dataWithBytesNoCopy:buffer length:frameLength freeWhenDone:YES];
@@ -38,9 +39,9 @@ NSString *const AFNetworkDocumentMIMEContentDisposition = @"Content-Disposition"
 			completionNotification = notification;
 		}];
 		
-		while (completionNotification == nil) {
+		do {
 			[currentPacket performWrite:memoryStream];
-		}
+		} while (completionNotification == nil);
 		
 		[[NSNotificationCenter defaultCenter] removeObserver:completionListener];
 		
