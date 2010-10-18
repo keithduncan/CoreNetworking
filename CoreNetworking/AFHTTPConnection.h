@@ -110,8 +110,8 @@
 
 @protocol AFHTTPConnectionDataDelegate <AFNetworkTransportLayerDataDelegate>
 
-- (void)connection:(AFHTTPConnection *)connection didReceiveRequest:(CFHTTPMessageRef)request;
+- (void)networkConnection:(AFHTTPConnection *)connection didReceiveRequest:(CFHTTPMessageRef)request;
 
-- (void)connection:(AFHTTPConnection *)connection didReceiveResponse:(CFHTTPMessageRef)response;
+- (void)networkConnection:(AFHTTPConnection *)connection didReceiveResponse:(CFHTTPMessageRef)response;
 
 @end

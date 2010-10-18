@@ -290,7 +290,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	if (context == &_AFHTTPClientReadPartialResponseContext) {
 		// nop
 	} else if (context == &_AFHTTPClientReadResponseContext) {
-		[self.delegate connection:self didReadResponse:(CFHTTPMessageRef)data context:context];
+		[self.delegate networkConnection:self didReadResponse:(CFHTTPMessageRef)data context:context];
 		
 		[self.transactionQueue dequeued];
 		[self.transactionQueue tryDequeue];

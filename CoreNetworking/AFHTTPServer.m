@@ -88,7 +88,7 @@
 	[connection readRequest];
 }
 
-- (void)connection:(AFHTTPConnection *)connection didReceiveRequest:(CFHTTPMessageRef)request {
+- (void)networkConnection:(AFHTTPConnection *)connection didReceiveRequest:(CFHTTPMessageRef)request {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	
 	CFHTTPMessageRef response = NULL;

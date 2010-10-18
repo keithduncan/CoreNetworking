@@ -89,6 +89,6 @@
 
 @protocol AFHTTPClientDelegate <AFHTTPConnectionDataDelegate>
 
-- (void)connection:(AFHTTPClient *)connection didReadResponse:(CFHTTPMessageRef)response context:(void *)context;
+- (void)networkConnection:(AFHTTPClient *)connection didReadResponse:(CFHTTPMessageRef)response context:(void *)context;
 
 @end
