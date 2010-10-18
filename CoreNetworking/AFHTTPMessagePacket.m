@@ -62,7 +62,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 	return (id)_message;
 }
 
-- (void)_nextPacket {
+- (BOOL)_nextPacket {
 	if (!CFHTTPMessageIsHeaderComplete(self.message)) {
 		AFHTTPHeadersPacket *headersPacket = [[[AFHTTPHeadersPacket alloc] initWithMessage:self.message] autorelease];
 		headersPacket->_context = &_AFHTTPMessagePacketHeadersContext;
@@ -70,10 +70,20 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_headersPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:headersPacket];
 		self.currentRead = headersPacket;
 		
-		return;
+		return YES;
 	}
 	
-	AFHTTPBodyPacket *bodyPacket = [[[AFHTTPBodyPacket alloc] initWithMessage:self.message] autorelease];
+	NSError *bodyPacketError = nil;
+	AFHTTPBodyPacket *bodyPacket = [AFHTTPBodyPacket parseBodyPacketFromMessage:self.message error:&bodyPacketError];
+	if (bodyPacket == nil) {
+		NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+										  bodyPacketError, AFNetworkPacketErrorKey,
+										  nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+		
+		return NO;
+	}
+	
 	bodyPacket->_context = &_AFHTTPMessagePacketBodyContext;
 	
 	if (self.bodyStorage != nil) {
@@ -88,13 +98,18 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_bodyReadPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:bodyPacket];
 	self.currentRead = bodyPacket;
+	
+	return YES;
 }
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
 
 - (void)performRead:(NSInputStream *)readStream {
 	do {
-		if (self.currentRead == nil) [self _nextPacket];
+		if (self.currentRead == nil) {
+			if (![self _nextPacket]) return;
+		}
+		
 		[self.currentRead performRead:readStream];
 	} while (self.currentRead == nil);
 }
