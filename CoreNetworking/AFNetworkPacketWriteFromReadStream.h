@@ -23,13 +23,15 @@
  */
 @interface AFNetworkPacketWriteFromReadStream : AFNetworkPacket <AFNetworkPacketWriting> {
  @private
-	NSInteger _numberOfBytesToWrite;
+	NSInteger _totalBytesToWrite;
+	NSInteger _bytesWritten;
 	
 	NSInputStream *_readStream;
 	BOOL _readStreamOpen;
 	
 	__strong uint8_t *_readBuffer;
-	NSUInteger _currentBufferOffset, _currentBufferLength;
+	NSUInteger _currentBufferLength;
+	NSUInteger _currentBufferOffset;
 }
 
 /*!
@@ -42,6 +44,6 @@
 	\param numberOfBytesToRead
 	Pass -1 to read until the stream is empty.
  */
-- (id)initWithReadStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite;
+- (id)initWithReadStream:(NSInputStream *)readStream totalBytesToWrite:(NSInteger)totalBytesToWrite;
 
 @end

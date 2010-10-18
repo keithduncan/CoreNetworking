@@ -32,14 +32,14 @@
 @synthesize numberOfBytesToWrite=_numberOfBytesToWrite;
 @synthesize readStream=_readStream, readStreamOpen=_readStreamOpen;
 
-- (id)initWithReadStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite {
+- (id)initWithReadStream:(NSInputStream *)readStream totalBytesToWrite:(NSInteger)totalBytesToWrite {
 	NSParameterAssert(readStream != nil && [readStream streamStatus] == NSStreamStatusNotOpen);
-	NSParameterAssert(numberOfBytesToWrite != 0);
+	NSParameterAssert(totalBytesToWrite != 0);
 	
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_numberOfBytesToWrite = numberOfBytesToWrite;
+	_totalBytesToWrite = totalBytesToWrite;
 	
 	_readStream = [readStream retain];
 	[_readStream setDelegate:(id)self];
@@ -55,6 +55,15 @@
 	free(_readBuffer);
 	
 	[super dealloc];
+}
+
+- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {
+	if (_totalBytesToWrite < 0) return [super currentProgressWithBytesDone:bytesDone bytesTotal:bytesTotal];
+	
+	if (bytesDone != NULL) *bytesDone = _bytesWritten;
+	if (bytesTotal != NULL) *bytesTotal = _totalBytesToWrite;
+	
+	return (_totalBytesToWrite > 0 ? ((float)_bytesWritten / (float)_totalBytesToWrite) : 0);
 }
 
 - (void)performWrite:(NSOutputStream *)writeStream {
@@ -80,12 +89,13 @@
 	}
 	
 	
-	do {
+	while ([writeStream hasSpaceAvailable]) {
+		// Read
 		if (_currentBufferLength == 0) {
 			size_t maximumReadSize = READ_BUFFER_SIZE;
-			if (_numberOfBytesToWrite > 0) {
-				maximumReadSize = MIN(_numberOfBytesToWrite, maximumReadSize);
-				_numberOfBytesToWrite -= maximumReadSize;
+			if (_totalBytesToWrite > 0) {
+				maximumReadSize = MIN((_totalBytesToWrite - _bytesWritten), maximumReadSize);
+				_bytesWritten += maximumReadSize;
 			}
 			
 			_currentBufferOffset = 0;
@@ -97,12 +107,15 @@
 			}
 		}
 		
-		_currentBufferOffset += [writeStream write:(_readBuffer + _currentBufferOffset) maxLength:(_currentBufferLength - _currentBufferOffset)];
-		
-		if (_currentBufferOffset == _currentBufferLength) {
-			_currentBufferLength = 0;
+		// Write
+		{
+			_currentBufferOffset += [writeStream write:(_readBuffer + _currentBufferOffset) maxLength:(_currentBufferLength - _currentBufferOffset)];
+			
+			if (_currentBufferOffset == _currentBufferLength) {
+				_currentBufferLength = 0;
+			}
 		}
-	} while ([writeStream hasSpaceAvailable]);
+	}
 }
 
 - (void)_postReadStreamCompletionNotification {

@@ -185,7 +185,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		CFHTTPMessageRef requestMessage = [self _requestForMethod:[request HTTPMethod] onResource:[[request URL] path] withHeaders:[request allHTTPHeaderFields] withBody:nil];
 		CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[fileAttributes objectForKey:NSFileSize] stringValue]);
 		
-		AFNetworkPacketWriteFromReadStream *streamPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:-1] autorelease];
+		AFNetworkPacketWriteFromReadStream *streamPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] totalBytesToWrite:-1] autorelease];
 		
 		AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequestPackets:[NSArray arrayWithObjects:AFHTTPConnectionPacketForMessage(requestMessage), streamPacket, nil] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]] context:context] autorelease];
 		[self _enqueueTransaction:transaction];
@@ -223,7 +223,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[fileSize stringValue]);
 	
 	AFNetworkPacket *headersPacket = AFHTTPConnectionPacketForMessage(requestMessage);
-	AFNetworkPacketWriteFromReadStream *bodyPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] numberOfBytesToWrite:[fileSize unsignedIntegerValue]] autorelease];
+	AFNetworkPacketWriteFromReadStream *bodyPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] totalBytesToWrite:[fileSize unsignedIntegerValue]] autorelease];
 	
 	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequestPackets:[NSArray arrayWithObjects:headersPacket, bodyPacket, nil] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]] context:context] autorelease];
 	[self _enqueueTransaction:transaction];

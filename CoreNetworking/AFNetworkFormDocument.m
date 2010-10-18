@@ -169,7 +169,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	
 #if 1
 	NSInputStream *readStream = [[[NSInputStream alloc] initWithURL:[self location]] autorelease];
-	AFNetworkPacketWriteFromReadStream *filePacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:readStream numberOfBytesToWrite:[resourceLength unsignedIntegerValue]] autorelease];
+	AFNetworkPacketWriteFromReadStream *filePacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:readStream totalBytesToWrite:[resourceLength unsignedIntegerValue]] autorelease];
 #else
 	NSData *fileData = [NSData dataWithContentsOfURL:[self location]];
 	AFPacketWrite *filePacket = [[[AFPacketWrite alloc] initWithData:fileData] autorelease];
