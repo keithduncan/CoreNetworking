@@ -36,7 +36,11 @@
 	_terminator = [terminator copy];
 	
 	if ([_terminator isKindOfClass:[NSNumber class]]) {
+		NSParameterAssert([_terminator integerValue] > 0);
 		[_buffer setLength:[_terminator integerValue]];
+	}
+	if ([_terminator isKindOfClass:[NSData class]]) {
+		NSParameterAssert([_terminator length] > 0);
 	}
 	
 	return self;

@@ -15,6 +15,8 @@
 @synthesize buffer=_buffer;
 
 - (id)initWithData:(NSData *)buffer {
+	NSParameterAssert([buffer length] > 0);
+	
 	self = [self init];
 	if (self == nil) return self;
 	
@@ -40,6 +42,11 @@
 }
 
 - (void)performWrite:(NSOutputStream *)writeStream {
+	if ([[self buffer] length] == 0) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
+		return;
+	}
+	
 	while ([writeStream hasSpaceAvailable]) {
 		NSUInteger bytesRemaining = ([self.buffer length] - _bytesWritten);
 		

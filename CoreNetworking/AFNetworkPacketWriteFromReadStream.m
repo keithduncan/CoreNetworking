@@ -34,6 +34,7 @@
 
 - (id)initWithReadStream:(NSInputStream *)readStream numberOfBytesToWrite:(NSInteger)numberOfBytesToWrite {
 	NSParameterAssert(readStream != nil && [readStream streamStatus] == NSStreamStatusNotOpen);
+	NSParameterAssert(numberOfBytesToWrite != 0);
 	
 	self = [self init];
 	if (self == nil) return nil;
