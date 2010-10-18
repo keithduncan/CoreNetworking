@@ -30,13 +30,13 @@
 	\details
 	This is sent before the first layer is encapsulated.
  */
-- (BOOL)server:(AFNetworkServer *)server shouldAcceptConnection:(id <AFNetworkConnectionLayer>)connection;
+- (BOOL)networkServer:(AFNetworkServer *)server shouldAcceptConnection:(id <AFNetworkConnectionLayer>)connection;
 
 /*!
 	\brief
 	This is sent after each layer is encapsulated; before it is opened.
  */
-- (void)server:(AFNetworkServer *)server didEncapsulateLayer:(id <AFNetworkConnectionLayer>)connection;
+- (void)networkServer:(AFNetworkServer *)server didEncapsulateLayer:(id <AFNetworkConnectionLayer>)connection;
 
 @end
 

@@ -102,18 +102,18 @@
 	[_transportInfo setValue:value forKey:key];
 }
 
-- (void)layerDidOpen:(id)layer {
+- (void)networkLayerDidOpen:(id)layer {
 	if (layer == self.lowerLayer) layer = self;
 	
 	if ([self.delegate respondsToSelector:_cmd])
-		[self.delegate layerDidOpen:layer];
+		[self.delegate networkLayerDidOpen:layer];
 }
 
-- (void)layerDidClose:(id)layer {
+- (void)networkLayerDidClose:(id)layer {
 	if (layer == self.lowerLayer) layer = self;
 	
 	if ([self.delegate respondsToSelector:_cmd])
-		[self.delegate layerDidClose:layer];
+		[self.delegate networkLayerDidClose:layer];
 }
 
 @end

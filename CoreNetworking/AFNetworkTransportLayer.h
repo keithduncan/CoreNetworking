@@ -70,7 +70,7 @@
 
 /*!
 	\details
-	A layer may elect to remain open, in which case you will not receive the -layerDidClose: delegate callback until it actually closes.
+	A layer may elect to remain open, in which case you will not receive the -networkLayerDidClose: delegate callback until it actually closes.
  */
 - (void)close;
 
@@ -137,9 +137,9 @@
 
  @optional
 
-- (void)layerDidOpen:(id <AFNetworkTransportLayer>)layer;
+- (void)networkLayerDidOpen:(id <AFNetworkTransportLayer>)layer;
 
-- (void)layerDidClose:(id <AFNetworkTransportLayer>)layer;
+- (void)networkLayerDidClose:(id <AFNetworkTransportLayer>)layer;
 
  @required
 
@@ -147,7 +147,7 @@
 	\brief
 	This is called for already opened stream errors.
  */
-- (void)layer:(id <AFNetworkTransportLayer>)layer didReceiveError:(NSError *)error;
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didReceiveError:(NSError *)error;
 
  @optional
 
@@ -155,13 +155,13 @@
 	\brief
 	Called if TLS setup succeeded.
  */
-- (void)layerDidStartTLS:(id <AFNetworkTransportLayer>)layer;
+- (void)networkLayerDidStartTLS:(id <AFNetworkTransportLayer>)layer;
 
 /*!
 	\brief
 	Called if the TLS fails, will call the generic error handler instead if unimplemented.
  */
-- (void)layer:(id <AFNetworkTransportLayer>)layer didNotStartTLS:(NSError *)error;
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didNotStartTLS:(NSError *)error;
 
 @end
 
@@ -171,8 +171,8 @@
  */
 @protocol AFNetworkTransportLayerDataDelegate <NSObject>
 
-- (void)layer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context;
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context;
 
-- (void)layer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context;
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context;
 
 @end

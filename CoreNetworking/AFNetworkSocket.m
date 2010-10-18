@@ -37,8 +37,8 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 			newSocket->_socket = (CFSocketRef)CFMakeCollectable(CFSocketCreateWithNative(kCFAllocatorDefault, *(CFSocketNativeHandle *)data, 0, AFSocketCallback, &context));
 			newSocket->_socketRunLoopSource = (CFRunLoopSourceRef)CFMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, newSocket->_socket, 0));
 			
-			if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
-				[self.delegate layer:self didAcceptConnection:newSocket];
+			if ([self.delegate respondsToSelector:@selector(networkLayer:didAcceptConnection:)])
+				[self.delegate networkLayer:self didAcceptConnection:newSocket];
 			
 			break;
 		}
@@ -124,7 +124,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	CFSocketError socketError = CFSocketSetAddress(_socket, _signature->address);
 	
 	if (socketError == kCFSocketSuccess) {
-		[self.delegate layerDidOpen:self];
+		[self.delegate networkLayerDidOpen:self];
 		return;
 	}
 	
@@ -136,7 +136,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	if (socketError == kCFSocketTimeout) errorCode = AFNetworkSocketErrorTimeout;
 	
 	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:userInfo];
-	[self.delegate layer:self didReceiveError:error];
+	[self.delegate networkLayer:self didReceiveError:error];
 }
 
 - (BOOL)isOpen {

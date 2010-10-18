@@ -103,8 +103,8 @@
 	Overrides
  */
 
-- (void)layer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context;
-- (void)layer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context;
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context;
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context;
 
 @end
 

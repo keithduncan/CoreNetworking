@@ -52,7 +52,7 @@
 	\param layer
 	Could be the host that spawned it or an intermediate object.
  */
-- (void)layer:(id)layer didAcceptConnection:(id <AFNetworkTransportLayer>)layer;
+- (void)networkLayer:(id)layer didAcceptConnection:(id <AFNetworkTransportLayer>)layer;
 
 @end
 

@@ -178,7 +178,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 									   nil];
 			NSError *streamUploadError = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:0 userInfo:errorInfo];
 			
-			[(id)[self delegate] layer:self didReceiveError:streamUploadError];
+			[(id)[self delegate] networkLayer:self didReceiveError:streamUploadError];
 			return;
 		}
 		
@@ -231,7 +231,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	return YES;
 }
 
-- (void)layerDidOpen:(id <AFNetworkConnectionLayer>)layer {
+- (void)networkLayerDidOpen:(id <AFNetworkConnectionLayer>)layer {
 	if ([self _shouldStartTLS]) {
 		NSDictionary *securityOptions = [NSDictionary dictionaryWithObjectsAndKeys:
 										 (id)kCFStreamSocketSecurityLevelNegotiatedSSL, (id)kCFStreamSSLLevel,
@@ -240,45 +240,53 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		NSError *TLSError = nil;
 		BOOL secureNegotiation = [self startTLS:securityOptions error:&TLSError];
 		if (!secureNegotiation) {
-			[self.delegate layer:self didReceiveError:TLSError];
+			if ([self.delegate respondsToSelector:@selector(networkLayer:didNotStartTLS:)]) {
+				[(id)self.delegate networkLayer:self didNotStartTLS:TLSError];
+			} else if ([self.delegate respondsToSelector:@selector(networkLayer:didReceiveError:)]) {
+				[(id)self.delegate networkLayer:self didReceiveError:TLSError];
+			}
+			
+			[self close];
+			return;
 		}
 	}
 	
-	if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])
-		[self.delegate layerDidOpen:self];
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidOpen:)]) {
+		[(id)self.delegate networkLayerDidOpen:self];
+	}
 }
 
-- (void)transport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context {
+- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context {
 	if (![[self delegate] respondsToSelector:_cmd]) return;
 	
 	if (context == &_AFHTTPClientWritePartialRequestContext || context == &_AFHTTPClientWriteRequestContext) {
 		AFHTTPTransaction *currentTransaction = [self currentTransaction];
 		[self _partialCurrentTransaction:[currentTransaction requestPackets] selector:_cmd];
 	} else {
-		[(id)[self delegate] transport:transport didWritePartialDataOfLength:partialLength totalLength:totalLength context:context];
+		[(id)[self delegate] networkTransport:transport didWritePartialDataOfLength:partialLength totalLength:totalLength context:context];
 	}
 }
 
-- (void)layer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context {
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context {
 	if (context == &_AFHTTPClientWritePartialRequestContext) {
 		// nop
 	} else if (context == &_AFHTTPClientWriteRequestContext) {
 		// nop
-	} else [super layer:layer didWrite:data context:context];
+	} else [super networkLayer:layer didWrite:data context:context];
 }
 
-- (void)transport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context {
+- (void)networkTransport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context {
 	if (![[self delegate] respondsToSelector:_cmd]) return;
 	
 	if (context == &_AFHTTPClientReadPartialResponseContext || context == &_AFHTTPClientReadResponseContext) {
 		AFHTTPTransaction *currentTransaction = [self currentTransaction];
 		[self _partialCurrentTransaction:[currentTransaction responsePackets] selector:_cmd];
 	} else {
-		[(id)[self delegate] transport:transport didReadPartialDataOfLength:partialLength total:totalLength context:context];
+		[(id)[self delegate] networkTransport:transport didReadPartialDataOfLength:partialLength total:totalLength context:context];
 	}
 }
 
-- (void)layer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context {
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context {
 	if (context == &_AFHTTPClientReadPartialResponseContext) {
 		// nop
 	} else if (context == &_AFHTTPClientReadResponseContext) {
@@ -286,7 +294,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		
 		[self.transactionQueue dequeued];
 		[self.transactionQueue tryDequeue];
-	} else [super layer:layer didRead:data context:context];
+	} else [super networkLayer:layer didRead:data context:context];
 }
 
 @end

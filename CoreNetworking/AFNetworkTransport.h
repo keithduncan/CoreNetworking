@@ -78,7 +78,7 @@
 /*!
 	\brief	When the socket is closing you can keep it open until the writes are complete, but you'll have to ensure the object remains live.
  */
-- (BOOL)transportShouldRemainOpenPendingWrites:(AFNetworkTransport *)transport;
+- (BOOL)networkTransportShouldRemainOpenPendingWrites:(AFNetworkTransport *)transport;
 
 @end
 
@@ -90,7 +90,7 @@
 	\brief
 	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
  */
-- (void)transport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialBytes totalLength:(NSUInteger)totalLength context:(void *)context;
+- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialBytes totalLength:(NSUInteger)totalLength context:(void *)context;
 
 /*!
 	\brief
@@ -99,6 +99,6 @@
 	\param total
 	Will be <tt>NSUIntegerMax</tt> if the packet terminator is a data pattern.
  */
-- (void)transport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialBytes totalLength:(NSUInteger)totalLength context:(void *)context;
+- (void)networkTransport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialBytes totalLength:(NSUInteger)totalLength context:(void *)context;
 
 @end

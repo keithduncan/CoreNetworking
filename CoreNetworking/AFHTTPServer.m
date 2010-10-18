@@ -66,7 +66,7 @@
 	[super dealloc];
 }
 
-- (void)layerDidOpen:(id)layer {
+- (void)networkLayerDidOpen:(id)layer {
 	// Note: this is a temporary solution to eliminate a compiler warning
 	struct objc_super superclass = {
 		.receiver = self,
@@ -141,8 +141,8 @@
 			return;
 		}
 		
-		if ([[self delegate] respondsToSelector:@selector(server:renderResourceForRequest:)]) {
-			response = [[self delegate] server:self renderResourceForRequest:request];
+		if ([[self delegate] respondsToSelector:@selector(networkServer:renderResourceForRequest:)]) {
+			response = [[self delegate] networkServer:self renderResourceForRequest:request];
 			
 			if (response != NULL) {
 				[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
@@ -172,11 +172,11 @@
 	[pool drain];
 }
 
-- (void)layer:(id <AFNetworkConnectionLayer>)layer didReceiveError:(NSError *)error {
+- (void)networkLayer:(id <AFNetworkConnectionLayer>)layer didReceiveError:(NSError *)error {
 	[layer close];
 }
 
-- (BOOL)transportShouldRemainOpenPendingWrites:(AFNetworkTransport *)transport {
+- (BOOL)networkTransportShouldRemainOpenPendingWrites:(AFNetworkTransport *)transport {
 	return YES;
 }
 

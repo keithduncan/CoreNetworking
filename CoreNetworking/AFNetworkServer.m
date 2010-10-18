@@ -219,8 +219,8 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 	
 	[[self.clientPools objectAtIndex:nextBucket] addConnectionsObject:newConnection];
 	
-	if ([self.delegate respondsToSelector:@selector(server:didEncapsulateLayer:)])
-		[self.delegate server:self didEncapsulateLayer:newConnection];
+	if ([self.delegate respondsToSelector:@selector(networkServer:didEncapsulateLayer:)])
+		[self.delegate networkServer:self didEncapsulateLayer:newConnection];
 	
 	[newConnection setDelegate:(id)self];
 	[newConnection open];
@@ -229,17 +229,17 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 #pragma mark -
 #pragma mark Delegate
 
-- (void)layer:(id)layer didAcceptConnection:(id <AFNetworkConnectionLayer>)newLayer {
+- (void)networkLayer:(id)layer didAcceptConnection:(id <AFNetworkConnectionLayer>)newLayer {
 	NSUInteger bucket = [self _bucketContainingLayer:layer];
 	
 	if (bucket == NSUIntegerMax || bucket == [self.clientPools count]) {
-		if ([self.delegate respondsToSelector:@selector(layer:didAcceptConnection:)])
-			[self.delegate layer:self didAcceptConnection:newLayer];
+		if ([self.delegate respondsToSelector:@selector(networkLayer:didAcceptConnection:)])
+			[self.delegate networkLayer:self didAcceptConnection:newLayer];
 		return;
 	}
 	
-	if ([self.delegate respondsToSelector:@selector(server:shouldAcceptConnection:)]) {
-		if (![self.delegate server:self shouldAcceptConnection:newLayer]) {
+	if ([self.delegate respondsToSelector:@selector(networkServer:shouldAcceptConnection:)]) {
+		if (![self.delegate networkServer:self shouldAcceptConnection:newLayer]) {
 			[newLayer close];
 			return;
 		}
@@ -248,12 +248,12 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 	[self encapsulateNetworkLayer:newLayer];
 }
 
-- (void)layerDidOpen:(id <AFNetworkTransportLayer>)layer {
+- (void)networkLayerDidOpen:(id <AFNetworkTransportLayer>)layer {
 	if ([self _bucketContainingLayer:layer] == 0) return; // Note: these are the initial socket layers opening, nothing else is spawned at this layer
 	[self encapsulateNetworkLayer:(id)layer];
 }
 
-- (void)layerDidClose:(id <AFNetworkConnectionLayer>)layer {
+- (void)networkLayerDidClose:(id <AFNetworkConnectionLayer>)layer {
 	NSUInteger bucket = [self _bucketContainingLayer:layer];
 	
 	if (layer.lowerLayer != nil) {

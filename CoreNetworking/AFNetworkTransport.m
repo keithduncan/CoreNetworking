@@ -262,7 +262,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 
 - (void)open {
 	if ([self isOpen]) {
-		[self.delegate layerDidOpen:self];
+		[self.delegate networkLayerDidOpen:self];
 		return;
 	}
 	
@@ -276,7 +276,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 
 - (void)close {
 	if ([self isClosed]) {
-		[self.delegate layerDidClose:self];
+		[self.delegate networkLayerDidClose:self];
 		return;
 	}
 	
@@ -286,8 +286,8 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 		
 		if (pendingWrites) {
 			BOOL shouldRemainOpen = NO;
-			if ([self.delegate respondsToSelector:@selector(transportShouldRemainOpenPendingWrites:)])
-				shouldRemainOpen = [self.delegate transportShouldRemainOpenPendingWrites:self];
+			if ([self.delegate respondsToSelector:@selector(networkTransportShouldRemainOpenPendingWrites:)])
+				shouldRemainOpen = [self.delegate networkTransportShouldRemainOpenPendingWrites:self];
 			
 			if (shouldRemainOpen) {
 				_connectionFlags = (_connectionFlags | _kConnectionCloseSoon);
@@ -309,8 +309,8 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	// Note: set this before the delegation so that the object can be released
 	_connectionFlags = (_connectionFlags | _kConnectionDidClose);
 	
-	if ([self.delegate respondsToSelector:@selector(layerDidClose:)])
-		[self.delegate layerDidClose:self];
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidClose:)])
+		[self.delegate networkLayerDidClose:self];
 }
 
 - (BOOL)isClosed {
@@ -374,7 +374,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 }
 
 - (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
-	[[self delegate] layer:self didReceiveError:error];
+	[[self delegate] networkLayer:self didReceiveError:error];
 }
 
 #pragma mark Writing
@@ -420,8 +420,8 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 
 static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet, NSUInteger partialLength, NSUInteger totalLength) {
 	SEL delegateSelector = NULL;
-	if (stream == self->_writeStream) delegateSelector = @selector(transport:didWritePartialDataOfLength:totalLength:context:);
-	else if (stream == self->_readStream) delegateSelector = @selector(transport:didReadPartialDataOfLength:totalLength:context:);
+	if (stream == self->_writeStream) delegateSelector = @selector(networkTransport:didWritePartialDataOfLength:totalLength:context:);
+	else if (stream == self->_readStream) delegateSelector = @selector(networkTransport:didReadPartialDataOfLength:totalLength:context:);
 	NSCParameterAssert(delegateSelector != NULL);
 	
 	if (![[self delegate] respondsToSelector:delegateSelector]) return;
@@ -430,8 +430,8 @@ static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, 
 
 static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet) {
 	SEL delegateSelector = NULL;
-	if (stream == self->_writeStream) delegateSelector = @selector(layer:didWrite:context:);
-	else if (stream == self->_readStream) delegateSelector = @selector(layer:didRead:context:);
+	if (stream == self->_writeStream) delegateSelector = @selector(networkLayer:didWrite:context:);
+	else if (stream == self->_readStream) delegateSelector = @selector(networkLayer:didRead:context:);
 	NSCParameterAssert(delegateSelector != NULL);
 	
 	((void (*)(id, SEL, id, id, void *))objc_msgSend)([self delegate], delegateSelector, self, [packet buffer], [packet context]);
@@ -462,8 +462,8 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	if ([self readStream] != nil && ((_readFlags & _kStreamDidOpen) != _kStreamDidOpen)) return;
 	_connectionFlags = (_connectionFlags | _kConnectionDidOpen);
 	
-	if ([self.delegate respondsToSelector:@selector(layerDidOpen:)])
-		[self.delegate layerDidOpen:self];
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidOpen:)])
+		[self.delegate networkLayerDidOpen:self];
 }
 
 - (BOOL)networkStreamCanDequeuePackets:(AFNetworkStream *)networkStream {
@@ -477,8 +477,8 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	if ((_connectionFlags & _kConnectionDidStartTLS) == _kConnectionDidStartTLS) return;
 	_connectionFlags = (_connectionFlags | _kConnectionDidStartTLS);
 	
-	if ([self.delegate respondsToSelector:@selector(layerDidStartTLS:)])
-		[self.delegate layerDidStartTLS:self];
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidStartTLS:)])
+		[self.delegate networkLayerDidStartTLS:self];
 }
 
 - (void)networkStreamDidDequeuePacket:(AFNetworkStream *)networkStream {

@@ -45,7 +45,7 @@
 	\brief
 	The delegate is asked last, after each of the renderers.
  */
-- (CFHTTPMessageRef)server:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;
+- (CFHTTPMessageRef)networkServer:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;
 
 @end
 

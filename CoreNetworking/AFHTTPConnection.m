@@ -129,17 +129,17 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 #pragma mark -
 
-- (void)layer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context {
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context {
 	if (context == &_AFHTTPConnectionWriteRequestContext) {
 		// nop
 	} else if (context == &_AFHTTPConnectionWriteResponseContext) {
 		// nop
 	} else if ([self.delegate respondsToSelector:_cmd]) {
-		[self.delegate layer:self didWrite:data context:context];
+		[self.delegate networkLayer:self didWrite:data context:context];
 	}
 }
 
-- (void)layer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context {
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context {
 	if (context == &_AFHTTPConnectionReadRequestContext) {
 		if ([self.delegate respondsToSelector:@selector(connection:didReceiveRequest:)])
 			[self.delegate connection:self didReceiveRequest:(CFHTTPMessageRef)data];
@@ -147,7 +147,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 		if ([self.delegate respondsToSelector:@selector(connection:didReceiveResponse:)])
 			[self.delegate connection:self didReceiveResponse:(CFHTTPMessageRef)data];
 	} else if ([self.delegate respondsToSelector:_cmd]) {
-		[self.delegate layer:self didRead:data context:context];
+		[self.delegate networkLayer:self didRead:data context:context];
 	}
 }
 
