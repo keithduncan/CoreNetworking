@@ -268,6 +268,8 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 
 @end
 
+#pragma mark -
+
 @implementation AFNetworkServer (Private)
 
 - (NSUInteger)_bucketContainingLayer:(id)layer {

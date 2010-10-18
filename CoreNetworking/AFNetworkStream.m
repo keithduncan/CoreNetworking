@@ -321,7 +321,7 @@ DequeueEnd:
 	return self;
 }
 
-- (void)enqueueWrite:(id <AFNetworkPacketWriting>)packet {
+- (void)enqueueWrite:(AFNetworkPacket <AFNetworkPacketWriting> *)packet {
 	_AFNetworkStreamEnqueue(self, _cmd, packet);
 }
 
@@ -347,7 +347,7 @@ DequeueEnd:
 	return self;
 }
 
-- (void)enqueueRead:(id <AFNetworkPacketReading>)packet {
+- (void)enqueueRead:(AFNetworkPacket <AFNetworkPacketReading> *)packet {
 	_AFNetworkStreamEnqueue(self, _cmd, packet);
 }
 

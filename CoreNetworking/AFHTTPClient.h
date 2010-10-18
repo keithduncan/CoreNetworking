@@ -38,7 +38,7 @@
 
 @property (copy) NSString *userAgent;
 
-@property (retain) CFHTTPAuthenticationRef authentication __attribute__((NSObject));
+@property (retain) __strong __attribute__((NSObject)) CFHTTPAuthenticationRef authentication;
 @property (copy) NSDictionary *authenticationCredentials;
 
 /*

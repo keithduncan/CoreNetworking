@@ -44,7 +44,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 		}
 		default:
 		{
-			NSLog(@"%s, socket %p, received unexpected CFSocketCallBackType %d.", __PRETTY_FUNCTION__, self, type, nil);
+			NSLog(@"%s, socket %p, received unexpected CFSocketCallBackType %lu", __PRETTY_FUNCTION__, self, type);
 			break;
 		}
 	}

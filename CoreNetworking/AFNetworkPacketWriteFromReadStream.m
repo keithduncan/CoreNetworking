@@ -17,7 +17,8 @@
 #define READ_BUFFER_SIZE (64 * 1024)
 
 @interface AFNetworkPacketWriteFromReadStream ()
-@property (readonly) NSInteger numberOfBytesToWrite;
+@property (readonly) NSInteger totalBytesToWrite;
+@property (readonly) NSInteger bytesWritten;
 
 @property (assign) NSInputStream *readStream;
 @property (assign) BOOL readStreamOpen;
@@ -29,7 +30,7 @@
 
 @implementation AFNetworkPacketWriteFromReadStream
 
-@synthesize numberOfBytesToWrite=_numberOfBytesToWrite;
+@synthesize totalBytesToWrite=_totalBytesToWrite, bytesWritten=_bytesWritten;
 @synthesize readStream=_readStream, readStreamOpen=_readStreamOpen;
 
 - (id)initWithReadStream:(NSInputStream *)readStream totalBytesToWrite:(NSInteger)totalBytesToWrite {

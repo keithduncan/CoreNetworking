@@ -26,7 +26,7 @@
  */
 @interface AFNetworkLayer : NSObject {
  @private
-	id <AFNetworkTransportLayer> _lowerLayer;
+	AFNetworkLayer *_lowerLayer;
 	id _delegate;
 	
 	NSMutableDictionary *_transportInfo;

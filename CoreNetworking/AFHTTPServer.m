@@ -77,7 +77,7 @@
 #endif
 			 = [self superclass],
 	};
-	(void (*)(id, SEL, id))objc_msgSendSuper(&superclass, _cmd, layer);
+	((void (*)(id, SEL, id))objc_msgSendSuper)(&superclass, _cmd, layer);
 	if (![layer isKindOfClass:[AFHTTPConnection class]]) return;
 	
 	AFHTTPConnection *connection = layer;
@@ -155,14 +155,14 @@
 		[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
 	}
 	@catch (NSException *exception) {
-		printf("*** Caught Response Handling Exception '%s', reason '%s'\n", [[exception name] UTF8String], [[exception reason] UTF8String], nil);
-		printf("*** Call Stack at throw:\n(\n", nil);
+		printf("*** Caught Response Handling Exception '%s', reason '%s'\n", [[exception name] UTF8String], [[exception reason] UTF8String]);
+		printf("*** Call Stack at throw:\n(\n");
 		NSArray *addresses = [exception callStackReturnAddresses];
 		for (NSUInteger index = 0; index < [addresses count]; index++) {
 			NSNumber *address = [addresses objectAtIndex:index];
-			printf("\t%ld\t0x%qX\n", index, (unsigned long long)[address unsignedIntegerValue], nil);
+			printf("\t%ld\t0x%qX\n", index, (unsigned long long)[address unsignedIntegerValue]);
 		}
-		printf(")\n", nil);
+		printf(")\n");
 		
 		AFHTTPStatusCode responseCode = AFHTTPStatusCodeServerError;
 		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];

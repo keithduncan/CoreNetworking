@@ -14,11 +14,14 @@
 #import "NSDictionary+AFNetworkAdditions.h"
 #import "NSURLRequest+AFNetworkAdditions.h"
 
-@interface _AFHTTPURLResponse : NSHTTPURLResponse
+@interface _AFHTTPURLResponse : NSHTTPURLResponse {
+ @private
+	__strong CFHTTPMessageRef _message;
+}
 
 - (id)initWithURL:(NSURL *)URL message:(CFHTTPMessageRef)message;
 
-@property (retain) CFHTTPMessageRef message __attribute__((NSObject));
+@property (retain) __strong __attribute__((NSObject)) CFHTTPMessageRef message;
 
 @end
 

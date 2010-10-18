@@ -77,7 +77,7 @@
 
 @property (assign) id <AFNetworkWriteStreamDelegate> delegate;
 
-- (void)enqueueWrite:(id <AFNetworkPacketWriting>)packet;
+- (void)enqueueWrite:(AFNetworkPacket <AFNetworkPacketWriting> *)packet;
 
 @property (readonly) NSUInteger countOfEnqueuedWrites;
 
@@ -87,7 +87,7 @@
 
 @property (assign) id <AFNetworkReadStreamDelegate> delegate;
 
-- (void)enqueueRead:(id <AFNetworkPacketReading>)packet;
+- (void)enqueueRead:(AFNetworkPacket <AFNetworkPacketReading> *)packet;
 
 @property (readonly) NSUInteger countOfEnqueuedReads;
 

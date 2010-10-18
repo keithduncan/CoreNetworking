@@ -58,7 +58,11 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 
 @end
 
-@interface _AFNetworkFormDocumentDataFieldPart : _AFNetworkDocumentPart
+@interface _AFNetworkFormDocumentDataFieldPart : _AFNetworkDocumentPart {
+ @private
+	NSData *_data;
+	NSString *_contentType;
+}
 
 - (id)initWithData:(NSData *)data contentType:(NSString *)contentType;
 
