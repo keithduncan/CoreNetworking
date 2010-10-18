@@ -75,9 +75,6 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 @synthesize data=_data, contentType=_contentType;
 
 - (id)initWithData:(NSData *)data contentType:(NSString *)contentType {
-	NSParameterAssert(data != nil);
-	
-	
 	self = [self init];
 	if (self == nil) return nil;
 	
@@ -99,6 +96,11 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 	
 	if (frameLengthRef != NULL) {
 		*frameLengthRef = [[self data] length];
+	}
+	
+	
+	if ([self data] == nil) {
+		return nil;
 	}
 	
 	return [NSArray arrayWithObject:[[AFNetworkPacketWrite alloc] initWithData:[self data]]];
@@ -284,7 +286,9 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 		
 		
 		NSString *currentValue = [[self values] objectForKey:currentFieldname];
-		_AFNetworkFormDocumentDataFieldPart *currentValuePart = [[[_AFNetworkFormDocumentDataFieldPart alloc] initWithData:[currentValue dataUsingEncoding:_AFNetworkFormEncoding] contentType:@"text/plain"] autorelease];
+		NSData *currentValueData = ([currentValue length] > 0 ? [currentValue dataUsingEncoding:_AFNetworkFormEncoding] : nil);
+		
+		_AFNetworkFormDocumentDataFieldPart *currentValuePart = [[[_AFNetworkFormDocumentDataFieldPart alloc] initWithData:currentValueData contentType:@"text/plain"] autorelease];
 		
 		NSString *contentDisposition = [NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname];
 		[self _appendPart:currentValuePart toCumulativePackets:cumulativePackets cumulativeFrameLength:&cumulativeFrameLength withContentDisposition:contentDisposition];
