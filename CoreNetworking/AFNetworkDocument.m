@@ -38,7 +38,7 @@ NSString *const AFNetworkDocumentMIMEContentDisposition = @"Content-Disposition"
 			completionNotification = notification;
 		}];
 		
-		while (completionListener == nil) {
+		while (completionNotification == nil) {
 			[currentPacket performWrite:memoryStream];
 		}
 		
