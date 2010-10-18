@@ -13,6 +13,7 @@
 #endif
 
 @class AFNetworkPacketQueue;
+@protocol AFHTTPClientDelegate;
 
 /*!
 	\brief
@@ -29,6 +30,8 @@
 	
 	AFNetworkPacketQueue *_transactionQueue;
 }
+
+@property (assign) id <AFHTTPClientDelegate> delegate;
 
 + (NSString *)userAgent;
 + (void)setUserAgent:(NSString *)userAgent;
@@ -84,7 +87,7 @@
 @end
 
 
-@interface AFHTTPClientDelegate <AFHTTPConnectionDataDelegate>
+@protocol AFHTTPClientDelegate <AFHTTPConnectionDataDelegate>
 
 - (void)connection:(AFHTTPClient *)connection didReadResponse:(CFHTTPMessageRef)response context:(void *)context;
 

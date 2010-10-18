@@ -159,7 +159,7 @@
 
 /*!
 	\brief
-	Called if the TLS fails.
+	Called if the TLS fails, will call the generic error handler instead if unimplemented.
  */
 - (void)layer:(id <AFNetworkTransportLayer>)layer didNotStartTLS:(NSError *)error;
 

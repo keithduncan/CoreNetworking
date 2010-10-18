@@ -43,6 +43,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPClientReadResponseContext);
 
 @implementation AFHTTPClient
 
+@dynamic delegate;
 @synthesize userAgent=_userAgent;
 @synthesize authentication=_authentication, authenticationCredentials=_authenticationCredentials;
 @synthesize transactionQueue=_transactionQueue;
