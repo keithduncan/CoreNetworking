@@ -58,12 +58,7 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 - (void)performRead:(NSInputStream *)readStream {
 	do {
 		if (self.currentRead == nil) {
-			NSData *CRLF = [NSData dataWithBytes:"\x0D\x0A" length:2];
-			
-			NSMutableData *headersTerminator = [NSMutableData data];
-			[headersTerminator appendData:CRLF];
-			[headersTerminator appendData:CRLF];
-			
+			NSData *headersTerminator = [NSData dataWithBytes:"\r\n\r\n" length:4];
 			AFNetworkPacketRead *newReadPacket = [[[AFNetworkPacketRead alloc] initWithTerminator:headersTerminator] autorelease];
 			
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:newReadPacket];

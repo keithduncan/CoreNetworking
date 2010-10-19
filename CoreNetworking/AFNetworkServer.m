@@ -141,8 +141,7 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 	for (NSData *currentAddress in sockaddrs) {
 		currentAddress = [[currentAddress mutableCopy] autorelease];
 		
-// Note: explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
-		
+		// Note: explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddress))->sin_port = htons(*port);
 		
 		AFNetworkSocket *socket = [self openSocketWithSignature:signature address:currentAddress];
@@ -219,8 +218,9 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 	
 	[[self.clientPools objectAtIndex:nextBucket] addConnectionsObject:newConnection];
 	
-	if ([self.delegate respondsToSelector:@selector(networkServer:didEncapsulateLayer:)])
+	if ([self.delegate respondsToSelector:@selector(networkServer:didEncapsulateLayer:)]) {
 		[self.delegate networkServer:self didEncapsulateLayer:newConnection];
+	}
 	
 	[newConnection setDelegate:(id)self];
 	[newConnection open];
@@ -233,8 +233,9 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 	NSUInteger bucket = [self _bucketContainingLayer:layer];
 	
 	if (bucket == NSUIntegerMax || bucket == [self.clientPools count]) {
-		if ([self.delegate respondsToSelector:@selector(networkLayer:didAcceptConnection:)])
+		if ([self.delegate respondsToSelector:@selector(networkLayer:didAcceptConnection:)]) {
 			[self.delegate networkLayer:self didAcceptConnection:newLayer];
+		}
 		return;
 	}
 	

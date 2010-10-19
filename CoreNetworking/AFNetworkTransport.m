@@ -318,13 +318,14 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 }
 
 - (BOOL)startTLS:(NSDictionary *)options error:(NSError **)errorRef {
+	#warning check that this works :-[
+	
 	if ((_connectionFlags & _kConnectionWillStartTLS) == _kConnectionWillStartTLS) return YES;
 	_connectionFlags = (_connectionFlags | _kConnectionWillStartTLS);
 	
 	BOOL result = YES;
 	if (self.writeStream != nil) result = (result & [self.writeStream setStreamProperty:options forKey:(id)kCFStreamPropertySSLSettings]);
 	if (self.readStream != nil) result = (result & [self.readStream setStreamProperty:options forKey:(id)kCFStreamPropertySSLSettings]);
-#warning check that this works :-[
 	
 	if (!result) {
 		if (errorRef != NULL) {
