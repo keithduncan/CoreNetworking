@@ -105,15 +105,17 @@
 - (void)networkLayerDidOpen:(id)layer {
 	if (layer == self.lowerLayer) layer = self;
 	
-	if ([self.delegate respondsToSelector:_cmd])
+	if ([self.delegate respondsToSelector:_cmd]) {
 		[self.delegate networkLayerDidOpen:layer];
+	}
 }
 
 - (void)networkLayerDidClose:(id)layer {
 	if (layer == self.lowerLayer) layer = self;
 	
-	if ([self.delegate respondsToSelector:_cmd])
+	if ([self.delegate respondsToSelector:_cmd]) {
 		[self.delegate networkLayerDidClose:layer];
+	}
 }
 
 @end

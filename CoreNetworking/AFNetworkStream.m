@@ -194,6 +194,8 @@ typedef NSUInteger _AFNetworkStreamFlags;
 }
 
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)event {
+	[[self delegate] networkStream:self didReceiveEvent:event];
+	
 	if (event == NSStreamEventOpenCompleted) {
 		_flags = (_flags | _kStreamDidOpen);
 		[self _tryDequeuePackets];
@@ -201,15 +203,11 @@ typedef NSUInteger _AFNetworkStreamFlags;
 	
 	if (event == NSStreamEventHasBytesAvailable || event == NSStreamEventHasSpaceAvailable) {
 		[self _tryDequeuePackets];
-		return;
 	}
 	
 	if (event == NSStreamEventErrorOccurred) {
 		[[self delegate] networkStream:self didReceiveError:[stream streamError]];
-		return;
 	}
-	
-	[[self delegate] networkStream:self didReceiveEvent:event];
 }
 
 - (void)enqueuePacket:(AFNetworkPacket *)packet {

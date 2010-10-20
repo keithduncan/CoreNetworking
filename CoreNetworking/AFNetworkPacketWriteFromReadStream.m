@@ -123,6 +123,8 @@
 			}
 			
 			currentBytesWritten += bytesWritten;
+			_bytesWritten += bytesWritten;
+			
 			_bufferOffset += bytesWritten;
 			
 			if (_bufferOffset == _bufferLength) {

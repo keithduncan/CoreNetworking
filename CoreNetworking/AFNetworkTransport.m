@@ -297,8 +297,9 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	// Note: set this before the delegation so that the object can be released
 	_connectionFlags = (_connectionFlags | _kConnectionDidClose);
 	
-	if ([self.delegate respondsToSelector:@selector(networkLayerDidClose:)])
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidClose:)]) {
 		[self.delegate networkLayerDidClose:self];
+	}
 }
 
 - (BOOL)isClosed {
@@ -340,26 +341,29 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	NSParameterAssert(stream == [self writeStream] || stream == [self readStream]);
 	
 	switch (event) {
-		case NSStreamEventOpenCompleted:
-		{
+		case NSStreamEventOpenCompleted:;
 			if (stream == [self writeStream]) _writeFlags = (_writeFlags | _kStreamDidOpen);
 			else if (stream == [self readStream]) _readFlags = (_readFlags | _kStreamDidOpen);
 			
 			[self _streamDidOpen];
 			return;
-		}
-		case NSStreamEventEndEncountered:
-		{
+		case NSStreamEventHasBytesAvailable:;
+		case NSStreamEventHasSpaceAvailable:;
+			if ((_connectionFlags & _kConnectionWillStartTLS) != _kConnectionWillStartTLS || (_connectionFlags & _kConnectionDidStartTLS) == _kConnectionDidStartTLS) return;
+			
+			[self _streamDidStartTLS];
+			return;
+		case NSStreamEventEndEncountered:;
 			if (stream == [self writeStream]) _writeFlags = (_writeFlags | _kStreamDidClose);
 			else if (stream == [self readStream]) _readFlags = (_readFlags | _kStreamDidClose);			
 			
 			[self close];
 			return;
-		}
 	}
 	
-	if ([[self delegate] respondsToSelector:@selector(networkStream:didReceiveEvent:)])
+	if ([[self delegate] respondsToSelector:@selector(networkStream:didReceiveEvent:)]) {
 		[(id)[self delegate] networkStream:stream didReceiveEvent:event];
+	}
 }
 
 - (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
@@ -429,11 +433,14 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	if ([self readStream] != nil && ((_readFlags & _kStreamDidOpen) != _kStreamDidOpen)) return;
 	_connectionFlags = (_connectionFlags | _kConnectionDidOpen);
 	
-	if ([self.delegate respondsToSelector:@selector(networkLayerDidOpen:)])
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidOpen:)]) {
 		[self.delegate networkLayerDidOpen:self];
+	}
 }
 
 - (BOOL)networkStreamCanDequeuePackets:(AFNetworkStream *)networkStream {
+	if ((_connectionFlags & _kConnectionDidOpen) != _kConnectionDidOpen) return NO;
+	
 	if ((_connectionFlags & _kConnectionWillStartTLS) == _kConnectionWillStartTLS) {
 		return ((_connectionFlags & _kConnectionDidStartTLS) == _kConnectionDidStartTLS);
 	}
@@ -444,8 +451,9 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	if ((_connectionFlags & _kConnectionDidStartTLS) == _kConnectionDidStartTLS) return;
 	_connectionFlags = (_connectionFlags | _kConnectionDidStartTLS);
 	
-	if ([self.delegate respondsToSelector:@selector(networkLayerDidStartTLS:)])
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidStartTLS:)]) {
 		[self.delegate networkLayerDidStartTLS:self];
+	}
 }
 
 - (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSInteger)bytesTransferred totalBytesTransferred:(NSInteger)totalBytesTransferred totalBytesExpectedToTransfer:(NSInteger)totalBytesExpectedToTransfer {
