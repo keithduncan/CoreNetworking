@@ -31,7 +31,7 @@ NSString *const AFNetworkPacketErrorKey = @"AFPacketError";
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	[description appendString:@" "];
 	
-	NSUInteger done = 0, total = 0;
+	NSInteger done = 0, total = 0;
 	float fraction = [self currentProgressWithBytesDone:&done bytesTotal:&total];
 	
 	[description appendFormat:@"current progress %ld bytes of %ld total. %.2f%% done.", done, total, (fraction * 100.), nil];
@@ -39,7 +39,7 @@ NSString *const AFNetworkPacketErrorKey = @"AFPacketError";
 	return description;	
 }
 
-- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {
+- (float)currentProgressWithBytesDone:(NSInteger *)bytesDone bytesTotal:(NSInteger *)bytesTotal {
 	if (bytesDone != NULL) *bytesDone = 0;
 	if (bytesTotal != NULL) *bytesTotal = 0;
 	return 0.;

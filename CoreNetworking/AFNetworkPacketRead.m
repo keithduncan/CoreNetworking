@@ -53,7 +53,7 @@
 	[super dealloc];
 }
 
-- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {	
+- (float)currentProgressWithBytesDone:(NSInteger *)bytesDone bytesTotal:(NSInteger *)bytesTotal {	
 	BOOL hasTotal = ([[self terminator] isKindOfClass:[NSNumber class]]);
 	
 	NSUInteger done = [self totalBytesRead];

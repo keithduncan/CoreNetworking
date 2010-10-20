@@ -52,7 +52,7 @@
 	[super dealloc];
 }
 
-- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {
+- (float)currentProgressWithBytesDone:(NSInteger *)bytesDone bytesTotal:(NSInteger *)bytesTotal {
 	if (_totalBytesToRead < 0) return [super currentProgressWithBytesDone:bytesDone bytesTotal:bytesTotal];
 	
 	if (bytesDone != NULL) *bytesDone = _bytesRead;

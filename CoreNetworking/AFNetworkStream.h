@@ -87,7 +87,7 @@
  */
 - (BOOL)networkStreamCanDequeuePackets:(AFNetworkStream *)networkStream;
 
-- (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSUInteger)bytesTransferred totalBytesTransferred:(NSUInteger)totalBytesWritten totalBytesExpectedToTransfer:(NSUInteger)totalBytesExpectedToTransfer;
+- (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSInteger)bytesTransferred totalBytesTransferred:(NSInteger)totalBytesWritten totalBytesExpectedToTransfer:(NSInteger)totalBytesExpectedToTransfer;
 
  @required
 

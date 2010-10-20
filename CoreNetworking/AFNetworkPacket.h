@@ -74,7 +74,7 @@ extern NSString *const AFNetworkPacketDidCompleteNotificationName;
 	\return
 	Values in the range [0.0, 1.0], this method returns 0.0 by default
  */
-- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal;
+- (float)currentProgressWithBytesDone:(NSInteger *)bytesDone bytesTotal:(NSInteger *)bytesTotal;
 
 @end
 

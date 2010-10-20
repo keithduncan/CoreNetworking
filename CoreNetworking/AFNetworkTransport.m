@@ -448,7 +448,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 		[self.delegate networkLayerDidStartTLS:self];
 }
 
-- (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSUInteger)bytesTransferred totalBytesTransferred:(NSUInteger)totalBytesTransferred totalBytesExpectedToTransfer:(NSUInteger)totalBytesExpectedToTransfer {
+- (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSInteger)bytesTransferred totalBytesTransferred:(NSInteger)totalBytesTransferred totalBytesExpectedToTransfer:(NSInteger)totalBytesExpectedToTransfer {
 	SEL delegateSelector = NULL;
 	if (networkStream == [self writeStream]) delegateSelector = @selector(networkTransport:didWritePartialDataOfLength:totalBytesWritten:totalBytesExpectedToWrite:context:);
 	else if (networkStream == [self readStream]) delegateSelector = @selector(networkTransport:didReadPartialDataOfLength:totalBytesRead:totalBytesExpectedToRead:context:);

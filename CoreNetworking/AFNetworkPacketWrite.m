@@ -31,7 +31,7 @@
 	[super dealloc];
 }
 
-- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {
+- (float)currentProgressWithBytesDone:(NSInteger *)bytesDone bytesTotal:(NSInteger *)bytesTotal {
 	CFIndex done = _bytesWritten, total = [self.buffer length];
 	
 	if (bytesDone != NULL) *bytesDone = done;

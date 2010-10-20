@@ -278,10 +278,10 @@ DequeueEnd:
 	if (bytesTransferred == -1) return;
 	
 	if ([self.delegate respondsToSelector:@selector(networkStream:didTransfer:bytesTransferred:totalBytesTransferred:totalBytesExpectedToTransfer:)]) {
-		NSUInteger totalBytesTransferred = 0, totalBytesExpectedToTransfer = 0;
+		NSInteger totalBytesTransferred = 0, totalBytesExpectedToTransfer = 0;
 		[packet currentProgressWithBytesDone:&totalBytesTransferred bytesTotal:&totalBytesExpectedToTransfer];
 		
-		((void (*)(id, SEL, id, id, NSUInteger, NSUInteger, NSUInteger))objc_msgSend)(self.delegate, @selector(networkStream:didTransfer:bytesTransferred:totalBytesTransferred:totalBytesExpectedToTransfer:), self, packet, bytesTransferred, totalBytesTransferred, totalBytesExpectedToTransfer);
+		[[self delegate] networkStream:self didTransfer:packet bytesTransferred:bytesTransferred totalBytesTransferred:totalBytesTransferred totalBytesExpectedToTransfer:totalBytesExpectedToTransfer];
 	}
 }
 

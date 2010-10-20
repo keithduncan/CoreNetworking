@@ -256,7 +256,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	}
 }
 
-- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialLength totalBytesWritten:(NSUInteger)totalBytesWritten totalBytesExpectedToWrite:(NSUInteger)totalBytesExpectedToWrite context:(void *)context {
+- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSInteger)partialLength totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite context:(void *)context {
 	if (![[self delegate] respondsToSelector:_cmd]) return;
 	
 	if (context == &_AFHTTPClientWritePartialRequestContext || context == &_AFHTTPClientWriteRequestContext) {
@@ -336,7 +336,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 - (void)_partialCurrentTransaction:(NSArray *)packets selector:(SEL)selector {
 	NSUInteger currentTransactionPartial = 0, currentTransactionTotal = 0;
 	for (AFNetworkPacket *currentPacket in packets) {
-		NSUInteger currentPacketPartial = 0, currentPacketTotal = 0;
+		NSInteger currentPacketPartial = 0, currentPacketTotal = 0;
 		float percentage = [currentPacket currentProgressWithBytesDone:&currentPacketPartial bytesTotal:&currentPacketTotal];
 		
 		if (isnan(percentage)) continue;
