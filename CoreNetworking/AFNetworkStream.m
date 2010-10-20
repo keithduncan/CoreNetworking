@@ -42,15 +42,6 @@ typedef NSUInteger _AFNetworkStreamFlags;
 
 @implementation AFNetworkStream
 
-static void _AFNetworkStreamEnqueue(AFNetworkStream *self, SEL _cmd, AFNetworkPacket *packet) {
-	[self.queue enqueuePacket:packet];
-	[self _scheduleDequeuePackets];
-}
-
-static NSUInteger _AFNetworkStreamCount(AFNetworkStream *self, SEL _cmd) {
-	return [self.queue count];
-}
-
 @synthesize delegate=_delegate;
 @synthesize stream=_stream, queue=_queue;
 
@@ -61,7 +52,18 @@ static NSUInteger _AFNetworkStreamCount(AFNetworkStream *self, SEL _cmd) {
 	_stream = [stream retain];
 	[_stream setDelegate:self];
 	
-	if ([_stream streamStatus] >= NSStreamStatusOpen) _flags = (_flags | _kStreamDidOpen);
+	if ([_stream streamStatus] >= NSStreamStatusOpen) {
+		_flags = (_flags | _kStreamDidOpen);
+	}
+	
+	if ([_stream isKindOfClass:[NSOutputStream class]]) {
+		_performSelector = @selector(performWrite:);
+	} else if ([_stream isKindOfClass:[NSInputStream class]]) {
+		_performSelector = @selector(performRead:);
+	} else {
+		[NSException raise:NSInvalidArgumentException format:@"%s, stream not an NSOutputStream or an NSInputStream (%@)", __PRETTY_FUNCTION__, stream];
+		return nil;
+	}
 	
 	_queue = [[AFNetworkPacketQueue alloc] init];
 	
@@ -210,6 +212,15 @@ static NSUInteger _AFNetworkStreamCount(AFNetworkStream *self, SEL _cmd) {
 	[[self delegate] networkStream:self didReceiveEvent:event];
 }
 
+- (void)enqueuePacket:(AFNetworkPacket *)packet {
+	[self.queue enqueuePacket:packet];
+	[self _scheduleDequeuePackets];
+}
+
+- (NSUInteger)countOfEnqueuedPackets {
+	return [self.queue count];
+}
+
 @end
 
 @implementation AFNetworkStream (_Queue)
@@ -221,8 +232,9 @@ static NSUInteger _AFNetworkStreamCount(AFNetworkStream *self, SEL _cmd) {
 - (BOOL)_canDequeuePackets {
 	if ((_flags & _kStreamDidOpen) != _kStreamDidOpen) return NO;
 	
-	if ([self.delegate respondsToSelector:@selector(networkStreamCanDequeuePacket:)])
-		return [self.delegate networkStreamCanDequeuePacket:self];
+	if ([self.delegate respondsToSelector:@selector(networkStreamCanDequeuePackets:)]) {
+		return [self.delegate networkStreamCanDequeuePackets:self];
+	}
 	
 	return YES;
 }
@@ -261,16 +273,15 @@ DequeueEnd:
 }
 
 - (void)_shouldTryDequeuePacket {
-	AFNetworkPacket *packet = [self.queue currentPacket];
-	((void (*)(id, SEL, id))objc_msgSend)(packet, _performSelector, self.stream);
+	AFNetworkPacket *packet = [[[self.queue currentPacket] retain] autorelease];
+	NSInteger bytesTransferred = ((NSInteger (*)(id, SEL, id))objc_msgSend)(packet, _performSelector, self.stream);
+	if (bytesTransferred == -1) return;
 	
-	if (self.queue.currentPacket == nil) return;
-	
-	if ([self.delegate respondsToSelector:_callbackSelectors[0]]) {
-		NSUInteger bytesWritten = 0, totalBytes = 0;
-		[packet currentProgressWithBytesDone:&bytesWritten bytesTotal:&totalBytes];
+	if ([self.delegate respondsToSelector:@selector(networkStream:didTransfer:bytesTransferred:totalBytesTransferred:totalBytesExpectedToTransfer:)]) {
+		NSUInteger totalBytesTransferred = 0, totalBytesExpectedToTransfer = 0;
+		[packet currentProgressWithBytesDone:&totalBytesTransferred bytesTotal:&totalBytesExpectedToTransfer];
 		
-		((void (*)(id, SEL, id, id, NSUInteger, NSUInteger))objc_msgSend)(self.delegate, _callbackSelectors[0], self, packet, bytesWritten, totalBytes);
+		((void (*)(id, SEL, id, id, NSUInteger, NSUInteger, NSUInteger))objc_msgSend)(self.delegate, @selector(networkStream:didTransfer:bytesTransferred:totalBytesTransferred:totalBytesExpectedToTransfer:), self, packet, bytesTransferred, totalBytesTransferred, totalBytesExpectedToTransfer);
 	}
 }
 
@@ -291,68 +302,15 @@ DequeueEnd:
 	[self.queue dequeued];
 	
 	NSError *packetError = [[notification userInfo] objectForKey:AFNetworkPacketErrorKey];
-	if (packetError != nil) [[self delegate] networkStream:self didReceiveError:packetError];
+	if (packetError != nil) {
+		[[self delegate] networkStream:self didReceiveError:packetError];
+	}
 	
-	((void (*)(id, SEL, id, id))objc_msgSend)(self.delegate, _callbackSelectors[1], self, packet);
-	
-	if ([self.delegate respondsToSelector:@selector(networkStreamDidDequeuePacket:)])
-		[self.delegate networkStreamDidDequeuePacket:self];
+	if ([self.delegate respondsToSelector:@selector(networkStream:didDequeuePacket:)]) {
+		[self.delegate networkStream:self didDequeuePacket:packet];
+	}
 	
 	[self _scheduleDequeuePackets];
-}
-
-@end
-
-#pragma mark -
-
-@implementation AFNetworkWriteStream
-
-@dynamic delegate;
-
-- (id)initWithStream:(NSStream *)stream {
-	self = [super initWithStream:stream];
-	if (self == nil) return nil;
-	
-	_callbackSelectors[0] = @selector(networkStream:didWrite:partialDataOfLength:totalLength:);
-	_callbackSelectors[1] = @selector(networkStream:didWrite:);
-	
-	_performSelector = @selector(performWrite:);
-	
-	return self;
-}
-
-- (void)enqueueWrite:(AFNetworkPacket <AFNetworkPacketWriting> *)packet {
-	_AFNetworkStreamEnqueue(self, _cmd, packet);
-}
-
-- (NSUInteger)countOfEnqueuedWrites {
-	return _AFNetworkStreamCount(self, _cmd);
-}
-
-@end
-
-@implementation AFNetworkReadStream
-
-@dynamic delegate;
-
-- (id)initWithStream:(NSStream *)stream {
-	self = [super initWithStream:stream];
-	if (self == nil) return nil;
-	
-	_callbackSelectors[0] = @selector(networkStream:didRead:partialDataOfLength:totalLength:);
-	_callbackSelectors[1] = @selector(networkStream:didRead:);
-	
-	_performSelector = @selector(performRead:);
-	
-	return self;
-}
-
-- (void)enqueueRead:(AFNetworkPacket <AFNetworkPacketReading> *)packet {
-	_AFNetworkStreamEnqueue(self, _cmd, packet);
-}
-
-- (NSUInteger)countOfEnqueuedReads {
-	return _AFNetworkStreamCount(self, _cmd);
 }
 
 @end

@@ -21,7 +21,7 @@
  @private
 	id _terminator;
 	
-	NSUInteger _bytesRead;
+	NSUInteger _totalBytesRead;
 	NSMutableData *_buffer;
 }
 

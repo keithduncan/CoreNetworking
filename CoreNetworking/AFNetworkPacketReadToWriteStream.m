@@ -8,33 +8,38 @@
 
 #import "AFNetworkPacketReadToWriteStream.h"
 
-#import "AFNetworkPacketRead.h"
-#import "AFNetworkPacketWrite.h"
 #import "AFNetworkFunctions.h"
-#import "AFNetworkStream.h"
+#import "AFNetworkConstants.h"
 
 // Note: this doesn't simply reuse the AFNetworkTransport with provided write and read streams since the base packets would read and then write the whole packet. This adaptor class minimises the memory footprint.
 
-@interface AFNetworkPacketReadToWriteStream () <AFNetworkWriteStreamDelegate>
-@property (readonly) AFNetworkWriteStream *writeStream;
-@property (retain) AFNetworkPacketRead *currentRead;
+@interface AFNetworkPacketReadToWriteStream ()
+@property (assign) NSInteger totalBytesToRead;
+@property (assign) NSInteger bytesRead;
+
+@property (assign) NSOutputStream *writeStream;
+@property (assign) BOOL writeStreamOpen;
 @end
 
 @implementation AFNetworkPacketReadToWriteStream
 
-@synthesize writeStream=_writeStream, currentRead=_currentRead;
+@synthesize totalBytesToRead=_totalBytesToRead, bytesRead=_bytesRead, writeStream=_writeStream, writeStreamOpen=_writeStreamOpen;
 
-- (id)initWithWriteStream:(NSOutputStream *)writeStream numberOfBytesToRead:(NSInteger)numberOfBytesToRead {
+- (id)initWithWriteStream:(NSOutputStream *)writeStream totalBytesToRead:(NSInteger)totalBytesToRead {
 	NSParameterAssert(writeStream != nil && [writeStream streamStatus] == NSStreamStatusNotOpen);
-	NSParameterAssert(numberOfBytesToRead != 0);
+	NSParameterAssert(totalBytesToRead != 0);
 	
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_numberOfBytesToRead = numberOfBytesToRead;
+	_totalBytesToRead = totalBytesToRead;
 	
-	_writeStream = [[AFNetworkWriteStream alloc] initWithStream:writeStream];
-	[_writeStream setDelegate:self];
+	_bufferSize = (64 * 1024);
+	_bufferSize = MIN(_bufferSize, _totalBytesToRead);
+	
+	_readBuffer = NSAllocateCollectable(_bufferSize, 0);
+	
+	_writeStream = [writeStream retain];
 	
 	return self;
 }
@@ -42,63 +47,89 @@
 - (void)dealloc {
 	[_writeStream release];
 	
-	[_currentRead release];
+	free(_readBuffer);
 	
 	[super dealloc];
 }
 
-- (void)performRead:(NSInputStream *)readStream {
-	if (!_opened) {
-#warning this should schedule the inner write stream in the same manner as the parent transport layer, supporting dispatch queues
-		[[self writeStream] scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-		[[self writeStream] open];
+- (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {
+	if (_totalBytesToRead < 0) return [super currentProgressWithBytesDone:bytesDone bytesTotal:bytesTotal];
+	
+	if (bytesDone != NULL) *bytesDone = _bytesRead;
+	if (bytesTotal != NULL) *bytesTotal = _totalBytesToRead;
+	return ((float)_bytesRead / (float)_totalBytesToRead);
+}
+
+- (NSInteger)performRead:(NSInputStream *)readStream {
+	if (![self writeStreamOpen]) {
+		Boolean opened = CFWriteStreamOpen((CFWriteStreamRef)[self writeStream]);
 		
-		_opened = YES;
-	}
-	
-	NSUInteger bufferSize = (16 * 1024);
-	bufferSize = MIN(_numberOfBytesToRead, bufferSize);
-	uint8_t *readBuffer = malloc(bufferSize);
-	
-	NSMutableData *writeBuffer = [NSMutableData dataWithCapacity:bufferSize];
-	
-	while ([readStream hasBytesAvailable]) {
-		NSInteger bytesRead = [readStream read:readBuffer maxLength:bufferSize];
-		
-		if (bytesRead < 0) {
+		if (!opened) {
+			NSError *writeStreamError = [[self writeStream] streamError];
+			if (writeStreamError == nil) writeStreamError = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorUnknown userInfo:nil];
+			
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-											  [readStream streamError], AFNetworkPacketErrorKey,
+											  writeStreamError, AFNetworkPacketErrorKey,
 											  nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
-			break;
+			return -1;
 		}
 		
-		[writeBuffer appendBytes:readBuffer length:bytesRead];
-		_numberOfBytesToRead -= bytesRead;
+		do {
+			// nop
+		} while (CFWriteStreamGetStatus((CFWriteStreamRef)_writeStream) != kCFStreamStatusOpen && CFWriteStreamGetStatus((CFWriteStreamRef)_writeStream) != kCFStreamStatusError);
+		
+		[self setWriteStreamOpen:YES];
 	}
 	
-	AFNetworkPacketWrite *writePacket = [[[AFNetworkPacketWrite alloc] initWithData:writeBuffer] autorelease];
-	[[self writeStream] enqueueWrite:writePacket];
 	
-	free(readBuffer);
-}
-
-- (void)networkStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event {
+	NSInteger currentBytesRead = 0;
 	
-}
-
-- (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
-	NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									  error, AFNetworkPacketErrorKey,
-									  nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
-}
-
-- (void)networkStream:(AFNetworkWriteStream *)stream didWrite:(id <AFNetworkPacketWriting>)packet {
-	if ([[self writeStream] countOfEnqueuedWrites] != 0) return;
-	if (_numberOfBytesToRead != 0) return;
+	while ([readStream hasBytesAvailable]) {
+		/* Read */
+		NSInteger bytesRead = [readStream read:_readBuffer maxLength:MIN(_bufferSize, (_totalBytesToRead - _bytesRead))];
+		
+		if (bytesRead < 0) {
+			NSError *readStreamError = [readStream streamError];
+			if (readStreamError == nil) readStreamError = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorUnknown userInfo:nil];
+			
+			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+											  readStreamError, AFNetworkPacketErrorKey,
+											  nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+			return -1;
+		}
+		
+		currentBytesRead += bytesRead;
+		_bytesRead += bytesRead;
+		
+		/* Write */
+		// Note: this is intentionally blocking
+		NSUInteger currentBytesWritten = 0;
+		while (currentBytesWritten < bytesRead) {
+			NSInteger bytesWritten = [[self writeStream] write:(_readBuffer + currentBytesWritten) maxLength:(bytesRead - currentBytesWritten)];
+			if (bytesWritten < 0) {
+				NSError *writeStreamError = [[self writeStream] streamError];
+				if (writeStreamError == nil) writeStreamError = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorUnknown userInfo:nil];
+				
+				NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+												  writeStreamError, AFNetworkPacketErrorKey,
+												  nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+				return -1;
+			}
+			
+			currentBytesWritten += bytesWritten;
+		}
+		
+		/* Check */
+		if ((_bytesRead == _totalBytesToRead) || (_totalBytesToRead == -1 && [[self writeStream] streamStatus] == NSStreamStatusAtEnd)) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
+			break;
+		}
+	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
+	return currentBytesRead;
 }
 
 @end

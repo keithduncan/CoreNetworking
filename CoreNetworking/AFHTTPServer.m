@@ -77,7 +77,7 @@
 #endif
 			 = [self superclass],
 	};
-	((void (*)(id, SEL, id))objc_msgSendSuper)(&superclass, _cmd, layer);
+	((void (*)(struct objc_super *, SEL, id))objc_msgSendSuper)(&superclass, _cmd, layer);
 	if (![layer isKindOfClass:[AFHTTPConnection class]]) return;
 	
 	AFHTTPConnection *connection = layer;

@@ -6,13 +6,9 @@
 //  Copyright 2010. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 #import "CoreNetworking/AFNetworkPacket.h"
-
-@class AFNetworkReadStream;
-@class AFNetworkWriteStream;
-
-@class AFNetworkPacketRead;
-@class AFNetworkPacketWrite;
 
 /*!
 	\brief
@@ -26,12 +22,14 @@
 	NSInteger _totalBytesToWrite;
 	NSInteger _bytesWritten;
 	
+	__strong uint8_t *_readBuffer;
+	size_t _bufferSize;
+	
+	size_t _bufferLength;
+	size_t _bufferOffset;
+	
 	NSInputStream *_readStream;
 	BOOL _readStreamOpen;
-	
-	__strong uint8_t *_readBuffer;
-	NSUInteger _currentBufferLength;
-	NSUInteger _currentBufferOffset;
 }
 
 /*!
@@ -39,10 +37,10 @@
 	Designated Initialiser.
 	
 	\param readStream
-	Ownership is taken of the read stream and a new client set, the stream should be closed when passing it.
+	The stream should not be open, an exception is thrown if it is.
 	
-	\param numberOfBytesToRead
-	Pass -1 to read until the stream is empty.
+	\param totalBytesToWrite
+	Pass -1 to read until the readStream is at end.
  */
 - (id)initWithReadStream:(NSInputStream *)readStream totalBytesToWrite:(NSInteger)totalBytesToWrite;
 

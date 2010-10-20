@@ -8,13 +8,8 @@
 
 #import "AFNetworkPacketWriteFromReadStream.h"
 
-#import "AFNetworkPacketRead.h"
-#import "AFNetworkPacketWrite.h"
-#import "AFNetworkStream.h"
 #import "AFNetworkFunctions.h"
 #import "AFNetworkConstants.h"
-
-#define READ_BUFFER_SIZE (64 * 1024)
 
 @interface AFNetworkPacketWriteFromReadStream ()
 @property (readonly) NSInteger totalBytesToWrite;
@@ -22,10 +17,6 @@
 
 @property (assign) NSInputStream *readStream;
 @property (assign) BOOL readStreamOpen;
-@end
-
-@interface AFNetworkPacketWriteFromReadStream (Private)
-- (void)_postReadStreamCompletionNotification;
 @end
 
 @implementation AFNetworkPacketWriteFromReadStream
@@ -42,10 +33,11 @@
 	
 	_totalBytesToWrite = totalBytesToWrite;
 	
-	_readStream = [readStream retain];
-	[_readStream setDelegate:(id)self];
+	_bufferSize = (64 * 1024);
 	
-	_readBuffer = NSAllocateCollectable(READ_BUFFER_SIZE, 0);
+	_readBuffer = NSAllocateCollectable(_bufferSize, 0);
+	
+	_readStream = [readStream retain];
 	
 	return self;
 }
@@ -63,11 +55,10 @@
 	
 	if (bytesDone != NULL) *bytesDone = _bytesWritten;
 	if (bytesTotal != NULL) *bytesTotal = _totalBytesToWrite;
-	
 	return (_totalBytesToWrite > 0 ? ((float)_bytesWritten / (float)_totalBytesToWrite) : 0);
 }
 
-- (void)performWrite:(NSOutputStream *)writeStream {
+- (NSInteger)performWrite:(NSOutputStream *)writeStream {
 	if (![self readStreamOpen]) {
 		Boolean opened = CFReadStreamOpen((CFReadStreamRef)_readStream);
 		
@@ -79,7 +70,7 @@
 											  readStreamError, AFNetworkPacketErrorKey,
 											  nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
-			return;
+			return -1;
 		}
 		
 		do {
@@ -90,46 +81,64 @@
 	}
 	
 	
+	NSInteger currentBytesWritten = 0;
+	
 	while ([writeStream hasSpaceAvailable]) {
-		// Read
-		if (_currentBufferLength == 0) {
-			size_t maximumReadSize = READ_BUFFER_SIZE;
+		/* Read */
+		// Note: this is intentionally blocking
+		if (_bufferLength == 0) {
+			size_t maximumReadSize = _bufferSize;
 			if (_totalBytesToWrite > 0) {
-				maximumReadSize = MIN((_totalBytesToWrite - _bytesWritten), maximumReadSize);
-				_bytesWritten += maximumReadSize;
+				maximumReadSize = MIN(maximumReadSize, (_totalBytesToWrite - _bytesWritten));
 			}
 			
-			// Note: this is intentionally blocking
-			_currentBufferOffset = 0;
-			_currentBufferLength = [[self readStream] read:_readBuffer maxLength:maximumReadSize];
+			NSInteger bytesRead = [[self readStream] read:_readBuffer maxLength:maximumReadSize];
+			if (bytesRead < 0) {
+				NSError *readStreamError = [[self readStream] streamError];
+				if (readStreamError == nil) readStreamError = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorUnknown userInfo:nil];
+				
+				NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+												  readStreamError, AFNetworkPacketErrorKey,
+												  nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+				return -1;
+			}
 			
-			if (_currentBufferLength <= 0) {
-				[self _postReadStreamCompletionNotification];
-				return;
+			_bufferLength = bytesRead;
+			_bufferOffset = 0;
+		}
+		
+		/* Write */
+		{
+			NSInteger bytesWritten = [writeStream write:(_readBuffer + _bufferOffset) maxLength:(_bufferLength - _bufferOffset)];
+			if (bytesWritten < 0) {
+				NSError *writeStreamError = [writeStream streamError];
+				if (writeStreamError == nil) writeStreamError = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorUnknown userInfo:nil];
+				
+				NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+												  writeStreamError, AFNetworkPacketErrorKey,
+												  nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+				return -1;
+			}
+			
+			currentBytesWritten += bytesWritten;
+			_bufferOffset += bytesWritten;
+			
+			if (_bufferOffset == _bufferLength) {
+				_bufferLength = 0;
+				_bufferOffset = 0;
 			}
 		}
 		
-		// Write
-		{
-			_currentBufferOffset += [writeStream write:(_readBuffer + _currentBufferOffset) maxLength:(_currentBufferLength - _currentBufferOffset)];
-			
-			if (_currentBufferOffset == _currentBufferLength) {
-				_currentBufferLength = 0;
-			}
+		/* Check */
+		if ((_bytesWritten == _totalBytesToWrite) || ((_bufferOffset == _bufferLength) && _totalBytesToWrite == -1 && [[self readStream] streamStatus] == NSStreamStatusAtEnd)) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:nil];
+			break;
 		}
 	}
-}
-
-- (void)_postReadStreamCompletionNotification {
-	NSError *readStreamError = nil;
-	if ([[self readStream] streamStatus] == NSStreamStatusError) readStreamError = [[self readStream] streamError];
 	
-	NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									  readStreamError, AFNetworkPacketErrorKey,
-									  nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
+	return currentBytesWritten;
 }
 
 @end
-
-#undef READ_BUFFER_SIZE

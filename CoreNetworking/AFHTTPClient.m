@@ -256,14 +256,14 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	}
 }
 
-- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialLength total:(NSUInteger)totalLength context:(void *)context {
+- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialLength totalBytesWritten:(NSUInteger)totalBytesWritten totalBytesExpectedToWrite:(NSUInteger)totalBytesExpectedToWrite context:(void *)context {
 	if (![[self delegate] respondsToSelector:_cmd]) return;
 	
 	if (context == &_AFHTTPClientWritePartialRequestContext || context == &_AFHTTPClientWriteRequestContext) {
 		AFHTTPTransaction *currentTransaction = [self currentTransaction];
 		[self _partialCurrentTransaction:[currentTransaction requestPackets] selector:_cmd];
 	} else {
-		[(id)[self delegate] networkTransport:transport didWritePartialDataOfLength:partialLength totalLength:totalLength context:context];
+		[(id)[self delegate] networkTransport:transport didWritePartialDataOfLength:partialLength totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite context:context];
 	}
 }
 

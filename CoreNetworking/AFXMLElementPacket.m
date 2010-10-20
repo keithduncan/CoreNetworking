@@ -55,7 +55,9 @@
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
 
-- (void)performRead:(NSInputStream *)readStream {
+- (NSInteger)performRead:(NSInputStream *)readStream {
+	NSInteger currentBytesRead = 0;
+	
 	do {
 		if (self.currentRead == nil) {
 			AFNetworkPacketRead *newPacket = [self _nextReadPacket];
@@ -64,8 +66,13 @@
 			self.currentRead = newPacket;
 		}
 		
-		[self.currentRead performRead:readStream];
+		NSInteger bytesRead = [self.currentRead performRead:readStream];
+		if (bytesRead < 0) return -1;
+		
+		currentBytesRead += bytesRead;
 	} while (self.currentRead == nil);
+	
+	return currentBytesRead;
 }
 
 - (void)_readPacketDidComplete:(NSNotification *)notification {

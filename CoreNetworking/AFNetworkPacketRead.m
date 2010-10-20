@@ -12,13 +12,13 @@
 #import "AFNetworkFunctions.h"
 
 @interface AFNetworkPacketRead ()
-@property (assign) NSUInteger bytesRead;
+@property (assign) NSUInteger totalBytesRead;
 @property (copy) id terminator;
 @end
 
 @implementation AFNetworkPacketRead
 
-@synthesize bytesRead=_bytesRead, buffer=_buffer, terminator=_terminator;
+@synthesize totalBytesRead=_totalBytesRead, buffer=_buffer, terminator=_terminator;
 
 - (id)init {
 	self = [super init];
@@ -56,7 +56,7 @@
 - (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {	
 	BOOL hasTotal = ([[self terminator] isKindOfClass:[NSNumber class]]);
 	
-	NSUInteger done = [self bytesRead];
+	NSUInteger done = [self totalBytesRead];
 	NSUInteger total = [[self buffer] length];
 	
 	if (bytesDone != NULL) *bytesDone = done;
@@ -70,13 +70,11 @@
 	NSParameterAssert([self terminator] != nil);
 	
 	if ([[self terminator] isEqual:[NSNull null]]) {
-		NSUInteger bytes = 1024;
-		[_buffer increaseLengthBy:bytes];
-		return bytes;
+		return (64 * 1024);
 	}
 	
 	if ([[self terminator] isKindOfClass:[NSNumber class]]) {
-		return ([[self terminator] integerValue] - [self bytesRead]);
+		return ([[self terminator] integerValue] - [self totalBytesRead]);
 	}
 	
 	if ([[self terminator] isKindOfClass:[NSData class]]) {
@@ -93,10 +91,10 @@
 		// Note: Beware of implicit casting rules
 		// This could give you -1: MAX(0, (0 - [term length] + 1));
 		
-		CFIndex i = MAX(0, (CFIndex)([self bytesRead] - [[self terminator] length] + 1));
-		CFIndex j = MIN([[self terminator] length] - 1, [self bytesRead]);
+		CFIndex i = MAX(0, (CFIndex)([self totalBytesRead] - [[self terminator] length] + 1));
+		CFIndex j = MIN([[self terminator] length] - 1, [self totalBytesRead]);
 		
-		while (i < [self bytesRead]) {
+		while (i < [self totalBytesRead]) {
 			const void *subBuffer = ([[self buffer] bytes] + i);
 			
 			if (memcmp(subBuffer, [[self terminator] bytes], j) == 0) {
@@ -132,41 +130,45 @@
 	return 0;
 }
 
-- (void)performRead:(NSInputStream *)readStream {
+- (NSInteger)performRead:(NSInputStream *)readStream {
+	NSInteger currentBytesRead = 0;
+	
 	while ([readStream hasBytesAvailable]) {
 		NSUInteger maximumReadLength = [self _increaseBuffer];
 		
-		uint8_t *readBuffer = (uint8_t *)([[self buffer] mutableBytes] + [self bytesRead]);
-		NSUInteger currentBytesRead = [readStream read:readBuffer maxLength:maximumReadLength];
+		uint8_t *readBuffer = (uint8_t *)([[self buffer] mutableBytes] + [self totalBytesRead]);
+		NSUInteger bytesRead = [readStream read:readBuffer maxLength:maximumReadLength];
 		
-		if (currentBytesRead < 0) {
+		if (bytesRead < 0) {
 #warning check if this error is reported by event to the stream delegate, making this redundant? also in AFPacketWrite
 			NSError *error = [readStream streamError];
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 											  error, AFNetworkPacketErrorKey,
 											  nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
-			return;
+			return -1;
 		}
 		
-		[self setBytesRead:([self bytesRead] + currentBytesRead)];
+		[self setTotalBytesRead:([self totalBytesRead] + bytesRead)];
+		currentBytesRead += bytesRead;
+		
 		// Note: this re-scales the receiver for the NSNull case, where the buffer is increased an arbitrary amount
-		[[self buffer] setLength:[self bytesRead]];
+		[[self buffer] setLength:[self totalBytesRead]];
 		
 		BOOL packetComplete = NO;
 		if ([[self terminator] isKindOfClass:[NSData class]]) {
 			// Done when we match the byte pattern
 			int terminatorLength = [[self terminator] length];
 			
-			if ([self bytesRead] >= terminatorLength) {
-				void *buf = (uint8_t *)[[self buffer] bytes] + ([self bytesRead] - terminatorLength);
+			if ([self totalBytesRead] >= terminatorLength) {
+				void *buf = (uint8_t *)[[self buffer] bytes] + ([self totalBytesRead] - terminatorLength);
 				void *seq = (uint8_t *)[[self terminator] bytes];
 				
 				packetComplete = (memcmp(buf, seq, terminatorLength) == 0);
 			}
 		} else {
 			// Done when sized buffer is full
-			packetComplete = ([self bytesRead] == [[self buffer] length]);
+			packetComplete = ([self totalBytesRead] == [[self buffer] length]);
 		}
 		if (packetComplete) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
@@ -175,6 +177,8 @@
 		
 		continue;
 	}
+	
+	return currentBytesRead;
 }
 
 @end

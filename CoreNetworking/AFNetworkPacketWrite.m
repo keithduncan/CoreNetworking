@@ -32,46 +32,43 @@
 }
 
 - (float)currentProgressWithBytesDone:(NSUInteger *)bytesDone bytesTotal:(NSUInteger *)bytesTotal {
-	CFIndex done = _bytesWritten;
-	CFIndex total = [self.buffer length];
+	CFIndex done = _bytesWritten, total = [self.buffer length];
 	
 	if (bytesDone != NULL) *bytesDone = done;
 	if (bytesTotal != NULL) *bytesTotal = total;
-	
 	return ((float)done/(float)total);
 }
 
-- (void)performWrite:(NSOutputStream *)writeStream {
-	if ([[self buffer] length] == 0) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
-		return;
-	}
+- (NSInteger)performWrite:(NSOutputStream *)writeStream {
+	NSInteger currentBytesWritten = 0;
 	
 	while ([writeStream hasSpaceAvailable]) {
-		NSUInteger bytesRemaining = ([self.buffer length] - _bytesWritten);
-		
 		uint8_t *writeBuffer = (uint8_t *)([self.buffer bytes] + _bytesWritten);
-		NSUInteger actualBytesWritten = [writeStream write:writeBuffer maxLength:bytesRemaining];
+		NSInteger bytesRemaining = ([self.buffer length] - _bytesWritten);
 		
-		if (actualBytesWritten < 0) {
+		NSInteger bytesWritten = [writeStream write:writeBuffer maxLength:bytesRemaining];
+		
+		if (bytesWritten < 0) {
 			NSError *error = [writeStream streamError];
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 											  error, AFNetworkPacketErrorKey,
 											  nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
-			return;
+			return -1;
 		}
 		
-		_bytesWritten += actualBytesWritten;
+		_bytesWritten += bytesWritten;
 		
 		BOOL packetComplete = NO;
 		packetComplete = (_bytesWritten == [self.buffer length]);
 		
 		if (packetComplete) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
-			return;
+			break;
 		}
 	}
+	
+	return currentBytesWritten;
 }
 
 @end

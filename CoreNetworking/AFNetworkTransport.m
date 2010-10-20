@@ -45,14 +45,12 @@ enum {
 typedef NSUInteger AFSocketConnectionStreamFlags;
 
 @interface AFNetworkTransport ()
-@property (readonly) AFNetworkWriteStream *writeStream;
-@property (readonly) AFNetworkReadStream *readStream;
-static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet, NSUInteger currentPartialBytes, NSUInteger totalBytes);
-static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet);
+@property (readonly) AFNetworkStream *writeStream;
+@property (readonly) AFNetworkStream *readStream;
 @end
 
 // Note: the selectors aren't all actually implemented, some are added dynamically
-@interface AFNetworkTransport (Delegate) <AFNetworkWriteStreamDelegate, AFNetworkReadStreamDelegate>
+@interface AFNetworkTransport (Delegate) <AFNetworkStreamDelegate>
 @end
 
 @interface AFNetworkTransport (Streams)
@@ -67,16 +65,6 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 
 @dynamic delegate;
 @synthesize writeStream=_writeStream, readStream=_readStream;
-
-+ (void)initialize {
-	if (self != [AFNetworkTransport class]) return;
-	
-	class_addMethod(self, @selector(networkStream:didWrite:partialDataOfLength:totalLength:), (IMP)_AFNetworkTransportStreamDidPartialPacket, "v@:@II");
-	class_addMethod(self, @selector(networkStream:didRead:partialDataOfLength:totalLength:), (IMP)_AFNetworkTransportStreamDidPartialPacket, "v@:@II");
-	
-	class_addMethod(self, @selector(networkStream:didWrite:), (IMP)_AFNetworkTransportStreamDidCompletePacket, "v@:@@");
-	class_addMethod(self, @selector(networkStream:didRead:), (IMP)_AFNetworkTransportStreamDidCompletePacket, "v@:@@");
-}
 
 + (Class)lowerLayer {
 	return [AFNetworkSocket class];
@@ -282,7 +270,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	
 	// Note: you can only prevent a local close, if the streams were closed remotely there's nothing we can do
 	if ((_readFlags & _kStreamDidClose) != _kStreamDidClose && (_writeFlags & _kStreamDidClose) != _kStreamDidClose) {
-		BOOL pendingWrites = ([self.writeStream countOfEnqueuedWrites] > 0);
+		BOOL pendingWrites = ([self.writeStream countOfEnqueuedPackets] > 0);
 		
 		if (pendingWrites) {
 			BOOL shouldRemainOpen = NO;
@@ -394,7 +382,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	packet->_duration = duration;
 	packet->_context = context;
 	
-	[self.writeStream enqueueWrite:packet];
+	[self.writeStream enqueuePacket:packet];
 }
 
 #pragma mark Reading
@@ -413,29 +401,7 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 	packet->_duration = duration;
 	packet->_context = context;
 	
-	[self.readStream enqueueRead:packet];
-}
-
-#pragma mark -
-#pragma mark Writing & Reading
-
-static void _AFNetworkTransportStreamDidPartialPacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet, NSUInteger partialLength, NSUInteger totalLength) {
-	SEL delegateSelector = NULL;
-	if (stream == self->_writeStream) delegateSelector = @selector(networkTransport:didWritePartialDataOfLength:totalLength:context:);
-	else if (stream == self->_readStream) delegateSelector = @selector(networkTransport:didReadPartialDataOfLength:totalLength:context:);
-	NSCParameterAssert(delegateSelector != NULL);
-	
-	if (![[self delegate] respondsToSelector:delegateSelector]) return;
-	((void (*)(id, SEL, id, NSUInteger, NSUInteger, void *))objc_msgSend)([self delegate], delegateSelector, self, partialLength, totalLength, [packet context]);
-}
-
-static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self, SEL _cmd, AFNetworkStream *stream, AFNetworkPacket *packet) {
-	SEL delegateSelector = NULL;
-	if (stream == self->_writeStream) delegateSelector = @selector(networkLayer:didWrite:context:);
-	else if (stream == self->_readStream) delegateSelector = @selector(networkLayer:didRead:context:);
-	NSCParameterAssert(delegateSelector != NULL);
-	
-	((void (*)(id, SEL, id, id, void *))objc_msgSend)([self delegate], delegateSelector, self, [packet buffer], [packet context]);
+	[self.readStream enqueuePacket:packet];
 }
 
 @end
@@ -446,12 +412,12 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 
 - (void)_configureWriteStream:(NSOutputStream *)writeStream readStream:(NSInputStream *)readStream {
 	if (writeStream != nil) {
-		_writeStream = [[AFNetworkWriteStream alloc] initWithStream:writeStream];
+		_writeStream = [[AFNetworkStream alloc] initWithStream:writeStream];
 		[_writeStream setDelegate:self];
 	}
 	
 	if (readStream != nil) {
-		_readStream = [[AFNetworkReadStream alloc] initWithStream:readStream];
+		_readStream = [[AFNetworkStream alloc] initWithStream:readStream];
 		[_readStream setDelegate:self];
 	}
 }
@@ -482,12 +448,32 @@ static void _AFNetworkTransportStreamDidCompletePacket(AFNetworkTransport *self,
 		[self.delegate networkLayerDidStartTLS:self];
 }
 
-- (void)networkStreamDidDequeuePacket:(AFNetworkStream *)networkStream {
-	if (networkStream != [self writeStream]) return;
-	if ((_connectionFlags & _kConnectionCloseSoon) != _kConnectionCloseSoon) return;
-	if ([self.writeStream countOfEnqueuedWrites] != 0) return;
+- (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSUInteger)bytesTransferred totalBytesTransferred:(NSUInteger)totalBytesTransferred totalBytesExpectedToTransfer:(NSUInteger)totalBytesExpectedToTransfer {
+	SEL delegateSelector = NULL;
+	if (networkStream == [self writeStream]) delegateSelector = @selector(networkTransport:didWritePartialDataOfLength:totalBytesWritten:totalBytesExpectedToWrite:context:);
+	else if (networkStream == [self readStream]) delegateSelector = @selector(networkTransport:didReadPartialDataOfLength:totalBytesRead:totalBytesExpectedToRead:context:);
+	NSCParameterAssert(delegateSelector != NULL);
 	
-	[self close];
+	if (![[self delegate] respondsToSelector:delegateSelector]) return;
+	((void (*)(id, SEL, id, NSUInteger, NSUInteger, NSUInteger, void *))objc_msgSend)([self delegate], delegateSelector, self, bytesTransferred, totalBytesTransferred, totalBytesExpectedToTransfer, [packet context]);
+}
+
+- (void)networkStream:(AFNetworkStream *)networkStream didDequeuePacket:(AFNetworkPacket *)networkPacket {
+	SEL delegateSelector = NULL;
+	if (networkStream == [self writeStream]) delegateSelector = @selector(networkLayer:didWrite:context:);
+	else if (networkStream == [self readStream]) delegateSelector = @selector(networkLayer:didRead:context:);
+	NSCParameterAssert(delegateSelector != NULL);
+	
+	((void (*)(id, SEL, id, id, void *))objc_msgSend)([self delegate], delegateSelector, self, [networkPacket buffer], [networkPacket context]);
+	
+	
+	if (networkStream == [self writeStream]) {
+		if ((_connectionFlags & _kConnectionCloseSoon) != _kConnectionCloseSoon) return;
+		if ([self.writeStream countOfEnqueuedPackets] != 0) return;
+		
+		[self close];
+		return;
+	}
 }
 
 @end

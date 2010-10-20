@@ -87,8 +87,11 @@ extern NSString *const AFNetworkPacketDidCompleteNotificationName;
 /*!
 	\brief
 	Called to perform the read once the stream has signalled that it has bytes available.
+	
+	\return
+	The number of bytes read, if greater than zero this is returned as part of the packet progress notification.
  */
-- (void)performRead:(NSInputStream *)readStream;
+- (NSInteger)performRead:(NSInputStream *)readStream;
 
 @end
 
@@ -101,7 +104,10 @@ extern NSString *const AFNetworkPacketDidCompleteNotificationName;
 /*!
 	\brief
 	Called to perform the write once the stream has signalled that it can accept bytes.
+ 
+	\return
+	The number of bytes written, if greater than zero this is returned as part of the packet progress notification.
  */
-- (void)performWrite:(NSOutputStream *)writeStream;
+- (NSInteger)performWrite:(NSOutputStream *)writeStream;
 
 @end

@@ -42,11 +42,19 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 
 @implementation _AFHTTPBodyChunkedPacket
 
-- (void)performRead:(NSInputStream *)inputStream {
+- (NSInteger)performRead:(NSInputStream *)inputStream {
+	NSInteger currentBytesRead = 0;
+	
 	do {
 		if ([self currentPacket] == nil) [self _startChunkRead];
-		[[self currentPacket] performRead:inputStream];
+		
+		NSInteger bytesRead = [[self currentPacket] performRead:inputStream];
+		if (bytesRead < 0) return -1;
+		
+		currentBytesRead += bytesRead;
 	} while ([self currentPacket] == nil);
+	
+	return currentBytesRead;
 }
 
 - (void)_startChunkRead {
@@ -197,8 +205,8 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	[super dealloc];
 }
 
-- (void)performRead:(NSInputStream *)inputStream {
-	[[self currentPacket] performRead:inputStream];
+- (NSInteger)performRead:(NSInputStream *)inputStream {
+	return [[self currentPacket] performRead:inputStream];
 }
 
 - (BOOL)_processDidCompleteNotification:(NSNotification *)notification {

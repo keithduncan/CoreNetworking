@@ -17,8 +17,7 @@
 @protocol AFNetworkTransportDataDelegate;
 @protocol AFNetworkTransportControlDelegate;
 
-@class AFNetworkWriteStream;
-@class AFNetworkReadStream;
+@class AFNetworkStream;
 
 @class AFNetworkPacketWrite;
 @class AFNetworkPacketRead;
@@ -39,10 +38,10 @@
 		AFNetworkHostSignature _host;
 	} _signature;
 	
-	AFNetworkWriteStream *_writeStream;
+	AFNetworkStream *_writeStream;
 	NSUInteger _writeFlags;
 	
-	AFNetworkReadStream *_readStream;
+	AFNetworkStream *_readStream;
 	NSUInteger _readFlags;
 	
 	NSUInteger _connectionFlags;
@@ -90,7 +89,7 @@
 	\brief
 	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
  */
-- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialBytes totalLength:(NSUInteger)totalLength context:(void *)context;
+- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSUInteger)partialBytes totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSUInteger)totalLength context:(void *)context;
 
 /*!
 	\brief
@@ -99,6 +98,6 @@
 	\param total
 	Will be <tt>NSUIntegerMax</tt> if the packet terminator is a data pattern.
  */
-- (void)networkTransport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialBytes totalLength:(NSUInteger)totalLength context:(void *)context;
+- (void)networkTransport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSUInteger)partialBytes totalBytesRead:(NSInteger)totalBytesRead totalBytesExpectedToRead:(NSUInteger)totalLength context:(void *)context;
 
 @end

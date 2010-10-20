@@ -10,9 +10,6 @@
 
 #import "CoreNetworking/AFNetworkPacket.h"
 
-@class AFNetworkWriteStream;
-@class AFNetworkPacketRead;
-
 /*!
 	\brief
 	Acts as an adaptor between streams, allowing you to read a large file over the wire to disk.
@@ -22,18 +19,27 @@
  */
 @interface AFNetworkPacketReadToWriteStream : AFNetworkPacket <AFNetworkPacketReading> {
  @private
-	NSInteger _numberOfBytesToRead;
+	NSInteger _totalBytesToRead;
+	NSInteger _bytesRead;
 	
-	BOOL _opened;
-	AFNetworkWriteStream *_writeStream;
+	__strong uint8_t *_readBuffer;
+	size_t _bufferSize;
+	size_t _bufferOffset;
 	
-	AFNetworkPacketRead *_currentRead;
+	NSOutputStream *_writeStream;
+	BOOL _writeStreamOpen;
 }
 
 /*!
 	\brief
 	Designated Initialiser.
+ 
+	\param writeStream
+	The stream should not be open, an exception is thrown if it is.
+	
+	\param totalBytesToRead
+	Pass -1 to write until the writeStream is at end.
  */
-- (id)initWithWriteStream:(NSOutputStream *)writeStream numberOfBytesToRead:(NSInteger)numberOfBytesToRead;
+- (id)initWithWriteStream:(NSOutputStream *)writeStream totalBytesToRead:(NSInteger)totalBytesToRead;
 
 @end

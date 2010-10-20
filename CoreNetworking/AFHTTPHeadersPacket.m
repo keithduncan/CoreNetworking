@@ -55,7 +55,9 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 	[super dealloc];
 }
 
-- (void)performRead:(NSInputStream *)readStream {
+- (NSInteger)performRead:(NSInputStream *)readStream {
+	NSInteger currentBytesRead = 0;
+	
 	do {
 		if (self.currentRead == nil) {
 			NSData *headersTerminator = [NSData dataWithBytes:"\r\n\r\n" length:4];
@@ -65,8 +67,13 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 			self.currentRead = newReadPacket;
 		}
 		
-		[self.currentRead performRead:readStream];
+		NSInteger bytesRead = [self.currentRead performRead:readStream];
+		if (bytesRead < 0) return -1;
+		
+		currentBytesRead += bytesRead;
 	} while (self.currentRead == nil);
+	
+	return currentBytesRead;
 }
 
 - (void)_readPacketDidComplete:(NSNotification *)notification {
