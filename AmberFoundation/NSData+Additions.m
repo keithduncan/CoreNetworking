@@ -53,6 +53,9 @@
 
 @implementation NSData (AFBaseConversion)
 
+#warning the base conversion methods should check the padding occurs only at the end
+#warning the base conversion methods should check that the number of padding characters is valid
+
 static const char _base64Alphabet[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const char _base64Padding[1] = "=";
 
@@ -64,11 +67,19 @@ static const char _base64Padding[1] = "=";
 	[base64CharacterSet addCharactersInString:[[NSString alloc] initWithBytes:_base64Padding length:1 encoding:NSASCIIStringEncoding]];
 	if ([[base64String stringByTrimmingCharactersInSet:base64CharacterSet] length] != 0) return nil;
 	
+	NSUInteger paddingCharacters = 0; // 2, 1, 0 are allowed
+	NSRange paddingRange = NSMakeRange(NSNotFound, 0);
+	do {
+		paddingRange = [base64String rangeOfString:@"=" options:(NSAnchoredSearch | NSBackwardsSearch) range:NSMakeRange(0, ([base64String length] - paddingCharacters))];
+		if (paddingRange.location != NSNotFound) paddingCharacters++;
+	} while (paddingRange.location != NSNotFound);
+	if (paddingCharacters > 2) return nil;
+	if ([base64String rangeOfString:@"=" options:(NSStringCompareOptions)0 range:NSMakeRange(0, ([base64String length] - paddingCharacters))].location != NSNotFound) return nil;
 	
-	NSString *base64Alphabet = [[NSString alloc] initWithBytes:_base64Alphabet length:64 encoding:NSASCIIStringEncoding];
 	
 	NSMutableData *data = [NSMutableData dataWithCapacity:(([base64String length] / 4) * 3)];
 	
+	NSString *base64Alphabet = [[NSString alloc] initWithBytes:_base64Alphabet length:64 encoding:NSASCIIStringEncoding];
 	CFRetain(base64String);
 	
 	NSUInteger characterOffset = 0;
@@ -179,11 +190,19 @@ static const char _base32Padding[1] = "=";
 	[base32CharacterSet addCharactersInString:[[NSString alloc] initWithBytes:_base32Padding length:1 encoding:NSASCIIStringEncoding]];
 	if ([[base32String stringByTrimmingCharactersInSet:base32CharacterSet] length] != 0) return nil;
 	
+	NSUInteger paddingCharacters = 0; // 6, 4, 3, 1, 0 are allowed
+	NSRange paddingRange = NSMakeRange(NSNotFound, 0);
+	do {
+		paddingRange = [base32String rangeOfString:@"=" options:(NSAnchoredSearch | NSBackwardsSearch) range:NSMakeRange(0, ([base32String length] - paddingCharacters))];
+		if (paddingRange.location != NSNotFound) paddingCharacters++;
+	} while (paddingRange.location != NSNotFound);
+	if (paddingCharacters > 6 || (paddingCharacters == 5 || paddingCharacters == 2)) return nil;
+	if ([base32String rangeOfString:@"=" options:(NSStringCompareOptions)0 range:NSMakeRange(0, ([base32String length] - paddingCharacters))].location != NSNotFound) return nil;
 	
-	NSString *base32Alphabet = [[NSString alloc] initWithBytes:_base32Alphabet length:32 encoding:NSASCIIStringEncoding];
 	
 	NSMutableData *data = [NSMutableData dataWithCapacity:(([base32String length] / 8) * 5)];
 	
+	NSString *base32Alphabet = [[NSString alloc] initWithBytes:_base32Alphabet length:32 encoding:NSASCIIStringEncoding];
 	CFRetain(base32String);
 	
 	NSUInteger characterOffset = 0;
@@ -352,9 +371,8 @@ static const char _base16Alphabet[16] = "0123456789ABCDEF";
 	
 	NSMutableData *data = [NSMutableData dataWithCapacity:([base16String length] / 2)];
 	
-	CFRetain(base16String);
-	
 	NSString *base16Alphabet = [[NSString alloc] initWithBytes:_base16Alphabet length:16 encoding:NSASCIIStringEncoding];
+	CFRetain(base16String);
 	
 	NSUInteger characterOffset = 0;
 	while (characterOffset < [base16String length]) {

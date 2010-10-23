@@ -26,6 +26,9 @@
 	\brief
 	Allow a caller to convert a binary NSData to an NSString of required base.
 	The methods are defined in pairs, allowing for the string to be reinterpreted as binary data again.
+	
+	\details
+	These encodings are detailed in IETF-RFC-4648 http://tools.ietf.org/html/rfc4648
  */
 @interface NSData (AFBaseConversion)
 
