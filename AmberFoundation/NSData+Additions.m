@@ -59,7 +59,7 @@
 static const char _base64Alphabet[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const char _base64Padding[1] = "=";
 
-+ (NSData *)dataWithBase64String:(NSString *)base64String {
++ (id)dataWithBase64String:(NSString *)base64String {
 	if (([base64String length] % 4) != 0) return nil;
 	
 	NSMutableCharacterSet *base64CharacterSet = [[NSMutableCharacterSet alloc] init];
