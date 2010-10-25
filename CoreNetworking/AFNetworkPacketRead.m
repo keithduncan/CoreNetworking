@@ -152,8 +152,9 @@
 		[self setTotalBytesRead:([self totalBytesRead] + bytesRead)];
 		currentBytesRead += bytesRead;
 		
-		// Note: this re-scales the receiver for the NSNull case, where the buffer is increased an arbitrary amount
-		[[self buffer] setLength:[self totalBytesRead]];
+		if ([[self terminator] isEqual:[NSNull null]]) {
+			[[self buffer] setLength:[self totalBytesRead]];
+		}
 		
 		BOOL packetComplete = NO;
 		if ([[self terminator] isKindOfClass:[NSData class]]) {
