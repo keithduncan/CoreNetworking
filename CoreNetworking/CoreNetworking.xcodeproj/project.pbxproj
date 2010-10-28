@@ -844,7 +844,7 @@
 				5343E7000C21FB1000B63E6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
 		};
 		5370E0750F5B0573008F5991 /* Build configuration list for PBXNativeTarget "CoreNetworking" */ = {
 			isa = XCConfigurationList;
@@ -853,7 +853,7 @@
 				5370E0740F5B0573008F5991 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
 		};
 		53BEF6A40F5B6A4A00063B8D /* Build configuration list for PBXNativeTarget "CoreNetworking Touch" */ = {
 			isa = XCConfigurationList;
@@ -862,7 +862,7 @@
 				53BEF6A30F5B6A2900063B8D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
