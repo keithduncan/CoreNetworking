@@ -91,6 +91,17 @@
 
  @required
 
+/*!
+	\brief
+	Only the following events are forwarded before being processed internally
+	
+	- NSStreamEventOpenCompleted
+	- NSStreamEventHasBytesAvailable
+	- NSStreamEventHasSpaceAvailable
+	- NSStreamEventEndEncountered
+	
+	all other events are captured and processed.
+ */
 - (void)networkStream:(AFNetworkStream *)networkStream didReceiveEvent:(NSStreamEvent)event;
 
 - (void)networkStream:(AFNetworkStream *)networkStream didReceiveError:(NSError *)error;

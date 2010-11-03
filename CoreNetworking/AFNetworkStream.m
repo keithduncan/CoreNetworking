@@ -9,6 +9,7 @@
 #import "AFNetworkStream.h"
 
 #import <objc/message.h>
+#import <netdb.h>
 
 #import "AFNetworkTransport.h"
 #import "AFNetworkPacketQueue.h"
@@ -34,6 +35,8 @@ typedef NSUInteger _AFNetworkStreamFlags;
 - (void)_shouldTryDequeuePacket;
 - (void)_packetDidTimeout:(NSNotification *)notification;
 - (void)_packetDidComplete:(NSNotification *)notification;
+
+- (void)_forwardError:(NSError *)error;
 @end
 
 @interface AFNetworkStream (_Subclasses)
@@ -194,20 +197,34 @@ typedef NSUInteger _AFNetworkStreamFlags;
 }
 
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)event {
-	[[self delegate] networkStream:self didReceiveEvent:event];
+	if (event == NSStreamEventErrorOccurred) {
+		[self _forwardError:[stream streamError]];
+		return;
+	}
+	
+	// Note: the open and has* events MUST be forwarded to the delegate before we attempt to handle them, as we ask the delegate if it's open before dequeuing
+	switch (event) {
+		case NSStreamEventOpenCompleted:;
+		case NSStreamEventHasBytesAvailable:;
+		case NSStreamEventHasSpaceAvailable:;
+		case NSStreamEventEndEncountered:;
+			[[self delegate] networkStream:self didReceiveEvent:event];
+			break;
+	}
 	
 	if (event == NSStreamEventOpenCompleted) {
 		_flags = (_flags | _kStreamDidOpen);
 		[self _tryDequeuePackets];
+		return;
 	}
 	
 	if (event == NSStreamEventHasBytesAvailable || event == NSStreamEventHasSpaceAvailable) {
 		[self _tryDequeuePackets];
+		return;
 	}
 	
-	if (event == NSStreamEventErrorOccurred) {
-		[[self delegate] networkStream:self didReceiveError:[stream streamError]];
-	}
+	[NSException raise:NSInternalInconsistencyException format:@"unknown stream event %lu", event];
+	return;
 }
 
 - (void)enqueuePacket:(AFNetworkPacket *)packet {
@@ -288,8 +305,8 @@ DequeueEnd:
 							   NSLocalizedStringWithDefaultValue(@"AFNetworkStream Packet Did Timeout Error", @"AFNetworkStream", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Packet timeout.", nil), NSLocalizedDescriptionKey,
 							   nil];
 	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorTimeout userInfo:errorInfo];
+	[self _forwardError:error];
 	
-	[self.delegate networkStream:self didReceiveError:error];
 	[self _packetDidComplete:notification];
 }
 
@@ -301,7 +318,7 @@ DequeueEnd:
 	
 	NSError *packetError = [[notification userInfo] objectForKey:AFNetworkPacketErrorKey];
 	if (packetError != nil) {
-		[[self delegate] networkStream:self didReceiveError:packetError];
+		[self _forwardError:packetError];
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(networkStream:didDequeuePacket:)]) {
@@ -309,6 +326,23 @@ DequeueEnd:
 	}
 	
 	[self _scheduleDequeuePackets];
+}
+
+- (void)_forwardError:(NSError *)error {
+	if ([[error domain] isEqualToString:(id)kCFErrorDomainCFNetwork]) {
+		if ([error code] == kCFHostErrorUnknown) {
+			NSUInteger getaddrinfoErrorCode = [[[error userInfo] objectForKey:(id)kCFGetAddrInfoFailureKey] unsignedIntegerValue];
+			const char *errorDescription = gai_strerror(getaddrinfoErrorCode);
+			
+			NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+									   [NSString stringWithUTF8String:errorDescription], NSLocalizedFailureReasonErrorKey,
+									   error, NSUnderlyingErrorKey,
+									   nil];
+			error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorUnknown userInfo:errorInfo];
+		}
+	}
+	
+	[[self delegate] networkStream:self didReceiveError:error];
 }
 
 @end

@@ -361,12 +361,19 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 			return;
 	}
 	
-	if ([[self delegate] respondsToSelector:@selector(networkStream:didReceiveEvent:)]) {
-		[(id)[self delegate] networkStream:stream didReceiveEvent:event];
-	}
+	[NSException raise:NSInternalInconsistencyException format:@"unknown stream event %lu", event];
+	return;
 }
 
 - (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
+	if (![self isOpen]) {
+		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+								   NSLocalizedStringFromTableInBundle(@"You're not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
+								   NSLocalizedStringFromTableInBundle(@"This computer’s Internet connection appears to be offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
+								   nil];
+		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorUnknown userInfo:errorInfo];
+	}
+	
 	[[self delegate] networkLayer:self didReceiveError:error];
 }
 
