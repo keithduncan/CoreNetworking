@@ -22,7 +22,7 @@
 #import "AFNetworkDelegateProxy.h"
 #import "AFNetworkMacros.h"
 
-// Note: import this header last, allowing for any of the previous headers to import <net/if.h> see the getifaddrs man page for details
+// Note: import this header last, allowing for any of the previous headers to import <net/if.h> see x-man-page://getifaddrs
 #import <ifaddrs.h>
 
 AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationContext);

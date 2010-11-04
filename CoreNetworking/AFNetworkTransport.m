@@ -18,6 +18,7 @@
 #import <objc/message.h>
 #import <arpa/inet.h>
 #import <sys/socket.h>
+#import <sys/errno.h>
 #import <netdb.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
@@ -368,8 +369,16 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 - (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
 	if (![self isOpen]) {
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-								   NSLocalizedStringFromTableInBundle(@"You're not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
+								   NSLocalizedStringFromTableInBundle(@"You’re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
 								   NSLocalizedStringFromTableInBundle(@"This computer’s Internet connection appears to be offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
+								   nil];
+		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorUnknown userInfo:errorInfo];
+	}
+	
+	if ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOTCONN) {
+		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+								   NSLocalizedStringFromTableInBundle(@"You’re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
+								   NSLocalizedStringFromTableInBundle(@"This computer’s Internet connection appears to have gone offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
 								   nil];
 		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorUnknown userInfo:errorInfo];
 	}
