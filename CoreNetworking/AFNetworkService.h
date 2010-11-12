@@ -76,6 +76,12 @@ extern NSDictionary *AFNetworkServicePropertyDictionaryFromTXTRecordData(NSData 
  */
 extern NSData *AFNetworkServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary);
 
+/*
+ 
+ */
+
+extern NSString *const AFNetworkServicePresenceKey;
+
 /*!
     \brief
 	A replacement for a resolvable <tt>NSNetService</tt> with a KVO compliant 'presence' dictionary corresponding to the TXT record data.

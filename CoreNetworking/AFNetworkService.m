@@ -39,6 +39,8 @@ NSData *AFNetworkServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRec
 	return [NSNetService dataFromTXTRecordDictionary:dataDictionary];
 }
 
+NSString *const AFNetworkServicePresenceKey = @"presence";
+
 @interface AFNetworkService ()
 @property (readwrite, retain) NSDictionary *presence;
 @end
