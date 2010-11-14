@@ -114,7 +114,7 @@ NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message) {
 }
 
 CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response) {
-	CFHTTPMessageRef message = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, [response statusCode], (CFStringRef)[NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]], kCFHTTPVersion1_1)) autorelease];
+	CFHTTPMessageRef message = CFHTTPMessageCreateResponse(kCFAllocatorDefault, [response statusCode], (CFStringRef)[NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]], kCFHTTPVersion1_1);
 	[[response allHeaderFields] enumerateKeysAndObjectsUsingBlock:^ (id key, id obj, BOOL *stop) {
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)key, (CFStringRef)obj);
 	}];
