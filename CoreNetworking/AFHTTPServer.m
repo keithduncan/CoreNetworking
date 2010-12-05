@@ -121,7 +121,7 @@
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotImplemented;
 			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			
-			CFHTTPMessageSetHeaderFieldValue(response, AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
+			CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
 			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
 			return;
@@ -141,7 +141,7 @@
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
 			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			
-			CFHTTPMessageSetHeaderFieldValue(response, AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
+			CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
 			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
 			return;
