@@ -156,6 +156,13 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	[super preprocessRequest:request];
 }
 
+- (void)preprocessResponse:(CFHTTPMessageRef)response {
+	CFIndex responseStatusCode = CFHTTPMessageGetResponseStatusCode(response);
+	if (responseStatusCode >= 100 && responseStatusCode <= 199) {
+		
+	}
+}
+
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body context:(void *)context {
 	CFHTTPMessageRef requestMessage = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:body];
 	
@@ -216,11 +223,16 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	NSParameterAssert([fileLocation isFileURL]);
 	
 	NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileLocation path] error:errorRef];
+	if (fileAttributes == nil) return NO;
+	
 	NSNumber *fileSize = [fileAttributes objectForKey:NSFileSize];
-	if (fileAttributes == nil || fileSize == nil) return NO;
+#warning this needs an error
+	if (fileSize == nil) return NO;
 	
 	CFHTTPMessageRef requestMessage = [self _requestForMethod:HTTPMethod onResource:resource withHeaders:headers withBody:nil];
 	CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[fileSize stringValue]);
+	
+	CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageExpectHeader, (CFStringRef)@"100-Continue");
 	
 	AFNetworkPacket *headersPacket = AFHTTPConnectionPacketForMessage(requestMessage);
 	AFNetworkPacketWriteFromReadStream *bodyPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] totalBytesToWrite:[fileSize unsignedIntegerValue]] autorelease];

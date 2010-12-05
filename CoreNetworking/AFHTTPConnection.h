@@ -45,6 +45,10 @@
  */
 @property (readonly, retain) NSMutableDictionary *messageHeaders;
 
+/*
+	Override Points
+ */
+
 /*!
 	\brief
 	Overridable for subclasses, called for every request.
@@ -53,6 +57,13 @@
 	Adds the <tt>messageHeaders</tt>.
  */
 - (void)preprocessRequest:(CFHTTPMessageRef)request;
+
+/*!
+	\brief
+	Overridable for subclasses, called for every response.
+	Call super for the default behaviour, which is to pass the response to the delegate.
+ */
+- (void)preprocessResponse:(CFHTTPMessageRef)response;
 
 /*
 	Request
@@ -100,7 +111,7 @@
 - (void)downloadResponse:(NSURL *)location;
 
 /*
-	Overrides
+	Lower layer overrides
  */
 
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context;

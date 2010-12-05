@@ -66,7 +66,7 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 
 - (id)initWithData:(NSData *)data contentType:(NSString *)contentType;
 
-@property (readonly) NSData *data;
+@property (readonly, retain) NSData *data;
 
 @end
 
@@ -82,10 +82,17 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_data = data;
+	_data = [data retain];
 	_contentType = [contentType copy];
 	
 	return self;
+}
+
+- (void)dealloc {
+	[_data release];
+	[_contentType release];
+	
+	[super dealloc];
 }
 
 - (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef {
@@ -102,12 +109,11 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 		*frameLengthRef = [[self data] length];
 	}
 	
-	
 	if ([self data] == nil) {
 		return nil;
 	}
 	
-	return [NSArray arrayWithObject:[[AFNetworkPacketWrite alloc] initWithData:[self data]]];
+	return [NSArray arrayWithObject:[[[AFNetworkPacketWrite alloc] initWithData:[self data]] autorelease]];
 }
 
 @end
@@ -121,7 +127,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 
 - (id)initWithLocation:(NSURL *)location;
 
-@property (readonly) NSURL *location;
+@property (readonly, copy) NSURL *location;
 
 @end
 

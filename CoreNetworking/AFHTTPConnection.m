@@ -92,6 +92,12 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	}
 }
 
+- (void)preprocessResponse:(CFHTTPMessageRef)response {
+	if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveResponse:)]) {
+		[self.delegate networkConnection:self didReceiveResponse:response];
+	}
+}
+
 #pragma mark -
 
 - (void)performRequestMessage:(CFHTTPMessageRef)message {
@@ -131,22 +137,30 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context {
 	if (context == &_AFHTTPConnectionWriteRequestContext) {
-		// nop
-	} else if (context == &_AFHTTPConnectionWriteResponseContext) {
-		// nop
-	} else if ([self.delegate respondsToSelector:_cmd]) {
+		return;
+	}
+	if (context == &_AFHTTPConnectionWriteResponseContext) {
+		return;
+	}
+	
+	if ([self.delegate respondsToSelector:_cmd]) {
 		[self.delegate networkLayer:self didWrite:data context:context];
 	}
 }
 
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context {
 	if (context == &_AFHTTPConnectionReadRequestContext) {
-		if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveRequest:)])
+		if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveRequest:)]) {
 			[self.delegate networkConnection:self didReceiveRequest:(CFHTTPMessageRef)data];
-	} else if (context == &_AFHTTPConnectionReadResponseContext) {
-		if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveResponse:)])
-			[self.delegate networkConnection:self didReceiveResponse:(CFHTTPMessageRef)data];
-	} else if ([self.delegate respondsToSelector:_cmd]) {
+		}
+		return;
+	}
+	if (context == &_AFHTTPConnectionReadResponseContext) {
+		[self preprocessResponse:(CFHTTPMessageRef)data];
+		return;
+	}
+	
+	if ([self.delegate respondsToSelector:_cmd]) {
 		[self.delegate networkLayer:self didRead:data context:context];
 	}
 }

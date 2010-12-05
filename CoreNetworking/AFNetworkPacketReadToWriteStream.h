@@ -24,7 +24,6 @@
 	
 	__strong uint8_t *_readBuffer;
 	size_t _bufferSize;
-	size_t _bufferOffset;
 	
 	NSOutputStream *_writeStream;
 	BOOL _writeStreamOpen;

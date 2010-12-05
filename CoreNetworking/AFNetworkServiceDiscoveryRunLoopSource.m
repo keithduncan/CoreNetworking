@@ -23,11 +23,12 @@
 
 static void	AFServiceDiscoveryProcessResult(CFFileDescriptorRef fileDescriptor, CFOptionFlags callBackTypes, void *info) {
 	if ((callBackTypes & kCFFileDescriptorReadCallBack) != kCFFileDescriptorReadCallBack) return;
+	CFFileDescriptorEnableCallBacks(fileDescriptor, kCFFileDescriptorReadCallBack);
+	
 	AFNetworkServiceDiscoveryRunLoopSource *self = info;
 	
 	DNSServiceErrorType error = kDNSServiceErr_NoError;
 	error = DNSServiceProcessResult(self->_service);
-	(void)error; // Note: keep clang happy
 }
 
 - (id)initWithDNSService:(DNSServiceRef)service {
@@ -70,12 +71,16 @@ static void	AFServiceDiscoveryProcessResult(CFFileDescriptorRef fileDescriptor, 
 
 #if defined(DISPATCH_API_VERSION)
 
-extern void AFServiceDiscoveryScheduleQueueSource(DNSServiceRef service, dispatch_queue_t queue) {
+extern dispatch_source_t AFNetworkServiceDiscoveryScheduleQueueSource(DNSServiceRef service, dispatch_queue_t queue) {
 	dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, DNSServiceRefSockFD(service), 0, queue);
+	
+	dispatch_source_set_cancel_handler(source, ^ {
+		dispatch_release(source);
+	});
 	
 	dispatch_source_set_event_handler(source, ^ {
 		DNSServiceProcessResult(service);
-		dispatch_release(source);
+		dispatch_source_cancel(source);
 	});
 	
 	dispatch_resume(source);

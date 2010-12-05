@@ -38,17 +38,29 @@
 + (NSArray *)_implementedMethods {
 	static NSArray *knownMethods = nil;
 	
-	if (knownMethods == nil) knownMethods = [[NSArray alloc] initWithObjects:
-											 AFHTTPMethodTRACE,
-											 AFHTTPMethodOPTIONS,
-											 AFHTTPMethodHEAD,
-											 AFHTTPMethodGET,
-											 AFHTTPMethodPUT,
-											 AFHTTPMethodPOST,
-											 AFHTTPMethodDELETE,
-											 nil];
+	if (knownMethods == nil) {
+		knownMethods = [[NSArray alloc] initWithObjects:
+						AFHTTPMethodTRACE,
+						AFHTTPMethodOPTIONS,
+						AFHTTPMethodHEAD,
+						AFHTTPMethodGET,
+						AFHTTPMethodPUT,
+						AFHTTPMethodPOST,
+						AFHTTPMethodDELETE,
+						nil];
+	}
 	
 	return knownMethods;
+}
+
++ (NSString *)_allowHeaderValue {
+	static NSString *allowHeaderValue = nil;
+	
+	if (allowHeaderValue == nil) {
+		allowHeaderValue = [[[[self class] _implementedMethods] componentsJoinedByString:@","] retain];
+	}
+	
+	return allowHeaderValue;
 }
 
 - (id)init {
@@ -95,6 +107,7 @@
 	
 	@try {
 		NSString *requestMethod = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
+		NSURL *requestURL = [NSMakeCollectable(CFHTTPMessageCopyRequestURL(request)) autorelease];
 		NSDictionary *requestHeaders = [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields(request)) autorelease];
 		NSData *requestBody = [NSMakeCollectable(CFHTTPMessageCopyBody(request)) autorelease];
 #pragma unused (requestBody)
@@ -108,6 +121,8 @@
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotImplemented;
 			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			
+			CFHTTPMessageSetHeaderFieldValue(response, AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
+			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
 			return;
 		}
@@ -118,6 +133,17 @@
 			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
+			return;
+		}
+		
+		// Note: return the server supported methods
+		if ([requestMethod caseInsensitiveCompare:AFHTTPMethodOPTIONS] == NSOrderedSame && [[requestURL absoluteString] isEqualToString:@"*"]) {
+			AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
+			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+			
+			CFHTTPMessageSetHeaderFieldValue(response, AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
+			
+			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
 			return;
 		}
 		

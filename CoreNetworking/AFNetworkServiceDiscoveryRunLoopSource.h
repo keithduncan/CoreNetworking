@@ -66,7 +66,10 @@
 	
 	\details
 	This source acts like the Cocoa <tt>-performSelector:…</tt> methods, it creates and destroys a behind the scenes source for you.
+	
+	\return
+	Does not return an owning reference, you must retain it if you keep a reference for later cancellation.
  */
-extern void AFServiceDiscoveryScheduleQueueSource(DNSServiceRef service, dispatch_queue_t queue);
+extern dispatch_source_t AFNetworkServiceDiscoveryScheduleQueueSource(DNSServiceRef service, dispatch_queue_t queue);
 
 #endif

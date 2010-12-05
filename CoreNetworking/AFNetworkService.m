@@ -136,6 +136,21 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	return (id)CFNetServiceGetName(_service);
 }
 
+- (NSString *)fullName {
+	NSMutableString *fullName = [NSMutableString string];
+	
+	[fullName appendString:[self name]];
+	if (![fullName hasSuffix:@"."]) [fullName appendString:@"."];
+	
+	[fullName appendString:[self type]];
+	if (![fullName hasSuffix:@"."]) [fullName appendString:@"."];
+	
+	[fullName appendString:[self domain]];
+	if (![fullName hasSuffix:@"."]) [fullName appendString:@"."];
+	
+	return fullName;
+}
+
 - (void)startMonitoring {
 	CFNetServiceMonitorScheduleWithRunLoop(_monitor, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 	CFNetServiceMonitorStart(_monitor, kCFNetServiceMonitorTXT, NULL);
@@ -167,21 +182,6 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 
 - (NSArray *)addresses {
 	return (id)CFNetServiceGetAddressing(_service);
-}
-
-- (NSString *)fullName {
-	NSMutableString *fullName = [NSMutableString string];
-	
-	[fullName appendString:[self name]];
-	if (![fullName hasSuffix:@"."]) [fullName appendString:@"."];
-	
-	[fullName appendString:[self type]];
-	if (![fullName hasSuffix:@"."]) [fullName appendString:@"."];
-	
-	[fullName appendString:[self domain]];
-	if (![fullName hasSuffix:@"."]) [fullName appendString:@"."];
-	
-	return fullName;
 }
 
 @end

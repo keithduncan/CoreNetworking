@@ -40,13 +40,13 @@
 			MIMEType = [contentType substringToIndex:parameterSeparator.location];
 			
 			NSMutableDictionary *contentTypeParameters = [NSMutableDictionary dictionaryWithString:[contentType substringFromIndex:(parameterSeparator.location + 1)] separator:@"=" delimiter:@";"];
-			[[contentTypeParameters copy] enumerateKeysAndObjectsUsingBlock:^ (id key, id obj, BOOL *stop) {
+			[[[contentTypeParameters copy] autorelease] enumerateKeysAndObjectsUsingBlock:^ (id key, id obj, BOOL *stop) {
 				[contentTypeParameters removeObjectForKey:key];
 				
-				key = [key mutableCopy];
+				key = [[key mutableCopy] autorelease];
 				CFStringTrimWhitespace((CFMutableStringRef)key);
 				
-				obj = [obj mutableCopy];
+				obj = [[obj mutableCopy] autorelease];
 				CFStringTrimWhitespace((CFMutableStringRef)obj);
 				
 				[contentTypeParameters setObject:obj forKey:key];

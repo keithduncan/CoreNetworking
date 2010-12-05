@@ -39,15 +39,15 @@
 
 /*!
 	\brief
-	Implementors <b>must</b> use <tt>-valueForKey:</tt> to extract the <tt>name<tt>, <tt>type</tt> and <tt>domain</tt> as documented in the <tt>AFNetServiceCommon</tt> description.
+	This method is optional, though it should simply be a concatenation of the <tt>name</tt>, <tt>type</tt> and <tt>domain</tt> suitable for resolution.
  */
-- (id)initWithNetService:(id <AFNetworkServiceCommon>)service;
+@property (readonly) NSString *fullName;
 
 /*!
 	\brief
-	This method is optional, though it should simply be a concatenation of the <tt>name</tt>, <tt>type</tt> and <tt>domain</tt> suitable for resolution.
+	Implementors <b>must</b> use <tt>-valueForKey:</tt> to extract the <tt>name<tt>, <tt>type</tt> and <tt>domain</tt> as documented in the <tt>AFNetServiceCommon</tt> description.
  */
-- (NSString *)fullName;
+- (id)initWithNetService:(id <AFNetworkServiceCommon>)service;
 
 @end
 
@@ -96,6 +96,7 @@ extern NSString *const AFNetworkServicePresenceKey;
 	__strong CFNetServiceMonitorRef _monitor;
 	
 	id <AFNetworkServiceDelegate> delegate;
+	
 	NSDictionary *presence;
 }
 
@@ -104,12 +105,6 @@ extern NSString *const AFNetworkServicePresenceKey;
 	The delegate is called when resolution discovers an address or fails to.
  */
 @property (assign) id <AFNetworkServiceDelegate> delegate;
-
-/*!
-	\brief
-	The TXT record decoded into key=value pairs.
- */
-@property (readonly, retain) NSDictionary *presence;
 
 /*!
 	\brief
@@ -123,6 +118,12 @@ extern NSString *const AFNetworkServicePresenceKey;
 	Stop monitoring the TXT record of the service.
  */
 - (void)stopMonitoring;
+
+/*!
+	\brief
+	The TXT record decoded into key=value string pairs.
+ */
+@property (readonly, retain) NSDictionary *presence;
 
 /*!
 	\brief
@@ -149,7 +150,7 @@ extern NSString *const AFNetworkServicePresenceKey;
 	\brief
 	This returns an array of NSData objects wrapping a (struct sockaddr) suitable for connecting to.
  */
-- (NSArray *)addresses;
+@property (readonly) NSArray *addresses;
 
 /*!
     \brief  
