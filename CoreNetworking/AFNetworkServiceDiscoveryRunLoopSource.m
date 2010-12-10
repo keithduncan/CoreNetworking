@@ -84,6 +84,8 @@ extern dispatch_source_t AFNetworkServiceDiscoveryScheduleQueueSource(DNSService
 	});
 	
 	dispatch_resume(source);
+	
+	return source;
 }
 
 #endif
