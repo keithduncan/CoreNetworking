@@ -93,6 +93,12 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 }
 
 - (void)preprocessResponse:(CFHTTPMessageRef)response {
+	CFIndex responseStatusCode = CFHTTPMessageGetResponseStatusCode(response);
+	if (responseStatusCode >= 100 && responseStatusCode <= 199) {
+		[self readResponse];
+		return;
+	}
+	
 	if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveResponse:)]) {
 		[self.delegate networkConnection:self didReceiveResponse:response];
 	}
@@ -109,12 +115,6 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	[self performRead:[[[AFHTTPMessagePacket alloc] initForRequest:YES] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadRequestContext];
 }
 
-- (void)downloadRequest:(NSURL *)location {
-	NSParameterAssert([location isFileURL]);
-	
-	[self doesNotRecognizeSelector:_cmd];
-}
-
 #pragma mark -
 
 - (void)performResponseMessage:(CFHTTPMessageRef)message {
@@ -123,14 +123,6 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 - (void)readResponse {
 	[self performRead:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease] withTimeout:-1 context:&_AFHTTPConnectionReadResponseContext];
-}
-
-- (void)downloadResponse:(NSURL *)location {
-	NSParameterAssert([location isFileURL]);
-	
-	AFHTTPMessagePacket *messagePacket = [[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease];
-	[messagePacket setBodyStorage:location];
-	[self performRead:messagePacket withTimeout:-1 context:&_AFHTTPConnectionReadResponseContext];
 }
 
 #pragma mark -

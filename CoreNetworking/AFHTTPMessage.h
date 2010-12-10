@@ -101,25 +101,26 @@ extern NSString *const AFHTTPMessageRangeHeader;
 
 enum {
 	// 1xx class, informational
-	AFHTTPStatusCodeContinue		= 100, /* Continue */
+	AFHTTPStatusCodeContinue			= 100, /* Continue */
+	AFHTTPStatusCodeSwitchingProtocols	= 101, /* Switching Protocols */
 	
 	// 2xx class, request succeeded
-	AFHTTPStatusCodeOK				= 200, /* OK */
-	AFHTTPStatusCodePartialContent	= 206, /* Partial Content */
+	AFHTTPStatusCodeOK					= 200, /* OK */
+	AFHTTPStatusCodePartialContent		= 206, /* Partial Content */
 	
 	// 3xx class, redirection
-	AFHTTPStatusCodeFound			= 302, /* Found */
-	AFHTTPStatusCodeSeeOther		= 303, /* See Other */
+	AFHTTPStatusCodeFound				= 302, /* Found */
+	AFHTTPStatusCodeSeeOther			= 303, /* See Other */
 	
 	// 4xx class, client error
-	AFHTTPStatusCodeBadRequest		= 400, /* Bad Request */
-	AFHTTPStatusCodeNotFound		= 404, /* Not Found */
-	AFHTTPStatusCodeNotAllowed		= 405, /* Not Allowed */
-	AFHTTPStatusCodeUpgradeRequired = 426, /* Upgrade Required */
+	AFHTTPStatusCodeBadRequest			= 400, /* Bad Request */
+	AFHTTPStatusCodeNotFound			= 404, /* Not Found */
+	AFHTTPStatusCodeNotAllowed			= 405, /* Not Allowed */
+	AFHTTPStatusCodeUpgradeRequired		= 426, /* Upgrade Required */
 	
 	// 5xx class, server error
-	AFHTTPStatusCodeServerError		= 500, /* Server Error */
-	AFHTTPStatusCodeNotImplemented	= 501, /* Not Implemented */
+	AFHTTPStatusCodeServerError			= 500, /* Server Error */
+	AFHTTPStatusCodeNotImplemented		= 501, /* Not Implemented */
 };
 typedef NSInteger AFHTTPStatusCode;
 

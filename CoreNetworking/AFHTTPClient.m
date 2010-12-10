@@ -72,7 +72,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 
 + (void)setUserAgent:(NSString *)userAgent {
 	@synchronized ([AFHTTPClient class]) {
-		[_AFHTTPClientUserAgent release];
+		[_AFHTTPClientUserAgent autorelease];
 		_AFHTTPClientUserAgent = [userAgent copy];
 	}
 }
@@ -101,7 +101,9 @@ static NSString *_AFHTTPClientUserAgent = nil;
 - (void)dealloc {
 	[_userAgent release];
 	
-	if (_authentication != NULL) CFRelease(_authentication);
+	if (_authentication != NULL) {
+		CFRelease(_authentication);
+	}
 	[_authenticationCredentials release];
 	
 	[_transactionQueue removeObserver:self forKeyPath:@"currentPacket"];
@@ -111,7 +113,9 @@ static NSString *_AFHTTPClientUserAgent = nil;
 }
 
 - (void)finalize {
-	if (_authentication != NULL) CFRelease(_authentication);
+	if (_authentication != NULL) {
+		CFRelease(_authentication);
+	}
 	
 	[super finalize];
 }
@@ -123,14 +127,22 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		
 		for (id <AFNetworkPacketWriting> currentPacket in [newPacket requestPackets]) {
 			void *context = &_AFHTTPClientWritePartialRequestContext;
-			if (currentPacket == [[newPacket requestPackets] lastObject]) context = &_AFHTTPClientWriteRequestContext;
+			if (currentPacket == [[newPacket requestPackets] lastObject]) {
+				context = &_AFHTTPClientWriteRequestContext;
+			}
+			
 			[self performWrite:currentPacket withTimeout:-1 context:context];
 		}
 		
-		if ([newPacket responsePackets] != nil) for (id <AFNetworkPacketReading> currentPacket in [newPacket responsePackets]) {
-			void *context = &_AFHTTPClientReadPartialResponseContext;
-			if (currentPacket == [[newPacket responsePackets] lastObject]) context = &_AFHTTPClientReadResponseContext;
-			[self performRead:currentPacket withTimeout:-1 context:context];
+		if ([newPacket responsePackets] != nil) {
+			for (id <AFNetworkPacketReading> currentPacket in [newPacket responsePackets]) {
+				void *context = &_AFHTTPClientReadPartialResponseContext;
+				if (currentPacket == [[newPacket responsePackets] lastObject]) {
+					context = &_AFHTTPClientReadResponseContext;
+				}
+				
+				[self performRead:currentPacket withTimeout:-1 context:context];
+			}
 		} else {
 			[self readResponse];
 		}
@@ -154,13 +166,6 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	}
 	
 	[super preprocessRequest:request];
-}
-
-- (void)preprocessResponse:(CFHTTPMessageRef)response {
-	CFIndex responseStatusCode = CFHTTPMessageGetResponseStatusCode(response);
-	if (responseStatusCode >= 100 && responseStatusCode <= 199) {
-		
-	}
 }
 
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body context:(void *)context {

@@ -81,12 +81,6 @@
  */
 - (void)readRequest;
 
-/*!
-	\brief
-	This enqueues a request reading packet, which writes the body to the location indicated, and is useful for raw messaging.
- */
-- (void)downloadRequest:(NSURL *)location;
-
 /*
 	Response
  */
@@ -103,12 +97,6 @@
 	This enqueues a response reading packet, and is useful for raw messaging.
  */
 - (void)readResponse;
-
-/*!
-	\brief
-	This enqueues a response reading packet, which writes the body to the location indicated, and is useful for raw messaging.
- */
-- (void)downloadResponse:(NSURL *)location;
 
 /*
 	Lower layer overrides
