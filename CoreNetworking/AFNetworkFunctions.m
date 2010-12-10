@@ -136,6 +136,20 @@ NSError *AFNetworkErrorFromCFStreamError(CFStreamError error) {
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 							  message, NSLocalizedDescriptionKey,
 							  nil];
-	
 	return [NSError errorWithDomain:domain code:error.error userInfo:userInfo];
+}
+
+NSString *AFSocketAddressToPresentation(NSData *socketAddress) {
+	CFRetain(socketAddress);
+	
+	char socketAddressPresentation[INET6_ADDRSTRLEN] = {0};
+	socketAddressPresentation = sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)socketAddress), socketAddressPresentation, sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation));
+	
+	CFRelease(socketAddress);
+	
+	if (socketAddressPresentation == NULL) {
+		return nil;
+	}
+	
+	return [NSString stringWithCString:socketAddressPresentation encoding:NSASCIIStringEncoding];
 }
