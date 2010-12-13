@@ -171,6 +171,7 @@ NSString *const AFHTTPMessageTransferEncodingHeader = @"Transfer-Encoding";
 NSString *const AFHTTPMessageAllowHeader = @"Allow";
 NSString *const AFHTTPMessageLocationHeader = @"Location";
 NSString *const AFHTTPMessageRangeHeader = @"Range";
+NSString *const AFHTTPMessageExpectHeader = @"Expect";
 
 
 CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {

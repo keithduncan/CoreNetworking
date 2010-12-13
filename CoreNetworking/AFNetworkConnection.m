@@ -9,6 +9,7 @@
 #import "AFNetworkConnection.h"
 
 #import "AFNetworkTransport.h"
+#import "AFNetworkFunctions.h"
 
 @implementation AFNetworkConnection
 

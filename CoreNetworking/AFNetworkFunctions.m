@@ -143,11 +143,11 @@ NSString *AFSocketAddressToPresentation(NSData *socketAddress) {
 	CFRetain(socketAddress);
 	
 	char socketAddressPresentation[INET6_ADDRSTRLEN] = {0};
-	socketAddressPresentation = sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)socketAddress), socketAddressPresentation, sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation));
+	BOOL socketAddressPresentationConverted = (sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)socketAddress), socketAddressPresentation, sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation)) != NULL);
 	
 	CFRelease(socketAddress);
 	
-	if (socketAddressPresentation == NULL) {
+	if (!socketAddressPresentationConverted) {
 		return nil;
 	}
 	

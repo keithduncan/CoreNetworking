@@ -94,6 +94,7 @@ extern NSString *const AFHTTPMessageTransferEncodingHeader;
 extern NSString *const AFHTTPMessageAllowHeader;
 extern NSString *const AFHTTPMessageLocationHeader;
 extern NSString *const AFHTTPMessageRangeHeader;
+extern NSString *const AFHTTPMessageExpectHeader;
 
 /*
 	AFHTTPConnection Message Codes
