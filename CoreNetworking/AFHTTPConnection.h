@@ -19,10 +19,10 @@
 /*!
 	\brief
 	This class is indended to sit on top of AFNetworkTransport and provides HTTP messaging semantics.
- 
+	
 	\details
 	It handles each request in series; and includes automatic behaviour for serveral responses:
- 
+	
 	- 
  */
 @interface AFHTTPConnection : AFNetworkConnection <AFNetworkConnectionLayer> {
