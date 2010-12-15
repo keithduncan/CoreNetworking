@@ -37,7 +37,7 @@
 		
 		do {
 			[components addObject:component];
-		} while (component = va_arg(keyList, NSString *));
+		} while ((component = va_arg(keyList, NSString *)));
 		
 		va_end(keyList);
 	}
