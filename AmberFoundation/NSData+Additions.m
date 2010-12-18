@@ -53,9 +53,6 @@
 
 @implementation NSData (AFBaseConversion)
 
-#warning the base conversion methods should check the padding occurs only at the end
-#warning the base conversion methods should check that the number of padding characters is valid
-
 static const char _base64Alphabet[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const char _base64Padding[1] = "=";
 
