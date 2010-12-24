@@ -225,9 +225,7 @@
 	
 	NSString *connectionValue = [requestHeaders objectForCaseInsensitiveKey:AFHTTPMessageConnectionHeader];
 	BOOL keepAlive = (connectionValue != nil && [connectionValue caseInsensitiveCompare:@"close"] != NSOrderedSame) && allow;
-	
-	if (keepAlive) CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageConnectionHeader, CFSTR("keep-alive"));
-	else CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageConnectionHeader, CFSTR("close"));
+	CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageConnectionHeader, (keepAlive ? CFSTR("keep-alive") : CFSTR("close")));
 	
 #if ENABLE_RESPONSE_LOGGING
 	[self _logMessage:response];
