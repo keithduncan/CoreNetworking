@@ -203,23 +203,26 @@ typedef NSUInteger _AFNetworkStreamFlags;
 	}
 	
 	// Note: the open and has* events MUST be forwarded to the delegate before we attempt to handle them, as we ask the delegate if it's open before dequeuing
-	switch (event) {
-		case NSStreamEventOpenCompleted:;
-		case NSStreamEventHasBytesAvailable:;
-		case NSStreamEventHasSpaceAvailable:;
-		case NSStreamEventEndEncountered:;
-			[[self delegate] networkStream:self didReceiveEvent:event];
-			break;
-	}
 	
 	if (event == NSStreamEventOpenCompleted) {
+		[[self delegate] networkStream:self didReceiveEvent:event];
+		
 		_flags = (_flags | _kStreamDidOpen);
 		[self _tryDequeuePackets];
 		return;
 	}
 	
 	if (event == NSStreamEventHasBytesAvailable || event == NSStreamEventHasSpaceAvailable) {
+		[[self delegate] networkStream:self didReceiveEvent:event];
+		
 		[self _tryDequeuePackets];
+		return;
+	}
+	
+	if (event == NSStreamEventEndEncountered) {
+		[[self delegate] networkStream:self didReceiveEvent:event];
+		
+		// nop
 		return;
 	}
 	
