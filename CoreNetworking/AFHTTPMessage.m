@@ -166,6 +166,9 @@ NSString *const AFHTTPMessageContentTypeHeader = @"Content-Type";
 NSString *const AFHTTPMessageContentRangeHeader = @"Content-Range";
 NSString *const AFHTTPMessageContentMD5Header = @"Content-MD5";
 
+NSString *const AFHTTPMessageETagHeader = @"ETag";
+NSString *const AFHTTPMessageIfNoneMatchHeader = @"If-None-Match";
+
 NSString *const AFHTTPMessageTransferEncodingHeader = @"Transfer-Encoding";
 
 NSString *const AFHTTPMessageAllowHeader = @"Allow";
@@ -188,6 +191,8 @@ CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 			return CFSTR("Found");
 		case AFHTTPStatusCodeSeeOther:
 			return CFSTR("See Other");
+		case AFHTTPStatusCodeNotModified:
+			return CFSTR("Not Modified");
 			
 		case AFHTTPStatusCodeBadRequest:
 			return CFSTR("Bad Request");

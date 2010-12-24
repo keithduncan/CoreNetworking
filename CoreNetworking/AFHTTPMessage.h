@@ -89,6 +89,9 @@ extern NSString *const AFHTTPMessageContentTypeHeader;
 extern NSString *const AFHTTPMessageContentRangeHeader;
 extern NSString *const AFHTTPMessageContentMD5Header;
 
+extern NSString *const AFHTTPMessageETagHeader;
+extern NSString *const AFHTTPMessageIfNoneMatchHeader;
+
 extern NSString *const AFHTTPMessageTransferEncodingHeader;
 
 extern NSString *const AFHTTPMessageAllowHeader;
@@ -112,6 +115,7 @@ enum {
 	// 3xx class, redirection
 	AFHTTPStatusCodeFound				= 302, /* Found */
 	AFHTTPStatusCodeSeeOther			= 303, /* See Other */
+	AFHTTPStatusCodeNotModified			= 304, /* Not Modified */
 	
 	// 4xx class, client error
 	AFHTTPStatusCodeBadRequest			= 400, /* Bad Request */
