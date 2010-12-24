@@ -51,22 +51,21 @@
 
 /*!
 	\brief
-	Overridable for subclasses, called for every request.
+	Overridable for subclasses, before a message is sent.
 	
 	\details
-	Adds the <tt>messageHeaders</tt>.
+	Adds the <tt>messageHeaders</tt> and a "Content-Length" header.
  */
-- (void)preprocessRequest:(CFHTTPMessageRef)request;
+- (void)processOutboundMessage:(CFHTTPMessageRef)message;
 
 /*!
 	\brief
-	Overridable for subclasses, called for every response.
-	Call super for the default behaviour, which is to pass the response to the delegate.
+	Overridable for subclasses, called to return a message to the delegate.
  */
-- (void)preprocessResponse:(CFHTTPMessageRef)response;
+- (void)processInboundMessage:(CFHTTPMessageRef)message;
 
 /*
-	Request
+	Requests
  */
 
 /*!
@@ -82,7 +81,7 @@
 - (void)readRequest;
 
 /*
-	Response
+	Responses
  */
 
 /*!

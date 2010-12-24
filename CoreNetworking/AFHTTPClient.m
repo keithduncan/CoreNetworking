@@ -153,19 +153,21 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	return self.transactionQueue.currentPacket;
 }
 
-- (void)preprocessRequest:(CFHTTPMessageRef)request {
+- (void)processOutboundMessage:(CFHTTPMessageRef)message {
+	[super processOutboundMessage:message];
+	
+	if (!CFHTTPMessageIsRequest(message)) {
+		return;
+	}
+	
 	NSString *agent = [self userAgent];
-	if (agent != nil) CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageUserAgentHeader, (CFStringRef)agent);
+	if (agent != nil) CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageUserAgentHeader, (CFStringRef)agent);
 	
 	if (self.authentication != NULL) {
 		CFStreamError error = {0};
-		
-		Boolean authenticated = NO;
-		authenticated = CFHTTPMessageApplyCredentialDictionary(request, self.authentication, (CFDictionaryRef)self.authenticationCredentials, &error);
-#pragma unused (authenticated)
+		Boolean authenticated = CFHTTPMessageApplyCredentialDictionary(message, self.authentication, (CFDictionaryRef)self.authenticationCredentials, &error);
+#warning this error isn't handled
 	}
-	
-	[super preprocessRequest:request];
 }
 
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body context:(void *)context {
@@ -206,7 +208,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	}
 	
 	CFHTTPMessageRef requestMessage = (CFHTTPMessageRef)[NSMakeCollectable(AFHTTPMessageCreateForRequest(request)) autorelease];
-	[self preprocessRequest:requestMessage];
+	[self processOutboundMessage:requestMessage];
 	
 	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequestPackets:[NSArray arrayWithObject:AFHTTPConnectionPacketForMessage(requestMessage)] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]] context:context] autorelease];
 	[self _enqueueTransaction:transaction];
@@ -340,7 +342,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	
 	CFHTTPMessageSetBody(request, (CFDataRef)body);
 	
-	[self preprocessRequest:request];
+	[self processOutboundMessage:request];
 	
 	return request;
 }

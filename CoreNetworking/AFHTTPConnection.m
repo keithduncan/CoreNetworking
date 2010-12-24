@@ -77,37 +77,50 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	[super dealloc];
 }
 
-- (void)preprocessRequest:(CFHTTPMessageRef)request {
-	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
-		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(request)) autorelease] length]] stringValue]);
+- (void)processOutboundMessage:(CFHTTPMessageRef)message {
+	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
+		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease] length]] stringValue]);
 	}
 	
 	for (NSString *currentConnectionHeader in [self.messageHeaders allKeys]) {
-		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)currentConnectionHeader, (CFStringRef)[self.messageHeaders objectForKey:currentConnectionHeader]);
+		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)currentConnectionHeader, (CFStringRef)[self.messageHeaders objectForKey:currentConnectionHeader]);
+	}
+	
+	if (!CFHTTPMessageIsRequest(message)) {
+		// nop
+		return;
 	}
 	
 	NSURL *endpoint = [self peer];
 	if ([endpoint isKindOfClass:[NSURL class]]) {
-		CFHTTPMessageSetHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
+		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageHostHeader, (CFStringRef)[endpoint absoluteString]);
 	}
 }
 
-- (void)preprocessResponse:(CFHTTPMessageRef)response {
-	CFIndex responseStatusCode = CFHTTPMessageGetResponseStatusCode(response);
-	if (responseStatusCode >= 100 && responseStatusCode <= 199) {
-		[self readResponse];
+- (void)processInboundMessage:(CFHTTPMessageRef)message {
+	if (!CFHTTPMessageIsRequest(message)) {
+		CFIndex responseStatusCode = CFHTTPMessageGetResponseStatusCode(message);
+		if (responseStatusCode >= 100 && responseStatusCode <= 199) {
+			[self readResponse];
+			return;
+		}
+		
+		if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveResponse:)]) {
+			[self.delegate networkConnection:self didReceiveResponse:message];
+		}
+		
 		return;
 	}
 	
-	if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveResponse:)]) {
-		[self.delegate networkConnection:self didReceiveResponse:response];
+	if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveRequest:)]) {
+		[self.delegate networkConnection:self didReceiveRequest:(CFHTTPMessageRef)message];
 	}
 }
 
 #pragma mark -
 
 - (void)performRequestMessage:(CFHTTPMessageRef)message {
-	[self preprocessRequest:message];
+	[self processOutboundMessage:message];
 	[self performWrite:AFHTTPConnectionPacketForMessage(message) withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
 }
 
@@ -118,6 +131,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 #pragma mark -
 
 - (void)performResponseMessage:(CFHTTPMessageRef)message {
+	[self processOutboundMessage:message];
 	[self performWrite:AFHTTPConnectionPacketForMessage(message) withTimeout:-1 context:&_AFHTTPConnectionWriteResponseContext];
 }
 
@@ -142,13 +156,11 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context {
 	if (context == &_AFHTTPConnectionReadRequestContext) {
-		if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveRequest:)]) {
-			[self.delegate networkConnection:self didReceiveRequest:(CFHTTPMessageRef)data];
-		}
+		[self postProcessMessage:(CFHTTPMessageRef)data];
 		return;
 	}
 	if (context == &_AFHTTPConnectionReadResponseContext) {
-		[self preprocessResponse:(CFHTTPMessageRef)data];
+		[self postProcessMessage:(CFHTTPMessageRef)data];
 		return;
 	}
 	
