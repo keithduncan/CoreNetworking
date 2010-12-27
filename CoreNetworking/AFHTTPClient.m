@@ -153,8 +153,8 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	return self.transactionQueue.currentPacket;
 }
 
-- (void)processOutboundMessage:(CFHTTPMessageRef)message {
-	[super processOutboundMessage:message];
+- (void)prepareMessageForTransport:(CFHTTPMessageRef)message {
+	[super prepareMessageForTransport:message];
 	
 	if (!CFHTTPMessageIsRequest(message)) {
 		return;
@@ -208,7 +208,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	}
 	
 	CFHTTPMessageRef requestMessage = (CFHTTPMessageRef)[NSMakeCollectable(AFHTTPMessageCreateForRequest(request)) autorelease];
-	[self processOutboundMessage:requestMessage];
+	[self prepareMessageForTransport:requestMessage];
 	
 	AFHTTPTransaction *transaction = [[[AFHTTPTransaction alloc] initWithRequestPackets:[NSArray arrayWithObject:AFHTTPConnectionPacketForMessage(requestMessage)] responsePackets:[NSArray arrayWithObject:[[[AFHTTPMessagePacket alloc] initForRequest:NO] autorelease]] context:context] autorelease];
 	[self _enqueueTransaction:transaction];
@@ -342,7 +342,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	
 	CFHTTPMessageSetBody(request, (CFDataRef)body);
 	
-	[self processOutboundMessage:request];
+	[self prepareMessageForTransport:request];
 	
 	return request;
 }

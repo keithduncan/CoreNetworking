@@ -56,13 +56,13 @@
 	\details
 	Adds the <tt>messageHeaders</tt> and a "Content-Length" header.
  */
-- (void)processOutboundMessage:(CFHTTPMessageRef)message;
+- (void)prepareMessageForTransport:(CFHTTPMessageRef)message;
 
 /*!
 	\brief
 	Overridable for subclasses, called to return a message to the delegate.
  */
-- (void)processInboundMessage:(CFHTTPMessageRef)message;
+- (void)processMessageFromTransport:(CFHTTPMessageRef)message;
 
 /*
 	Requests

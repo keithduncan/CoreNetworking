@@ -77,7 +77,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	[super dealloc];
 }
 
-- (void)processOutboundMessage:(CFHTTPMessageRef)message {
+- (void)prepareMessageForTransport:(CFHTTPMessageRef)message {
 	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease] length]] stringValue]);
 	}
@@ -97,7 +97,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 	}
 }
 
-- (void)processInboundMessage:(CFHTTPMessageRef)message {
+- (void)processMessageFromTransport:(CFHTTPMessageRef)message {
 	if (!CFHTTPMessageIsRequest(message)) {
 		CFIndex responseStatusCode = CFHTTPMessageGetResponseStatusCode(message);
 		if (responseStatusCode >= 100 && responseStatusCode <= 199) {
@@ -120,7 +120,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 #pragma mark -
 
 - (void)performRequestMessage:(CFHTTPMessageRef)message {
-	[self processOutboundMessage:message];
+	[self prepareMessageForTransport:message];
 	[self performWrite:AFHTTPConnectionPacketForMessage(message) withTimeout:-1 context:&_AFHTTPConnectionWriteRequestContext];
 }
 
@@ -131,7 +131,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 #pragma mark -
 
 - (void)performResponseMessage:(CFHTTPMessageRef)message {
-	[self processOutboundMessage:message];
+	[self prepareMessageForTransport:message];
 	[self performWrite:AFHTTPConnectionPacketForMessage(message) withTimeout:-1 context:&_AFHTTPConnectionWriteResponseContext];
 }
 
@@ -156,11 +156,11 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context {
 	if (context == &_AFHTTPConnectionReadRequestContext) {
-		[self postProcessMessage:(CFHTTPMessageRef)data];
+		[self processMessageFromTransport:(CFHTTPMessageRef)data];
 		return;
 	}
 	if (context == &_AFHTTPConnectionReadResponseContext) {
-		[self postProcessMessage:(CFHTTPMessageRef)data];
+		[self processMessageFromTransport:(CFHTTPMessageRef)data];
 		return;
 	}
 	
