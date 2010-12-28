@@ -119,6 +119,7 @@ enum {
 	
 	// 4xx class, client error
 	AFHTTPStatusCodeBadRequest			= 400, /* Bad Request */
+	AFHTTPStatusCodeUnauthorized		= 401, /* Unauthorized */
 	AFHTTPStatusCodeNotFound			= 404, /* Not Found */
 	AFHTTPStatusCodeNotAllowed			= 405, /* Not Allowed */
 	AFHTTPStatusCodeUpgradeRequired		= 426, /* Upgrade Required */

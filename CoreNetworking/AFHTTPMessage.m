@@ -181,6 +181,8 @@ CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 	switch (code) {
 		case AFHTTPStatusCodeContinue:
 			return CFSTR("Continue");
+		case AFHTTPStatusCodeSwitchingProtocols:
+			return CFSTR("Switching Protocols");
 			
 		case AFHTTPStatusCodeOK:
 			return CFSTR("OK");
@@ -196,6 +198,8 @@ CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 			
 		case AFHTTPStatusCodeBadRequest:
 			return CFSTR("Bad Request");
+		case AFHTTPStatusCodeUnauthorized:
+			return CFSTR("Unauthorized");
 		case AFHTTPStatusCodeNotFound:
 			return CFSTR("Not Found");
 		case AFHTTPStatusCodeNotAllowed:
