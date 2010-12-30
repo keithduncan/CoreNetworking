@@ -204,6 +204,8 @@ CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 			return CFSTR("Not Found");
 		case AFHTTPStatusCodeNotAllowed:
 			return CFSTR("Not Allowed");
+		case AFHTTPStatusCodeProxyAuthenticationRequired:
+			return CFSTR("Proxy Authentication Required");
 		case AFHTTPStatusCodeUpgradeRequired:
 			return CFSTR("Upgrade Required");
 			
