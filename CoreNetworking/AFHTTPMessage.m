@@ -176,6 +176,9 @@ NSString *const AFHTTPMessageLocationHeader = @"Location";
 NSString *const AFHTTPMessageRangeHeader = @"Range";
 NSString *const AFHTTPMessageExpectHeader = @"Expect";
 
+NSString *const AFHTTPMessageAuthorizationHeader = @"Authorization";
+NSString *const AFHTTPMessageProxyAuthorizationHeader = @"Proxy-Authorization";
+
 
 CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 	switch (code) {
