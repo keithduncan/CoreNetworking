@@ -99,6 +99,7 @@ extern NSString *const AFHTTPMessageLocationHeader;
 extern NSString *const AFHTTPMessageRangeHeader;
 extern NSString *const AFHTTPMessageExpectHeader;
 
+extern NSString *const AFHTTPMessageWWWAuthenticateHeader;
 extern NSString *const AFHTTPMessageAuthorizationHeader;
 extern NSString *const AFHTTPMessageProxyAuthorizationHeader;
 

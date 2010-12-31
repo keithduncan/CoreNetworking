@@ -176,6 +176,7 @@ NSString *const AFHTTPMessageLocationHeader = @"Location";
 NSString *const AFHTTPMessageRangeHeader = @"Range";
 NSString *const AFHTTPMessageExpectHeader = @"Expect";
 
+NSString *const AFHTTPMessageWWWAuthenticateHeader = @"WWW-Authenticate";
 NSString *const AFHTTPMessageAuthorizationHeader = @"Authorization";
 NSString *const AFHTTPMessageProxyAuthorizationHeader = @"Proxy-Authorization";
 
