@@ -70,7 +70,9 @@
 	
 	if (proxy == nil) proxy = [[[AFNetworkDelegateProxy alloc] init] autorelease];
 	
-	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) proxy = [(id)_delegate delegateProxy:proxy];
+	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) {
+		proxy = [(id)_delegate delegateProxy:proxy];
+	}
 	[proxy insertTarget:_delegate];
 	
 	return proxy;
@@ -86,7 +88,7 @@
 	NSMutableArray *layers = [NSMutableArray array];
 	for (id layer = self; layer != nil; layer = [layer lowerLayer]) [layers insertObject:layer atIndex:0];
 	
-	for (AFNetworkLayer *currentLayer in [layers reverseObjectEnumerator]) {
+	for (AFNetworkLayer *currentLayer in layers) {
 		// Note: the direct ivar access is important
 		[transportInfo setValuesForKeysWithDictionary:currentLayer->_transportInfo];
 	}
