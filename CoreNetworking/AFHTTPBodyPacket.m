@@ -180,7 +180,7 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	
 	if (errorRef != NULL) {
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-								   
+#warning complete this error
 								   nil];
 		*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:0 userInfo:errorInfo];
 	}
