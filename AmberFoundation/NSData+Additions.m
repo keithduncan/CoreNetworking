@@ -59,9 +59,11 @@ static const char _base64Padding[1] = "=";
 + (id)dataWithBase64String:(NSString *)base64String {
 	if (([base64String length] % 4) != 0) return nil;
 	
-	NSMutableCharacterSet *base64CharacterSet = [[NSMutableCharacterSet alloc] init];
-	[base64CharacterSet addCharactersInString:[[NSString alloc] initWithBytes:_base64Alphabet length:64 encoding:NSASCIIStringEncoding]];
-	[base64CharacterSet addCharactersInString:[[NSString alloc] initWithBytes:_base64Padding length:1 encoding:NSASCIIStringEncoding]];
+	NSString *base64Alphabet = [[[NSString alloc] initWithBytes:_base64Alphabet length:64 encoding:NSASCIIStringEncoding] autorelease];
+	
+	NSMutableCharacterSet *base64CharacterSet = [[[NSMutableCharacterSet alloc] init] autorelease];
+	[base64CharacterSet addCharactersInString:base64Alphabet];
+	[base64CharacterSet addCharactersInString:[[[NSString alloc] initWithBytes:_base64Padding length:1 encoding:NSASCIIStringEncoding] autorelease]];
 	if ([[base64String stringByTrimmingCharactersInSet:base64CharacterSet] length] != 0) return nil;
 	
 	NSUInteger paddingCharacters = 0; // 2, 1, 0 are allowed
@@ -75,8 +77,6 @@ static const char _base64Padding[1] = "=";
 	
 	
 	NSMutableData *data = [NSMutableData dataWithCapacity:(([base64String length] / 4) * 3)];
-	
-	NSString *base64Alphabet = [[NSString alloc] initWithBytes:_base64Alphabet length:64 encoding:NSASCIIStringEncoding];
 	CFRetain(base64String);
 	
 	NSUInteger characterOffset = 0;
@@ -165,7 +165,7 @@ static const char _base64Padding[1] = "=";
 			characters[3] = _base64Alphabet[bits];
 		}
 		
-		[string appendString:[[NSString alloc] initWithBytes:characters length:4 encoding:NSASCIIStringEncoding]];
+		[string appendString:[[[NSString alloc] initWithBytes:characters length:4 encoding:NSASCIIStringEncoding] autorelease]];
 		
 		byteOffset += 3;
 		currentByte += 3;
@@ -182,9 +182,11 @@ static const char _base32Padding[1] = "=";
 + (id)dataWithBase32String:(NSString *)base32String {
 	if (([base32String length] % 8) != 0) return nil;
 	
-	NSMutableCharacterSet *base32CharacterSet = [[NSMutableCharacterSet alloc] init];
-	[base32CharacterSet addCharactersInString:[[NSString alloc] initWithBytes:_base32Alphabet length:32 encoding:NSASCIIStringEncoding]];
-	[base32CharacterSet addCharactersInString:[[NSString alloc] initWithBytes:_base32Padding length:1 encoding:NSASCIIStringEncoding]];
+	NSString *base32Alphabet = [[[NSString alloc] initWithBytes:_base32Alphabet length:32 encoding:NSASCIIStringEncoding] autorelease];
+	
+	NSMutableCharacterSet *base32CharacterSet = [[[NSMutableCharacterSet alloc] init] autorelease];
+	[base32CharacterSet addCharactersInString:base32Alphabet];
+	[base32CharacterSet addCharactersInString:[[[NSString alloc] initWithBytes:_base32Padding length:1 encoding:NSASCIIStringEncoding] autorelease]];
 	if ([[base32String stringByTrimmingCharactersInSet:base32CharacterSet] length] != 0) return nil;
 	
 	NSUInteger paddingCharacters = 0; // 6, 4, 3, 1, 0 are allowed
@@ -198,8 +200,6 @@ static const char _base32Padding[1] = "=";
 	
 	
 	NSMutableData *data = [NSMutableData dataWithCapacity:(([base32String length] / 8) * 5)];
-	
-	NSString *base32Alphabet = [[NSString alloc] initWithBytes:_base32Alphabet length:32 encoding:NSASCIIStringEncoding];
 	CFRetain(base32String);
 	
 	NSUInteger characterOffset = 0;
@@ -343,7 +343,7 @@ static const char _base32Padding[1] = "=";
 			}
 		} while (NO);
 		
-		[string appendString:[[NSString alloc] initWithBytes:characters length:8 encoding:NSASCIIStringEncoding]];
+		[string appendString:[[[NSString alloc] initWithBytes:characters length:8 encoding:NSASCIIStringEncoding] autorelease]];
 		
 		byteOffset += 5;
 		currentByte += 5;
@@ -359,16 +359,15 @@ static const char _base16Alphabet[16] = "0123456789ABCDEF";
 + (id)dataWithBase16String:(NSString *)base16String {
 	if (([base16String length] % 2) != 0) return nil;
 	
-	NSMutableCharacterSet *base16CharacterSet = [[NSMutableCharacterSet alloc] init];
-	[base16CharacterSet addCharactersInString:@"0123456789"];
-	[base16CharacterSet addCharactersInString:@"abcdef"];
-	[base16CharacterSet addCharactersInString:@"ABCDEF"];
+	NSString *base16Alphabet = [[[NSString alloc] initWithBytes:_base16Alphabet length:16 encoding:NSASCIIStringEncoding] autorelease];
+	
+	NSMutableCharacterSet *base16CharacterSet = [[[NSMutableCharacterSet alloc] init] autorelease];
+	[base16CharacterSet addCharactersInString:[base16Alphabet uppercaseString]];
+	[base16CharacterSet addCharactersInString:[base16Alphabet lowercaseString]];
 	if ([[base16String stringByTrimmingCharactersInSet:base16CharacterSet] length] != 0) return nil;
 	
 	
 	NSMutableData *data = [NSMutableData dataWithCapacity:([base16String length] / 2)];
-	
-	NSString *base16Alphabet = [[NSString alloc] initWithBytes:_base16Alphabet length:16 encoding:NSASCIIStringEncoding];
 	CFRetain(base16String);
 	
 	NSUInteger characterOffset = 0;
@@ -405,11 +404,37 @@ static const char _base16Alphabet[16] = "0123456789ABCDEF";
 		characters[0] = _base16Alphabet[(*(currentByte + byteOffset) & /* 0b11110000 */ 240) >> 4];
 		characters[1] = _base16Alphabet[(*(currentByte + byteOffset) & /* 0b00001111 */ 15)  >> 0];
 		
-		[string appendString:[[NSString alloc] initWithBytes:characters length:2 encoding:NSASCIIStringEncoding]];
+		[string appendString:[[[NSString alloc] initWithBytes:characters length:2 encoding:NSASCIIStringEncoding] autorelease]];
 		byteOffset++;
 	}
 	
 	CFRelease(self);
+	
+	return string;
+}
+
+- (NSString *)base2String {
+	NSMutableString *string = [NSMutableString stringWithCapacity:([self length] * 9)];
+	
+	const uint8_t *currentByte = [self bytes];
+	NSUInteger byteOffset = 0;
+	
+	while (byteOffset < [self length]) {
+		char characters[9] = {0};
+		
+		characters[0] = (*(currentByte + byteOffset) & /* 0b10000000 */ 128) ? '1' : '0';
+		characters[1] = (*(currentByte + byteOffset) & /* 0b01000000 */ 64)  ? '1' : '0';
+		characters[2] = (*(currentByte + byteOffset) & /* 0b00100000 */ 32)  ? '1' : '0';
+		characters[3] = (*(currentByte + byteOffset) & /* 0b00010000 */ 16)  ? '1' : '0';
+		characters[4] = (*(currentByte + byteOffset) & /* 0b00001000 */ 8)   ? '1' : '0';
+		characters[5] = (*(currentByte + byteOffset) & /* 0b00000100 */ 4)   ? '1' : '0';
+		characters[6] = (*(currentByte + byteOffset) & /* 0b00000010 */ 2)   ? '1' : '0';
+		characters[7] = (*(currentByte + byteOffset) & /* 0b00000001 */ 1)   ? '1' : '0';
+		characters[8] = ' ';
+		
+		[string appendString:[[[NSString alloc] initWithBytes:characters length:9 encoding:NSASCIIStringEncoding] autorelease]];
+		byteOffset++;
+	}
 	
 	return string;
 }
