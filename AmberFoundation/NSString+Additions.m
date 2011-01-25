@@ -46,7 +46,7 @@
 }
 
 - (NSString *)stringByAppendingKeyPath:(NSString *)keyPath {
-	return [self stringByAppendingFormat:@".%@", keyPath, nil];
+	return [self stringByAppendingFormat:@".%@", keyPath];
 }
 
 - (NSString *)stringByRemovingKeyPathComponentAtIndex:(NSUInteger)index {
