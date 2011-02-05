@@ -297,7 +297,8 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 		
 		NSString *currentValue = [[self values] objectForKey:currentFieldname];
 		NSData *currentValueData = ([currentValue length] > 0 ? [currentValue dataUsingEncoding:_AFNetworkFormEncoding] : nil);
-		_AFNetworkFormDocumentDataFieldPart *currentValuePart = [[[_AFNetworkFormDocumentDataFieldPart alloc] initWithData:currentValueData contentType:@"text/plain"] autorelease];
+		NSString *currentValueContentType = [NSString stringWithFormat:@"text/plain; charset=%@", (id)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(_AFNetworkFormEncoding))];
+		_AFNetworkFormDocumentDataFieldPart *currentValuePart = [[[_AFNetworkFormDocumentDataFieldPart alloc] initWithData:currentValueData contentType:currentValueContentType] autorelease];
 		
 		NSString *contentDisposition = [NSString stringWithFormat:@"form-data; name=\"%@\"", currentFieldname];
 		[self _appendPart:currentValuePart toCumulativePackets:cumulativePackets cumulativeFrameLength:&cumulativeFrameLength withContentDisposition:contentDisposition];
