@@ -123,11 +123,13 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 @interface _AFNetworkFormDocumentFileFieldPart : _AFNetworkDocumentPart {
  @private
 	NSURL *_location;
+	NSString *_contentType;
 }
 
-- (id)initWithLocation:(NSURL *)location;
+- (id)initWithLocation:(NSURL *)location contentType:(NSString *)contentType;
 
 @property (readonly, copy) NSURL *location;
+@property (readonly, copy) NSString *contentType;
 
 @end
 
@@ -135,22 +137,28 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 
 @synthesize location=_location;
 
-- (id)initWithLocation:(NSURL *)location {
+- (id)initWithLocation:(NSURL *)location contentType:(NSString *)contentType {
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_location = [location copy];
+	_location = [[location URLByResolvingSymlinksInPath] copy];
+	_contentType = [contentType copy];
 	
 	return self;
 }
 
 - (void)dealloc {
 	[_location release];
+	[_contentType release];
 	
 	[super dealloc];
 }
 
 - (NSString *)contentType {
+	if (_contentType != nil) {
+		return _contentType;
+	}
+	
 	NSString *defaultMIMEType = @"application/octet-stream";
 	
 	NSString *resourceType = nil;
@@ -168,12 +176,9 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	BOOL getResourceLength = [[self location] getResourceValue:&resourceLength forKey:NSURLFileSizeKey error:NULL];
 	if (!getResourceLength) return nil;
 	
-	
-	NSString *MIMEType = [self contentType];
-	
 	[headers addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:
 									   @"binary", AFNetworkDocumentMIMEContentTransferEncoding,
-									   MIMEType, AFNetworkDocumentMIMEContentType,
+									   [self contentType], AFNetworkDocumentMIMEContentType,
 									   nil]
 	 ];
 	
@@ -185,7 +190,9 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	AFPacketWrite *filePacket = [[[AFPacketWrite alloc] initWithData:fileData] autorelease];
 #endif
 	
-	if (frameLengthRef != NULL) *frameLengthRef = [resourceLength unsignedIntegerValue];
+	if (frameLengthRef != NULL) {
+		*frameLengthRef = [resourceLength unsignedIntegerValue];
+	}
 	
 	return [NSArray arrayWithObject:filePacket];
 }
