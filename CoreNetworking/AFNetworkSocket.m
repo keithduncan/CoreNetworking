@@ -158,11 +158,8 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	[description appendString:@"{\n"];
 	
 	if (_socket != NULL) {
-		char buffer[INET6_ADDRSTRLEN]; // Note: because the -description method is used only for debugging, we can use a fixed length buffer
-		sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)[NSMakeCollectable(CFSocketCopyAddress(_socket)) autorelease]), buffer, INET6_ADDRSTRLEN);
-		
-		[description appendFormat:@"\tAddress: %s\n", buffer, nil];
-		[description appendFormat:@"\tPort: %ld\n", ntohs(((struct sockaddr_in *)CFDataGetBytePtr((CFDataRef)[NSMakeCollectable(CFSocketCopyAddress(_socket)) autorelease]))->sin_port), nil];
+		[description appendFormat:@"\tAddress: %@\n", AFNetworkSocketAddressToPresentation((NSData *)[NSMakeCollectable(CFSocketCopyAddress(_socket)) autorelease])];
+		[description appendFormat:@"\tPort: %ld\n", ntohs(((struct sockaddr_in *)CFDataGetBytePtr((CFDataRef)[NSMakeCollectable(CFSocketCopyAddress(_socket)) autorelease]))->sin_port)];
 	}
 	
 	[description appendString:@"}"];

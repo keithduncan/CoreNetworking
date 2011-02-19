@@ -366,8 +366,12 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	cumulativeFrameLength += [multipartFooter length];
 	
 	
-	if (contentTypeRef != NULL) *contentTypeRef = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", multipartBoundary];
-	if (frameLengthRef != NULL) *frameLengthRef = cumulativeFrameLength;
+	if (contentTypeRef != NULL) {
+		*contentTypeRef = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", multipartBoundary];
+	}
+	if (frameLengthRef != NULL) {
+		*frameLengthRef = cumulativeFrameLength;
+	} 
 	
 	
 	return cumulativePackets;

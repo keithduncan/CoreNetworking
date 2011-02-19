@@ -16,16 +16,16 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-NS_INLINE bool sockaddr_is_ipv4_mapped(const struct sockaddr *addr) {
+NS_INLINE bool af_sockaddr_is_ipv4_mapped(const struct sockaddr *addr) {
 	NSCParameterAssert(addr != NULL);
 	
 	const struct sockaddr_in6 *addr_6 = (const struct sockaddr_in6 *)addr;
 	return ((addr->sa_family == AF_INET6) && IN6_IS_ADDR_V4MAPPED(&(addr_6->sin6_addr)));
 }
 
-bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b) {	
+bool af_sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b) {
 	/* we have to handle IPv6 IPV4MAPPED addresses - convert them to IPv4 */
-	if (sockaddr_is_ipv4_mapped(addr_a)) {
+	if (af_sockaddr_is_ipv4_mapped(addr_a)) {
 		const struct sockaddr_in6 *addr_a6 = (const struct sockaddr_in6 *)addr_a;
 		
 		struct sockaddr_in *addr_a4 = (struct sockaddr_in *)alloca(sizeof(struct sockaddr_in));
@@ -35,8 +35,7 @@ bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr
 		addr_a4->sin_port = addr_a6->sin6_port;
 		addr_a = (const struct sockaddr *)addr_a4;
 	}
-	
-	if (sockaddr_is_ipv4_mapped(addr_b)) {
+	if (af_sockaddr_is_ipv4_mapped(addr_b)) {
 		const struct sockaddr_in6 *addr_b6 = (const struct sockaddr_in6 *)addr_b;
 		
 		struct sockaddr_in *addr_b4 = (struct sockaddr_in *)alloca(sizeof(struct sockaddr_in));
@@ -47,67 +46,60 @@ bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr
 		addr_b = (const struct sockaddr *)addr_b4;
 	}
 	
-	if (addr_a->sa_family != addr_b->sa_family) return false;
+	if (addr_a->sa_family != addr_b->sa_family) {
+		return false;
+	}
 	
 	if (addr_a->sa_family == AF_INET) {
 		const struct sockaddr_in *a_in = (struct sockaddr_in *)addr_a;
 		const struct sockaddr_in *b_in = (struct sockaddr_in *)addr_b;
 		
 		// Compare addresses
-		if ((a_in->sin_addr.s_addr != INADDR_ANY) &&
-			(b_in->sin_addr.s_addr != INADDR_ANY) &&
-			(a_in->sin_addr.s_addr != b_in->sin_addr.s_addr))
-		{
+		if ((a_in->sin_addr.s_addr != INADDR_ANY) && (b_in->sin_addr.s_addr != INADDR_ANY) && (a_in->sin_addr.s_addr != b_in->sin_addr.s_addr)) {
 			return false;
 		}
 		
 		// Compare ports
-		if ((a_in->sin_port == 0) || (b_in->sin_port == 0) ||
-			(a_in->sin_port == b_in->sin_port))
-		{
+		if ((a_in->sin_port == 0) || (b_in->sin_port == 0) || (a_in->sin_port == b_in->sin_port)) {
 			return true;
 		}
-	} if (addr_a->sa_family == AF_INET6) {
+	}
+	
+	if (addr_a->sa_family == AF_INET6) {
 		const struct sockaddr_in6 *addr_a6 = (const struct sockaddr_in6 *)addr_a;
 		const struct sockaddr_in6 *addr_b6 = (const struct sockaddr_in6 *)addr_b;
 		
 		/* compare scope */
-		if (addr_a6->sin6_scope_id && addr_b6->sin6_scope_id && (addr_a6->sin6_scope_id != addr_b6->sin6_scope_id)) return false;
+		if (addr_a6->sin6_scope_id && addr_b6->sin6_scope_id && (addr_a6->sin6_scope_id != addr_b6->sin6_scope_id)) {
+			return false;
+		}
 		
 		/* compare address part 
 		 * either may be IN6ADDR_ANY, resulting in a good match */
-		if ((memcmp(&(addr_a6->sin6_addr), &in6addr_any,
-		            sizeof(struct in6_addr)) != 0) &&
-		    (memcmp(&(addr_b6->sin6_addr), &in6addr_any,
-					sizeof(struct in6_addr)) != 0) &&
-		    (memcmp(&(addr_a6->sin6_addr), &(addr_b6->sin6_addr),
-					sizeof(struct in6_addr)) != 0))
-		{
+		if ((memcmp(&(addr_a6->sin6_addr), &in6addr_any, sizeof(struct in6_addr)) != 0) &&
+		    (memcmp(&(addr_b6->sin6_addr), &in6addr_any, sizeof(struct in6_addr)) != 0) &&
+		    (memcmp(&(addr_a6->sin6_addr), &(addr_b6->sin6_addr), sizeof(struct in6_addr)) != 0)) {
 			return false;
 		}
 		
 		/* compare port part 
 		 * either port may be 0 (any), resulting in a good match */
 		return ((addr_a6->sin6_port == 0) || (addr_b6->sin6_port == 0) || (addr_a6->sin6_port == addr_b6->sin6_port));
-	} else {
-		BOOL addressFamilyHandled = NO;
-		NSCParameterAssert(addressFamilyHandled);
 	}
 	
+	[NSException raise:NSInvalidArgumentException format:@"%s, unknown address family (%ld)", __PRETTY_FUNCTION__, (unsigned long)addr_a->sa_family];
 	return false;
 }
 
-const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen) {
+const char *af_sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen) {
 	switch (addr->sa_family) {
-		case AF_INET: 
+		case AF_INET:;
 			return inet_ntop(AF_INET, &(((struct sockaddr_in *)addr)->sin_addr), dst, maxlen); 
-		case AF_INET6: 
+		case AF_INET6:;
 			return inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)addr)->sin6_addr), dst, maxlen); 
-		default: 
-			return strncpy(dst, "Unknown AF", maxlen);
 	}
 	
-	return NULL;
+	return strncpy(dst, "Unknown AF", maxlen);
 }
 
 NSError *AFNetworkErrorFromCFStreamError(CFStreamError error) {
@@ -139,11 +131,11 @@ NSError *AFNetworkErrorFromCFStreamError(CFStreamError error) {
 	return [NSError errorWithDomain:domain code:error.error userInfo:userInfo];
 }
 
-NSString *AFSocketAddressToPresentation(NSData *socketAddress) {
+NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress) {
 	CFRetain(socketAddress);
 	
 	char socketAddressPresentation[INET6_ADDRSTRLEN] = {0};
-	BOOL socketAddressPresentationConverted = (sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)socketAddress), socketAddressPresentation, sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation)) != NULL);
+	BOOL socketAddressPresentationConverted = (af_sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)socketAddress), socketAddressPresentation, sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation)) != NULL);
 	
 	CFRelease(socketAddress);
 	

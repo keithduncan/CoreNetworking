@@ -48,16 +48,10 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPClientReadResponseContext);
 @synthesize authentication=_authentication, authenticationCredentials=_authenticationCredentials;
 @synthesize transactionQueue=_transactionQueue;
 
-static NSString *_AFHTTPConnectionUserAgentFromBundle(NSBundle *bundle) {
-	if (bundle == nil) return nil;
-	return [NSString stringWithFormat:@"%@/%@", [[bundle objectForInfoDictionaryKey:(id)@"CFBundleDisplayName"] stringByReplacingOccurrencesOfString:@" " withString:@"-"], [[bundle objectForInfoDictionaryKey:(id)kCFBundleVersionKey] stringByReplacingOccurrencesOfString:@" " withString:@"-"], nil];
-}
-
 + (void)initialize {
-	NSMutableArray *components = [NSMutableArray array];
-	[components addObjectsFromArray:[NSArray arrayWithObjects:_AFHTTPConnectionUserAgentFromBundle([NSBundle mainBundle]), nil]];
-	[components addObjectsFromArray:[NSArray arrayWithObjects:_AFHTTPConnectionUserAgentFromBundle([NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier]), nil]];
-	[self setUserAgent:([components count] > 0 ? [components componentsJoinedByString:@" "] : nil)];
+	if (self != [AFHTTPClient class]) return;
+	
+	[self setUserAgent:AFHTTPAgentString()];
 }
 
 static NSString *_AFHTTPClientUserAgent = nil;

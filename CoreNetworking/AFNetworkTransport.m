@@ -213,9 +213,9 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	[description appendString:@" {\n"];
 	
-	[description appendFormat:@"\tPeer: %@\n", [(id)[self peer] description], nil];
+	[description appendFormat:@"\tPeer: %@\n", [(id)[self peer] description]];
 	
-	[description appendFormat:@"\tOpened: %@, Closed: %@\n", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO"), nil];
+	[description appendFormat:@"\tOpened: %@, Closed: %@\n", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO")];
 	
 	[description appendFormat:@"\tWrite Stream: %@", [self.writeStream description]];
 	[description appendFormat:@"\tRead Stream: %@", [self.readStream description]];

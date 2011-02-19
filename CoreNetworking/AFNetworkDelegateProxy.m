@@ -32,7 +32,7 @@
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	
 	[description appendString:@" {"];
-	[description appendFormat:@"\n\tDispatch Order: %@", _dispatchOrder, nil];
+	[description appendFormat:@"\n\tDispatch Order: %@", _dispatchOrder];
 	[description appendString:@"\n}"];
 	
 	return description;

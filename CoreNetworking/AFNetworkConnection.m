@@ -76,7 +76,7 @@
 		NSArray *addresses = (NSArray *)CFHostGetAddressing(host, NULL);
 		if ([addresses count] != 0) {
 			NSData *address = [addresses objectAtIndex:0];
-			NSString *addressString = AFSocketAddressToPresentation(address);
+			NSString *addressString = AFNetworkSocketAddressToPresentation(address);
 			
 			if (addressString != nil) {
 				return [NSURL URLWithString:addressString];
@@ -91,7 +91,7 @@
 		CFStringRef host = CFNetServiceGetTargetHost(service);
 		SInt32 port = CFNetServiceGetPortNumber(service);
 		
-		return [NSURL URLWithString:[NSString stringWithFormat:@"%@:%lu", host, (unsigned long)port, nil]];
+		return [NSURL URLWithString:[NSString stringWithFormat:@"%@:%lu", host, (unsigned long)port]];
 	}
 	
 	[NSException raise:NSInternalInconsistencyException format:@"%s, unsupported peer type %@", __PRETTY_FUNCTION__, peer, nil];

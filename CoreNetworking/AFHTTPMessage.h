@@ -56,7 +56,7 @@ extern NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(NSURL *URL, CFHTTPMess
 extern AFNetworkPacket <AFNetworkPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message);
 
 /*
-	HTTP verbs
+	HTTP methods
  */
 
 extern NSString *const AFHTTPMethodHEAD;
@@ -79,9 +79,10 @@ extern NSString *const AFNetworkSchemeHTTPS;
 	AFHTTPConnection Message Headers
  */
 
+extern NSString *const AFHTTPMessageServerHeader;
 extern NSString *const AFHTTPMessageUserAgentHeader;
-extern NSString *const AFHTTPMessageHostHeader;
 
+extern NSString *const AFHTTPMessageHostHeader;
 extern NSString *const AFHTTPMessageConnectionHeader;
 
 extern NSString *const AFHTTPMessageContentLengthHeader;
@@ -144,3 +145,15 @@ typedef NSInteger AFHTTPStatusCode;
 	This is typed to return a CFStringRef to minimise the impedance mismatch with <tt>CFHTTPMessageCreate()</tt>.
  */
 extern CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code);
+
+/*!
+	\brief
+	Generate an agent string suitable for the Server or User-Agent headers.
+ */
+extern NSString *AFHTTPAgentStringForBundle(NSBundle *bundle);
+
+/*!
+	\brief
+	Generate an agent string suitable for the Server or User-Agent headers, for the main bundle.
+ */
+extern NSString *AFHTTPAgentString(void);

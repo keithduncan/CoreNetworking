@@ -34,7 +34,7 @@ NSString *const AFNetworkPacketErrorKey = @"AFPacketError";
 	NSInteger done = 0, total = 0;
 	float fraction = [self currentProgressWithBytesDone:&done bytesTotal:&total];
 	
-	[description appendFormat:@"current progress %ld bytes of %ld total. %.2f%% done.", done, total, (fraction * 100.), nil];
+	[description appendFormat:@"current progress %ld bytes of %ld total. %.2f%% done.", done, total, (fraction * 100.)];
 	
 	return description;	
 }

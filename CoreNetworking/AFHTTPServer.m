@@ -94,8 +94,7 @@
 	
 	AFHTTPConnection *connection = layer;
 	
-	NSString *serverAgent = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:(id)kCFBundleNameKey], [[NSBundle mainBundle] objectForInfoDictionaryKey:(id)kCFBundleVersionKey], nil];
-	[connection.messageHeaders setObject:serverAgent forKey:@"Server"];
+	[connection.messageHeaders setObject:AFHTTPAgentString() forKey:AFHTTPMessageServerHeader];
 	
 	[connection readRequest];
 }

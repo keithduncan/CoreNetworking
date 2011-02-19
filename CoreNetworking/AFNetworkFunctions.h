@@ -14,8 +14,8 @@
 //	BSD Networking
 //
 
-extern bool sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b);
-extern const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen);
+extern bool af_sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *addr_b);
+extern const char *af_sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxlen);
 
 //
 //	Cocoa Networking
@@ -23,4 +23,4 @@ extern const char *sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t 
 
 extern NSError *AFNetworkErrorFromCFStreamError(CFStreamError error);
 
-extern NSString *AFSocketAddressToPresentation(NSData *socketAddress);
+extern NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress);

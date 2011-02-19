@@ -8,11 +8,15 @@
 
 #import "AFHTTPMessage.h"
 
+#import <objc/objc-auto.h>
+
 #import "AFNetworkPacketWrite.h"
 #import "AFNetworkPacketWriteFromReadStream.h"
 
 #import "NSDictionary+AFNetworkAdditions.h"
 #import "NSURLRequest+AFNetworkAdditions.h"
+
+#import "AFNetworkConstants.h"
 
 @interface _AFHTTPURLResponse : NSHTTPURLResponse {
  @private
@@ -156,9 +160,10 @@ NSString *const AFNetworkSchemeHTTP = @"http";
 NSString *const AFNetworkSchemeHTTPS = @"https";
 
 
+NSString *const AFHTTPMessageServerHeader = @"Server";
 NSString *const AFHTTPMessageUserAgentHeader = @"User-Agent";
-NSString *const AFHTTPMessageHostHeader = @"Host";
 
+NSString *const AFHTTPMessageHostHeader = @"Host";
 NSString *const AFHTTPMessageConnectionHeader = @"Connection";
 
 NSString *const AFHTTPMessageContentLengthHeader = @"Content-Length";
@@ -221,4 +226,24 @@ CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 	
 	[NSException raise:NSInvalidArgumentException format:@"%s, (%ld) is not a known status code", __PRETTY_FUNCTION__, nil];
 	return NULL;
+}
+
+NSString *AFHTTPAgentStringForBundle(NSBundle *bundle) {
+	if (bundle == nil) return nil;
+	return [NSString stringWithFormat:@"%@/%@", [[bundle objectForInfoDictionaryKey:(id)@"CFBundleDisplayName"] stringByReplacingOccurrencesOfString:@" " withString:@"-"], [[bundle objectForInfoDictionaryKey:(id)kCFBundleVersionKey] stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
+}
+
+NSString *AFHTTPAgentString(void) {
+	static NSString *agentString = nil;
+	if (agentString == nil) {
+		NSMutableArray *components = [NSMutableArray array];
+		[components addObjectsFromArray:[NSArray arrayWithObjects:AFHTTPAgentStringForBundle([NSBundle mainBundle]), nil]];
+		[components addObjectsFromArray:[NSArray arrayWithObjects:AFHTTPAgentStringForBundle([NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier]), nil]];
+		NSString *newAgentString = [([components count] > 0 ? [components componentsJoinedByString:@" "] : @"") copy];
+		
+		if (!objc_atomicCompareAndSwapGlobalBarrier(nil, newAgentString, &agentString)) {
+			[newAgentString release];
+		}
+	}
+	return agentString;
 }

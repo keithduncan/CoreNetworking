@@ -116,8 +116,8 @@ typedef NSUInteger _AFNetworkStreamFlags;
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	
 	static const char *StreamStatusStrings[] = { "not open", "opening", "open", "reading", "writing", "at end", "closed", "has error" };
-	[description appendFormat:@"\tStream: %p %s, ", self.stream, (self.stream != nil ? StreamStatusStrings[[self.stream streamStatus]] : ""), nil];
-	[description appendFormat:@"Current Read: %@", [self.queue currentPacket], nil];
+	[description appendFormat:@"\tStream: %p %s, ", self.stream, (self.stream != nil ? StreamStatusStrings[[self.stream streamStatus]] : "")];
+	[description appendFormat:@"Current Read: %@", [self.queue currentPacket]];
 	[description appendString:@"\n"];
 	
 	return description;
