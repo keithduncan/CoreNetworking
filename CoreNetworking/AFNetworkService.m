@@ -65,7 +65,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	if (resolvedAddresses == nil) {
 		if ([self->delegate respondsToSelector:@selector(networkService:didNotResolveAddress:)]) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									  NSLocalizedString(@"Couldn't resolve the remote client's address.", @"AFNetService resolve failure"), NSLocalizedDescriptionKey,
+									  NSLocalizedStringFromTableInBundle(@"Couldn't resolve the remote client's address", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetService resolve failure"), NSLocalizedDescriptionKey,
 									  nil];
 			
 			NSError *error = [[[NSError alloc] initWithDomain:AFCoreNetworkingBundleIdentifier code:0 userInfo:userInfo] autorelease];

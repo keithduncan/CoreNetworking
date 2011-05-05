@@ -320,11 +320,10 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	if (!result) {
 		if (errorRef != NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									  NSLocalizedStringWithDefaultValue(@"AFNetworkTransportTLSError", @"AFNetworkTransport", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Couldn't start TLS, the connection will remain insecure.", nil), NSLocalizedDescriptionKey,
+									  NSLocalizedStringFromTableInBundle(@"Your connection could not be secured", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport couldn't start TLS error description"), NSLocalizedDescriptionKey,
 									  nil];
 			*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorTLS userInfo:userInfo];
 		}
-		
 		return NO;
 	}
 	
@@ -371,6 +370,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 								   NSLocalizedStringFromTableInBundle(@"You’re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
 								   NSLocalizedStringFromTableInBundle(@"This computer’s Internet connection appears to be offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
+								   error, NSUnderlyingErrorKey,
 								   nil];
 		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorUnknown userInfo:errorInfo];
 	}
@@ -379,6 +379,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 								   NSLocalizedStringFromTableInBundle(@"You’re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
 								   NSLocalizedStringFromTableInBundle(@"This computer’s Internet connection appears to have gone offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
+								   error, NSUnderlyingErrorKey,
 								   nil];
 		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorUnknown userInfo:errorInfo];
 	}

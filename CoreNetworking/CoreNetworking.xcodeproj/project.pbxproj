@@ -91,6 +91,7 @@
 		5370E0B60F5B061D008F5991 /* AFNetworkFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0920F5B061D008F5991 /* AFNetworkFunctions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370E0B70F5B061D008F5991 /* AFNetworkFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0930F5B061D008F5991 /* AFNetworkFunctions.m */; };
 		5370E0BB0F5B061D008F5991 /* CoreNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0970F5B061D008F5991 /* CoreNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		537B7F2F1373500100E17306 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 537B7F2D1373500100E17306 /* Localizable.strings */; };
 		538307B1101384DF000DA939 /* AFHTTPMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 538307AF101384DF000DA939 /* AFHTTPMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		538307B2101384DF000DA939 /* AFHTTPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 538307B0101384DF000DA939 /* AFHTTPMessage.m */; };
 		538307B3101384DF000DA939 /* AFHTTPMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 538307AF101384DF000DA939 /* AFHTTPMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -205,6 +206,7 @@
 		5370E0920F5B061D008F5991 /* AFNetworkFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkFunctions.h; sourceTree = "<group>"; };
 		5370E0930F5B061D008F5991 /* AFNetworkFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkFunctions.m; sourceTree = "<group>"; };
 		5370E0970F5B061D008F5991 /* CoreNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreNetworking.h; sourceTree = "<group>"; };
+		537B7F2E1373500100E17306 /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		538307AF101384DF000DA939 /* AFHTTPMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPMessage.h; sourceTree = "<group>"; };
 		538307B0101384DF000DA939 /* AFHTTPMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPMessage.m; sourceTree = "<group>"; };
 		538EC15A115D6E5A00A8E8F9 /* AFNetworkFormDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkFormDocument.h; sourceTree = "<group>"; };
@@ -453,6 +455,7 @@
 			isa = PBXGroup;
 			children = (
 				5370E0720F5B0571008F5991 /* CoreNetworking-Info.plist */,
+				537B7F2D1373500100E17306 /* Localizable.strings */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -604,13 +607,14 @@
 			};
 			buildConfigurationList = 5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "CoreNetworking" */;
 			compatibilityVersion = "Xcode 3.1";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				English,
 				Japanese,
 				French,
 				German,
+				en,
 			);
 			mainGroup = 5343E6FB0C21FB1000B63E6E;
 			productRefGroup = 5343E70F0C21FB4200B63E6E /* Products */;
@@ -628,6 +632,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				537B7F2F1373500100E17306 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -717,6 +722,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		537B7F2D1373500100E17306 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				537B7F2E1373500100E17306 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		5343E6FF0C21FB1000B63E6E /* Debug */ = {

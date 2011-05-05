@@ -96,7 +96,7 @@
 
 /*!
 	\brief
-	Creates a dispatch source.
+	Creates a dispatch source internally.
 	
 	\param queue
 	A layer can only be scheduled in a single queue at a time, to unschedule it pass NULL.

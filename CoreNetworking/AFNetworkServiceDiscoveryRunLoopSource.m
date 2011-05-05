@@ -43,28 +43,58 @@ static void	AFServiceDiscoveryProcessResult(CFFileDescriptorRef fileDescriptor, 
 	_fileDescriptor = (CFFileDescriptorRef)CFMakeCollectable(CFFileDescriptorCreate(kCFAllocatorDefault, DNSServiceRefSockFD(_service), false, AFServiceDiscoveryProcessResult, &context));
 	CFFileDescriptorEnableCallBacks(_fileDescriptor, kCFFileDescriptorReadCallBack);
 	
-	_source = (CFRunLoopSourceRef)CFMakeCollectable(CFFileDescriptorCreateRunLoopSource(kCFAllocatorDefault, _fileDescriptor, 0));
+	_runLoopSource = (CFRunLoopSourceRef)CFMakeCollectable(CFFileDescriptorCreateRunLoopSource(kCFAllocatorDefault, _fileDescriptor, 0));
 	
 	return self;
 }
 
 - (void)dealloc {
 	CFRelease(_fileDescriptor);
-	CFRelease(_source);
+	CFRelease(_runLoopSource);
+	
+	if (_dispatchSource != NULL) {
+		dispatch_release(_dispatchSource);
+	}
 	
 	[super dealloc];
 }
 
+- (void)finalize {
+	if (_dispatchSource != NULL) {
+		dispatch_release(_dispatchSource);
+	}
+	
+	[super finalize];
+}
+
 - (void)scheduleInRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode {
-	CFRunLoopAddSource([loop getCFRunLoop], _source, (CFStringRef)mode);
+	CFRunLoopAddSource([loop getCFRunLoop], _runLoopSource, (CFStringRef)mode);
 }
 
 - (void)unscheduleFromRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode {
-	CFRunLoopRemoveSource([loop getCFRunLoop], _source, (CFStringRef)mode);
+	CFRunLoopRemoveSource([loop getCFRunLoop], _runLoopSource, (CFStringRef)mode);
+}
+
+- (void)scheduleInQueue:(dispatch_queue_t)queue {
+	if (_dispatchSource != NULL) {
+		dispatch_source_cancel(_dispatchSource);
+		
+		dispatch_release(_dispatchSource);
+		_dispatchSource = NULL;
+	}
+	
+	if (queue != NULL) {
+		_dispatchSource = AFNetworkServiceDiscoveryScheduleQueueSource([self service], queue);
+		dispatch_retain(_dispatchSource);
+	}
 }
 
 - (void)invalidate {
-	CFFileDescriptorInvalidate(_fileDescriptor);
+	CFRunLoopSourceInvalidate(_runLoopSource);
+	
+	if (_dispatchSource != NULL) {
+		dispatch_source_cancel(_dispatchSource);
+	}
 }
 
 @end

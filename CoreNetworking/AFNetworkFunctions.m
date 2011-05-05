@@ -99,7 +99,7 @@ const char *af_sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxl
 			return inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)addr)->sin6_addr), dst, maxlen); 
 	}
 	
-	return strncpy(dst, "Unknown AF", maxlen);
+	return NULL;
 }
 
 NSError *AFNetworkErrorFromCFStreamError(CFStreamError error) {
@@ -135,7 +135,9 @@ NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress) {
 	CFRetain(socketAddress);
 	
 	char socketAddressPresentation[INET6_ADDRSTRLEN] = {0};
-	BOOL socketAddressPresentationConverted = (af_sockaddr_ntop((const struct sockaddr *)CFDataGetBytePtr((CFDataRef)socketAddress), socketAddressPresentation, sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation)) != NULL);
+	size_t socketAddressPresentationLength = (sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation));
+	
+	BOOL socketAddressPresentationConverted = (af_sockaddr_ntop((const struct sockaddr *)[socketAddress bytes], socketAddressPresentation, socketAddressPresentationLength) != NULL);
 	
 	CFRelease(socketAddress);
 	
@@ -143,5 +145,5 @@ NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress) {
 		return nil;
 	}
 	
-	return [NSString stringWithCString:socketAddressPresentation encoding:NSASCIIStringEncoding];
+	return [[[NSString alloc] initWithBytes:socketAddressPresentation length:socketAddressPresentationLength encoding:NSASCIIStringEncoding] autorelease];
 }

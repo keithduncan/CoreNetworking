@@ -188,43 +188,49 @@ NSString *const AFHTTPMessageProxyAuthorizationHeader = @"Proxy-Authorization";
 
 CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 	switch (code) {
-		case AFHTTPStatusCodeContinue:
+		case AFHTTPStatusCodeContinue:;
 			return CFSTR("Continue");
-		case AFHTTPStatusCodeSwitchingProtocols:
+		case AFHTTPStatusCodeSwitchingProtocols:;
 			return CFSTR("Switching Protocols");
 			
-		case AFHTTPStatusCodeOK:
+		case AFHTTPStatusCodeOK:;
 			return CFSTR("OK");
-		case AFHTTPStatusCodePartialContent:
+		case AFHTTPStatusCodePartialContent:;
 			return CFSTR("Partial Content");
 			
-		case AFHTTPStatusCodeFound:
+		case AFHTTPStatusCodeMultipleChoices:;
+			return CFSTR("Multiple Choices");
+		case AFHTTPStatusCodeMovedPermanently:;
+			return CFSTR("Moved Permanently");
+		case AFHTTPStatusCodeFound:;
 			return CFSTR("Found");
-		case AFHTTPStatusCodeSeeOther:
+		case AFHTTPStatusCodeSeeOther:;
 			return CFSTR("See Other");
-		case AFHTTPStatusCodeNotModified:
+		case AFHTTPStatusCodeNotModified:;
 			return CFSTR("Not Modified");
+		case AFHTTPStatusCodeTemporaryRedirect:;
+			return CFSTR("Temporary Redirect");
 			
-		case AFHTTPStatusCodeBadRequest:
+		case AFHTTPStatusCodeBadRequest:;
 			return CFSTR("Bad Request");
-		case AFHTTPStatusCodeUnauthorized:
+		case AFHTTPStatusCodeUnauthorized:;
 			return CFSTR("Unauthorized");
-		case AFHTTPStatusCodeNotFound:
+		case AFHTTPStatusCodeNotFound:;
 			return CFSTR("Not Found");
-		case AFHTTPStatusCodeNotAllowed:
+		case AFHTTPStatusCodeNotAllowed:;
 			return CFSTR("Not Allowed");
-		case AFHTTPStatusCodeProxyAuthenticationRequired:
+		case AFHTTPStatusCodeProxyAuthenticationRequired:;
 			return CFSTR("Proxy Authentication Required");
-		case AFHTTPStatusCodeUpgradeRequired:
+		case AFHTTPStatusCodeUpgradeRequired:;
 			return CFSTR("Upgrade Required");
 			
-		case AFHTTPStatusCodeServerError:
+		case AFHTTPStatusCodeServerError:;
 			return CFSTR("Server Error");
-		case AFHTTPStatusCodeNotImplemented:
+		case AFHTTPStatusCodeNotImplemented:;
 			return CFSTR("Not Implemented");
 	}
 	
-	[NSException raise:NSInvalidArgumentException format:@"%s, (%ld) is not a known status code", __PRETTY_FUNCTION__, nil];
+	[NSException raise:NSInvalidArgumentException format:@"%s, (%ld) is not a known status code", __PRETTY_FUNCTION__];
 	return NULL;
 }
 

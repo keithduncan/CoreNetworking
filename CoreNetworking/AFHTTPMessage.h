@@ -118,9 +118,12 @@ enum {
 	AFHTTPStatusCodePartialContent					= 206, /* Partial Content */
 	
 	// 3xx class, redirection
+	AFHTTPStatusCodeMultipleChoices					= 300, /* Multiple Choices */
+	AFHTTPStatusCodeMovedPermanently				= 301, /* Moved Permanently */
 	AFHTTPStatusCodeFound							= 302, /* Found */
 	AFHTTPStatusCodeSeeOther						= 303, /* See Other */
 	AFHTTPStatusCodeNotModified						= 304, /* Not Modified */
+	AFHTTPStatusCodeTemporaryRedirect				= 307, /* Temporary Redirect */
 	
 	// 4xx class, client error
 	AFHTTPStatusCodeBadRequest						= 400, /* Bad Request */

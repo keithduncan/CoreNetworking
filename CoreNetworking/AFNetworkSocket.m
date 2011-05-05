@@ -122,21 +122,18 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	NSParameterAssert(_signature != NULL);
 	
 	CFSocketError socketError = CFSocketSetAddress(_socket, _signature->address);
-	
-	if (socketError == kCFSocketSuccess) {
-		[self.delegate networkLayerDidOpen:self];
+	if (socketError != kCFSocketSuccess) {
+		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+								   NSLocalizedStringFromTableInBundle(@"Couldn't connect to remote host", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkSocket couldn't open error description"), NSLocalizedDescriptionKey,
+								   nil];
+		AFNetworkErrorCode errorCode = (socketError == kCFSocketTimeout ? AFNetworkSocketErrorTimeout : AFNetworkSocketErrorUnknown);
+		NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:userInfo];
+		
+		[self.delegate networkLayer:self didReceiveError:error];
 		return;
 	}
 	
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-							  NSLocalizedStringWithDefaultValue(@"AFSocketError", @"AFSocket", [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"Couldn't open socket.", nil), NSLocalizedDescriptionKey,
-							  nil];
-	
-	AFNetworkErrorCode errorCode = AFNetworkSocketErrorUnknown;
-	if (socketError == kCFSocketTimeout) errorCode = AFNetworkSocketErrorTimeout;
-	
-	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:userInfo];
-	[self.delegate networkLayer:self didReceiveError:error];
+	[self.delegate networkLayerDidOpen:self];
 }
 
 - (BOOL)isOpen {
