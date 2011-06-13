@@ -55,7 +55,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 @end
 
 @interface AFNetworkTransport (Streams)
-- (void)_configureWriteStream:(NSOutputStream *)writeStream readStream:(NSInputStream *)readStream;
+- (void)_configureWithWriteStream:(NSOutputStream *)writeStream readStream:(NSInputStream *)readStream;
 - (void)_streamDidOpen;
 - (void)_streamDidStartTLS;
 @end
@@ -73,25 +73,24 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 
 - (id)initWithLowerLayer:(id <AFNetworkTransportLayer>)layer {
 	NSParameterAssert([layer isKindOfClass:[AFNetworkSocket class]]);
+	AFNetworkSocket *networkSocket = (AFNetworkSocket *)layer;
 	
 	self = [super initWithLowerLayer:layer];
 	if (self == nil) return nil;
 	
-	AFNetworkSocket *networkSocket = (AFNetworkSocket *)layer;
-	CFSocketRef socket = (CFSocketRef)[networkSocket socket];
+	CFSocketRef dataSocket = (CFSocketRef)[networkSocket socket];
 	
-	BOOL shouldCloseUnderlyingSocket = ((CFSocketGetSocketFlags(socket) & kCFSocketCloseOnInvalidate) == kCFSocketCloseOnInvalidate);
-	if (shouldCloseUnderlyingSocket) CFSocketSetSocketFlags(socket, CFSocketGetSocketFlags(socket) & ~kCFSocketCloseOnInvalidate);
+	BOOL shouldCloseUnderlyingSocket = ((CFSocketGetSocketFlags(dataSocket) & kCFSocketCloseOnInvalidate) == kCFSocketCloseOnInvalidate);
+	if (shouldCloseUnderlyingSocket) CFSocketSetSocketFlags(dataSocket, CFSocketGetSocketFlags(dataSocket) & ~kCFSocketCloseOnInvalidate);
 	
 	CFDataRef peer = (CFDataRef)[networkSocket peer];
 	_signature._host.host = (CFHostRef)CFMakeCollectable(CFRetain(peer));
 	
-	CFSocketNativeHandle nativeSocket = CFSocketGetNative(socket);
-	CFSocketInvalidate(socket); // Note: the CFSocket must be invalidated for the CFStreams to capture the events
+	CFSocketNativeHandle nativeSocket = CFSocketGetNative(dataSocket);
+	CFSocketInvalidate(dataSocket); // Note: the CFSocket must be invalidated for the CFStreams to capture the events
 	
-	CFWriteStreamRef writeStream;
-	CFReadStreamRef readStream;
-	
+	CFWriteStreamRef writeStream = NULL;
+	CFReadStreamRef readStream = NULL;
 	CFStreamCreatePairWithSocket(kCFAllocatorDefault, nativeSocket, &readStream, &writeStream);
 	
 	// Note: ensure this is done in the same method as setting the socket options to essentially balance a retain/release on the native socket
@@ -99,7 +98,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 		CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
 		CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
 	}
-	[self _configureWriteStream:(id)writeStream readStream:(id)readStream];
+	[self _configureWithWriteStream:(id)writeStream readStream:(id)readStream];
 	
 	CFRelease(writeStream);
 	CFRelease(readStream);
@@ -116,12 +115,11 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	CFHostRef *host = &_signature._host.host;
 	*host = (CFHostRef)NSMakeCollectable(CFRetain(signature->host));
 	
-	CFWriteStreamRef writeStream;
-	CFReadStreamRef readStream;
-	
+	CFWriteStreamRef writeStream = NULL;
+	CFReadStreamRef readStream = NULL;
 	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, _signature._host.transport.port, &readStream, &writeStream);
 	
-	[self _configureWriteStream:(id)writeStream readStream:(id)readStream];
+	[self _configureWithWriteStream:(id)writeStream readStream:(id)readStream];
 	
 	CFRelease(writeStream);
 	CFRelease(readStream);
@@ -136,12 +134,11 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	CFNetServiceRef *service = &_signature._service.service;
 	*service = (CFNetServiceRef)CFMakeCollectable(CFNetServiceCreateCopy(kCFAllocatorDefault, *(CFNetServiceRef *)signature));
 	
-	CFWriteStreamRef writeStream;
-	CFReadStreamRef readStream;
-	
+	CFWriteStreamRef writeStream = NULL;
+	CFReadStreamRef readStream = NULL;
 	CFStreamCreatePairWithSocketToNetService(kCFAllocatorDefault, *service, &readStream, &writeStream);
 	
-	[self _configureWriteStream:(id)writeStream readStream:(id)readStream];
+	[self _configureWithWriteStream:(id)writeStream readStream:(id)readStream];
 	
 	CFRelease(writeStream);
 	CFRelease(readStream);
@@ -170,9 +167,9 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 	// Note: this is simply shorter to re-address, there is no fancyness, move along
-	CFHostRef *peer = &_signature._host.host;
+	// Note: this will also release a netService, it shares the same memory location
+	CFTypeRef *peer = &_signature._host.host;
 	if (*peer != NULL) {
-		// Note: this will also release the netService
 		CFRelease(*peer);
 		*peer = NULL;
 	}
@@ -431,7 +428,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 
 @implementation AFNetworkTransport (Streams)
 
-- (void)_configureWriteStream:(NSOutputStream *)writeStream readStream:(NSInputStream *)readStream {
+- (void)_configureWithWriteStream:(NSOutputStream *)writeStream readStream:(NSInputStream *)readStream {
 	if (writeStream != nil) {
 		_writeStream = [[AFNetworkStream alloc] initWithStream:writeStream];
 		[_writeStream setDelegate:self];

@@ -73,8 +73,8 @@
 
 - (id)_dispatchTargetForSelector:(SEL)selector {
 	id dispatchTarget = nil;
-	for (NSUInteger index = 0; index < [_dispatchOrder count]; index++) {
-		id currentDispatchTarget = [_dispatchOrder objectAtIndex:index];
+	for (NSUInteger idx = 0; idx < [_dispatchOrder count]; idx++) {
+		id currentDispatchTarget = [_dispatchOrder objectAtIndex:idx];
 		
 		if (![currentDispatchTarget respondsToSelector:selector]) continue;
 		if ([[self _dispatchedTargetsForSelector:selector] containsObject:currentDispatchTarget]) continue;

@@ -89,7 +89,7 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 	_encapsulationClasses = encapsulation;
 	
 	NSMutableArray *pools = [[NSMutableArray alloc] initWithCapacity:[encapsulation count]];
-	for (NSUInteger index = 0; index < [encapsulation count]; index++) {
+	for (NSUInteger idx = 0; idx < [encapsulation count]; idx++) {
 		AFNetworkPool *currentPool = [[[AFNetworkPool alloc] init] autorelease];
 		[pools addObject:currentPool];
 	}
@@ -144,9 +144,8 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 		// Note: explicit cast to sockaddr_in, this *will* work for both IPv4 and IPv6 as the port is in the same location, however investigate alternatives
 		((struct sockaddr_in *)CFDataGetMutableBytePtr((CFMutableDataRef)currentAddress))->sin_port = htons(*port);
 		
-		AFNetworkSocket *socket = [self openSocketWithSignature:signature address:currentAddress];
-		
-		if (socket == nil) {
+		AFNetworkSocket *newSocket = [self openSocketWithSignature:signature address:currentAddress];
+		if (newSocket == nil) {
 			completeSuccess = NO;
 			continue;
 		}
@@ -154,7 +153,7 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 		// Note: get the port after setting the address i.e. opening
 		if (*port == 0) {
 			// Note: extract the *actual* port used and use that for future sockets
-			CFDataRef actualAddress = (CFDataRef)socket.localAddress;
+			CFDataRef actualAddress = (CFDataRef)newSocket.localAddress;
 			*port = ntohs(((struct sockaddr_in *)CFDataGetBytePtr(actualAddress))->sin_port);
 		}
 	}
@@ -197,15 +196,17 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 		.address = (CFDataRef)address,
 	};
 	
-	AFNetworkSocket *socket = [[[AFNetworkSocket alloc] initWithHostSignature:&socketSignature] autorelease];
-	if (socket == nil) return nil;
+	AFNetworkSocket *newSocket = [[[AFNetworkSocket alloc] initWithHostSignature:&socketSignature] autorelease];
+	if (newSocket == nil) {
+		return nil;
+	}
 	
-	[[self.clientPools objectAtIndex:0] addConnectionsObject:socket];
+	[[self.clientPools objectAtIndex:0] addConnectionsObject:newSocket];
 	
-	[socket setDelegate:(id)self];
-	[socket open];
+	[newSocket setDelegate:(id)self];
+	[newSocket open];
 	
-	return socket;
+	return newSocket;
 }
 
 - (void)encapsulateNetworkLayer:(id <AFNetworkConnectionLayer>)layer {
@@ -274,9 +275,9 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 @implementation AFNetworkServer (Private)
 
 - (NSUInteger)_bucketContainingLayer:(id)layer {
-	for (NSUInteger index = 0; index < [self.clientPools count]; index++) {
-		if (![[[self.clientPools objectAtIndex:index] connections] containsObject:layer]) continue;
-		return index;
+	for (NSUInteger idx = 0; idx < [self.clientPools count]; idx++) {
+		if (![[[self.clientPools objectAtIndex:idx] connections] containsObject:layer]) continue;
+		return idx;
 	}
 	
 	return NSUIntegerMax;

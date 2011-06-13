@@ -20,11 +20,11 @@
 @dynamic delegate;
 @synthesize socket=_socket;
 
-static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
+static void AFSocketCallback(CFSocketRef listenSocket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	
 	AFNetworkSocket *self = [[(AFNetworkSocket *)info retain] autorelease];
-	NSCParameterAssert(socket == self->_socket);
+	NSCParameterAssert(listenSocket == self->_socket);
 	
 	switch (type) {
 		case kCFSocketAcceptCallBack:
@@ -37,8 +37,9 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 			newSocket->_socket = (CFSocketRef)CFMakeCollectable(CFSocketCreateWithNative(kCFAllocatorDefault, *(CFSocketNativeHandle *)data, 0, AFSocketCallback, &context));
 			newSocket->_socketRunLoopSource = (CFRunLoopSourceRef)CFMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, newSocket->_socket, 0));
 			
-			if ([self.delegate respondsToSelector:@selector(networkLayer:didAcceptConnection:)])
+			if ([self.delegate respondsToSelector:@selector(networkLayer:didAcceptConnection:)]) {
 				[self.delegate networkLayer:self didAcceptConnection:newSocket];
+			}
 			
 			break;
 		}
@@ -97,7 +98,9 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 
 - (void)finalize {	
 	if (_signature != NULL) {
-		if (_signature->address != NULL) CFRelease(_signature->address);
+		if (_signature->address != NULL) {
+			CFRelease(_signature->address);
+		}
 		free(_signature);
 	}
 	
@@ -108,7 +111,9 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	[self close];
 	
 	if (_signature != NULL) {
-		if (_signature->address != NULL) CFRelease(_signature->address);
+		if (_signature->address != NULL) {
+			CFRelease(_signature->address);
+		}
 		free(_signature);
 	}
 	
@@ -123,10 +128,13 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 	
 	CFSocketError socketError = CFSocketSetAddress(_socket, _signature->address);
 	if (socketError != kCFSocketSuccess) {
+		NSInteger errorCode = AFNetworkSocketErrorUnknown;
+		if (socketError == kCFSocketTimeout) {
+			errorCode = AFNetworkSocketErrorTimeout;
+		}
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 								   NSLocalizedStringFromTableInBundle(@"Couldn't connect to remote host", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkSocket couldn't open error description"), NSLocalizedDescriptionKey,
 								   nil];
-		AFNetworkErrorCode errorCode = (socketError == kCFSocketTimeout ? AFNetworkSocketErrorTimeout : AFNetworkSocketErrorUnknown);
 		NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:errorInfo];
 		
 		[self.delegate networkLayer:self didReceiveError:error];

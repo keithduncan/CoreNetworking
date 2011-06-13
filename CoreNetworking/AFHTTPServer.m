@@ -183,9 +183,9 @@
 		printf("*** Caught Response Handling Exception '%s', reason '%s'\n", [[exception name] UTF8String], [[exception reason] UTF8String]);
 		printf("*** Call Stack at throw:\n(\n");
 		NSArray *addresses = [exception callStackReturnAddresses];
-		for (NSUInteger index = 0; index < [addresses count]; index++) {
-			NSNumber *address = [addresses objectAtIndex:index];
-			printf("\t%ld\t0x%qX\n", index, (unsigned long long)[address unsignedIntegerValue]);
+		for (NSUInteger idx = 0; idx < [addresses count]; idx++) {
+			NSNumber *address = [addresses objectAtIndex:idx];
+			printf("\t%ld\t0x%qX\n", idx, (unsigned long long)[address unsignedIntegerValue]);
 		}
 		printf(")\n");
 		

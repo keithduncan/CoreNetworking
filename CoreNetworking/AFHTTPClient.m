@@ -120,22 +120,22 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		if (newPacket == nil || [newPacket isEqual:[NSNull null]]) return;
 		
 		for (id <AFNetworkPacketWriting> currentPacket in [newPacket requestPackets]) {
-			void *context = &_AFHTTPClientWritePartialRequestContext;
+			void *packetContext = &_AFHTTPClientWritePartialRequestContext;
 			if (currentPacket == [[newPacket requestPackets] lastObject]) {
-				context = &_AFHTTPClientWriteRequestContext;
+				packetContext = &_AFHTTPClientWriteRequestContext;
 			}
 			
-			[self performWrite:currentPacket withTimeout:-1 context:context];
+			[self performWrite:currentPacket withTimeout:-1 context:packetContext];
 		}
 		
 		if ([newPacket responsePackets] != nil) {
 			for (id <AFNetworkPacketReading> currentPacket in [newPacket responsePackets]) {
-				void *context = &_AFHTTPClientReadPartialResponseContext;
+				void *packetContext = &_AFHTTPClientReadPartialResponseContext;
 				if (currentPacket == [[newPacket responsePackets] lastObject]) {
-					context = &_AFHTTPClientReadResponseContext;
+					packetContext = &_AFHTTPClientReadResponseContext;
 				}
 				
-				[self performRead:currentPacket withTimeout:-1 context:context];
+				[self performRead:currentPacket withTimeout:-1 context:packetContext];
 			}
 		} else {
 			[self readResponse];
