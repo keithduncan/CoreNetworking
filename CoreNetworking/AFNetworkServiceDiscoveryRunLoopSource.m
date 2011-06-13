@@ -29,6 +29,7 @@ static void	AFServiceDiscoveryProcessResult(CFFileDescriptorRef fileDescriptor, 
 	
 	DNSServiceErrorType error = kDNSServiceErr_NoError;
 	error = DNSServiceProcessResult(self->_service);
+#warning This error isn't handled.
 }
 
 - (id)initWithDNSService:(DNSServiceRef)service {

@@ -127,7 +127,7 @@ static void AFSocketCallback(CFSocketRef socket, CFSocketCallBackType type, CFDa
 								   NSLocalizedStringFromTableInBundle(@"Couldn't connect to remote host", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkSocket couldn't open error description"), NSLocalizedDescriptionKey,
 								   nil];
 		AFNetworkErrorCode errorCode = (socketError == kCFSocketTimeout ? AFNetworkSocketErrorTimeout : AFNetworkSocketErrorUnknown);
-		NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:userInfo];
+		NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:errorInfo];
 		
 		[self.delegate networkLayer:self didReceiveError:error];
 		return;

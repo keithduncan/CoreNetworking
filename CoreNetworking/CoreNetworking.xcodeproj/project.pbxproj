@@ -30,9 +30,9 @@
 		533508270FD6FC4E004FFF97 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 533508250FD6FC4E004FFF97 /* AFHTTPClient.m */; };
 		533508280FD6FC4E004FFF97 /* AFHTTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 533508240FD6FC4E004FFF97 /* AFHTTPClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533508290FD6FC4E004FFF97 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 533508250FD6FC4E004FFF97 /* AFHTTPClient.m */; };
-		533AD5C3113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5BF113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.h */; };
+		533AD5C3113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5BF113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533AD5C4113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C0113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.m */; };
-		533AD5C9113BF98000FED57B /* AFNetworkPacketReadToWriteStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5C5113BF98000FED57B /* AFNetworkPacketReadToWriteStream.h */; };
+		533AD5C9113BF98000FED57B /* AFNetworkPacketReadToWriteStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5C5113BF98000FED57B /* AFNetworkPacketReadToWriteStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533AD5CA113BF98000FED57B /* AFNetworkPacketReadToWriteStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C6113BF98000FED57B /* AFNetworkPacketReadToWriteStream.m */; };
 		533AD715113C81A200FED57B /* AFHTTPHeadersPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD713113C81A200FED57B /* AFHTTPHeadersPacket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533AD716113C81A200FED57B /* AFHTTPHeadersPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD714113C81A200FED57B /* AFHTTPHeadersPacket.m */; };

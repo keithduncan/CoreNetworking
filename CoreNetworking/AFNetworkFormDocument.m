@@ -41,7 +41,7 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 
 @interface _AFNetworkDocumentPart : NSObject
 
-@property (readonly) NSString *contentType;
+@property (readonly, copy) NSString *contentType;
 
 - (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef;
 
@@ -248,7 +248,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 		[[self files] setObject:parts forKey:fieldname];
 	}
 	
-	_AFNetworkFormDocumentFileFieldPart *part = [[[_AFNetworkFormDocumentFileFieldPart alloc] initWithLocation:location] autorelease];
+	_AFNetworkFormDocumentFileFieldPart *part = [[[_AFNetworkFormDocumentFileFieldPart alloc] initWithLocation:location contentType:nil] autorelease];
 	
 	if (filename == nil) filename = [location lastPathComponent];
 	[parts setObject:part forKey:filename];
