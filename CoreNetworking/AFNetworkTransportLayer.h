@@ -34,7 +34,7 @@
 	\brief
 	Currently the control and data delegates share the same property.
  */
-@property (assign) id <AFNetworkTransportLayerDataDelegate, AFNetworkTransportLayerControlDelegate> delegate;
+@property (assign) id <AFNetworkTransportLayerControlDelegate, AFNetworkTransportLayerDataDelegate> delegate;
 
 /*!
 	\brief

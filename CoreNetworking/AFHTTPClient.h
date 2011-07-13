@@ -13,7 +13,17 @@
 #endif
 
 @class AFNetworkPacketQueue;
-@protocol AFHTTPClientDelegate;
+@class AFHTTPClient;
+
+/*!
+	\brief
+	
+ */
+@protocol AFHTTPClientDelegate <AFHTTPConnectionControlDelegate, AFHTTPConnectionDataDelegate>
+
+- (void)networkConnection:(AFHTTPClient *)connection didReadResponse:(CFHTTPMessageRef)response context:(void *)context;
+
+@end
 
 /*!
 	\brief
@@ -83,12 +93,5 @@
 	Will handle large files by streaming them from disk.
  */
 - (BOOL)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation context:(void *)context error:(NSError **)errorRef;
-
-@end
-
-
-@protocol AFHTTPClientDelegate <AFHTTPConnectionDataDelegate>
-
-- (void)networkConnection:(AFHTTPClient *)connection didReadResponse:(CFHTTPMessageRef)response context:(void *)context;
 
 @end

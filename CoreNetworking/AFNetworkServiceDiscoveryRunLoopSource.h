@@ -80,7 +80,7 @@
 	Create and schedule a dispatch source for the mDNSResponder socket held by the service argument.
 	
 	\details
-	This source acts like the Cocoa <tt>-performSelector:…</tt> methods, it creates and destroys a behind the scenes source for you.
+	This source acts like the Cocoa <tt>-performSelector:...</tt> methods, it creates and destroys a behind the scenes source for you.
 	
 	\param service
 	Must not be NULL

@@ -8,7 +8,19 @@
 
 #import "CoreNetworking/AFNetworkServer.h"
 
-@protocol AFHTTPServerDataDelegate;
+@class AFHTTPServer;
+
+@protocol AFHTTPServerDataDelegate <AFNetworkServerDelegate>
+
+ @optional
+
+/*!
+	\brief
+	The delegate is asked last, after each of the renderers.
+ */
+- (CFHTTPMessageRef)networkServer:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;
+
+@end
 
 /*!
 	\brief
@@ -34,18 +46,6 @@
 	Each of these objects is consulted in order to render the resource, if NULL is returned the next is consulted.
  */
 @property (copy) NSArray *renderers;
-
-@end
-
-@protocol AFHTTPServerDataDelegate <AFNetworkServerDelegate>
-
- @optional
-
-/*!
-	\brief
-	The delegate is asked last, after each of the renderers.
- */
-- (CFHTTPMessageRef)networkServer:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;
 
 @end
 

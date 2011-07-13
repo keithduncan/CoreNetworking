@@ -14,13 +14,52 @@
 #import "CoreNetworking/AFNetworkTypes.h"
 #import "CoreNetworking/AFNetworkConnectionLayer.h"
 
-@protocol AFNetworkTransportDataDelegate;
-@protocol AFNetworkTransportControlDelegate;
-
+@class AFNetworkTransport;
 @class AFNetworkStream;
 
 @class AFNetworkPacketWrite;
 @class AFNetworkPacketRead;
+
+/*!
+	\brief
+	
+ */
+@protocol AFNetworkTransportControlDelegate <AFNetworkConnectionLayerControlDelegate>
+
+ @optional
+
+/*!
+	\brief
+	When the socket is closing you can keep it open until the writes are complete, but you'll have to ensure the object remains live.
+ */
+- (BOOL)networkTransportShouldRemainOpenPendingWrites:(AFNetworkTransport *)transport;
+
+@end
+
+/*!
+	\brief
+	
+ */
+@protocol AFNetworkTransportDataDelegate <AFNetworkConnectionLayerDataDelegate>
+
+ @optional
+
+/*!
+	\brief
+	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
+ */
+- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSInteger)partialBytes totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalLength context:(void *)context;
+
+/*!
+	\brief
+	Instead of calling <tt>-currentReadProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of read progress.
+ 
+	\param total
+	Will be <tt>NSUIntegerMax</tt> if the packet terminator is a data pattern.
+ */
+- (void)networkTransport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSInteger)partialBytes totalBytesRead:(NSInteger)totalBytesRead totalBytesExpectedToRead:(NSInteger)totalLength context:(void *)context;
+
+@end
 
 /*!
     \brief
@@ -28,8 +67,8 @@
 	
     \details
 	This class is a mix of two of the primary patterns:
-	• Internally, it acts an adaptor between the CFSocketRef and CFStreamRef API.
-	• Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and CFStreamRef providing an asyncronous CFStreamRef like API.
+	- Internally, it acts an adaptor between the CFSocketRef and CFStreamRef API.
+	- Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and CFStreamRef providing an asyncronous CFStreamRef like API.
 */
 @interface AFNetworkTransport : AFNetworkLayer <AFNetworkConnectionLayer> {
  @private
@@ -47,7 +86,7 @@
 	NSUInteger _connectionFlags;
 }
 
-@property (assign) id <AFNetworkTransportDataDelegate, AFNetworkTransportControlDelegate, AFNetworkTransportLayerDataDelegate> delegate;
+@property (assign) id <AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate> delegate;
 
 /*!
 	\brief
@@ -67,37 +106,5 @@
 	This returns the remote address of the connected stream.
  */
 @property (readonly) id peerAddress;
-
-@end
-
-@protocol AFNetworkTransportControlDelegate <AFNetworkConnectionLayerControlDelegate>
-
- @optional
-
-/*!
-	\brief	When the socket is closing you can keep it open until the writes are complete, but you'll have to ensure the object remains live.
- */
-- (BOOL)networkTransportShouldRemainOpenPendingWrites:(AFNetworkTransport *)transport;
-
-@end
-
-@protocol AFNetworkTransportDataDelegate <NSObject>
-
- @optional
-
-/*!
-	\brief
-	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
- */
-- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSInteger)partialBytes totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalLength context:(void *)context;
-
-/*!
-	\brief
-	Instead of calling <tt>-currentReadProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of read progress.
-	
-	\param total
-	Will be <tt>NSUIntegerMax</tt> if the packet terminator is a data pattern.
- */
-- (void)networkTransport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSInteger)partialBytes totalBytesRead:(NSInteger)totalBytesRead totalBytesExpectedToRead:(NSInteger)totalLength context:(void *)context;
 
 @end

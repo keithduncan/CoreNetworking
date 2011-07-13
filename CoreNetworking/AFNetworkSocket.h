@@ -52,7 +52,7 @@
 	\brief
 	
  */
-@property (assign) id <AFNetworkConnectionLayerHostDelegate, AFNetworkConnectionLayerControlDelegate> delegate;
+@property (assign) id <AFNetworkConnectionLayerHostDelegate, AFNetworkConnectionLayerDataDelegate, AFNetworkConnectionLayerControlDelegate> delegate;
 
 /*!
 	\brief

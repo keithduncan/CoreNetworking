@@ -8,4 +8,4 @@
 
 #import "AFNetworkConstants.h"
 
-NSString *const AFCoreNetworkingBundleIdentifier = @"com.thirty-three.CoreNetworking";
+NSString *const AFCoreNetworkingBundleIdentifier = @"com.thirty-three.corenetworking";

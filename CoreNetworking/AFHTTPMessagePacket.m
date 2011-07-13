@@ -19,7 +19,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketHeadersContext);
 AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 
 @interface AFHTTPMessagePacket ()
-@property (readonly) CFHTTPMessageRef message;
+@property (readonly) __strong CFHTTPMessageRef message __attribute__((NSObject));
 
 @property (readwrite, retain) NSOutputStream *bodyStream;
 
@@ -47,7 +47,6 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 - (void)dealloc {
 	if (_message != NULL) {
 		CFRelease(_message);
-		_message = NULL;
 	}
 	
 	[_bodyStorage release];

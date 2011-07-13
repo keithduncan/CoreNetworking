@@ -24,7 +24,7 @@
  */
 @protocol AFNetworkConnectionLayer <AFNetworkTransportLayer>
 
-@property (assign) id <AFNetworkConnectionLayerDataDelegate, AFNetworkConnectionLayerControlDelegate> delegate;
+@property (assign) id <AFNetworkConnectionLayerControlDelegate, AFNetworkConnectionLayerDataDelegate> delegate;
 
  @optional
 
@@ -60,6 +60,7 @@
 @protocol AFNetworkConnectionLayerControlDelegate <AFNetworkTransportLayerControlDelegate>
 
 @end
+
 
 @protocol AFNetworkConnectionLayerDataDelegate <AFNetworkTransportLayerDataDelegate>
 

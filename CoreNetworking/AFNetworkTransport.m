@@ -168,7 +168,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	
 	// Note: this is simply shorter to re-address, there is no fancyness, move along
 	// Note: this will also release a netService, it shares the same memory location
-	CFTypeRef *peer = &_signature._host.host;
+	CFTypeRef *peer = (CFTypeRef *)&_signature._host.host;
 	if (*peer != NULL) {
 		CFRelease(*peer);
 		*peer = NULL;
@@ -317,7 +317,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	if (!result) {
 		if (errorRef != NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									  NSLocalizedStringFromTableInBundle(@"Your connection could not be secured", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport couldn't start TLS error description"), NSLocalizedDescriptionKey,
+									  NSLocalizedStringFromTableInBundle(@"Your connection couldn\u2019t be secured", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport couldn't start TLS error description"), NSLocalizedDescriptionKey,
 									  nil];
 			*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorTLS userInfo:userInfo];
 		}
@@ -365,8 +365,8 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 - (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
 	if (![self isOpen]) {
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-								   NSLocalizedStringFromTableInBundle(@"You’re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
-								   NSLocalizedStringFromTableInBundle(@"This computer’s Internet connection appears to be offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
+								   NSLocalizedStringFromTableInBundle(@"You\u2019re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
+								   NSLocalizedStringFromTableInBundle(@"This computer\u2019s Internet connection appears to be offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
 								   error, NSUnderlyingErrorKey,
 								   nil];
 		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorUnknown userInfo:errorInfo];
@@ -374,8 +374,8 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 	
 	if ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOTCONN) {
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-								   NSLocalizedStringFromTableInBundle(@"You’re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
-								   NSLocalizedStringFromTableInBundle(@"This computer’s Internet connection appears to have gone offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
+								   NSLocalizedStringFromTableInBundle(@"You\u2019re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
+								   NSLocalizedStringFromTableInBundle(@"This computer\u2019s Internet connection appears to have gone offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
 								   error, NSUnderlyingErrorKey,
 								   nil];
 		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorUnknown userInfo:errorInfo];

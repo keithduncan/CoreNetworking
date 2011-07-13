@@ -14,7 +14,27 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
-@protocol AFHTTPConnectionDataDelegate;
+@class AFHTTPConnection;
+
+/*!
+	\brief
+	
+ */
+@protocol AFHTTPConnectionControlDelegate <AFNetworkConnectionControlDelegate>
+
+@end
+
+/*!
+	\brief
+	
+ */
+@protocol AFHTTPConnectionDataDelegate <AFNetworkConnectionDataDelegate>
+
+- (void)networkConnection:(AFHTTPConnection *)connection didReceiveRequest:(CFHTTPMessageRef)request;
+
+- (void)networkConnection:(AFHTTPConnection *)connection didReceiveResponse:(CFHTTPMessageRef)response;
+
+@end
 
 /*!
 	\brief
@@ -25,7 +45,7 @@
 	
 	- 
  */
-@interface AFHTTPConnection : AFNetworkConnection <AFNetworkConnectionLayer> {
+@interface AFHTTPConnection : AFNetworkConnection {
  @private
 	NSMutableDictionary *_messageHeaders;
 }
@@ -34,7 +54,7 @@
 	\brief
 	This property adds HTTP message data callbacks to the delegate.
  */
-@property (assign) id <AFNetworkConnectionLayerControlDelegate, AFHTTPConnectionDataDelegate> delegate;
+@property (assign) id <AFHTTPConnectionControlDelegate, AFHTTPConnectionDataDelegate> delegate;
 
 /*!
 	\brief
@@ -103,13 +123,5 @@
 
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context;
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context;
-
-@end
-
-@protocol AFHTTPConnectionDataDelegate <AFNetworkTransportLayerDataDelegate>
-
-- (void)networkConnection:(AFHTTPConnection *)connection didReceiveRequest:(CFHTTPMessageRef)request;
-
-- (void)networkConnection:(AFHTTPConnection *)connection didReceiveResponse:(CFHTTPMessageRef)response;
 
 @end

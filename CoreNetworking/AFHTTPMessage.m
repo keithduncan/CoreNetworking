@@ -25,7 +25,7 @@
 
 - (id)initWithURL:(NSURL *)URL message:(CFHTTPMessageRef)message;
 
-@property (retain) __strong __attribute__((NSObject)) CFHTTPMessageRef message;
+@property (assign) __strong CFHTTPMessageRef message __attribute__((NSObject));
 
 @end
 

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -603,10 +603,11 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 0410;
 				ORGANIZATIONNAME = "Keith Duncan";
 			};
 			buildConfigurationList = 5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "CoreNetworking" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -749,6 +750,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_SHADOW = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx10.6;
 			};
@@ -769,6 +771,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_SHADOW = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx10.6;
 			};
 			name = Release;
@@ -788,7 +791,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "CoreNetworking-Info.plist";
 				INSTALL_PATH = "@rpath/";
-				PREBINDING = NO;
 				PRODUCT_NAME = CoreNetworking;
 			};
 			name = Debug;
@@ -807,7 +809,6 @@
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = "CoreNetworking-Info.plist";
 				INSTALL_PATH = "@rpath/";
-				PREBINDING = NO;
 				PRODUCT_NAME = CoreNetworking;
 			};
 			name = Release;
@@ -823,7 +824,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				HEADER_SEARCH_PATHS = "$CONFIGURATION_BUILD_DIR/usr/**";
 				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(PUBLIC_HEADERS_FOLDER_PATH)/private\n";
 				PRODUCT_NAME = CoreNetworking;
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/CoreNetworking;
@@ -840,7 +840,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				HEADER_SEARCH_PATHS = "$CONFIGURATION_BUILD_DIR/usr/**";
 				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(PUBLIC_HEADERS_FOLDER_PATH)/private\n";
 				PRODUCT_NAME = CoreNetworking;
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/CoreNetworking;

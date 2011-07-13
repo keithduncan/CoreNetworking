@@ -133,7 +133,7 @@ static void AFSocketCallback(CFSocketRef listenSocket, CFSocketCallBackType type
 			errorCode = AFNetworkSocketErrorTimeout;
 		}
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-								   NSLocalizedStringFromTableInBundle(@"Couldn't connect to remote host", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkSocket couldn't open error description"), NSLocalizedDescriptionKey,
+								   NSLocalizedStringFromTableInBundle(@"Couldn\u2019t connect to remote host", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkSocket couldn't open error description"), NSLocalizedDescriptionKey,
 								   nil];
 		NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:errorInfo];
 		
