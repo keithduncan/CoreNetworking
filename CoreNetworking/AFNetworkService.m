@@ -91,7 +91,7 @@ static void AFNetServiceClientCallBack(CFNetServiceRef service, CFStreamError *e
 	Boolean client = CFNetServiceSetClient(_service, (CFNetServiceClientCallBack)AFNetServiceClientCallBack, &context);
 	
 	if (!client) {
-		[NSException raise:NSInternalInconsistencyException format:@"%s, couldn't set service client", __PRETTY_FUNCTION__, nil];
+		[NSException raise:NSInternalInconsistencyException format:@"%s, couldn't set service client", __PRETTY_FUNCTION__];
 		
 		[self release];
 		return nil;

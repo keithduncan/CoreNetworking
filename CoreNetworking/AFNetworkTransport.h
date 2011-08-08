@@ -2,7 +2,7 @@
 //  AFNetworkTransport.h
 //	Amber
 //
-//	Originally based on AsyncSocket http://code.google.com/p/cocoaasyncsocket/
+//	Originally based on AsyncSocket <http://code.google.com/p/cocoaasyncsocket/>
 //	Although the class is now much departed from the original codebase.
 //
 //  Created by Keith Duncan
@@ -62,10 +62,10 @@
 @end
 
 /*!
-    \brief
+	\brief
 	Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the name was changed so not to imply the exclusive use of SOCK_STREAM.
 	
-    \details
+	\details
 	This class is a mix of two of the primary patterns:
 	- Internally, it acts an adaptor between the CFSocketRef and CFStreamRef API.
 	- Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and CFStreamRef providing an asyncronous CFStreamRef like API.

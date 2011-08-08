@@ -22,8 +22,8 @@
 #pragma mark -
 
 /*!
-    \brief
-	An AFNetworkTransportLayer object should encapsulate data (as defined in IETF-RFC-1122 http://tools.ietf.org/html/rfc1122)
+	\brief
+	An AFNetworkTransportLayer object should encapsulate data (as defined in IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122>
  
 	\details
 	This implementation mandates that a layer pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a cluster-chain allowing for maximum flexiblity.

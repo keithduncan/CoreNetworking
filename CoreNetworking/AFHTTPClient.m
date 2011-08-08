@@ -115,7 +115,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &_AFHTTPClientCurrentTransactionObservationContext) {
+	if (context == &_AFHTTPClientCurrentTransactionObservationContext) {
 		AFHTTPTransaction *newPacket = [change objectForKey:NSKeyValueChangeNewKey];
 		if (newPacket == nil || [newPacket isEqual:[NSNull null]]) return;
 		
@@ -184,7 +184,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 			NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 									   fileAttributesError, NSUnderlyingErrorKey,
 									   nil];
-			NSError *streamUploadError = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:0 userInfo:errorInfo];
+			NSError *streamUploadError = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:errorInfo];
 			
 			[(id)[self delegate] networkLayer:self didReceiveError:streamUploadError];
 			return;
@@ -319,7 +319,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		return _shouldStartTLS;
 	}
 	
-	[NSException raise:NSInternalInconsistencyException format:@"%s, cannot determine wether to start TLS.", __PRETTY_FUNCTION__, nil];
+	[NSException raise:NSInternalInconsistencyException format:@"%s, cannot determine wether to start TLS.", __PRETTY_FUNCTION__];
 	return NO;
 }
 

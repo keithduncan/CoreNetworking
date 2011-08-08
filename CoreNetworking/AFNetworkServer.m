@@ -109,7 +109,7 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &AFNetworkServerHostConnectionsPropertyObservationContext) {
+	if (context == &AFNetworkServerHostConnectionsPropertyObservationContext) {
 		if (![[change objectForKey:NSKeyValueChangeKindKey] unsignedIntegerValue] == NSKeyValueChangeInsertion) return;
 		
 		[[change valueForKey:NSKeyValueChangeNewKey] makeObjectsPerformSelector:@selector(setDelegate:) withObject:self];
@@ -173,7 +173,7 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 	
 	unsigned int maximumLength = sizeof(address.sun_path);
 	if (strlen([[location path] fileSystemRepresentation]) >= maximumLength) {
-		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) must be < %ld characters including the NUL terminator", __PRETTY_FUNCTION__, [location path], maximumLength, nil];
+		[NSException raise:NSInvalidArgumentException format:@"%s, (%@) must be < %lu characters including the NUL terminator", __PRETTY_FUNCTION__, [location path], (unsigned long)maximumLength];
 		return NO;
 	}
 	

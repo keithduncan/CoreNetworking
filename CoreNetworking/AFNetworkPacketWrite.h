@@ -14,8 +14,8 @@
  */
 @interface AFNetworkPacketWrite : AFNetworkPacket <AFNetworkPacketWriting> {
  @private
+	NSUInteger _totalBytesWritten;
 	NSData *_buffer;
-	NSUInteger _bytesWritten;
 }
 
 /*!

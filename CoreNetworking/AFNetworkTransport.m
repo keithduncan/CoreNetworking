@@ -2,7 +2,7 @@
 //  AFNetworkTransport.m
 //	Amber
 //
-//	Originally based on AsyncSocket http://code.google.com/p/cocoaasyncsocket/
+//	Originally based on AsyncSocket <http://code.google.com/p/cocoaasyncsocket/>
 //	Although the class is now much departed from the original codebase.
 //
 //  Created by Keith Duncan
@@ -154,13 +154,13 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 		return [self _initWithServiceSignature:signature._service];
 	}
 	
-	[NSException raise:NSInvalidArgumentException format:@"%s, unrecognised signature", __PRETTY_FUNCTION__, nil];
+	[NSException raise:NSInvalidArgumentException format:@"%s, unrecognised signature", __PRETTY_FUNCTION__];
 	return nil;
 }
 
 - (void)dealloc {
 	if (((_connectionFlags & _kConnectionDidOpen) == _kConnectionDidOpen) && ((_connectionFlags & _kConnectionDidClose) != _kConnectionDidClose)) {
-		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot dealloc a layer which isn't closed yet.", __PRETTY_FUNCTION__, nil];
+		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot -dealloc a network layer which hasn't been sent -close", __PRETTY_FUNCTION__];
 		return;
 	}
 	
@@ -182,7 +182,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 
 - (void)finalize {
 	if (((_connectionFlags & _kConnectionDidOpen) == _kConnectionDidOpen) && ((_connectionFlags & _kConnectionDidClose) != _kConnectionDidClose)) {
-		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot finalize a layer which isn't closed yet.", __PRETTY_FUNCTION__, nil];
+		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot -finalize a network layer which hasn't been sent -close yet", __PRETTY_FUNCTION__];
 		return;
 	}
 	

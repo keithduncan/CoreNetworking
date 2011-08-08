@@ -44,7 +44,6 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 			.type = AFNetworkSocketSignatureInternetTCP,
 			.port = 80,
 		};
-		
 		return AFNetworkInternetTransportSignatureHTTP;
 	}
 	if ([scheme compare:AFNetworkSchemeHTTPS options:NSCaseInsensitiveSearch] == NSOrderedSame) {
@@ -52,7 +51,6 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 			.type = AFNetworkSocketSignatureInternetTCP,
 			.port = 443,
 		};
-		
 		return AFNetworkInternetTransportSignatureHTTPS;
 	}
 	return [super transportSignatureForScheme:scheme];

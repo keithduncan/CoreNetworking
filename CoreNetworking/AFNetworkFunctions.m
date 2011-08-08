@@ -77,8 +77,8 @@ bool af_sockaddr_compare(const struct sockaddr *addr_a, const struct sockaddr *a
 		/* compare address part 
 		 * either may be IN6ADDR_ANY, resulting in a good match */
 		if ((memcmp(&(addr_a6->sin6_addr), &in6addr_any, sizeof(struct in6_addr)) != 0) &&
-		    (memcmp(&(addr_b6->sin6_addr), &in6addr_any, sizeof(struct in6_addr)) != 0) &&
-		    (memcmp(&(addr_a6->sin6_addr), &(addr_b6->sin6_addr), sizeof(struct in6_addr)) != 0)) {
+			(memcmp(&(addr_b6->sin6_addr), &in6addr_any, sizeof(struct in6_addr)) != 0) &&
+			(memcmp(&(addr_a6->sin6_addr), &(addr_b6->sin6_addr), sizeof(struct in6_addr)) != 0)) {
 			return false;
 		}
 		

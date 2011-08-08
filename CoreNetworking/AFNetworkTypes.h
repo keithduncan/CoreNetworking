@@ -24,7 +24,7 @@
 	One of the socket types defined in <sys/socket.h>
 	
 	\field protocol
-	One of the 'PROTOCOL NUMBERS' defined in IETF-RFC-1700 http://tools.ietf.org/html/rfc1700 - it is important that an appropriate `socketType` is also provided.
+	One of the 'PROTOCOL NUMBERS' defined in IETF-RFC-1700 <http://tools.ietf.org/html/rfc1700> - it is important that an appropriate `socketType` is also provided.
  */
 struct _AFNetworkSocketSignature {
 	const SInt32 socketType;
@@ -41,7 +41,7 @@ static inline BOOL AFNetworkSocketSignatureEqualToSignature(AFNetworkSocketSigna
 }
 
 /*!
-    \brief
+	\brief
 	This is suitable for creating a network TCP socket.
 */
 extern const AFNetworkSocketSignature AFNetworkSocketSignatureInternetTCP;
@@ -65,7 +65,7 @@ extern const AFNetworkSocketSignature AFNetworkSocketSignatureInternetUDP;
 	See the documentation on <tt>AFSocketType</tt>.
 	
 	\field port
-	Identifies the Transport Layer address to communicate using (see IETF-RFC-1122 http://tools.ietf.org/html/rfc1122) in network byte order.
+	Identifies the Transport Layer address to communicate using (see IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122> in network byte order.
  */
 struct _AFNetworkInternetTransportSignature {
 	const AFNetworkSocketSignature type;

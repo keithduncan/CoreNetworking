@@ -12,7 +12,7 @@
 
 /*!
 	\brief
-	This format is described in IETF-RFC-2388 http://tools.ietf.org/html/rfc2388
+	This format is described in IETF-RFC-2388 <http://tools.ietf.org/html/rfc2388>
 	
 	\details
 	The order you add values in is unpreserved.

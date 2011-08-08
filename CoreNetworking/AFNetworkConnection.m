@@ -20,14 +20,14 @@
 }
 
 + (AFNetworkInternetTransportSignature)transportSignatureForScheme:(NSString *)scheme {
-	[NSException raise:NSInvalidArgumentException format:@"%s, cannot provide an AFNetworkInternetTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme, nil];
+	[NSException raise:NSInvalidArgumentException format:@"%s, cannot provide an AFNetworkInternetTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme];
 	
 	AFNetworkInternetTransportSignature signature = {0};
 	return signature;
 }
 
 + (NSString *)serviceDiscoveryType {
-	[NSException raise:NSInternalInconsistencyException format:@"%s, connot provide a service discovery type", __PRETTY_FUNCTION__, nil];
+	[NSException raise:NSInternalInconsistencyException format:@"%s, connot provide a service discovery type", __PRETTY_FUNCTION__];
 	return nil;
 }
 
@@ -94,7 +94,7 @@
 		return [NSURL URLWithString:[NSString stringWithFormat:@"%@:%lu", host, (unsigned long)port]];
 	}
 	
-	[NSException raise:NSInternalInconsistencyException format:@"%s, unsupported peer type %@", __PRETTY_FUNCTION__, peer, nil];
+	[NSException raise:NSInternalInconsistencyException format:@"%s, unsupported peer type %@", __PRETTY_FUNCTION__, peer];
 	return nil;
 }
 

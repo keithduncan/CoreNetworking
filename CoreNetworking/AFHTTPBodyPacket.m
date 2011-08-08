@@ -77,7 +77,7 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 		return;
 	}
 	
-	AFNetworkPacketRead *chunkDataPacket = [[AFNetworkPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:packetSize]];
+	AFNetworkPacketRead *chunkDataPacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:packetSize]] autorelease];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_chunkDataPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:chunkDataPacket];
 	[self setCurrentPacket:chunkDataPacket];
 }
@@ -118,7 +118,7 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 @synthesize appendBodyDataToMessage=_appendBodyDataToMessage;
 
 /*
- This is based on the order of precedence documented in IETF RFC 2616 §4.4 http://tools.ietf.org/html/rfc2616
+ This is based on the order of precedence documented in IETF-RFC-2616 §4.4 <http://tools.ietf.org/html/rfc2616>
  */
 + (BOOL)messageHasBody:(CFHTTPMessageRef)message {
 	NSParameterAssert(CFHTTPMessageIsHeaderComplete(message));
@@ -182,7 +182,7 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 #warning complete this error
 								   nil];
-		*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:0 userInfo:errorInfo];
+		*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:errorInfo];
 	}
 	return nil;
 }

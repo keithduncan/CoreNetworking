@@ -104,7 +104,7 @@
 	id dispatchTarget = [self _dispatchTargetForSelector:selector];
 	
 	if (dispatchTarget == nil) {
-		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot dispatch to a nil target", __PRETTY_FUNCTION__, nil];
+		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot dispatch to a nil target", __PRETTY_FUNCTION__];
 		return;
 	}
 	

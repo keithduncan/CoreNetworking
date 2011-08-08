@@ -10,8 +10,13 @@
 
 #import "AFNetworkFunctions.h"
 
+@interface AFNetworkPacketWrite ()
+@property (assign) NSUInteger totalBytesWritten;
+@end
+
 @implementation AFNetworkPacketWrite
 
+@synthesize totalBytesWritten=_totalBytesWritten;
 @synthesize buffer=_buffer;
 
 - (id)initWithData:(NSData *)buffer {
@@ -32,8 +37,7 @@
 }
 
 - (float)currentProgressWithBytesDone:(NSInteger *)bytesDone bytesTotal:(NSInteger *)bytesTotal {
-	CFIndex done = _bytesWritten, total = [self.buffer length];
-	
+	NSInteger done = [self totalBytesWritten], total = [self.buffer length];
 	if (bytesDone != NULL) *bytesDone = done;
 	if (bytesTotal != NULL) *bytesTotal = total;
 	return ((float)done/(float)total);
@@ -43,25 +47,22 @@
 	NSInteger currentBytesWritten = 0;
 	
 	while ([writeStream hasSpaceAvailable]) {
-		uint8_t *writeBuffer = (uint8_t *)([self.buffer bytes] + _bytesWritten);
-		NSInteger bytesRemaining = ([self.buffer length] - _bytesWritten);
+		NSInteger bytesRemaining = ([self.buffer length] - [self totalBytesWritten]);
+		uint8_t *writeBuffer = (uint8_t *)([self.buffer bytes] + [self totalBytesWritten]);
 		
 		NSInteger bytesWritten = [writeStream write:writeBuffer maxLength:bytesRemaining];
-		
 		if (bytesWritten < 0) {
-			NSError *error = [writeStream streamError];
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-											  error, AFNetworkPacketErrorKey,
+											  [writeStream streamError], AFNetworkPacketErrorKey,
 											  nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:notificationInfo];
 			return -1;
 		}
 		
-		_bytesWritten += bytesWritten;
+		[self setTotalBytesWritten:([self totalBytesWritten] + bytesWritten)];
+		currentBytesWritten += bytesWritten;
 		
-		BOOL packetComplete = NO;
-		packetComplete = (_bytesWritten == [self.buffer length]);
-		
+		BOOL packetComplete = ([self totalBytesWritten] == [self.buffer length]);
 		if (packetComplete) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 			break;

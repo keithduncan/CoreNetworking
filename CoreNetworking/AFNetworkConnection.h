@@ -29,7 +29,7 @@
 
 /*!
 	\brief
-	Your subclass should encapsulate Application Layer data (as defined in IETF-RFC-1122 http://tools.ietf.org/html/rfc1122) and pass it to the superclass for further processing.
+	Your subclass should encapsulate Application Layer data (as defined in IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122> and pass it to the superclass for further processing.
 */
 @interface AFNetworkConnection : AFNetworkLayer <AFNetworkConnectionLayer>
 

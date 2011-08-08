@@ -83,7 +83,7 @@ extern NSData *AFNetworkServiceTXTRecordDataFromPropertyDictionary(NSDictionary 
 extern NSString *const AFNetworkServicePresenceKey;
 
 /*!
-    \brief
+	\brief
 	A replacement for a resolvable <tt>NSNetService</tt> with a KVO compliant 'presence' dictionary corresponding to the TXT record data.
 	
 	\details
@@ -153,7 +153,7 @@ extern NSString *const AFNetworkServicePresenceKey;
 @property (readonly) NSArray *addresses;
 
 /*!
-    \brief  
+	\brief
 	This will stop both a monitor and resolve operation.
 */
 - (void)stop;
