@@ -61,6 +61,8 @@
  */
 
 - (void)open;
+- (BOOL)isOpen;
+
 - (void)close;
 
 - (id)streamPropertyForKey:(NSString *)key;
@@ -87,6 +89,16 @@
  */
 - (BOOL)networkStreamCanDequeuePackets:(AFNetworkStream *)networkStream;
 
+/*!
+	\brief
+	Implement to know when a packet has been removed from the stream's queue.
+ */
+- (void)networkStream:(AFNetworkStream *)networkStream didDequeuePacket:(AFNetworkPacket *)packet;
+
+/*!
+	\brief
+	Implement this method to be informed of packet progress.
+ */
 - (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSInteger)bytesTransferred totalBytesTransferred:(NSInteger)totalBytesWritten totalBytesExpectedToTransfer:(NSInteger)totalBytesExpectedToTransfer;
 
  @required
@@ -104,8 +116,10 @@
  */
 - (void)networkStream:(AFNetworkStream *)networkStream didReceiveEvent:(NSStreamEvent)event;
 
+/*!
+	\brief
+	You must implement this method to handle any errors; errors must be handled.
+ */
 - (void)networkStream:(AFNetworkStream *)networkStream didReceiveError:(NSError *)error;
-
-- (void)networkStream:(AFNetworkStream *)networkStream didDequeuePacket:(AFNetworkPacket *)packet;
 
 @end

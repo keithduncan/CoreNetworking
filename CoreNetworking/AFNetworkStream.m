@@ -183,6 +183,10 @@ typedef NSUInteger _AFNetworkStreamFlags;
 	[self.stream open];
 }
 
+- (BOOL)isOpen {
+	return ((_flags & _kStreamDidOpen) == _kStreamDidOpen);
+}
+
 - (void)close {
 	[self.queue emptyQueue];
 	[self.stream close];
@@ -248,7 +252,7 @@ typedef NSUInteger _AFNetworkStreamFlags;
 }
 
 - (BOOL)_canDequeuePackets {
-	if ((_flags & _kStreamDidOpen) != _kStreamDidOpen) return NO;
+	if (![self isOpen]) return NO;
 	
 	if ([self.delegate respondsToSelector:@selector(networkStreamCanDequeuePackets:)]) {
 		return [self.delegate networkStreamCanDequeuePackets:self];

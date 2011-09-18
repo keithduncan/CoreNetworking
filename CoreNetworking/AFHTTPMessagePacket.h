@@ -28,7 +28,7 @@
 	NSURL *_bodyStorage;
 	NSOutputStream *_bodyStream;
 	
-	AFNetworkPacket *_currentRead;
+	AFNetworkPacket <AFNetworkPacketReading> *_currentRead;
 }
 
 /*!

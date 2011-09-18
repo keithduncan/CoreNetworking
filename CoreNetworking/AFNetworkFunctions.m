@@ -15,6 +15,11 @@
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
+#import <Security/Security.h>
+
+#import "AFNetworkStream.h"
+
+#import "AFNetworkConstants.h"
 
 NS_INLINE bool af_sockaddr_is_ipv4_mapped(const struct sockaddr *addr) {
 	NSCParameterAssert(addr != NULL);
@@ -102,35 +107,6 @@ const char *af_sockaddr_ntop(const struct sockaddr *addr, char *dst, size_t maxl
 	return NULL;
 }
 
-NSError *AFNetworkErrorFromCFStreamError(CFStreamError error) {
-	if (error.domain == 0 && error.error == 0) return nil;
-	NSString *domain = @"Unlisted CFStreamError Domain", *message = nil;
-	
-	if (error.domain == kCFStreamErrorDomainPOSIX) {
-		domain = NSPOSIXErrorDomain;
-	} else if (error.domain == kCFStreamErrorDomainMacOSStatus) {
-		domain = NSOSStatusErrorDomain;
-	} else if (error.domain == kCFStreamErrorDomainMach) {
-		domain = NSMachErrorDomain;
-	} else if (error.domain == kCFStreamErrorDomainNetDB) {
-		domain = @"kCFStreamErrorDomainNetDB";
-		message = [NSString stringWithCString:gai_strerror(error.error) encoding:NSASCIIStringEncoding];
-	} else if (error.domain == kCFStreamErrorDomainNetServices) {
-		domain = @"kCFStreamErrorDomainNetServices";
-	} else if (error.domain == kCFStreamErrorDomainSOCKS) {
-		domain = @"kCFStreamErrorDomainSOCKS";
-	} else if (error.domain == kCFStreamErrorDomainSystemConfiguration) {
-		domain = @"kCFStreamErrorDomainSystemConfiguration";
-	} else if (error.domain == kCFStreamErrorDomainSSL) {
-		domain = @"kCFStreamErrorDomainSSL";
-	}
-	
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-							  message, NSLocalizedDescriptionKey,
-							  nil];
-	return [NSError errorWithDomain:domain code:error.error userInfo:userInfo];
-}
-
 NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress) {
 	CFRetain(socketAddress);
 	
@@ -146,4 +122,85 @@ NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress) {
 	}
 	
 	return [[[NSString alloc] initWithBytes:socketAddressPresentation length:socketAddressPresentationLength encoding:NSASCIIStringEncoding] autorelease];
+}
+
+NSError *AFNetworkStreamPrepareError(AFNetworkStream *stream, NSError *error) {
+#define AFNetworkStreamNotConnectedToInternetErrorDescription() NSLocalizedStringFromTableInBundle(@"You\u2019re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError not connected to internet error description")
+	
+	if (![stream isOpen]) {
+		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+								   AFNetworkStreamNotConnectedToInternetErrorDescription(), NSLocalizedDescriptionKey,
+								   NSLocalizedStringFromTableInBundle(@"This computer\u2019s Internet connection appears to be offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
+								   error, NSUnderlyingErrorKey,
+								   nil];
+		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorNotConnectedToInternet userInfo:errorInfo];
+	}
+	
+	if ([[error domain] isEqualToString:NSPOSIXErrorDomain]) {
+		switch ([error code]) {
+			case ENOTCONN:;
+				NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+										   AFNetworkStreamNotConnectedToInternetErrorDescription(), NSLocalizedDescriptionKey,
+										   NSLocalizedStringFromTableInBundle(@"This computer\u2019s Internet connection appears to have gone offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError went offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
+										   error, NSUnderlyingErrorKey,
+										   nil];
+				error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorNetworkConnectionLost userInfo:errorInfo];
+				break;
+		}
+	}
+	
+#define AFNetworkErrorCodeInRange(code, a, b) (code >= MIN(a, b) && code <= MAX(a, b) ? YES : NO)
+	
+	if ([[error domain] isEqualToString:NSOSStatusErrorDomain]) {
+		if (AFNetworkErrorCodeInRange([error code], errSSLProtocol, errSSLLast)) {
+			NSString *hostname = [stream streamPropertyForKey:(id)kCFStreamPropertySocketRemoteHostName];
+			
+			NSString *errorDescription = NSLocalizedStringFromTableInBundle(@"An SSL error has occurred and a secure connection to the server cannot be made.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError SSL default error description");
+			AFNetworkErrorCode errorCode = AFNetworkSecureErrorConnectionFailed;
+			
+			switch ([error code]) {
+				case errSSLCertExpired:;
+					if (hostname == nil) {
+						errorDescription = NSLocalizedStringFromTableInBundle(@"The certificate for this server has expired.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError SSL certificate expired error description");
+					} else {
+						errorDescription = NSLocalizedStringFromTableInBundle(@"The certificate for this server has expired. You might be connecting to a server that is pretending to be \u201c%@\u201d which could put your confidential information at risk.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError SSL certificate expired with hostname error description");
+					}
+					errorCode = AFNetworkSecureErrorServerCertificateExpired;
+					break;
+				case errSSLCertNotYetValid:;
+					if (hostname == nil) {
+						errorDescription = NSLocalizedStringFromTableInBundle(@"The certificate for this server is not yet valid.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError SSL certificate not yet valid error description");
+					} else {
+						errorDescription = NSLocalizedStringFromTableInBundle(@"The certificate for this server is not yet valid. You might be connecting to a server that is pretending to be \u201c%@\u201d which could put your confidential information at risk.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError SSL certificate not yet valid with hostname error description");
+					}
+					errorCode = AFNetworkSecureErrorServerCertificateNotYetValid;
+					break;
+				case errSSLHostNameMismatch:;
+					if (hostname == nil) {
+						errorDescription = NSLocalizedStringFromTableInBundle(@"The certificate for this server is invalid.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError SSL certificate invalid error description");
+					} else {
+						errorDescription = NSLocalizedStringFromTableInBundle(@"The certificate for this server is invalid. You might be connecting to a server that is pretending to be \u201c%@\u201d which could put your confidential information at risk.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError SSL certificate invalid with hostname error description");
+					}
+					errorCode = AFNetworkSecureErrorServerCertificateUntrusted;
+					break;
+				case errSSLPeerUnknownCA:;
+					if (hostname == nil) {
+						errorDescription = NSLocalizedStringFromTableInBundle(@"The certificate for this server was signed by an unknown certifying authority.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError SSL certificate unknown CA error description");
+					} else {
+						errorDescription = NSLocalizedStringFromTableInBundle(@"The certificate for this server was signed by an unknown certifying authority. You might be connecting to a server that is pretending to be \u201c%@\u201d which could put your confidential information at risk.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareError SSL certificate unknown CA with hostname error description");
+					}
+					errorCode = AFNetworkSecureErrorServerCertificateHasUnknownRoot;
+					break;
+			}
+			
+			NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+									   errorDescription, NSLocalizedDescriptionKey,
+									   nil];
+			error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:errorInfo];
+		}
+	}
+	
+#undef AFNetworkErrorCodeInRange
+	
+	return error;
 }

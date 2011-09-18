@@ -27,8 +27,7 @@ static void	AFServiceDiscoveryProcessResult(CFFileDescriptorRef fileDescriptor, 
 	
 	AFNetworkServiceDiscoveryRunLoopSource *self = info;
 	
-	DNSServiceErrorType error = kDNSServiceErr_NoError;
-	error = DNSServiceProcessResult(self->_service);
+	DNSServiceErrorType error __attribute__((unused)) = DNSServiceProcessResult(self->_service);
 #warning This error isn't handled.
 }
 

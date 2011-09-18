@@ -59,7 +59,7 @@
 }
 
 - (AFNetworkLayer <AFNetworkConnectionLayer> *)lowerLayer {
-	return [super lowerLayer];
+	return (AFNetworkLayer <AFNetworkConnectionLayer> *)[super lowerLayer];
 }
 
 - (NSURL *)peer {

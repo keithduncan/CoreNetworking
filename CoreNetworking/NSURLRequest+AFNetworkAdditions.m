@@ -29,9 +29,11 @@ static NSString *const AFHTTPBodyFileLocationKey = @"AFHTTPBodyFileLocation";
 }
 
 - (NSDictionary *)parametersFromBody {
-	if (![[self valueForHTTPHeaderField:@"Content-Type"] isEqualToString:@"application/x-www-form-urlencoded"]) return nil;
+	if (![[self valueForHTTPHeaderField:@"Content-Type"] isEqualToString:@"application/x-www-form-urlencoded"]) {
+		return nil;
+	}
 	
-	NSString *bodyString = [[NSString alloc] initWithData:[self HTTPBody] encoding:NSUTF8StringEncoding];
+	NSString *bodyString = [[[NSString alloc] initWithData:[self HTTPBody] encoding:NSUTF8StringEncoding] autorelease];
 	return [self _parametersFromString:bodyString];
 }
 
@@ -63,7 +65,7 @@ static NSString *const AFHTTPBodyFileLocationKey = @"AFHTTPBodyFileLocation";
 		[queryParameters addObject:parameter];
 	}];
 	
-	NSMutableString *absoluteURLString = [[[self URL] absoluteString] mutableCopy];
+	NSMutableString *absoluteURLString = [[[[self URL] absoluteString] mutableCopy] autorelease];
 	
 	NSString *newQuery = [@"?" stringByAppendingString:[queryParameters componentsJoinedByString:@"&"]];
 	

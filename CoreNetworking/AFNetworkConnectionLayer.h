@@ -48,6 +48,8 @@
 
 @protocol AFNetworkConnectionLayerHostDelegate <AFNetworkTransportLayerHostDelegate>
 
+ @optional
+
 /*!
 	\param layer
 	Could be the host that spawned it or an intermediate object.

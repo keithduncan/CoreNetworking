@@ -131,6 +131,7 @@ enum {
 	AFHTTPStatusCodeNotFound						= 404, /* Not Found */
 	AFHTTPStatusCodeNotAllowed						= 405, /* Not Allowed */
 	AFHTTPStatusCodeProxyAuthenticationRequired		= 407, /* Proxy Authentication Required */
+	AFHTTPStatusCodeExpectationFailed				= 417, /* Expectation Failed */
 	AFHTTPStatusCodeUpgradeRequired					= 426, /* Upgrade Required */
 	
 	// 5xx class, server error

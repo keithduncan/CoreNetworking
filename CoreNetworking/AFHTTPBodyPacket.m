@@ -165,7 +165,7 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	NSString *contentLength = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease];
 	if (contentLength != nil) {
 		AFHTTPBodyPacket *packet = [[[AFHTTPBodyPacket alloc] initWithMessage:message] autorelease];
-		AFNetworkPacket *dataPacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:[contentLength integerValue]]] autorelease];
+		AFNetworkPacketRead *dataPacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:[contentLength integerValue]]] autorelease];
 		[[NSNotificationCenter defaultCenter] addObserver:packet selector:@selector(_dataPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:dataPacket];
 		[packet setCurrentPacket:dataPacket];
 		return packet;

@@ -184,7 +184,9 @@ AFNETWORK_NSSTRING_CONTEXT(AFNetworkServerHostConnectionsPropertyObservationCont
 	return ([self openSocketWithSignature:signature address:[NSData dataWithBytes:&address length:address.sun_len]] != nil);
 }
 
-- (AFNetworkSocket *)openSocketWithSignature:(const AFNetworkSocketSignature)signature address:(NSData *)address {	
+- (AFNetworkSocket *)openSocketWithSignature:(const AFNetworkSocketSignature)signature address:(NSData *)address {
+	NSParameterAssert(self.clientPools != nil);
+	
 	struct sockaddr addr = {0};
 	[address getBytes:&addr length:sizeof(struct sockaddr)];
 	

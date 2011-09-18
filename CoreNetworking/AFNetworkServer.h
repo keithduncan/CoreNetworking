@@ -139,7 +139,7 @@
 	This method makes no provisions for deleting an existing socket should it exist, and will fail if one does.
 	
 	\param location
-	Only file:// URLs are supported, an exception is thrown if you profide another scheme.
+	Only file:// URLs are supported, an exception is thrown if you provide another scheme.
 	
 	\return
 	NO if the socket couldn't be created

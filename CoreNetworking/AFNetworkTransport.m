@@ -225,20 +225,20 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 }
 
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	[[self writeStream] scheduleInRunLoop:runLoop forMode:mode];
-	[[self readStream] scheduleInRunLoop:runLoop forMode:mode];
+	[self.writeStream scheduleInRunLoop:runLoop forMode:mode];
+	[self.readStream scheduleInRunLoop:runLoop forMode:mode];
 }
 
 - (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	[[self writeStream] unscheduleFromRunLoop:runLoop forMode:mode];
-	[[self readStream] unscheduleFromRunLoop:runLoop forMode:mode];
+	[self.writeStream unscheduleFromRunLoop:runLoop forMode:mode];
+	[self.readStream unscheduleFromRunLoop:runLoop forMode:mode];
 }
 
 #if defined(DISPATCH_API_VERSION)
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
-	[[self writeStream] scheduleInQueue:queue];
-	[[self readStream] scheduleInQueue:queue];
+	[self.writeStream scheduleInQueue:queue];
+	[self.readStream scheduleInQueue:queue];
 }
 
 #endif
@@ -247,13 +247,15 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 #pragma mark Connection
 
 - (void)open {
+#warning this should assert that the receiver has been scheduled somehow
+	
 	if ([self isOpen]) {
 		[self.delegate networkLayerDidOpen:self];
 		return;
 	}
 	
-	[[self writeStream] open];
-	[[self readStream] open];
+	[self.writeStream open];
+	[self.readStream open];
 }
 
 - (BOOL)isOpen {
@@ -363,23 +365,7 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 }
 
 - (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
-	if (![self isOpen]) {
-		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-								   NSLocalizedStringFromTableInBundle(@"You\u2019re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
-								   NSLocalizedStringFromTableInBundle(@"This computer\u2019s Internet connection appears to be offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
-								   error, NSUnderlyingErrorKey,
-								   nil];
-		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorUnknown userInfo:errorInfo];
-	}
-	
-	if ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOTCONN) {
-		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-								   NSLocalizedStringFromTableInBundle(@"You\u2019re not connected to the Internet", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error description"), NSLocalizedDescriptionKey,
-								   NSLocalizedStringFromTableInBundle(@"This computer\u2019s Internet connection appears to have gone offline.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkTransport offline error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,
-								   error, NSUnderlyingErrorKey,
-								   nil];
-		error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkTransportErrorUnknown userInfo:errorInfo];
-	}
+	error = AFNetworkStreamPrepareError(stream, error);
 	
 	[[self delegate] networkLayer:self didReceiveError:error];
 }
@@ -430,12 +416,12 @@ typedef NSUInteger AFSocketConnectionStreamFlags;
 
 - (void)_configureWithWriteStream:(NSOutputStream *)writeStream readStream:(NSInputStream *)readStream {
 	if (writeStream != nil) {
-		_writeStream = [[AFNetworkStream alloc] initWithStream:writeStream];
+		_writeStream = [(AFNetworkStream *)[AFNetworkStream alloc] initWithStream:writeStream];
 		[_writeStream setDelegate:self];
 	}
 	
 	if (readStream != nil) {
-		_readStream = [[AFNetworkStream alloc] initWithStream:readStream];
+		_readStream = [(AFNetworkStream *)[AFNetworkStream alloc] initWithStream:readStream];
 		[_readStream setDelegate:self];
 	}
 }
