@@ -6,11 +6,15 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "CoreNetworking/AFNetworkPacket.h"
+#import <Foundation/Foundation.h>
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
-#endif
+#endif /* TARGET_OS_IPHONE */
+
+#import "CoreNetworking/AFNetworkPacket.h"
+
+#import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkPacketRead;
 
@@ -23,7 +27,7 @@
  */
 @interface AFHTTPMessagePacket : AFNetworkPacket <AFNetworkPacketReading> {
  @private
-	__strong CFHTTPMessageRef _message;
+	AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef _message;
 	
 	NSURL *_bodyStorage;
 	NSOutputStream *_bodyStream;
@@ -42,6 +46,6 @@
 	By default, the response body is appended to the message buffer.
 	If set, the body will be streamed to disk instead of loaded into memory.
  */
-@property (copy) NSURL *bodyStorage;
+@property (copy, nonatomic) NSURL *bodyStorage;
 
 @end

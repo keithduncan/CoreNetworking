@@ -12,7 +12,7 @@
 
 /*
  *	Network Layers
- *		Transport + Internetwork
+ *	Transport + Internetwork
  */
 
 @protocol AFNetworkTransportLayerHostDelegate;
@@ -34,7 +34,7 @@
 	\brief
 	Currently the control and data delegates share the same property.
  */
-@property (assign) id <AFNetworkTransportLayerControlDelegate, AFNetworkTransportLayerDataDelegate> delegate;
+@property (assign, nonatomic) id <AFNetworkTransportLayerControlDelegate, AFNetworkTransportLayerDataDelegate> delegate;
 
 /*!
 	\brief
@@ -82,31 +82,6 @@
 
 /*!
 	\brief
-	The socket connection must be scheduled in at least one run loop to function.
- */
-- (void)scheduleInRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode;
-
-/*!
-	\brief
-	The socket connection must remain scheduled in at least one run loop to function.
- */
-- (void)unscheduleFromRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode;
-
-#if defined(DISPATCH_API_VERSION)
-
-/*!
-	\brief
-	Creates a dispatch source internally.
-	
-	\param queue
-	A layer can only be scheduled in a single queue at a time, to unschedule it pass NULL.
- */
-- (void)scheduleInQueue:(dispatch_queue_t)queue;
-
-#endif
-
-/*!
-	\brief
 	|buffer| should be an NSData to write over the file descriptor
 	This method should accept a AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
  */
@@ -139,6 +114,8 @@
 
 - (void)networkLayerDidOpen:(id <AFNetworkTransportLayer>)layer;
 
+- (void)networkLayerDidStartTLS:(id <AFNetworkTransportLayer>)layer;
+
 - (void)networkLayerDidClose:(id <AFNetworkTransportLayer>)layer;
 
  @required
@@ -149,20 +126,6 @@
  */
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didReceiveError:(NSError *)error;
 
- @optional
-
-/*!
-	\brief
-	Called if TLS setup succeeded.
- */
-- (void)networkLayerDidStartTLS:(id <AFNetworkTransportLayer>)layer;
-
-/*!
-	\brief
-	Called if the TLS fails, will call the generic error handler instead if unimplemented.
- */
-- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didNotStartTLS:(NSError *)error;
-
 @end
 
 /*!
@@ -171,8 +134,8 @@
  */
 @protocol AFNetworkTransportLayerDataDelegate <NSObject>
 
-- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context;
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(AFNetworkPacket <AFNetworkPacketWriting> *)packet context:(void *)context;
 
-- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context;
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(AFNetworkPacket <AFNetworkPacketReading> *)packet context:(void *)context;
 
 @end

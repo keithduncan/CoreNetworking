@@ -6,10 +6,13 @@
 //  Copyright 2008. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 #import "CoreNetworking/AFNetworkLayer.h"
 
-#import "CoreNetworking/AFNetworkService.h"
 #import "CoreNetworking/AFNetworkConnectionLayer.h"
+
+@class AFNetworkServiceScope;
 
 /*!
 	\brief
@@ -29,9 +32,17 @@
 
 /*!
 	\brief
+	
+ */
+@protocol AFNetworkConnectionDelegate <AFNetworkConnectionLayerDelegate, AFNetworkConnectionControlDelegate, AFNetworkConnectionDataDelegate>
+
+@end
+
+/*!
+	\brief
 	Your subclass should encapsulate Application Layer data (as defined in IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122> and pass it to the superclass for further processing.
 */
-@interface AFNetworkConnection : AFNetworkLayer <AFNetworkConnectionLayer>
+@interface AFNetworkConnection : AFNetworkLayer <AFNetworkConnectionLayer, AFNetworkTransportLayerDataDelegate>
 
 /*!
 	\brief
@@ -63,14 +74,14 @@
 	\details
 	If the URL provides a port number that one is used instead of the scheme-implied port. Scheme implied ports are looked up in /etc/services.
  */
-- (id <AFNetworkConnectionLayer>)initWithURL:(NSURL *)endpoint;
+- (id <AFNetworkConnectionLayer>)initWithURL:(NSURL *)URL;
 
 /*!
 	\brief
 	Outbound Initialiser.
 	This initialiser is shorthand for creating a AFNetworkTransportServiceSignature.
  */
-- (id <AFNetworkConnectionLayer>)initWithService:(id <AFNetworkServiceCommon>)service;
+- (id <AFNetworkConnectionLayer>)initWithService:(AFNetworkServiceScope *)serviceScope;
 
 /*!
 	\brief
@@ -82,13 +93,13 @@
 	\brief
 	
  */
-@property (assign) id <AFNetworkConnectionControlDelegate, AFNetworkConnectionDataDelegate> delegate;
+@property (assign, nonatomic) id <AFNetworkConnectionDelegate> delegate;
 
 /*!
 	\brief
 	This method returns nil for an inbound connection.
 	Otherwise, this method returns the CFHostRef hostname, or the CFNetServiceRef fullname.
  */
-@property (readonly) NSURL *peer;
+@property (readonly, nonatomic) NSURL *peer;
 
 @end

@@ -10,17 +10,19 @@
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
-#endif
+#endif /* TARGET_OS_IPHONE */
 
 #import "CoreNetworking/AFNetworkPacket.h"
 
+#import "CoreNetworking/AFNetwork-Macros.h"
+
 /*!
 	\brief
-	Posted as for each piece of data read from the input stream.
+	Posted for each piece of data read from the input stream.
  */
-extern NSString *const AFHTTPBodyPacketDidReadNotificationName;
-
-	extern NSString *const AFHTTPBodyPacketDidReadDataKey;
+AFNETWORK_EXTERN NSString *const AFHTTPBodyPacketDidReadNotificationName;
+	
+	AFNETWORK_EXTERN NSString *const AFHTTPBodyPacketDidReadDataKey;
 
 /*!
 	\brief
@@ -31,7 +33,7 @@ extern NSString *const AFHTTPBodyPacketDidReadNotificationName;
  */
 @interface AFHTTPBodyPacket : AFNetworkPacket <AFNetworkPacketReading> {
  @protected
-	__strong CFHTTPMessageRef _message;
+	AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef _message;
 	AFNetworkPacket <AFNetworkPacketReading> *_currentPacket;
 	BOOL _appendBodyDataToMessage;
 }
@@ -64,6 +66,6 @@ extern NSString *const AFHTTPBodyPacketDidReadNotificationName;
 	\details
 	Defaults to YES.
  */
-@property (assign) BOOL appendBodyDataToMessage;
+@property (assign, nonatomic) BOOL appendBodyDataToMessage;
 
 @end

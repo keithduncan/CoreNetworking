@@ -50,7 +50,7 @@
 }
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"%@ index: %p \n{\n%@\n}", [super description], self.index, self.index, nil];
+	return [NSString stringWithFormat:@"%@ index: %p \n{\n%@\n}", [super description], self.index, self.index];
 }
 
 - (NSUInteger)count {

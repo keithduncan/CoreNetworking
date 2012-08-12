@@ -59,3 +59,9 @@
 
 #import "AmberFoundation/NSSortDescriptor+Additions.h"
 #import "AmberFoundation/NSBundle+Additions.h"
+
+//
+//	Other
+//
+
+#import "AmberFoundation/AFFoundationMacros.h"

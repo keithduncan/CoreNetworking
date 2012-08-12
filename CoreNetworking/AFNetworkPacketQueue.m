@@ -9,8 +9,8 @@
 #import "AFNetworkPacketQueue.h"
 
 @interface AFNetworkPacketQueue ()
-@property (retain) NSMutableArray *packets;
-@property (readwrite, retain) id currentPacket;
+@property (retain, nonatomic) NSMutableArray *packets;
+@property (readwrite, retain, nonatomic) id currentPacket;
 @end
 
 @implementation AFNetworkPacketQueue

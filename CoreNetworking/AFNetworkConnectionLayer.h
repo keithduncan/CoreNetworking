@@ -6,15 +6,39 @@
 //  Copyright 2009. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 #import "CoreNetworking/AFNetworkTransportLayer.h"
 
-/*!
- *	Connection Layers
+/*
+	Connection Layers
  */
 
-@protocol AFNetworkConnectionLayerHostDelegate;
-@protocol AFNetworkConnectionLayerControlDelegate;
-@protocol AFNetworkConnectionLayerDataDelegate;
+@protocol AFNetworkConnectionLayerHostDelegate <AFNetworkTransportLayerHostDelegate>
+
+ @optional
+
+/*!
+	\param layer
+	Could be the host that spawned it or an intermediate object.
+ */
+- (void)networkLayer:(id)layer didAcceptConnection:(id <AFNetworkTransportLayer>)connection;
+
+@end
+
+
+@protocol AFNetworkConnectionLayerControlDelegate <AFNetworkTransportLayerControlDelegate>
+
+@end
+
+
+@protocol AFNetworkConnectionLayerDataDelegate <AFNetworkTransportLayerDataDelegate>
+
+@end
+
+@protocol AFNetworkConnectionLayerDelegate <AFNetworkConnectionLayerControlDelegate, AFNetworkConnectionLayerDataDelegate>
+
+@end
 
 #pragma mark -
 
@@ -24,7 +48,7 @@
  */
 @protocol AFNetworkConnectionLayer <AFNetworkTransportLayer>
 
-@property (assign) id <AFNetworkConnectionLayerControlDelegate, AFNetworkConnectionLayerDataDelegate> delegate;
+@property (assign, nonatomic) id <AFNetworkConnectionLayerDelegate> delegate;
 
  @optional
 
@@ -42,28 +66,5 @@
 	This method can be used to determine if SSL/TLS has been started on the connection.
  */
 - (BOOL)isSecure;
-
-@end
-
-
-@protocol AFNetworkConnectionLayerHostDelegate <AFNetworkTransportLayerHostDelegate>
-
- @optional
-
-/*!
-	\param layer
-	Could be the host that spawned it or an intermediate object.
- */
-- (void)networkLayer:(id)layer didAcceptConnection:(id <AFNetworkTransportLayer>)layer;
-
-@end
-
-
-@protocol AFNetworkConnectionLayerControlDelegate <AFNetworkTransportLayerControlDelegate>
-
-@end
-
-
-@protocol AFNetworkConnectionLayerDataDelegate <AFNetworkTransportLayerDataDelegate>
 
 @end

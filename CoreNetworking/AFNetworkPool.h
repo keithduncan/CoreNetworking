@@ -21,7 +21,7 @@
 	NSMutableSet *_connections;
 }
 
-@property (readonly) NSSet *connections;
+@property (readonly, nonatomic) NSSet *connections;
 
 - (void)addConnectionsObject:(id <AFNetworkTransportLayer>)proxy;
 - (void)removeConnectionsObject:(id <AFNetworkTransportLayer>)proxy;

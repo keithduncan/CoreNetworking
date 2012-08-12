@@ -6,18 +6,23 @@
 //  Copyright 2008. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 #import "CoreNetworking/AFNetworkLayer.h"
 
-#import "CoreNetworking/AFNetworkTypes.h"
 #import "CoreNetworking/AFNetworkConnectionLayer.h"
+
+#import "CoreNetworking/AFNetwork-Types.h"
+#import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkSocket;
 @class AFNetworkPool;
+@class AFNetworkSchedulerProxy;
 @class AFNetworkServer;
 
 /*!
 	\brief
-	The server should consult the delegate for conditional operations. If your subclass provides a delegate protocol, it should conform to this one too.
+	The server should consult the delegate for conditional operations. If your subclass provides a delegate protocol, it should conform to this one.
  */
 @protocol AFNetworkServerDelegate <AFNetworkConnectionLayerHostDelegate>
 
@@ -25,12 +30,18 @@
 
 /*
 	\brief
-	You can return FALSE to deny connectivity.
- 
+	You can return NO to deny connectivity.
+	
 	\details
 	This is sent before the first layer is encapsulated.
  */
 - (BOOL)networkServer:(AFNetworkServer *)server shouldAcceptConnection:(id <AFNetworkConnectionLayer>)connection;
+
+/*!
+	\brief
+	Sent if the connection is accepted after consulting the delegate's -networkServer:shouldAcceptConnection: method
+ */
+- (void)networkServer:(AFNetworkServer *)server didAcceptConnection:(id <AFNetworkConnectionLayer>)connection;
 
 /*!
 	\brief
@@ -50,35 +61,13 @@
  */
 @interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFNetworkConnectionLayerHostDelegate> {
  @private
+	AFNetworkSchedulerProxy *_scheduler;
+	
 	id <AFNetworkServerDelegate> _delegate;
 	
 	NSArray *_encapsulationClasses;
 	NSArray *_clientPools;
 }
-
-/*
-	Host Addresses
- */
-
-/*!
-	\details
-	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6), however you shouldn't <em>need</em> to know this.
-	This is likely only to be useful for testing your server, since it won't be accessable from another computer.
- 
-	\return
-	All the localhost socket addresses, these are only accessible from the local machine.
-	This allows you to create a server with ports open on all IP addresses that @"localhost" resolves to (equivalent to 127.0.0.1 and ::1).
- */
-+ (NSSet *)localhostInternetSocketAddresses;
-
-/*!
-	\details
-	A collection of NSData objects containing either (struct sockaddr_in) or (struct sockaddr_in6).
-	
-	\return
-	All the network socket addresses, these may be accessable from other network clients (ignoring firewall restrictions).
- */
-+ (NSSet *)allInternetSocketAddresses;
 
 /*
 	Initialization
@@ -105,31 +94,58 @@
 
 /*!
 	\brief
+	Used to schedule each new network layer.
+	
+	\details
+	A default scheduler is created in `-init` targeting the global concurrent queue, this can be replaced.
+ */
+@property (retain, nonatomic) AFNetworkSchedulerProxy *scheduler;
+
+/*!
+	\brief
 	The delegate is optional in this class, most servers should function without one
  */
-@property (assign) id <AFNetworkServerDelegate> delegate;
+@property (assign, nonatomic) id <AFNetworkServerDelegate> delegate;
 
 /*
 	Socket Opening
  */
 
+typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkInternetSocketScope) {
+	AFNetworkInternetSocketScopeLocalOnly = 1UL << 0,
+	AFNetworkInternetSocketScopeGlobal = 1UL << 1,
+};
 /*!
 	\brief
-	See <tt>-openInternetSocketsWithSocketSignature:port:addresses:</tt>.
+	Provides a socket address construction API and calls -openInternetSocketsWithSocketSignature:socketAddresses:errorHandler:, see its documentation for more information.
+	
+	\param scope
+	AFNetworkInternetSocketScopeLocalOnly opens sockets using the localhost addresses
+	AFNetworkInternetSocketScopeGlobal opens sockets using wildcard addresses
+	
+	\param port
+	Transport layer port, can pass 0 to have an address chosen by the system
  */
-- (BOOL)openInternetSocketsWithTransportSignature:(const AFNetworkInternetTransportSignature)signature addresses:(NSSet *)sockaddrs;
+- (BOOL)openInternetSocketsWithSocketSignature:(const AFNetworkSocketSignature)socketSignature scope:(AFNetworkInternetSocketScope)scope port:(uint16_t)port errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler;
 
 /*!
 	\brief
-	This method will open IP sockets, the addresses passed in |sockaddrs| should be either (struct sockaddr_in) or (struct sockaddr_in6) or another future IP socket address, so long as there's a sixteen bit port number at an offset of (((uint8_t)(struct sockaddr_sa *))+16)
+	This method is for opening IP address family sockets scoped to an address list.
 	
-	\param port
-	This is an in-out parameter, passing zero in by reference will have the kernel allocate a port number, the location you provide will contain that number on return
- 
+	\details
+	There is intentionally no port parameter, you must provide fully populated socket addresses.
+	Use getaddrinfo to be IP address family agnostic and avoid hard coding address families in the userspace.
+	
+	If any of the socket addresses cannot be opened -
+	- if no errorHandler parameter is provided, all sockets opened by the current message are closed and NO is returned
+	- if an errorHandler parameter is provided it will be called with the error
+	- - if the errorHandler returns NO, all sockets opened by the current message are closed and NO is returned
+	- - if the errorHandler returns YES, the enumeration continues
+	
 	\return
-	NO if any of the sockets couldn't be created, this will be expanded in future to allow delegate interaction to determine failure.
+	NO if any of the sockets couldn't be created (in which case this method is idempotent), YES if all sockets were successfully created
  */
-- (BOOL)openInternetSocketsWithSocketSignature:(const AFNetworkSocketSignature)signature port:(SInt32 *)port addresses:(NSSet *)sockaddrs;
+- (BOOL)openInternetSocketsWithSocketSignature:(const AFNetworkSocketSignature)socketSignature socketAddresses:(NSSet *)socketAddresses errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler;
 
 /*!
 	\brief
@@ -144,7 +160,11 @@
 	\return
 	NO if the socket couldn't be created
  */
-- (BOOL)openPathSocketWithLocation:(NSURL *)location;
+- (BOOL)openPathSocketWithLocation:(NSURL *)location error:(NSError **)errorRef;
+
+/*
+ 
+ */
 
 /*!
 	\brief
@@ -153,7 +173,7 @@
 	\details
 	This method is rarely applicable to higher-level servers, sockets are opened on the lowest layer of the stack.
  */
-- (AFNetworkSocket *)openSocketWithSignature:(const AFNetworkSocketSignature)signature address:(NSData *)address;
+- (AFNetworkSocket *)openSocketWithSignature:(const AFNetworkSocketSignature)signature address:(NSData *)address error:(NSError **)errorRef;
 
 /*
 	Server Clients
@@ -172,6 +192,6 @@
 	\brief
 	The pools of interest are likely to be the lowest level at index 0 containing the AFNetworkSockets and the top most pool containing the top-level connection objects this server has created.
  */
-@property (readonly) NSArray *clientPools;
+@property (readonly, retain, nonatomic) NSArray *clientPools;
 
 @end

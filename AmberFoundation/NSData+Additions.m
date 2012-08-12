@@ -1,13 +1,8 @@
 //
 //  NSData+Additions.m
-//  AMber
+//  Amber
 //
 //  File created by Keith Duncan on 04/01/2007.
-//
-
-//
-//	NB: Not all of this code is mine, I can't remember where I found it either
-//		The copyright notice has been ammended to reflect this
 //
 
 #import "NSData+Additions.h"
@@ -37,14 +32,16 @@
 	return [NSData dataWithBytes:&digest length:CC_SHA1_DIGEST_LENGTH];
 }
 
-- (NSData *)HMACUsingSHA1_withSecretKey:(NSData *)secretKey {
+- (NSData *)HMACUsingSHA1WithSecretKey:(NSData *)secretKey {
 	unsigned char digest[CC_SHA1_DIGEST_LENGTH];
 	
-	CFRetain(self); CFRetain(secretKey);
+	CFRetain(self);
+	CFRetain(secretKey);
 	
 	CCHmac(kCCHmacAlgSHA1, [secretKey bytes], [secretKey length], [self bytes], [self length], &digest);
 	
-	CFRelease(self); CFRelease(secretKey);
+	CFRelease(self);
+	CFRelease(secretKey);
 	
 	return [NSData dataWithBytes:digest length:CC_SHA1_DIGEST_LENGTH];
 }
@@ -128,6 +125,10 @@ static const char _base64Padding[1] = "=";
 }
 
 - (NSString *)base64String {
+	if ([self length] == 0) {
+		return @"";
+	}
+	
 	NSMutableString *string = [NSMutableString stringWithCapacity:(([self length] / 3) * 4)];
 	
 	CFRetain(self);
@@ -274,6 +275,10 @@ static const char _base32Padding[1] = "=";
 }
 
 - (NSString *)base32String {
+	if ([self length] == 0) {
+		return @"";
+	}
+	
 	NSMutableString *string = [NSMutableString stringWithCapacity:(([self length] / 5) * 8)];
 	
 	CFRetain(self);
@@ -392,7 +397,12 @@ static const char _base16Alphabet[16] = "0123456789ABCDEF";
 }
 
 - (NSString *)base16String {
-	NSMutableString *string = [NSMutableString stringWithCapacity:([self length] * 2)];
+	if ([self length] == 0) {
+		return @"";
+	}
+	
+	size_t base16BufferLength = ([self length] * 2);
+	uint8_t *base16Buffer = malloc(base16BufferLength);
 	
 	CFRetain(self);
 	
@@ -400,20 +410,23 @@ static const char _base16Alphabet[16] = "0123456789ABCDEF";
 	NSUInteger byteOffset = 0;
 	
 	while (byteOffset < [self length]) {
-		char characters[2] = {0};
+		uint8_t *characters = (base16Buffer + (byteOffset * 2));
 		characters[0] = _base16Alphabet[(*(currentByte + byteOffset) & /* 0b11110000 */ 240) >> 4];
 		characters[1] = _base16Alphabet[(*(currentByte + byteOffset) & /* 0b00001111 */ 15)  >> 0];
 		
-		[string appendString:[[[NSString alloc] initWithBytes:characters length:2 encoding:NSASCIIStringEncoding] autorelease]];
 		byteOffset++;
 	}
 	
 	CFRelease(self);
 	
-	return string;
+	return [[[NSString alloc] initWithBytesNoCopy:base16Buffer length:base16BufferLength encoding:NSASCIIStringEncoding freeWhenDone:YES] autorelease];
 }
 
 - (NSString *)base2String {
+	if ([self length] == 0) {
+		return @"";
+	}
+	
 	NSMutableString *string = [NSMutableString stringWithCapacity:([self length] * 9)];
 	
 	const uint8_t *currentByte = [self bytes];

@@ -8,19 +8,52 @@
 
 #import "AFNetworkPacket.h"
 
-NSString *const AFNetworkPacketDidTimeoutNotificationName = @"AFPacketDidTimeoutNotification";
-NSString *const AFNetworkPacketDidCompleteNotificationName = @"AFPacketDidCompleteNotification";
-NSString *const AFNetworkPacketErrorKey = @"AFPacketError";
+#import "AFNetworkPacket+AFNetworkPrivate.h"
+
+NSString *const AFNetworkPacketDidCompleteNotificationName = @"AFNetworkPacketDidCompleteNotification";
+NSString *const AFNetworkPacketErrorKey = @"AFNetworkPacketError";
 
 @implementation AFNetworkPacket
 
 @synthesize context=_context;
-@synthesize duration=_duration;
+
+@synthesize idleTimeout=_idleTimeout, idleTimeoutDisableCount=_idleTimeoutDisableCount, idleTimeoutTimer=_idleTimeoutTimer;
+
+@synthesize userInfo=_userInfo;
+
+- (id)init {
+	self = [super init];
+	if (self == nil) return nil;
+	
+	_userInfo = [[NSMutableDictionary alloc] init];
+	
+	return self;
+}
 
 - (void)dealloc {
-	[self stopTimeout];
+	[_idleTimeoutTimer invalidate];
+	[_idleTimeoutTimer release];
+	
+	[_userInfo release];
 	
 	[super dealloc];
+}
+
+- (void)disableIdleTimeout {
+	self.idleTimeoutDisableCount++;
+	
+	[self _stopIdleTimeoutTimer];
+}
+
+- (void)enableIdleTimeout {
+	self.idleTimeoutDisableCount--;
+	NSParameterAssert(self.idleTimeoutDisableCount >= 0);
+	
+	if (self.idleTimeoutDisableCount > 0) {
+		return;
+	}
+	
+	[self _resetIdleTimeoutTimer];
 }
 
 - (id)buffer {
@@ -39,26 +72,13 @@ NSString *const AFNetworkPacketErrorKey = @"AFPacketError";
 }
 
 - (float)currentProgressWithBytesDone:(NSInteger *)bytesDone bytesTotal:(NSInteger *)bytesTotal {
-	if (bytesDone != NULL) *bytesDone = 0;
-	if (bytesTotal != NULL) *bytesTotal = 0;
+	if (bytesDone != NULL) {
+		*bytesDone = 0;
+	}
+	if (bytesTotal != NULL) {
+		*bytesTotal = 0;
+	}
 	return 0.;
-}
-
-- (void)_timeout:(NSTimer *)sender {
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidTimeoutNotificationName object:self userInfo:nil];
-}
-
-- (void)startTimeout {
-	if (self.duration < 0) return;
-	
-	timeoutTimer = [[NSTimer scheduledTimerWithTimeInterval:_duration target:self selector:@selector(_timeout:) userInfo:nil repeats:NO] retain];
-}
-
-- (void)stopTimeout {
-	[timeoutTimer invalidate];
-	
-	[timeoutTimer release];
-	timeoutTimer = nil;
 }
 
 @end

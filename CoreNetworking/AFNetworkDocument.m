@@ -36,15 +36,15 @@ NSString *const AFNetworkDocumentMIMEContentDisposition = @"Content-Disposition"
 	for (AFNetworkPacket <AFNetworkPacketWriting> *currentPacket in writePackets) {
 		__block NSNotification *completionNotification = nil;
 		id completionListener = [[NSNotificationCenter defaultCenter] addObserverForName:AFNetworkPacketDidCompleteNotificationName object:currentPacket queue:nil usingBlock:^ (NSNotification *notification) {
-			completionNotification = notification;
+			completionNotification = [notification retain];
 		}];
 		
-		do {
+		while (completionNotification == nil) {
 			[currentPacket performWrite:memoryStream];
-		} while (completionNotification == nil);
+		}
 		
 		[[NSNotificationCenter defaultCenter] removeObserver:completionListener];
-		
+		[completionNotification autorelease];
 		
 		NSError *completionError = [[completionNotification userInfo] objectForKey:AFNetworkPacketErrorKey];
 		if (completionError != nil) {

@@ -110,7 +110,9 @@ extern NSString *const AFUnboundValueKey;
 	These are common additional bindings.
  */
 
-#if TARGET_OS_IPHONE
+#if !TARGET_OS_IPHONE
+#define AFContentObject NSContentObjectBinding
+#endif
 
 /*
 	This group of binding property names are only delcared when compling for the iPhone because they exist in AppKit already.
@@ -120,9 +122,7 @@ extern NSString *const AFUnboundValueKey;
 	@brief
 	This binding should represent a singular object.
  */
-extern NSString *const AFContentObject;
-
-#endif
+extern NSString *const AFContentObjectBinding;
 
 /*!
 	@brief
@@ -134,4 +134,4 @@ extern NSString *const AFCurrentMonthBinding;
 	@brief
 	A singular version of NSSelectionIndexPathsBinding. Readwrite binding.
  */
-extern NSString *const AFSelectionIndexPathBinding;
+extern NSString *const AFSelectedIndexPathBinding;

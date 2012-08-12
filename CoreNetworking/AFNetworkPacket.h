@@ -8,11 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-/*!
-	\brief
-	Posted when a timeout occurs, the object is the packet
- */
-extern NSString *const AFNetworkPacketDidTimeoutNotificationName;
+#import "CoreNetworking/AFNetwork-Macros.h"
 
 /*!
 	\brief
@@ -21,9 +17,9 @@ extern NSString *const AFNetworkPacketDidTimeoutNotificationName;
 	\details
 	If the packet is completing because an error was encountered, return it under the <tt>AFPacketErrorKey</tt> key.
  */
-extern NSString *const AFNetworkPacketDidCompleteNotificationName;
+AFNETWORK_EXTERN NSString *const AFNetworkPacketDidCompleteNotificationName;
 
-	extern NSString *const AFNetworkPacketErrorKey;
+	AFNETWORK_EXTERN NSString *const AFNetworkPacketErrorKey;
 
 /*!
 	\brief
@@ -32,41 +28,49 @@ extern NSString *const AFNetworkPacketDidCompleteNotificationName;
 @interface AFNetworkPacket : NSObject {
  @package
 	void *_context;
-	NSTimeInterval _duration;
- @private
-	NSTimer *timeoutTimer;
+	
+	NSTimeInterval _idleTimeout;
+	NSInteger _idleTimeoutDisableCount;
+	NSTimer *_idleTimeoutTimer;
+	
+	NSMutableDictionary *_userInfo;
 }
 
 /*!
 	\brief
 	The context passed in at instantiation.
  */
-@property (readonly) void *context;
+@property (readonly, nonatomic) void *context;
 
 /*!
 	\brief
 	The duration passed in at instantiation.
  */
-@property (readonly) NSTimeInterval duration;
+@property (readonly, nonatomic) NSTimeInterval idleTimeout;
 
 /*!
 	\brief
-	This method will start an NSTimer (it will be scheduled in the current run loop) if the duration the packet was created with is >0.
+	For storing additional properties, typically a higher layer context pointer.
  */
-- (void)startTimeout;
+@property (readonly, nonatomic) NSMutableDictionary *userInfo;
 
 /*!
 	\brief
-	This method balances <tt>-startTimeout</tt>
+	Timeouts are enabled by default, disabling the timeout prevents the idle timer from starting.
  */
-- (void)stopTimeout;
+- (void)disableIdleTimeout;
+/*!
+	\brief
+	Balances a previous `disbleTimeout` message, when the disabled count reaches zero, an idle timer is started.
+	Must not be called more than `disableIdleTimeout`, an exception is thrown if the disable count becomes negative.
+ */
+- (void)enableIdleTimeout;
 
 /*!
 	\brief
 	This is a dynamic property for subclasses to implement.
-	This property is returned to an <tt>AFNetworkLayer</tt> delegate in the -...didRead: and -...didWrite: callbacks.
  */
-@property (readonly) id buffer;
+@property (readonly, nonatomic) id buffer;
 
 /*!
 	\brief
@@ -104,7 +108,10 @@ extern NSString *const AFNetworkPacketDidCompleteNotificationName;
 /*!
 	\brief
 	Called to perform the write once the stream has signalled that it can accept bytes.
- 
+	
+	\details
+	If a value of `<0` is returned, an error must also have been posted via the `AFNetworkPacketDidCompleteNotificationName` notification.
+	
 	\return
 	The number of bytes written, if greater than zero this is returned as part of the packet progress notification.
  */

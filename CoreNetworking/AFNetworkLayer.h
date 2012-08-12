@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CoreNetworking/AFNetworkService.h"
-#import "CoreNetworking/AFNetworkTypes.h"
 #import "CoreNetworking/AFNetworkTransportLayer.h"
+
+#import "CoreNetworking/AFNetwork-Types.h"
 
 /*!
 	\brief
@@ -29,14 +29,14 @@
 	AFNetworkLayer *_lowerLayer;
 	id _delegate;
 	
-	NSMutableDictionary *_transportInfo;
+	NSMutableDictionary *_userInfo;
 }
 
 /*!
 	\brief
 	This method chains the layer classes.
  */
-+ (Class)lowerLayer;
++ (Class)lowerLayerClass;
 
 /*!
 	\brief
@@ -46,14 +46,8 @@
 
 /*!
 	\brief
-	Data should be passed onto the lowerLayer for further processing.
- */
-- (AFNetworkLayer *)lowerLayer;
-
-/*!
-	\brief
 	Outbound Initialiser.
- 
+	
 	\details
 	You can provide either a host + transport details, or <AFNetServiceCommon> compilant class.
 	
@@ -66,19 +60,58 @@
 
 /*!
 	\brief
-	When accessing this property, you will not recieve the same object you passed in, this method returns a transparent proxy that allows a caller to forward messages up the delegate stack.
+	Data should be passed onto the lowerLayer for further processing.
  */
-@property (assign) id delegate;
+- (AFNetworkLayer *)lowerLayer;
 
 /*!
 	\brief
-	This isn't used by the framework, it is intended for use like <tt>-[NSThread threadDictionary]</tt> to store miscellaneous data.
-	
-	\details
-	The network layers are KVC containers, much like a CALayer. Values for undefined keys are stored in this property.
-	
-	The dictionary returned is the result of reducing the |transportInfo| onto the |lowerLayer.transportInfo|. This takes place recursively.
+	When accessing this property, you will not recieve the same object you passed in, this method returns a transparent proxy that allows a caller to forward messages up the delegate stack.
  */
-@property (readonly, retain) NSDictionary *transportInfo;
+@property (assign, nonatomic) id delegate;
+
+/*!
+	\brief
+	User info lookup checks all layers.
+ */
+- (id)userInfoValueForKey:(id <NSCopying>)key;
+/*!
+	\brief
+	Sets the value in the receiver's userInfo.
+ */
+- (void)setUserInfoValue:(id)value forKey:(id <NSCopying>)key;
+
+/*
+	Scheduling
+	
+	These methods do nothing by default as the abstract superclass has nothing to schedule
+	
+	Implementers MUST call super before invoking their own logic
+ */
+
+/*!
+	\brief
+	The socket connection must be scheduled in at least one run loop to function.
+ */
+- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
+
+/*!
+	\brief
+	The socket connection must remain scheduled in at least one run loop to function.
+ */
+- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
+
+#if defined(DISPATCH_API_VERSION)
+
+/*!
+	\brief
+	Create a dispatch_source internally and set the target to the provided queue.
+	
+	\param queue
+	A layer can only be scheduled in a single queue at a time, to unschedule it pass NULL.
+ */
+- (void)scheduleInQueue:(dispatch_queue_t)queue;
+
+#endif /* defined(DISPATCH_API_VERSION) */
 
 @end

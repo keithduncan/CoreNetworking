@@ -13,23 +13,23 @@
 #import "AFNetworkTransport.h"
 #import "AFHTTPConnection.h"
 #import "AFHTTPMessage.h"
+#import "AFNetworkPacketClose.h"
 
 #import "NSDictionary+AFNetworkAdditions.h"
 
-#define ENABLE_REQUEST_LOGGING 1
-#define ENABLE_RESPONSE_LOGGING 1
+#define AF_ENABLE_REQUEST_LOGGING() (1 || [[[[NSProcessInfo processInfo] environment] objectForKey:@"com.thirty-three.corenetworking.http.server.log.requests"] isEqual:@"1"])
+#define AF_ENABLE_RESPONSE_LOGGING() (1 || [[[[NSProcessInfo processInfo] environment] objectForKey:@"com.thirty-three.corenetworking.http.server.log.responses"] isEqual:@"1"])
 
 #define kCoreNetworkingHTTPServerVersion kCFHTTPVersion1_1
 
-@interface AFHTTPServer (Private)
+@interface AFHTTPServer (AFNetworkPrivate)
 - (void)_logMessage:(CFHTTPMessageRef)message;
-- (void)_returnResponse:(CFHTTPMessageRef)response forRequest:(CFHTTPMessageRef)request connection:(id)connection permitKeepAlive:(BOOL)allow;
+- (void)_returnResponse:(CFHTTPMessageRef)response forRequest:(CFHTTPMessageRef)request connection:(id)connection permitKeepAlive:(BOOL)permitKeepAlive;
 @end
 
 @implementation AFHTTPServer
 
 @dynamic delegate;
-@synthesize renderers=_renderers;
 
 + (id)server {
 	return [[[self alloc] initWithEncapsulationClass:[AFHTTPConnection class]] autorelease];
@@ -82,20 +82,16 @@
 	// Note: this is a temporary solution to eliminate a compiler warning
 	struct objc_super superclass = {
 		.receiver = self,
-#if !__OBJC2__
-		.class
-#else 
-		.super_class
-#endif
-			 = [self superclass],
+		.super_class = [self superclass],
 	};
 	((void (*)(struct objc_super *, SEL, id))objc_msgSendSuper)(&superclass, _cmd, layer);
-	if (![layer isKindOfClass:[AFHTTPConnection class]]) return;
+	
+	if (![layer isKindOfClass:[AFHTTPConnection class]]) {
+		return;
+	}
 	
 	AFHTTPConnection *connection = layer;
-	
 	[connection.messageHeaders setObject:AFHTTPAgentString() forKey:AFHTTPMessageServerHeader];
-	
 	[connection readRequest];
 }
 
@@ -108,22 +104,10 @@
 		NSString *requestMethod = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
 		NSURL *requestURL = [NSMakeCollectable(CFHTTPMessageCopyRequestURL(request)) autorelease];
 		NSDictionary *requestHeaders = [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields(request)) autorelease];
-		NSData *requestBody = [NSMakeCollectable(CFHTTPMessageCopyBody(request)) autorelease];
-#pragma unused (requestBody)
+		NSData *requestBody __attribute__((unused)) = [NSMakeCollectable(CFHTTPMessageCopyBody(request)) autorelease];
 		
-#if ENABLE_REQUEST_LOGGING
-		[self _logMessage:request];
-#endif
-		
-		// Note: assert that the server implements the request method
-		if (![[[self class] _implementedMethods] containsObject:[requestMethod uppercaseString]]) {
-			AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotImplemented;
-			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
-			
-			CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
-			
-			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
-			return;
+		if (AF_ENABLE_REQUEST_LOGGING()) {
+			[self _logMessage:request];
 		}
 		
 		// Note: assert that the client has included the Host: header as required by HTTP/1.1
@@ -135,14 +119,35 @@
 			return;
 		}
 		
-		// Note: return the server supported methods
-		if ([requestMethod caseInsensitiveCompare:AFHTTPMethodOPTIONS] == NSOrderedSame && [[requestURL absoluteString] isEqualToString:@"*"]) {
-			AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
+		// Note: assert that the server implements the request method
+		BOOL requestMethodIsImplemented = [[[self class] _implementedMethods] containsObject:[requestMethod uppercaseString]];
+		if (!requestMethodIsImplemented) {
+			AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotImplemented;
 			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			
 			CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
 			
-			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
+			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
+			return;
+		}
+		
+		// Note: top level server queries for * should probably be directed to a specific renderer
+		// Note: should these always be answered by this endpoint, or should they be forwardable to a host specified in the Host header?
+		if ([[requestURL lastPathComponent] isEqualToString:@"*"]) {
+			if ([requestMethod caseInsensitiveCompare:AFHTTPMethodOPTIONS] == NSOrderedSame) {
+				AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
+				response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+				
+				CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
+				
+				[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
+			}
+			else {
+				AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotFound;
+				response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+				
+				[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
+			}
 			return;
 		}
 		
@@ -150,17 +155,9 @@
 		if ([requestMethod caseInsensitiveCompare:AFHTTPMethodTRACE] == NSOrderedSame) {
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
 			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
-			CFHTTPMessageSetBody(response, (CFDataRef)[NSMakeCollectable(CFHTTPMessageCopySerializedMessage(request)) autorelease]);
 			
-			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
-			return;
-		}
-		
-		// Note: iterate the renderers, allowing each to return a response in turn
-		// Note: this could potentially include a layer which calls out to other servers, allowing this server to function as a middleware router
-		for (id <AFHTTPServerRenderer> currentRenderer in self.renderers) {
-			response = [currentRenderer renderResourceForRequest:request];
-			if (response == NULL) continue;
+			CFHTTPMessageSetBody(response, (CFDataRef)[NSMakeCollectable(CFHTTPMessageCopySerializedMessage(request)) autorelease]);
+			CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageContentTypeHeader, CFSTR("message/http"));
 			
 			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
 			return;
@@ -207,7 +204,7 @@
 
 @end
 
-@implementation AFHTTPServer (Private)
+@implementation AFHTTPServer (AFNetworkPrivate)
 
 - (void)_logMessage:(CFHTTPMessageRef)message {
 	fprintf(stderr, (CFHTTPMessageIsRequest(message) ? "Request:\n" : "Response:\n"));
@@ -215,29 +212,82 @@
 	CFShow(message);
 	
 	CFDictionaryRef messageHeaders = CFHTTPMessageCopyAllHeaderFields(message);
-	for (NSString *currentHeaderKey in (id)messageHeaders) fprintf(stderr, "\t%s: %s\n", [currentHeaderKey UTF8String], [[(id)messageHeaders objectForKey:currentHeaderKey] UTF8String]);
-	CFRelease(messageHeaders);
+	if (messageHeaders != NULL) {
+		for (NSString *currentHeaderKey in (id)messageHeaders) {
+			fprintf(stderr, "\t%s: %s\n", [currentHeaderKey UTF8String], [[(id)messageHeaders objectForKey:currentHeaderKey] UTF8String]);
+		}
+		CFRelease(messageHeaders);
+	}
+	
+	CFDataRef messageBody = CFHTTPMessageCopyBody(message);
+	if (messageBody != NULL) {
+		NSStringEncoding bodyEncoding = NSUTF8StringEncoding;
+		
+		do {
+			NSString *contentType = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentTypeHeader)) autorelease];
+			if (contentType == nil) {
+				break;
+			}
+			
+			NSScanner *contentTypeScanner = [NSScanner scannerWithString:contentType];
+			
+			NSString *mimeType = nil;
+			BOOL scanMimeType = [contentTypeScanner scanUpToString:@";" intoString:&mimeType];
+			if (!scanMimeType) {
+				break;
+			}
+			
+			NSString *mimeParametersString = [contentType substringFromIndex:[contentTypeScanner scanLocation]];
+			NSDictionary *mimeParameters = [NSDictionary dictionaryWithString:mimeParametersString separator:@"=" delimiter:@","];
+			
+			NSString *textEncodingName = [mimeParameters objectForCaseInsensitiveKey:@"encoding"];
+			if (textEncodingName == nil) {
+				break;
+			}
+			
+			CFStringEncoding encoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)textEncodingName);
+			if (encoding != kCFStringEncodingInvalidId) {
+				bodyEncoding = CFStringConvertEncodingToNSStringEncoding(encoding);
+			}
+		} while (0);
+		
+		NSString *bodyString = [[[NSString alloc] initWithData:(id)messageBody encoding:bodyEncoding] autorelease];
+		if (bodyString != nil) {
+			fprintf(stderr, "%s\n", [bodyString UTF8String]);
+		}
+		
+		CFRelease(messageBody);
+	}
 }
 
-- (void)_returnResponse:(CFHTTPMessageRef)response forRequest:(CFHTTPMessageRef)request connection:(id)connection permitKeepAlive:(BOOL)allow {
+- (void)_returnResponse:(CFHTTPMessageRef)response forRequest:(CFHTTPMessageRef)request connection:(id)connection permitKeepAlive:(BOOL)permitKeepAlive {
 	NSDictionary *requestHeaders = [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields(request)) autorelease];
 	
 	NSString *connectionValue = [requestHeaders objectForCaseInsensitiveKey:AFHTTPMessageConnectionHeader];
-	BOOL keepAlive = (connectionValue != nil && [connectionValue caseInsensitiveCompare:@"close"] != NSOrderedSame) && allow;
+	BOOL keepAlive = (connectionValue != nil && [connectionValue caseInsensitiveCompare:@"keep-alive"] == NSOrderedSame) && permitKeepAlive;
 	CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageConnectionHeader, (keepAlive ? CFSTR("keep-alive") : CFSTR("close")));
-	
-#if ENABLE_RESPONSE_LOGGING
-	[self _logMessage:response];
+
+#if 0
+	NSDictionary *responseHeaders = [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields(response)) autorelease];
+	NSString *contentLengthValue = [responseHeaders objectForCaseInsensitiveKey:AFHTTPMessageContentLengthHeader];
+	if (contentLengthValue == nil) {
+		CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageContentLengthHeader, CFSTR("0"));
+	}
 #endif
+	
+	if (AF_ENABLE_RESPONSE_LOGGING()) {
+		[self _logMessage:response];
+	}
 	
 	[connection performResponseMessage:response];
 	
-	if (allow && keepAlive) {
-		[connection readRequest];
+	if (!keepAlive) {
+		AFNetworkPacket *closePacket = [[[AFNetworkPacketClose alloc] init] autorelease];
+		[connection performWrite:closePacket withTimeout:0 context:NULL];
 		return;
 	}
 	
-	[connection close];
+	[connection readRequest];
 }
 
 @end

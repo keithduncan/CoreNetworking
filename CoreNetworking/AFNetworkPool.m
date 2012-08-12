@@ -9,7 +9,7 @@
 #import "AFNetworkPool.h"
 
 @interface AFNetworkPool ()
-@property (retain) NSMutableSet *mutableConnections;
+@property (retain, nonatomic) NSMutableSet *mutableConnections;
 @end
 
 @implementation AFNetworkPool
@@ -37,26 +37,23 @@
 
 - (void)addConnectionsObject:(id <AFNetworkTransportLayer>)connection {
 	[self.mutableConnections addObject:connection];
-	[connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
 - (void)removeConnectionsObject:(id <AFNetworkTransportLayer>)connection {
-	[connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[self.mutableConnections removeObject:connection];
 }
 
 - (id <AFNetworkTransportLayer>)layerWithValue:(id)value forKey:(NSString *)key {
-	id <AFNetworkTransportLayer> connection = nil;
-	
 	for (id <AFNetworkTransportLayer> currentConnection in self.connections) {
 		id connectionValue = [(id)currentConnection valueForKey:key];
-		if (![connectionValue isEqual:value]) continue;
+		if (![connectionValue isEqual:value]) {
+			continue;
+		}
 		
-		connection = currentConnection;
-		break;
+		return currentConnection;
 	}
 	
-	return connection;
+	return nil;
 }
 
 - (void)close {

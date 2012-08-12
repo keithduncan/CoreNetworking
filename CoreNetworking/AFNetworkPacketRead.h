@@ -6,6 +6,8 @@
 //  Copyright 2009. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 #import "CoreNetworking/AFNetworkPacket.h"
 
 /*!
@@ -30,5 +32,11 @@
 	Designated initialiser.
  */
 - (id)initWithTerminator:(id)terminator;
+
+/*!
+	\brief
+	Initialised terminator
+ */
+@property (readonly, copy, nonatomic) id terminator;
 
 @end

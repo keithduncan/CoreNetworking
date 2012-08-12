@@ -52,7 +52,7 @@ static BOOL _AFKeyPathProxyKeyIsOperator(NSString *key) {
 	BOOL invokeKeyPath = YES;
 	
 	if (_AFKeyPathProxyKeyIsOperator(keyPath)) {
-		self.prependOperator = [NSString stringWithFormat:@"@%@", keyPath, nil];
+		self.prependOperator = [NSString stringWithFormat:@"@%@", keyPath];
 		invokeKeyPath = NO;
 	}
 	

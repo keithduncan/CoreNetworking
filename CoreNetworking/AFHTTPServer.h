@@ -6,6 +6,8 @@
 //  Copyright 2009. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 #import "CoreNetworking/AFNetworkServer.h"
 
 @class AFHTTPServer;
@@ -16,7 +18,10 @@
 
 /*!
 	\brief
-	The delegate is asked last, after each of the renderers.
+	When a request is received the delegate is asked to render a response
+	
+	\detail
+	If unimplemented, a 404 response code is returned
  */
 - (CFHTTPMessageRef)networkServer:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;
 
@@ -36,21 +41,6 @@
 	\brief
 	The HTTP server delegate participates in the response rendering process.
  */
-@property (assign) id <AFHTTPServerDataDelegate> delegate;
-
-/*!
-	\brief
-	The objects in this collection must implement the AFHTTPServerRenderer protocol.
-	
-	\details
-	Each of these objects is consulted in order to render the resource, if NULL is returned the next is consulted.
- */
-@property (copy) NSArray *renderers;
-
-@end
-
-@protocol AFHTTPServerRenderer <NSObject>
-
-- (CFHTTPMessageRef)renderResourceForRequest:(CFHTTPMessageRef)request;
+@property (assign, nonatomic) id <AFHTTPServerDataDelegate> delegate;
 
 @end

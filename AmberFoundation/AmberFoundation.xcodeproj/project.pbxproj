@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,9 +19,9 @@
 		5346C573114458B7000C1424 /* AFTargetProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5346C571114458B7000C1424 /* AFTargetProxy.m */; };
 		5346C574114458B7000C1424 /* AFTargetProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 5346C570114458B7000C1424 /* AFTargetProxy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5346C575114458B7000C1424 /* AFTargetProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5346C571114458B7000C1424 /* AFTargetProxy.m */; };
-		53567764126B8A70002872B2 /* AFFoundationMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 53567762126B8A70002872B2 /* AFFoundationMacros.h */; };
+		53567764126B8A70002872B2 /* AFFoundationMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 53567762126B8A70002872B2 /* AFFoundationMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53567765126B8A70002872B2 /* AFFoundationMacros.m in Sources */ = {isa = PBXBuildFile; fileRef = 53567763126B8A70002872B2 /* AFFoundationMacros.m */; };
-		53567766126B8A70002872B2 /* AFFoundationMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 53567762126B8A70002872B2 /* AFFoundationMacros.h */; };
+		53567766126B8A70002872B2 /* AFFoundationMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 53567762126B8A70002872B2 /* AFFoundationMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53567767126B8A70002872B2 /* AFFoundationMacros.m in Sources */ = {isa = PBXBuildFile; fileRef = 53567763126B8A70002872B2 /* AFFoundationMacros.m */; };
 		5370DEB00F5AEDFE008F5991 /* AFPropertyListProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370DEA80F5AEDFE008F5991 /* AFPropertyListProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370DEB10F5AEDFE008F5991 /* AFPropertyListProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370DEA90F5AEDFE008F5991 /* AFPropertyListProtocol.m */; };
@@ -105,7 +105,6 @@
 		5346C571114458B7000C1424 /* AFTargetProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFTargetProxy.m; sourceTree = "<group>"; };
 		53567762126B8A70002872B2 /* AFFoundationMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFFoundationMacros.h; sourceTree = "<group>"; };
 		53567763126B8A70002872B2 /* AFFoundationMacros.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFFoundationMacros.m; sourceTree = "<group>"; };
-		53692BA50F1B85A90051C367 /* AmberFoundation_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmberFoundation_Prefix.pch; sourceTree = "<group>"; };
 		5370DEA80F5AEDFE008F5991 /* AFPropertyListProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPropertyListProtocol.h; sourceTree = "<group>"; };
 		5370DEA90F5AEDFE008F5991 /* AFPropertyListProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListProtocol.m; sourceTree = "<group>"; };
 		5370DEAA0F5AEDFE008F5991 /* AFRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFRange.h; sourceTree = "<group>"; };
@@ -258,7 +257,6 @@
 				53567763126B8A70002872B2 /* AFFoundationMacros.m */,
 				53F6E36F0FCB3AF10009FF33 /* AFFoundationConstants.h */,
 				53F6E3700FCB3AF10009FF33 /* AFFoundationConstants.m */,
-				53692BA50F1B85A90051C367 /* AmberFoundation_Prefix.pch */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -388,10 +386,11 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "Keith Duncan";
 			};
 			buildConfigurationList = 5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "AmberFoundation" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -496,8 +495,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				"GCC_ENABLE_OBJC_GC[sdk=macosx*][arch=*]" = supported;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = AmberFoundation_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
 					"-framework",
 					CoreGraphics,
@@ -506,7 +504,6 @@
 					"-framework",
 					ApplicationSupport,
 				);
-				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(PUBLIC_HEADERS_FOLDER_PATH)/private";
 				PRODUCT_NAME = AmberFoundation;
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/AmberFoundation;
@@ -519,10 +516,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				"GCC_ENABLE_OBJC_GC[sdk=macosx*][arch=*]" = supported;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = AmberFoundation_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
 					"-framework",
 					CoreGraphics,
@@ -531,7 +526,6 @@
 					"-framework",
 					ApplicationSupport,
 				);
-				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(PUBLIC_HEADERS_FOLDER_PATH)/private";
 				PRODUCT_NAME = AmberFoundation;
 				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/AmberFoundation;
@@ -546,14 +540,13 @@
 					x86_64,
 					i386,
 				);
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -564,14 +557,13 @@
 					x86_64,
 					i386,
 				);
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
-				SDKROOT = macosx10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -584,15 +576,10 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_PASCAL_STRINGS = NO;
-				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = AmberFoundation_Prefix.pch;
 				INFOPLIST_FILE = "AmberFoundation-Info.plist";
 				INSTALL_PATH = "@rpath/";
 				OTHER_LDFLAGS = "-lcrypto";
-				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
 			};
 			name = Debug;
@@ -600,18 +587,15 @@
 		539A60C60D2698B8001CD14A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_PASCAL_STRINGS = NO;
-				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = AmberFoundation_Prefix.pch;
 				INFOPLIST_FILE = "AmberFoundation-Info.plist";
 				INSTALL_PATH = "@rpath/";
 				OTHER_LDFLAGS = "-lcrypto";
-				PREBINDING = NO;
 				PRODUCT_NAME = AmberFoundation;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};

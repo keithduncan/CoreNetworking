@@ -6,12 +6,18 @@
 //  Copyright 2010. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
-extern NSString *const AFNetworkDocumentMIMEContentType;
-extern NSString *const AFNetworkDocumentMIMEContentTransferEncoding;
-extern NSString *const AFNetworkDocumentMIMEContentDisposition;
+#import "CoreNetworking/AFNetwork-Macros.h"
 
+AFNETWORK_EXTERN NSString *const AFNetworkDocumentMIMEContentType;
+AFNETWORK_EXTERN NSString *const AFNetworkDocumentMIMEContentTransferEncoding;
+AFNETWORK_EXTERN NSString *const AFNetworkDocumentMIMEContentDisposition;
+
+/*!
+	\brief
+	
+ */
 @interface AFNetworkDocument : NSObject
 
 /*!

@@ -10,6 +10,8 @@
 
 #import "CoreNetworking/AFNetworkPacket.h"
 
+#import "CoreNetworking/AFNetwork-Macros.h"
+
 /*!
 	\brief
 	Acts as an adaptor between streams, allowing you to read a large file over the wire to disk.
@@ -19,10 +21,10 @@
  */
 @interface AFNetworkPacketReadToWriteStream : AFNetworkPacket <AFNetworkPacketReading> {
  @private
-	NSInteger _totalBytesToRead;
-	NSInteger _bytesRead;
+	NSInteger _totalBytesToWrite;
+	NSInteger _bytesWritten;
 	
-	__strong uint8_t *_readBuffer;
+	AFNETWORK_STRONG uint8_t *_readBuffer;
 	size_t _bufferSize;
 	
 	NSOutputStream *_writeStream;
@@ -39,6 +41,6 @@
 	\param totalBytesToRead
 	Pass -1 to write until the writeStream is at end.
  */
-- (id)initWithWriteStream:(NSOutputStream *)writeStream totalBytesToRead:(NSInteger)totalBytesToRead;
+- (id)initWithWriteStream:(NSOutputStream *)writeStream totalBytesToWrite:(NSInteger)totalBytesToWrite;
 
 @end

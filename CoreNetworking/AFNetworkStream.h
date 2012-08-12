@@ -8,98 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CoreNetworking/AFNetwork-Macros.h"
+
 @class AFNetworkPacketQueue;
 @class AFNetworkPacket;
 
-@protocol AFNetworkStreamDelegate;
+@class AFNetworkStream;
 
 /*!
 	\brief
 	
  */
-@interface AFNetworkStream : NSObject {
- @protected
-	id <AFNetworkStreamDelegate> _delegate;
-	
-	NSStream *_stream;
-	SEL _performSelector;
-	
-	NSUInteger _flags;
-	
-	__strong CFMutableDictionaryRef _runLoopSources;
-	void *_dispatchSource;
-	
-	AFNetworkPacketQueue *_queue;
-	BOOL _dequeuing;
-}
-
-/*
-	Creation
- */
-
-/*!
-	\brief
-	The stream MUST be unopened, this is asserted.
- */
-- (id)initWithStream:(NSStream *)stream;
-
-@property (assign) id <AFNetworkStreamDelegate> delegate;
-
-/*
-	Scheduling
- */
-
-- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
-
-#if defined(DISPATCH_API_VERSION)
-- (void)scheduleInQueue:(dispatch_queue_t)queue;
-#endif
-
-/*
-	State
- */
-
-- (void)open;
-- (BOOL)isOpen;
-
-- (void)close;
-
-- (id)streamPropertyForKey:(NSString *)key;
-- (BOOL)setStreamProperty:(id)property forKey:(NSString *)key;
-
-/*
-	Queue
- */
-
-- (void)enqueuePacket:(AFNetworkPacket *)packet;
-- (NSUInteger)countOfEnqueuedPackets;
-
-@end
-
-#pragma mark -
-
 @protocol AFNetworkStreamDelegate <NSObject>
-
- @optional
-
-/*!
-	\brief
-	YES is assumed if unimplemented.
- */
-- (BOOL)networkStreamCanDequeuePackets:(AFNetworkStream *)networkStream;
-
-/*!
-	\brief
-	Implement to know when a packet has been removed from the stream's queue.
- */
-- (void)networkStream:(AFNetworkStream *)networkStream didDequeuePacket:(AFNetworkPacket *)packet;
-
-/*!
-	\brief
-	Implement this method to be informed of packet progress.
- */
-- (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSInteger)bytesTransferred totalBytesTransferred:(NSInteger)totalBytesWritten totalBytesExpectedToTransfer:(NSInteger)totalBytesExpectedToTransfer;
 
  @required
 
@@ -121,5 +41,102 @@
 	You must implement this method to handle any errors; errors must be handled.
  */
 - (void)networkStream:(AFNetworkStream *)networkStream didReceiveError:(NSError *)error;
+
+ @optional
+
+/*!
+	\brief
+	Implement to know when a packet has been removed from the stream's queue.
+ */
+- (void)networkStream:(AFNetworkStream *)networkStream didDequeuePacket:(AFNetworkPacket *)packet;
+
+/*!
+	\brief
+	Implement this method to be informed of packet progress.
+ */
+- (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSInteger)bytesTransferred totalBytesTransferred:(NSInteger)totalBytesTransferred totalBytesExpectedToTransfer:(NSInteger)totalBytesExpectedToTransfer;
+
+@end
+
+#pragma mark -
+
+/*!
+	\brief
+	
+ */
+@interface AFNetworkStream : NSObject {
+ @protected
+	id <AFNetworkStreamDelegate> _delegate;
+	
+	NSStream *_stream;
+	SEL _performSelector;
+	
+	NSUInteger _streamFlags;
+	
+	struct {
+		AFNETWORK_STRONG __attribute__((NSObject)) CFTypeRef _runLoopSource;
+		AFNETWORK_STRONG void *_dispatchSource;
+	} _sources;
+	
+	NSUInteger _queueSuspendCount;
+	AFNetworkPacketQueue *_packetQueue;
+	BOOL _dequeuing;
+	
+	NSTimer *_timeoutTimer;
+}
+
+/*
+	Creation
+ */
+
+/*!
+	\brief
+	The stream MUST be unopened, this is asserted.
+ */
+- (id)initWithStream:(NSStream *)stream;
+
+/*!
+	\brief
+	
+ */
+@property (assign, nonatomic) id <AFNetworkStreamDelegate> delegate;
+
+/*
+	Scheduling
+	
+	Used to schedule the underlying stream and timeout timer.
+ */
+
+- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
+- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
+
+#if defined(DISPATCH_API_VERSION)
+
+- (void)scheduleInQueue:(dispatch_queue_t)queue;
+
+#endif /* defined(DISPATCH_API_VERSION) */
+
+/*
+	State
+ */
+
+- (void)open;
+- (BOOL)isOpen;
+
+- (void)close;
+- (BOOL)isClosed;
+
+- (id)streamPropertyForKey:(NSString *)key;
+- (BOOL)setStreamProperty:(id)property forKey:(NSString *)key;
+
+/*
+	Queue
+ */
+
+- (void)enqueuePacket:(AFNetworkPacket *)packet;
+- (NSUInteger)countOfEnqueuedPackets;
+
+- (void)suspendPacketQueue;
+- (void)resumePacketQueue;
 
 @end

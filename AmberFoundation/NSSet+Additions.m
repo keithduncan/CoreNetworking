@@ -19,8 +19,9 @@
 		va_list objectList;
 		va_start(objectList, currentObject);
 		
-		while (currentObject = va_arg(objectList, id))
+		while ((currentObject = va_arg(objectList, id)) != nil) {
 			[newSet addObject:currentObject];
+		}
 		
 		va_end(objectList);
 	}

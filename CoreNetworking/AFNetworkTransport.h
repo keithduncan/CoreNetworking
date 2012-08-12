@@ -9,10 +9,13 @@
 //  Copyright 2008. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 #import "CoreNetworking/AFNetworkLayer.h"
 
-#import "CoreNetworking/AFNetworkTypes.h"
 #import "CoreNetworking/AFNetworkConnectionLayer.h"
+
+#import "CoreNetworking/AFNetwork-Types.h"
 
 @class AFNetworkTransport;
 @class AFNetworkStream;
@@ -48,7 +51,7 @@
 	\brief
 	Instead of calling <tt>-currentWriteProgress...</tt> on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
  */
-- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSInteger)partialBytes totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalLength context:(void *)context;
+- (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSInteger)partialBytes totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite context:(void *)context;
 
 /*!
 	\brief
@@ -57,7 +60,15 @@
 	\param total
 	Will be <tt>NSUIntegerMax</tt> if the packet terminator is a data pattern.
  */
-- (void)networkTransport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSInteger)partialBytes totalBytesRead:(NSInteger)totalBytesRead totalBytesExpectedToRead:(NSInteger)totalLength context:(void *)context;
+- (void)networkTransport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSInteger)partialBytes totalBytesRead:(NSInteger)totalBytesRead totalBytesExpectedToRead:(NSInteger)totalBytesExpectedToRead context:(void *)context;
+
+@end
+
+/*!
+	\brief
+	
+ */
+@protocol AFNetworkTransportDelegate <AFNetworkConnectionLayerDelegate, AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate>
 
 @end
 
@@ -86,25 +97,25 @@
 	NSUInteger _connectionFlags;
 }
 
-@property (assign) id <AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate> delegate;
+@property (assign, nonatomic) id <AFNetworkTransportDelegate> delegate;
 
 /*!
 	\brief
 	This returns the local address of the connected stream.
  */
-@property (readonly) id localAddress;
+@property (readonly, nonatomic) id localAddress;
 
 /*!
 	\brief
 	Depending on how the object was instantiated it may be a <tt>CFNetServiceRef</tt> or a <tt>CFHostRef</tt>
 	For a remote-initiated steam, it will always be a <tt>CFHostRef</tt>.
  */
-@property (readonly) CFTypeRef peer;
+@property (readonly, nonatomic) CFTypeRef peer;
 
 /*!
 	\brief
 	This returns the remote address of the connected stream.
  */
-@property (readonly) id peerAddress;
+@property (readonly, nonatomic) id peerAddress;
 
 @end

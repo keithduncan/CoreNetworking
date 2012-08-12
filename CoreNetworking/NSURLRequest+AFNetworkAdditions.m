@@ -10,6 +10,8 @@
 
 #import "NSDictionary+AFNetworkAdditions.h"
 
+#warning this should be split out into an AFNetworkURLRequest object and be transformable into an NSURLRequest object
+
 static NSString * (^URLEncodeString)(NSString *) = ^ NSString * (NSString *string) {
 	return NSMakeCollectable(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR("!*'();:@&=+$,/?%#[]"), kCFStringEncodingUTF8));
 };
@@ -74,7 +76,8 @@ static NSString *const AFHTTPBodyFileLocationKey = @"AFHTTPBodyFileLocation";
 		queryRange.location--; // Note: remove the '?'
 		queryRange.length++;
 		[absoluteURLString replaceCharactersInRange:queryRange withString:newQuery];
-	} else {
+	}
+	else {
 		[absoluteURLString appendString:newQuery];
 	}
 	
@@ -84,7 +87,8 @@ static NSString *const AFHTTPBodyFileLocationKey = @"AFHTTPBodyFileLocation";
 - (void)setHTTPBodyFile:(NSURL *)HTTPBodyFile {
 	if (HTTPBodyFile != nil) {
 		[NSURLProtocol setProperty:[[HTTPBodyFile copy] autorelease] forKey:AFHTTPBodyFileLocationKey inRequest:self];
-	} else {
+	}
+	else {
 		[NSURLProtocol removePropertyForKey:AFHTTPBodyFileLocationKey inRequest:self];
 	}
 }

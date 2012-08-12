@@ -36,7 +36,7 @@
 	\brief
 	This property will change when a packet is dequeued, you can observe it to determine when there is work to be done.
  */
-@property (readonly, retain) id currentPacket;
+@property (readonly, retain, nonatomic) id currentPacket;
 
 /*!
 	\brief

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CoreNetworking/AFNetwork-Macros.h"
+
 /*!
 	\brief
 	This class encapsulates a request/response pair.
@@ -15,7 +17,10 @@
 @interface AFHTTPTransaction : NSObject {
  @private
 	NSArray *_requestPackets;
+	BOOL _finishedRequestPackets;
+	
 	NSArray *_responsePackets;
+	BOOL _finishedResponsePackets;
 	
 	void *_context;
 }
@@ -27,9 +32,14 @@
  */
 - (id)initWithRequestPackets:(NSArray *)requestPackets responsePackets:(NSArray *)responsePackets context:(void *)context;
 
-@property (readonly) NSArray *requestPackets;
-@property (readonly) NSArray *responsePackets;
+AFNETWORK_EXTERN NSString *const AFHTTPTransactionRequestPacketsKey;
+@property (readonly, nonatomic) NSArray *requestPackets;
+@property (assign, nonatomic) BOOL finishedRequestPackets;
 
-@property (readonly) void *context;
+AFNETWORK_EXTERN NSString *const AFHTTPTransactionResponsePacketsKey;
+@property (readonly, nonatomic) NSArray *responsePackets;
+@property (assign, nonatomic) BOOL finishedResponsePackets;
+
+@property (readonly, nonatomic) void *context;
 
 @end

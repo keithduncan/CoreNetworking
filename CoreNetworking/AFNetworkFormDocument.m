@@ -8,6 +8,10 @@
 
 #import "AFNetworkFormDocument.h"
 
+#if TARGET_OS_IPHONE
+#import <MobileCoreServices/MobileCoreServices.h>
+#endif /* TARGET_OS_IPHONE */
+
 #import "AFNetworkPacketWrite.h"
 #import "AFNetworkPacketWriteFromReadStream.h"
 
@@ -41,7 +45,7 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 
 @interface _AFNetworkDocumentPart : NSObject
 
-@property (readonly, copy) NSString *contentType;
+@property (readonly, copy, nonatomic) NSString *contentType;
 
 - (NSArray *)documentPacketsWithMutableHeaders:(NSMutableDictionary *)headers frameLength:(NSUInteger *)frameLengthRef;
 
@@ -66,12 +70,12 @@ static NSString * _AFNetworkMultipartDocumentGenerateMultipartBoundaryWithHeader
 
 - (id)initWithData:(NSData *)data contentType:(NSString *)contentType;
 
-@property (readonly, retain) NSData *data;
+@property (readonly, retain, nonatomic) NSData *data;
 
 @end
 
 @interface _AFNetworkFormDocumentDataFieldPart ()
-@property (readwrite, copy) NSString *contentType;
+@property (readwrite, copy, nonatomic) NSString *contentType;
 @end
 
 @implementation _AFNetworkFormDocumentDataFieldPart
@@ -128,8 +132,8 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 
 - (id)initWithLocation:(NSURL *)location contentType:(NSString *)contentType;
 
-@property (readonly, copy) NSURL *location;
-@property (readonly, copy) NSString *contentType;
+@property (readonly, copy, nonatomic) NSURL *location;
+@property (readonly, copy, nonatomic) NSString *contentType;
 
 @end
 
@@ -184,7 +188,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	
 #if 1
 	NSInputStream *readStream = [[[NSInputStream alloc] initWithURL:[self location]] autorelease];
-	AFNetworkPacketWriteFromReadStream *filePacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:readStream totalBytesToWrite:[resourceLength unsignedIntegerValue]] autorelease];
+	AFNetworkPacketWriteFromReadStream *filePacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:readStream totalBytesToRead:[resourceLength unsignedIntegerValue]] autorelease];
 #else
 	NSData *fileData = [NSData dataWithContentsOfURL:[self location]];
 	AFPacketWrite *filePacket = [[[AFPacketWrite alloc] initWithData:fileData] autorelease];
@@ -202,7 +206,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 #pragma mark -
 
 @interface AFNetworkFormDocument ()
-@property (readonly) NSMutableDictionary *values, *files;
+@property (readonly, nonatomic) NSMutableDictionary *values, *files;
 @end
 
 @implementation AFNetworkFormDocument

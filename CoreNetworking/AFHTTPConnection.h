@@ -6,13 +6,14 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "CoreNetworking/AFNetworkConnection.h"
-
-#import "CoreNetworking/AFNetworkConnectionLayer.h"
+#import <Foundation/Foundation.h>
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
-#endif
+#endif /* TARGET_OS_IPHONE */
+
+#import "CoreNetworking/AFNetworkConnection.h"
+#import "CoreNetworking/AFNetworkConnectionLayer.h"
 
 @class AFHTTPConnection;
 
@@ -38,6 +39,14 @@
 
 /*!
 	\brief
+	
+ */
+@protocol AFHTTPConnectionDelegate <AFNetworkConnectionDelegate, AFHTTPConnectionControlDelegate, AFHTTPConnectionDataDelegate>
+
+@end
+
+/*!
+	\brief
 	This class is indended to sit on top of AFNetworkTransport and provides HTTP messaging semantics.
 	
 	\details
@@ -54,7 +63,7 @@
 	\brief
 	This property adds HTTP message data callbacks to the delegate.
  */
-@property (assign) id <AFHTTPConnectionControlDelegate, AFHTTPConnectionDataDelegate> delegate;
+@property (assign, nonatomic) id <AFHTTPConnectionDelegate> delegate;
 
 /*!
 	\brief
@@ -63,7 +72,7 @@
 	\details
 	A client could add a 'User-Agent' header, likewise a server could add a 'Server' header.
  */
-@property (readonly, retain) NSMutableDictionary *messageHeaders;
+@property (readonly, retain, nonatomic) NSMutableDictionary *messageHeaders;
 
 /*
 	Override Points

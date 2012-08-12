@@ -6,11 +6,13 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "CoreNetworking/AFNetworkPacket.h"
+#import <Foundation/Foundation.h>
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
-#endif
+#endif /* TARGET_OS_IPHONE */
+
+#import "CoreNetworking/AFNetworkPacket.h"
 
 @class AFNetworkPacketRead;
 

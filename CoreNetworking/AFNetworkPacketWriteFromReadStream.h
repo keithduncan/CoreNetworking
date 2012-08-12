@@ -10,6 +10,8 @@
 
 #import "CoreNetworking/AFNetworkPacket.h"
 
+#import "CoreNetworking/AFNetwork-Macros.h"
+
 /*!
 	\brief
 	Acts as an adaptor between streams, allowing you to write a large file out over the wire.
@@ -19,17 +21,24 @@
  */
 @interface AFNetworkPacketWriteFromReadStream : AFNetworkPacket <AFNetworkPacketWriting> {
  @private
-	NSInteger _totalBytesToWrite;
-	NSInteger _bytesWritten;
+	NSInteger _totalBytesToRead;
+	NSInteger _bytesRead;
 	
-	__strong uint8_t *_readBuffer;
+	AFNETWORK_STRONG uint8_t *_readBuffer;
 	size_t _bufferSize;
 	
-	size_t _bufferLength;
 	size_t _bufferOffset;
+	size_t _bufferLength;
 	
 	NSInputStream *_readStream;
-	BOOL _readStreamOpen;
+	BOOL _readStreamOpened;
+	BOOL _readStreamClosed;
+	
+#if NS_BLOCKS_AVAILABLE
+	NSData * (^_readStreamFilter)(NSData *);
+#else
+	void *_readStreamFilter;
+#endif /* NS_BLOCKS_AVAILABLE */
 }
 
 /*!
@@ -42,6 +51,16 @@
 	\param totalBytesToWrite
 	Pass -1 to read until the readStream is at end.
  */
-- (id)initWithReadStream:(NSInputStream *)readStream totalBytesToWrite:(NSInteger)totalBytesToWrite;
+- (id)initWithReadStream:(NSInputStream *)readStream totalBytesToRead:(NSInteger)totalBytesToRead;
+
+#if NS_BLOCKS_AVAILABLE
+
+/*!
+	\brief
+	Bytes read from the stream are transformed using this filter before being written to the output stream.
+ */
+@property (copy, nonatomic) NSData * (^readStreamFilter)(NSData *);
+
+#endif /* NS_BLOCKS_AVAILABLE */
 
 @end

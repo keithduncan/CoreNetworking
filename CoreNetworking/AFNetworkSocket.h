@@ -6,9 +6,21 @@
 //  Copyright 2009. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 #import "CoreNetworking/AFNetworkLayer.h"
 
 #import "CoreNetworking/AFNetworkConnectionLayer.h"
+
+#import "CoreNetworking/AFNetwork-Macros.h"
+
+/*!
+	\brief
+	
+ */
+@protocol AFNetworkSocketDelegate <AFNetworkConnectionLayerHostDelegate, AFNetworkConnectionLayerDelegate>
+
+@end
 
 /*!
 	\brief
@@ -19,11 +31,15 @@
  */
 @interface AFNetworkSocket : AFNetworkLayer <AFNetworkConnectionLayer> {
  @private
-	__strong CFSocketSignature *_signature;
+	AFNETWORK_STRONG CFSocketSignature *_signature;
 	
-	__strong CFSocketRef _socket;
+	AFNETWORK_STRONG __attribute__((NSObject)) CFSocketRef _socket;
+	NSUInteger _socketFlags;
 	
-	__strong CFRunLoopSourceRef _socketRunLoopSource;
+	struct {
+		AFNETWORK_STRONG __attribute__((NSObject)) CFRunLoopSourceRef _runLoopSource;
+		AFNETWORK_STRONG void *_dispatchSource;
+	} _sources;
 }
 
 /*!
@@ -35,7 +51,7 @@
 	\details
 	If the socket cannot be created they return nil.
  */
-- (id)initWithHostSignature:(const CFSocketSignature *)signature;
+- (id)initWithSocketSignature:(const CFSocketSignature *)signature;
 
 /*!
 	\brief
@@ -52,31 +68,35 @@
 	\brief
 	
  */
-@property (assign) id <AFNetworkConnectionLayerHostDelegate, AFNetworkConnectionLayerDataDelegate, AFNetworkConnectionLayerControlDelegate> delegate;
+@property (assign, nonatomic) id <AFNetworkSocketDelegate> delegate;
+
+/*!
+	\brief
+	Offers inline synchronous error handling.
+ */
+- (BOOL)open:(NSError **)errorRef;
 
 /*!
 	\brief
 	This is not set as the lower layer because <tt>AFNetworkSocket</tt> shouldn't be thought of as sitting above CFSocketRef, it should be thought of <em>as</em> a CFSocketRef.
  */
-@property (readonly) CFSocketRef socket;
-
+@property (readonly, nonatomic) id local;
 /*!
 	\brief
 	This returns the <tt>-[AFNetworkSocket socket]</tt> local address.
  */
-@property (readonly) id localAddress;
+@property (readonly, nonatomic) id localAddress;
 
 /*!
 	\brief
 	This creates a CFHostRef wrapping the <tt>-peerAddress</tt>.
  */
-@property (readonly) id peer;
-
+@property (readonly, nonatomic) id peer;
 /*!
 	\brief
 	This returns the <tt>-[AFNetworkSocket socket]</tt> peer address.
 	This is likely to be of most use when determining the reachbility of an endpoint.
  */
-@property (readonly) id peerAddress;
+@property (readonly, nonatomic) id peerAddress;
 
 @end

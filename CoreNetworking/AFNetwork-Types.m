@@ -6,7 +6,7 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "AFNetworkTypes.h"
+#import "AFNetwork-Types.h"
 
 #import <sys/socket.h>
 #import <arpa/inet.h>

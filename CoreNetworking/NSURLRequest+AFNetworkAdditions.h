@@ -32,7 +32,7 @@
 	\brief
 	If non-nil, the file is streamed as the body.
  */
-@property (readonly) NSURL *HTTPBodyFile;
+@property (readonly, nonatomic) NSURL *HTTPBodyFile;
 
 @end
 
@@ -51,6 +51,6 @@
 	\brief
 	If non-nil, the file is streamed as the body.
  */
-@property (readwrite, copy) NSURL *HTTPBodyFile;
+@property (readwrite, copy, nonatomic) NSURL *HTTPBodyFile;
 
 @end

@@ -60,7 +60,7 @@ id af_class_getMetadataObjectForKey(Class classObject, const char *key) {
 		NSData *rawMetadata = AFBundleSectionData(classBundle, SEG_OBJC, AF_SECT_METADATA);
 		
 		if (rawMetadata == nil) {
-			[NSException raise:NSInvalidArgumentException format:@"%s, the bundle <%p> containing class %@ doesn't contain metadata.", __PRETTY_FUNCTION__, classBundle, NSStringFromClass(classObject), nil];
+			[NSException raise:NSInvalidArgumentException format:@"%s, the bundle <%p> containing class %@ doesn't contain metadata.", __PRETTY_FUNCTION__, classBundle, NSStringFromClass(classObject)];
 			return nil;
 		}
 		

@@ -12,24 +12,42 @@ static NSString *const AFPropertyListClassNameKey = @"propertyListClass";
 static NSString *const AFPropertyListObjectDataKey = @"propertyListData";
 
 BOOL AFObjectIsPlistSerialisable(id object) {
-	if ([object isKindOfClass:[NSString class]]) return YES;
-	else if ([object isKindOfClass:[NSData class]]) return YES;
-    else if ([object isKindOfClass:[NSDate class]]) return YES;
-	else if ([object isKindOfClass:[NSNumber class]]) return YES;
+	if ([object isKindOfClass:[NSString class]]) {
+		return YES;
+	}
+	else if ([object isKindOfClass:[NSData class]]) {
+		return YES;
+	}
+    else if ([object isKindOfClass:[NSDate class]]) {
+		return YES;
+	}
+	else if ([object isKindOfClass:[NSNumber class]]) {
+		return YES;
+	}
 	else if ([object isKindOfClass:[NSArray class]]) {
 		for (id currentObject in (NSArray *)object) {
-			if (!AFObjectIsPlistSerialisable(currentObject)) return NO;
+			if (!AFObjectIsPlistSerialisable(currentObject)) {
+				return NO;
+			}
 		}
 		
 		return YES;
-    } else if ([object isKindOfClass:[NSDictionary class]]) {
+    }
+	else if ([object isKindOfClass:[NSDictionary class]]) {
 		for (id currentKey in (NSDictionary *)object) {
-			if ([currentKey isKindOfClass:[NSString class]]) return NO;
-			if (!AFObjectIsPlistSerialisable([object objectForKey:currentKey])) return NO;
+			if ([currentKey isKindOfClass:[NSString class]]) {
+				return NO;
+			}
+			if (!AFObjectIsPlistSerialisable([object objectForKey:currentKey])) {
+				return NO;
+			}
 		}
 		
 		return YES;
-    } else return NO;
+    }
+	else {
+		return NO;
+	}
 }
 
 static BOOL _AFObjectIsPlistRepresentation(id object) {

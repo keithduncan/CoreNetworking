@@ -11,19 +11,19 @@
 #import "AFHTTPHeadersPacket.h"
 #import "AFHTTPBodyPacket.h"
 #import "AFHTTPMessage.h"
-#import "AFNetworkConstants.h"
 
-#import "AFNetworkMacros.h"
+#import "AFNetwork-Constants.h"
+#import "AFNetwork-Macros.h"
 
 AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketHeadersContext);
 AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 
 @interface AFHTTPMessagePacket ()
-@property (readonly) __strong CFHTTPMessageRef message __attribute__((NSObject));
+@property (readonly, nonatomic) AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef message;
 
-@property (readwrite, retain) NSOutputStream *bodyStream;
+@property (readwrite, retain, nonatomic) NSOutputStream *bodyStream;
 
-@property (retain) AFNetworkPacket <AFNetworkPacketReading> *currentRead;
+@property (retain, nonatomic) AFNetworkPacket <AFNetworkPacketReading> *currentRead;
 
 - (void)_headersPacketDidComplete:(NSNotification *)notification;
 
@@ -108,11 +108,15 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 	
 	do {
 		if (self.currentRead == nil) {
-			if (![self _nextPacket]) return -1;
+			if (![self _nextPacket]) {
+				return -1;
+			}
 		}
 		
 		NSInteger bytesRead = [self.currentRead performRead:readStream];
-		if (bytesRead < 0) return -1;
+		if (bytesRead < 0) {
+			return -1;
+		}
 		
 		currentBytesRead += bytesRead;
 	} while (self.currentRead == nil);
@@ -142,6 +146,10 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 	
 	NSUInteger currentByte = 0;
 	while (currentByte < [bodyData length]) {
+		if ([self.bodyStream streamStatus] == NSStreamStatusNotOpen) {
+			[self.bodyStream open];
+		}
+		
 		CFRetain(bodyData);
 		NSInteger writtenBytes = [self.bodyStream write:((const uint8_t *)[bodyData bytes]) + currentByte maxLength:([bodyData length] - currentByte)];
 		CFRelease(bodyData);
@@ -159,6 +167,8 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 }
 
 - (void)_bodyReadPacketDidComplete:(NSNotification *)notification {
+	[self.bodyStream close];
+	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFHTTPBodyPacketDidReadNotificationName object:[notification object]];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:[notification name] object:[notification object]];
 	

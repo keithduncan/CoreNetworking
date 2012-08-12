@@ -10,6 +10,8 @@
 
 #import <dns_sd.h>
 
+#import "CoreNetworking/AFNetwork-Macros.h"
+
 /*!
 	\brief
 	Allows for asynchronous DNSService API callbacks.
@@ -17,14 +19,16 @@
 	\details
 	This class doesn't take ownership of the DNSServiceRef it is instantiated with, it is still the client's responsibility to deallocate the DNSServiceRef once it is no longer needed.
 */
-@interface AFNetworkServiceDiscoveryRunLoopSource : NSObject {
+@interface AFNetworkServiceSource : NSObject {
  @private
 	DNSServiceRef _service;
 	
-	__strong CFFileDescriptorRef _fileDescriptor;
-	__strong CFRunLoopSourceRef _runLoopSource;
+	AFNETWORK_STRONG __attribute__((NSObject)) CFFileDescriptorRef _fileDescriptor;
 	
-	__strong void *_dispatchSource;
+	struct {
+		AFNETWORK_STRONG __attribute__((NSObject)) CFTypeRef _runLoopSource;
+		void *_dispatchSource;
+	} _sources;
 }
 
 /*!
@@ -32,25 +36,25 @@
 	Because the DNS-SD doesn't provide a reference counting mechanism, you must ensure the service remains valid for the lifetime of this object.
 	The source is scheduled on the current run loop.
  */
-- (id)initWithDNSService:(DNSServiceRef)service;
+- (id)initWithService:(DNSServiceRef)service;
 
 /*!
 	\brief
 	
  */
-@property (readonly) DNSServiceRef service;
+@property (readonly, nonatomic) DNSServiceRef service;
 
 /*!
 	\brief
 	The source must be scheduled in at least one run loop to function.
  */
-- (void)scheduleInRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode;
+- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
 /*!
 	\brief
 	The source must be scheduled in at least one run loop to function.
  */
-- (void)unscheduleFromRunLoop:(NSRunLoop *)loop forMode:(NSString *)mode;
+- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
 #if defined(DISPATCH_API_VERSION)
 
@@ -70,6 +74,12 @@
 	Should be called to unschedule the source from all event loops.
  */
 - (void)invalidate;
+
+/*!
+	\brief
+	Once invalidated, a source won't fire any more.
+ */
+- (BOOL)isValid;
 
 @end
 
@@ -91,6 +101,6 @@
 	\return
 	Does not return an owning reference, you must retain it if you keep a reference for later cancellation.
  */
-extern dispatch_source_t AFNetworkServiceDiscoveryScheduleQueueSource(DNSServiceRef service, dispatch_queue_t queue);
+AFNETWORK_EXTERN dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service, dispatch_queue_t queue);
 
 #endif

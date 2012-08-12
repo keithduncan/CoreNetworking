@@ -9,25 +9,26 @@
 #import "AFNetworkConnection.h"
 
 #import "AFNetworkTransport.h"
-#import "AFNetworkFunctions.h"
+
+#import "AFNetwork-Functions.h"
 
 @implementation AFNetworkConnection
 
 @dynamic delegate;
 
-+ (Class)lowerLayer {
++ (Class)lowerLayerClass {
 	return [AFNetworkTransport class];
 }
 
 + (AFNetworkInternetTransportSignature)transportSignatureForScheme:(NSString *)scheme {
-	[NSException raise:NSInvalidArgumentException format:@"%s, cannot provide an AFNetworkInternetTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme];
+	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"%s, cannot provide an AFNetworkInternetTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme] userInfo:nil];
 	
-	AFNetworkInternetTransportSignature signature = {0};
+	AFNetworkInternetTransportSignature signature = {};
 	return signature;
 }
 
 + (NSString *)serviceDiscoveryType {
-	[NSException raise:NSInternalInconsistencyException format:@"%s, connot provide a service discovery type", __PRETTY_FUNCTION__];
+	@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%s, connot provide a service discovery type", __PRETTY_FUNCTION__] userInfo:nil];
 	return nil;
 }
 
@@ -48,8 +49,8 @@
 	return (id)[self initWithTransportSignature:&hostSignature];
 }
 
-- (id <AFNetworkConnectionLayer>)initWithService:(id <AFNetworkServiceCommon>)service {
-	CFNetServiceRef netService = (CFNetServiceRef)[NSMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)[(id)service valueForKey:@"domain"], (CFStringRef)[(id)service valueForKey:@"type"], (CFStringRef)[(id)service valueForKey:@"name"], 0)) autorelease];
+- (id <AFNetworkConnectionLayer>)initWithService:(AFNetworkServiceScope *)serviceScope {
+	CFNetServiceRef netService = (CFNetServiceRef)[NSMakeCollectable(CFNetServiceCreate(kCFAllocatorDefault, (CFStringRef)[serviceScope domain], (CFStringRef)[serviceScope type], (CFStringRef)[serviceScope name], 0)) autorelease];
 	
 	AFNetworkServiceSignature serviceSignature = {
 		.service = netService,
@@ -76,7 +77,7 @@
 		NSArray *addresses = (NSArray *)CFHostGetAddressing(host, NULL);
 		if ([addresses count] != 0) {
 			NSData *address = [addresses objectAtIndex:0];
-			NSString *addressString = AFNetworkSocketAddressToPresentation(address);
+			NSString *addressString = AFNetworkSocketAddressToPresentation(address, NULL);
 			
 			if (addressString != nil) {
 				return [NSURL URLWithString:addressString];
@@ -84,7 +85,8 @@
 		}
 		
 		return nil;
-	} else if (CFGetTypeID(peer) == CFNetServiceGetTypeID()) {
+	}
+	else if (CFGetTypeID(peer) == CFNetServiceGetTypeID()) {
 		CFNetServiceRef service = (CFNetServiceRef)peer;
 		
 		// Note: this is assuming that the service has already been resolved
@@ -94,8 +96,28 @@
 		return [NSURL URLWithString:[NSString stringWithFormat:@"%@:%lu", host, (unsigned long)port]];
 	}
 	
-	[NSException raise:NSInternalInconsistencyException format:@"%s, unsupported peer type %@", __PRETTY_FUNCTION__, peer];
+	@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%s, unsupported peer type %@", __PRETTY_FUNCTION__, peer] userInfo:nil];
 	return nil;
+}
+
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)packet context:(void *)context {
+	if ([[self delegate] respondsToSelector:@selector(networkLayer:didWrite:context:)]) {
+		[[self delegate] networkLayer:self didWrite:packet context:context];
+	}
+	else {
+		//@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"uncaught write with context %p", context] userInfo:nil];
+		//nop
+	}
+}
+
+- (void)networkLayer:(id<AFNetworkTransportLayer>)layer didRead:(id)packet context:(void *)context {
+	if ([[self delegate] respondsToSelector:@selector(networkLayer:didRead:context:)]) {
+		[[self delegate] networkLayer:self didRead:packet context:context];
+	}
+	else {
+		//@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"uncaught read with context %p", context] userInfo:nil];
+		//nop
+	}
 }
 
 @end

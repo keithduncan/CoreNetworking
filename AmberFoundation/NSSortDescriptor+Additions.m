@@ -11,7 +11,6 @@
 @implementation NSSortDescriptor (AFAdditions)
 
 + (NSArray *)ascending:(BOOL)ascending descriptorsForKeys:(NSString *)currentKey, ... {
-	va_list keyList;
 	NSMutableArray *returnArray = [NSMutableArray array];
 	
 	if (currentKey != nil) {
@@ -19,9 +18,10 @@
 		[returnArray addObject:currentDescriptor];
 		[currentDescriptor release];
 		
+		va_list keyList;
 		va_start(keyList, currentKey);
 		
-		while (currentKey = va_arg(keyList, NSString *)) {
+		while ((currentKey = va_arg(keyList, NSString *)) != nil) {
 			currentDescriptor = [[NSSortDescriptor alloc] initWithKey:currentKey ascending:ascending];
 			[returnArray addObject:currentDescriptor];
 			[currentDescriptor release];

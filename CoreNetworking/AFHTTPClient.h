@@ -6,34 +6,40 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "CoreNetworking/AFHTTPConnection.h"
+#import <Foundation/Foundation.h>
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
-#endif
+#endif /* TARGET_OS_IPHONE */
+
+#import "CoreNetworking/AFHTTPConnection.h"
+
+#import "CoreNetworking/AFNetwork-Macros.h"
+
+@class AFHTTPClient;
 
 @class AFNetworkPacketQueue;
-@class AFHTTPClient;
+@class AFHTTPTransaction;
 
 /*!
 	\brief
 	
  */
-@protocol AFHTTPClientDelegate <AFHTTPConnectionControlDelegate, AFHTTPConnectionDataDelegate>
+@protocol AFHTTPClientDelegate <AFHTTPConnectionDelegate>
 
-- (void)networkConnection:(AFHTTPClient *)connection didReadResponse:(CFHTTPMessageRef)response context:(void *)context;
+- (void)networkConnection:(AFHTTPClient *)connection didReceiveResponse:(CFHTTPMessageRef)response context:(void *)context;
 
 @end
 
 /*!
 	\brief
-	Replaces NSURLConnection for HTTP NSURLRequest objects.
+	Adds request/response transaction tracking to AFHTTPConnection raw messaging
  */
 @interface AFHTTPClient : AFHTTPConnection {
  @private
 	NSString *_userAgent;
 	
-	__strong CFHTTPAuthenticationRef _authentication;
+	AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPAuthenticationRef _authentication;
 	NSDictionary *_authenticationCredentials;
 	
 	BOOL _shouldStartTLS;
@@ -41,15 +47,15 @@
 	AFNetworkPacketQueue *_transactionQueue;
 }
 
-@property (assign) id <AFHTTPClientDelegate> delegate;
+@property (assign, nonatomic) id <AFHTTPClientDelegate> delegate;
 
 + (NSString *)userAgent;
 + (void)setUserAgent:(NSString *)userAgent;
 
-@property (copy) NSString *userAgent;
+@property (copy, nonatomic) NSString *userAgent;
 
-@property (retain) __strong __attribute__((NSObject)) CFHTTPAuthenticationRef authentication;
-@property (copy) NSDictionary *authenticationCredentials;
+@property (retain, nonatomic) AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPAuthenticationRef authentication;
+@property (copy, nonatomic) NSDictionary *authenticationCredentials;
 
 /*
 	Transaction Methods
@@ -93,5 +99,15 @@
 	Will handle large files by streaming them from disk.
  */
 - (BOOL)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation context:(void *)context error:(NSError **)errorRef;
+
+/*
+	Primitive
+ */
+
+/*!
+	\brief
+	
+ */
+- (void)enqueueTransaction:(AFHTTPTransaction *)transaction;
 
 @end

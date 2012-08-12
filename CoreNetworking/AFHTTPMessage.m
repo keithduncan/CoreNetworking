@@ -16,16 +16,17 @@
 #import "NSDictionary+AFNetworkAdditions.h"
 #import "NSURLRequest+AFNetworkAdditions.h"
 
-#import "AFNetworkConstants.h"
+#import "AFNetwork-Constants.h"
+#import "AFNetwork-Macros.h"
 
 @interface _AFHTTPURLResponse : NSHTTPURLResponse {
  @private
-	__strong CFHTTPMessageRef _message;
+	AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef _message;
 }
 
 - (id)initWithURL:(NSURL *)URL message:(CFHTTPMessageRef)message;
 
-@property (assign) __strong CFHTTPMessageRef message __attribute__((NSObject));
+@property (assign, nonatomic) AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef message;
 
 @end
 
@@ -40,7 +41,8 @@
 		NSRange parameterSeparator = [contentType rangeOfString:@";"];
 		if (parameterSeparator.location == NSNotFound) {
 			MIMEType = contentType;
-		} else {
+		}
+		else {
 			MIMEType = [contentType substringToIndex:parameterSeparator.location];
 			
 			NSMutableDictionary *contentTypeParameters = [NSMutableDictionary dictionaryWithString:[contentType substringFromIndex:(parameterSeparator.location + 1)] separator:@"=" delimiter:@";"];
@@ -177,6 +179,7 @@ NSString *const AFHTTPMessageIfNoneMatchHeader = @"If-None-Match";
 NSString *const AFHTTPMessageTransferEncodingHeader = @"Transfer-Encoding";
 
 NSString *const AFHTTPMessageAllowHeader = @"Allow";
+NSString *const AFHTTPMessageAcceptHeader = @"Accept";
 NSString *const AFHTTPMessageLocationHeader = @"Location";
 NSString *const AFHTTPMessageRangeHeader = @"Range";
 NSString *const AFHTTPMessageExpectHeader = @"Expect";
@@ -188,56 +191,64 @@ NSString *const AFHTTPMessageProxyAuthorizationHeader = @"Proxy-Authorization";
 
 CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 	switch (code) {
-		case AFHTTPStatusCodeContinue:;
+		case AFHTTPStatusCodeContinue:
 			return CFSTR("Continue");
-		case AFHTTPStatusCodeSwitchingProtocols:;
+		case AFHTTPStatusCodeSwitchingProtocols:
 			return CFSTR("Switching Protocols");
 			
-		case AFHTTPStatusCodeOK:;
+		case AFHTTPStatusCodeOK:
 			return CFSTR("OK");
-		case AFHTTPStatusCodePartialContent:;
+		case AFHTTPStatusCodePartialContent:
 			return CFSTR("Partial Content");
 			
-		case AFHTTPStatusCodeMultipleChoices:;
+		case AFHTTPStatusCodeMultipleChoices:
 			return CFSTR("Multiple Choices");
-		case AFHTTPStatusCodeMovedPermanently:;
+		case AFHTTPStatusCodeMovedPermanently:
 			return CFSTR("Moved Permanently");
-		case AFHTTPStatusCodeFound:;
+		case AFHTTPStatusCodeFound:
 			return CFSTR("Found");
-		case AFHTTPStatusCodeSeeOther:;
+		case AFHTTPStatusCodeSeeOther:
 			return CFSTR("See Other");
-		case AFHTTPStatusCodeNotModified:;
+		case AFHTTPStatusCodeNotModified:
 			return CFSTR("Not Modified");
-		case AFHTTPStatusCodeTemporaryRedirect:;
+		case AFHTTPStatusCodeTemporaryRedirect:
 			return CFSTR("Temporary Redirect");
 			
-		case AFHTTPStatusCodeBadRequest:;
+		case AFHTTPStatusCodeBadRequest:
 			return CFSTR("Bad Request");
-		case AFHTTPStatusCodeUnauthorized:;
+		case AFHTTPStatusCodeUnauthorized:
 			return CFSTR("Unauthorized");
-		case AFHTTPStatusCodeNotFound:;
+		case AFHTTPStatusCodeNotFound:
 			return CFSTR("Not Found");
-		case AFHTTPStatusCodeNotAllowed:;
-			return CFSTR("Not Allowed");
-		case AFHTTPStatusCodeProxyAuthenticationRequired:;
+		case AFHTTPStatusCodeMethodNotAllowed:
+			return CFSTR("Method Not Allowed");
+		case AFHTTPStatusCodeNotAcceptable:
+			return CFSTR("Not Acceptable");
+		case AFHTTPStatusCodeUnsupportedMediaType:
+			return CFSTR("Unsupported Media Type");
+		case AFHTTPStatusCodeProxyAuthenticationRequired:
 			return CFSTR("Proxy Authentication Required");
-		case AFHTTPStatusCodeExpectationFailed:;
+		case AFHTTPStatusCodeConflict:
+			return CFSTR("Conflict");
+		case AFHTTPStatusCodeExpectationFailed:
 			return CFSTR("Expectation Failed");
-		case AFHTTPStatusCodeUpgradeRequired:;
+		case AFHTTPStatusCodeUpgradeRequired:
 			return CFSTR("Upgrade Required");
 			
-		case AFHTTPStatusCodeServerError:;
+		case AFHTTPStatusCodeServerError:
 			return CFSTR("Server Error");
-		case AFHTTPStatusCodeNotImplemented:;
+		case AFHTTPStatusCodeNotImplemented:
 			return CFSTR("Not Implemented");
 	}
 	
-	[NSException raise:NSInvalidArgumentException format:@"%s, (%ld) is not a known status code", __PRETTY_FUNCTION__];
+	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"%s, (%ld) is not a known status code", __PRETTY_FUNCTION__, (NSInteger)code] userInfo:nil];
 	return NULL;
 }
 
 NSString *AFHTTPAgentStringForBundle(NSBundle *bundle) {
-	if (bundle == nil) return nil;
+	if (bundle == nil) {
+		return nil;
+	}
 	return [NSString stringWithFormat:@"%@/%@", [[bundle objectForInfoDictionaryKey:(id)@"CFBundleDisplayName"] stringByReplacingOccurrencesOfString:@" " withString:@"-"], [[bundle objectForInfoDictionaryKey:(id)kCFBundleVersionKey] stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
 }
 

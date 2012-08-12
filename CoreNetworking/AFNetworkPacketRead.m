@@ -8,12 +8,12 @@
 
 #import "AFNetworkPacketRead.h"
 
-#import "AFNetworkConstants.h"
-#import "AFNetworkFunctions.h"
+#import "AFNetwork-Constants.h"
+#import "AFNetwork-Functions.h"
 
 @interface AFNetworkPacketRead ()
-@property (assign) NSUInteger totalBytesRead;
-@property (copy) id terminator;
+@property (assign, nonatomic) NSUInteger totalBytesRead;
+@property (readwrite, copy, nonatomic) id terminator;
 @end
 
 @implementation AFNetworkPacketRead
@@ -94,7 +94,7 @@
 		return maximumReadLength;
 	}
 	
-	[NSException raise:NSInternalInconsistencyException format:@"%s, cannot determine the maximum read length for an unknown terminator", __PRETTY_FUNCTION__];
+	@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%s, cannot determine the maximum read length for an unknown terminator", __PRETTY_FUNCTION__] userInfo:nil];
 	return 0;
 }
 
@@ -102,7 +102,7 @@
 	NSParameterAssert(maximumReadLengthRef != NULL);
 	
 	/*
-		Note:
+		Note
 		
 		the buffer length must be increased _before_ we caculate the write location
 		
@@ -111,10 +111,12 @@
 	NSUInteger maximumReadLength = [self _maximumReadLength];
 	if ([[self terminator] isKindOfClass:[NSNumber class]]) {
 		//nop
-	} else if ([[self terminator] isEqual:[NSNull null]] || [[self terminator] isKindOfClass:[NSData class]]) {
+	}
+	else if ([[self terminator] isEqual:[NSNull null]] || [[self terminator] isKindOfClass:[NSData class]]) {
 		[[self buffer] increaseLengthBy:maximumReadLength];
-	} else {
-		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot increase the buffer length for an unknown terminator", __PRETTY_FUNCTION__];
+	}
+	else {
+		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%s, cannot increase the buffer length for an unknown terminator", __PRETTY_FUNCTION__] userInfo:nil];
 		return NULL;
 	}
 	*maximumReadLengthRef = maximumReadLength;
@@ -149,10 +151,12 @@
 		BOOL packetComplete = NO;
 		if ([[self terminator] isKindOfClass:[NSNumber class]] || [[self terminator] isKindOfClass:[NSNull class]]) {
 			packetComplete = ([self totalBytesRead] == [[self buffer] length]);
-		} else if ([[self terminator] isKindOfClass:[NSData class]]) {
+		}
+		else if ([[self terminator] isKindOfClass:[NSData class]]) {
 			packetComplete = ([[self buffer] rangeOfData:[self terminator] options:(NSDataSearchBackwards | NSDataSearchAnchored) range:NSMakeRange(0, [[self buffer] length])].location != NSNotFound);
-		} else {
-			[NSException raise:NSInternalInconsistencyException format:@"%s, cannot detect completion for an unknown terminator", __PRETTY_FUNCTION__];
+		}
+		else {
+			@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%s, cannot detect completion for an unknown terminator", __PRETTY_FUNCTION__] userInfo:nil];
 			return -1;
 		}
 		if (packetComplete) {

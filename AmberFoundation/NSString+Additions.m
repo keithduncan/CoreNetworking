@@ -52,7 +52,7 @@
 - (NSString *)stringByRemovingKeyPathComponentAtIndex:(NSUInteger)index {
 	NSArray *keyPathComponents = [self keyPathComponents];
 	if (!AFArrayContainsIndex(keyPathComponents, index)) {
-		[NSException raise:NSRangeException format:@"%s, attempting to access keypath component at index %d beyond range.", __PRETTY_FUNCTION__, index, nil];
+		[NSException raise:NSRangeException format:@"%s, attempting to access keypath component at index %ld beyond range.", __PRETTY_FUNCTION__, index];
 		return nil;
 	}
 	

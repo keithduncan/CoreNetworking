@@ -12,10 +12,6 @@
 	Core Networking
  */
 
-#import "CoreNetworking/AFNetworkTypes.h"
-#import "CoreNetworking/AFNetworkFunctions.h"
-#import "CoreNetworking/AFNetworkConstants.h"
-
 #import "CoreNetworking/AFNetworkLayer.h"
 #import "CoreNetworking/AFNetworkTransportLayer.h"
 #import "CoreNetworking/AFNetworkConnectionLayer.h"
@@ -32,12 +28,23 @@
 #import "CoreNetworking/AFNetworkPacketReadToWriteStream.h"
 #import "CoreNetworking/AFNetworkPacketWrite.h"
 #import "CoreNetworking/AFNetworkPacketWriteFromReadStream.h"
+#import "CoreNetworking/AFNetworkPacketClose.h"
 
 #import "CoreNetworking/AFNetworkServer.h"
 #import "CoreNetworking/AFNetworkPool.h"
+#import "CoreNetworking/AFNetworkSchedulerProxy.h"
 
-#import "CoreNetworking/AFNetworkService.h"
-#import "CoreNetworking/AFNetworkServiceDiscoveryRunLoopSource.h"
+#import "CoreNetworking/AFNetworkServiceScope.h"
+#import "CoreNetworking/AFNetworkServiceBrowser.h"
+#import "CoreNetworking/AFNetworkServicePublisher.h"
+#import "CoreNetworking/AFNetworkServiceResolver.h"
+#import "CoreNetworking/AFNetworkServiceSource.h"
+#import "CoreNetworking/AFNetworkService-Functions.h"
+#import "CoreNetworking/AFNetworkService-Constants.h"
+
+#import "CoreNetworking/AFNetwork-Types.h"
+#import "CoreNetworking/AFNetwork-Functions.h"
+#import "CoreNetworking/AFNetwork-Constants.h"
 
 /*
 	Categories
@@ -64,6 +71,8 @@
 #import "CoreNetworking/AFHTTPTransaction.h"
 
 #import "CoreNetworking/AFHTTPServer.h"
+
+/* FTP */
 
 /* XMPP */
 

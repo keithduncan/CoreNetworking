@@ -32,7 +32,7 @@
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	
 	[description appendString:@" {"];
-	[description appendFormat:@"\n\tDispatch Order: %@", dispatchOrder, nil];
+	[description appendFormat:@"\n\tDispatch Order: %@", dispatchOrder];
 	[description appendString:@"\n}"];
 	
 	return description;
@@ -100,7 +100,7 @@
 	id dispatchTarget = [self _dispatchTargetForSelector:selector];
 	
 	if (dispatchTarget == nil) {
-		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot dispatch to a nil target", __PRETTY_FUNCTION__, nil];
+		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot dispatch to a nil target", __PRETTY_FUNCTION__];
 		return;
 	}
 	

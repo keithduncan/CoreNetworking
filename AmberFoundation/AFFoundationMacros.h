@@ -8,4 +8,5 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+#define NSSTRING_CONSTANT(var) NSString *const var = @#var
+#define NSSTRING_CONTEXT(var) static NSString *var = @#var

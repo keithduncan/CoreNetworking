@@ -10,7 +10,9 @@
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
-#endif
+#endif /* TARGET_OS_IPHONE */
+
+#import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkPacket;
 @protocol AFNetworkPacketWriting;
@@ -26,13 +28,13 @@
 	\details
 	If the request uses a stream for the body, an exception is thrown.
  */
-extern CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request);
+AFNETWORK_EXTERN CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request);
 
 /*!
 	\brief
 	Convert a <tt>CFHTTPMessageRef</tt> request to an <tt>NSURLRequest</tt> object.
  */
-extern NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message);
+AFNETWORK_EXTERN NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message);
 
 /*!
 	\brief
@@ -41,74 +43,75 @@ extern NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message);
 	\details
 	The message will not have a body, since that is captured separately from the <tt>NSHTTPURLResponse</tt> object.
  */
-extern CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response);
+AFNETWORK_EXTERN CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response);
 
 /*!
 	\brief
 	Convert a <tt>CFHTTPMessageRef</tt> response to an <tt>NSHTTPURLResponse</tt> object.
  */
-extern NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(NSURL *URL, CFHTTPMessageRef message);
+AFNETWORK_EXTERN NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(NSURL *URL, CFHTTPMessageRef message);
 
 /*!
 	\brief
 	Packetises a message.
  */
-extern AFNetworkPacket <AFNetworkPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message);
+AFNETWORK_EXTERN AFNetworkPacket <AFNetworkPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message);
 
 /*
 	HTTP methods
  */
 
-extern NSString *const AFHTTPMethodHEAD;
-extern NSString *const AFHTTPMethodTRACE;
-extern NSString *const AFHTTPMethodOPTIONS;
+AFNETWORK_EXTERN NSString *const AFHTTPMethodHEAD;
+AFNETWORK_EXTERN NSString *const AFHTTPMethodTRACE;
+AFNETWORK_EXTERN NSString *const AFHTTPMethodOPTIONS;
 
-extern NSString *const AFHTTPMethodGET;
-extern NSString *const AFHTTPMethodPOST;
-extern NSString *const AFHTTPMethodPUT;
-extern NSString *const AFHTTPMethodDELETE;
+AFNETWORK_EXTERN NSString *const AFHTTPMethodGET;
+AFNETWORK_EXTERN NSString *const AFHTTPMethodPOST;
+AFNETWORK_EXTERN NSString *const AFHTTPMethodPUT;
+AFNETWORK_EXTERN NSString *const AFHTTPMethodDELETE;
 
 /*
 	AFHTTPConnection Schemes
  */
 
-extern NSString *const AFNetworkSchemeHTTP;
-extern NSString *const AFNetworkSchemeHTTPS;
+AFNETWORK_EXTERN NSString *const AFNetworkSchemeHTTP;
+AFNETWORK_EXTERN NSString *const AFNetworkSchemeHTTPS;
 
 /*
 	AFHTTPConnection Message Headers
  */
 
-extern NSString *const AFHTTPMessageServerHeader;
-extern NSString *const AFHTTPMessageUserAgentHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageServerHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageUserAgentHeader;
 
-extern NSString *const AFHTTPMessageHostHeader;
-extern NSString *const AFHTTPMessageConnectionHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageHostHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageConnectionHeader;
 
-extern NSString *const AFHTTPMessageContentLengthHeader;
-extern NSString *const AFHTTPMessageContentTypeHeader;
-extern NSString *const AFHTTPMessageContentRangeHeader;
-extern NSString *const AFHTTPMessageContentMD5Header;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageContentLengthHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageContentTypeHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageContentRangeHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageContentMD5Header;
 
-extern NSString *const AFHTTPMessageETagHeader;
-extern NSString *const AFHTTPMessageIfNoneMatchHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageETagHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageIfNoneMatchHeader;
 
-extern NSString *const AFHTTPMessageTransferEncodingHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageTransferEncodingHeader;
 
-extern NSString *const AFHTTPMessageAllowHeader;
-extern NSString *const AFHTTPMessageLocationHeader;
-extern NSString *const AFHTTPMessageRangeHeader;
-extern NSString *const AFHTTPMessageExpectHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageAllowHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageAcceptHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageLocationHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageRangeHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageExpectHeader;
 
-extern NSString *const AFHTTPMessageWWWAuthenticateHeader;
-extern NSString *const AFHTTPMessageAuthorizationHeader;
-extern NSString *const AFHTTPMessageProxyAuthorizationHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageWWWAuthenticateHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageAuthorizationHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageProxyAuthorizationHeader;
 
 /*
 	AFHTTPConnection Message Codes
 */
 
-enum {
+typedef AFNETWORK_ENUM(NSInteger, AFHTTPStatusCode) {
 	// 1xx class, informational
 	AFHTTPStatusCodeContinue						= 100, /* Continue */
 	AFHTTPStatusCodeSwitchingProtocols				= 101, /* Switching Protocols */
@@ -129,8 +132,11 @@ enum {
 	AFHTTPStatusCodeBadRequest						= 400, /* Bad Request */
 	AFHTTPStatusCodeUnauthorized					= 401, /* Unauthorized */
 	AFHTTPStatusCodeNotFound						= 404, /* Not Found */
-	AFHTTPStatusCodeNotAllowed						= 405, /* Not Allowed */
+	AFHTTPStatusCodeMethodNotAllowed				= 405, /* Method Not Allowed */
+	AFHTTPStatusCodeNotAcceptable					= 406, /* Not Acceptable */
 	AFHTTPStatusCodeProxyAuthenticationRequired		= 407, /* Proxy Authentication Required */
+	AFHTTPStatusCodeConflict						= 409, /* Conflict */
+	AFHTTPStatusCodeUnsupportedMediaType			= 415, /* Unsupported Media Type */
 	AFHTTPStatusCodeExpectationFailed				= 417, /* Expectation Failed */
 	AFHTTPStatusCodeUpgradeRequired					= 426, /* Upgrade Required */
 	
@@ -138,7 +144,6 @@ enum {
 	AFHTTPStatusCodeServerError						= 500, /* Server Error */
 	AFHTTPStatusCodeNotImplemented					= 501, /* Not Implemented */
 };
-typedef NSInteger AFHTTPStatusCode;
 
 /*!
 	\brief
@@ -148,16 +153,16 @@ typedef NSInteger AFHTTPStatusCode;
 	\details
 	This is typed to return a CFStringRef to minimise the impedance mismatch with <tt>CFHTTPMessageCreate()</tt>.
  */
-extern CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code);
+AFNETWORK_EXTERN CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code);
 
 /*!
 	\brief
 	Generate an agent string suitable for the Server or User-Agent headers.
  */
-extern NSString *AFHTTPAgentStringForBundle(NSBundle *bundle);
+AFNETWORK_EXTERN NSString *AFHTTPAgentStringForBundle(NSBundle *bundle);
 
 /*!
 	\brief
 	Generate an agent string suitable for the Server or User-Agent headers, for the main bundle.
  */
-extern NSString *AFHTTPAgentString(void);
+AFNETWORK_EXTERN NSString *AFHTTPAgentString(void);

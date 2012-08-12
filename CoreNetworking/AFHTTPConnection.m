@@ -14,7 +14,7 @@
 #import "AFNetworkPacketWrite.h"
 #import "AFNetworkPacketWriteFromReadStream.h"
 
-#import "AFNetworkMacros.h"
+#import "AFNetwork-Macros.h"
 
 AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionWriteRequestContext);
 AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionWriteResponseContext);
@@ -23,7 +23,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadRequestContext);
 AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 @interface AFHTTPConnection ()
-@property (readwrite, retain) NSMutableDictionary *messageHeaders;
+@property (readwrite, retain, nonatomic) NSMutableDictionary *messageHeaders;
 @end
 
 #pragma mark -
@@ -34,7 +34,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 @synthesize messageHeaders=_messageHeaders;
 
-+ (Class)lowerLayer {
++ (Class)lowerLayerClass {
 	return [AFNetworkTransport class];
 }
 
@@ -76,9 +76,18 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 }
 
 - (void)prepareMessageForTransport:(CFHTTPMessageRef)message {
-	if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] == nil) {
-		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:[[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease] length]] stringValue]);
-	}
+	do {
+		if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] != nil) {
+			break;
+		}
+		
+		NSUInteger requestBodyLength = [[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease] length];
+		if (requestBodyLength == 0) {
+			//break;
+		}
+		
+		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:requestBodyLength] stringValue]);
+	} while (0);
 	
 	for (NSString *currentConnectionHeader in [self.messageHeaders allKeys]) {
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)currentConnectionHeader, (CFStringRef)[self.messageHeaders objectForKey:currentConnectionHeader]);
@@ -96,22 +105,21 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 }
 
 - (void)processMessageFromTransport:(CFHTTPMessageRef)message {
-	if (!CFHTTPMessageIsRequest(message)) {
-		CFIndex responseStatusCode = CFHTTPMessageGetResponseStatusCode(message);
-		if (responseStatusCode >= 100 && responseStatusCode <= 199) {
-			[self readResponse];
-			return;
+	if (CFHTTPMessageIsRequest(message)) {
+		if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveRequest:)]) {
+			[self.delegate networkConnection:self didReceiveRequest:(CFHTTPMessageRef)message];
 		}
-		
-		if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveResponse:)]) {
-			[self.delegate networkConnection:self didReceiveResponse:message];
-		}
-		
 		return;
 	}
 	
-	if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveRequest:)]) {
-		[self.delegate networkConnection:self didReceiveRequest:(CFHTTPMessageRef)message];
+	CFIndex responseStatusCode = CFHTTPMessageGetResponseStatusCode(message);
+	if (responseStatusCode >= 100 && responseStatusCode <= 199) {
+		[self readResponse];
+		return;
+	}
+	
+	if ([self.delegate respondsToSelector:@selector(networkConnection:didReceiveResponse:)]) {
+		[self.delegate networkConnection:self didReceiveResponse:message];
 	}
 }
 
@@ -139,31 +147,29 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 #pragma mark -
 
-- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context {
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)packet context:(void *)context {
 	if (context == &_AFHTTPConnectionWriteRequestContext) {
-		return;
+		//nop
 	}
-	if (context == &_AFHTTPConnectionWriteResponseContext) {
-		return;
+	else if (context == &_AFHTTPConnectionWriteResponseContext) {
+		//nop
 	}
-	
-	if ([self.delegate respondsToSelector:_cmd]) {
-		[self.delegate networkLayer:self didWrite:data context:context];
+	else {
+		[super networkLayer:layer didWrite:packet context:context];
 	}
 }
 
-- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context {
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)packet context:(void *)context {
 	if (context == &_AFHTTPConnectionReadRequestContext) {
-		[self processMessageFromTransport:(CFHTTPMessageRef)data];
-		return;
+		CFHTTPMessageRef message = (CFHTTPMessageRef)[(AFHTTPMessagePacket *)packet buffer];
+		[self processMessageFromTransport:message];
 	}
-	if (context == &_AFHTTPConnectionReadResponseContext) {
-		[self processMessageFromTransport:(CFHTTPMessageRef)data];
-		return;
+	else if (context == &_AFHTTPConnectionReadResponseContext) {
+		CFHTTPMessageRef message = (CFHTTPMessageRef)[(AFHTTPMessagePacket *)packet buffer];
+		[self processMessageFromTransport:message];
 	}
-	
-	if ([self.delegate respondsToSelector:_cmd]) {
-		[self.delegate networkLayer:self didRead:data context:context];
+	else {
+		[super networkLayer:layer didRead:packet context:context];
 	}
 }
 

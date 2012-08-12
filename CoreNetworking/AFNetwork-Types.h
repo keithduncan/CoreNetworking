@@ -10,7 +10,9 @@
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
-#endif
+#endif /* TARGET_OS_IPHONE */
+
+#import "CoreNetworking/AFNetwork-Macros.h"
 
 /*
 	AFNetworkSocket types
@@ -27,8 +29,8 @@
 	One of the 'PROTOCOL NUMBERS' defined in IETF-RFC-1700 <http://tools.ietf.org/html/rfc1700> - it is important that an appropriate `socketType` is also provided.
  */
 struct _AFNetworkSocketSignature {
-	const SInt32 socketType;
-	const SInt32 protocol;
+	const int32_t socketType;
+	const int32_t protocol;
 };
 typedef struct _AFNetworkSocketSignature AFNetworkSocketSignature;
 
@@ -44,13 +46,13 @@ static inline BOOL AFNetworkSocketSignatureEqualToSignature(AFNetworkSocketSigna
 	\brief
 	This is suitable for creating a network TCP socket.
 */
-extern const AFNetworkSocketSignature AFNetworkSocketSignatureInternetTCP;
+AFNETWORK_EXTERN const AFNetworkSocketSignature AFNetworkSocketSignatureInternetTCP;
 
 /*!
 	\brief
 	This is suitable for creating a network UDP socket.
  */
-extern const AFNetworkSocketSignature AFNetworkSocketSignatureInternetUDP;
+AFNETWORK_EXTERN const AFNetworkSocketSignature AFNetworkSocketSignatureInternetUDP;
 
 
 /*
@@ -69,7 +71,7 @@ extern const AFNetworkSocketSignature AFNetworkSocketSignatureInternetUDP;
  */
 struct _AFNetworkInternetTransportSignature {
 	const AFNetworkSocketSignature type;
-	SInt32 port;
+	uint16_t port;
 };
 typedef struct _AFNetworkInternetTransportSignature AFNetworkInternetTransportSignature;
 
@@ -96,7 +98,7 @@ struct _AFNetworkHostSignature {
 	/*
 		This defines _where_ to communicate
 	 */
-	__strong CFHostRef host;
+	AFNETWORK_STRONG __attribute__((NSObject)) CFHostRef host;
 	/*
 		This defines _how_ to communicate.
 	 */
@@ -112,13 +114,13 @@ struct _AFNetworkServiceSignature {
 	/*
 		This defines _where_ and _how_ to communicate
 	 */
-	__strong CFNetServiceRef service;
+	AFNETWORK_STRONG __attribute__((NSObject)) CFNetServiceRef service;
 };
 typedef struct _AFNetworkServiceSignature AFNetworkServiceSignature;
 
 /*!
 	\brief
-	Allows for implemetations to accept either <tt>AFNetworkTransportHostSignature</tt> or <tt>AFNetworkTransportServiceSignature</tt>.
+	Allows for implemetations to accept either <tt>AFNetworkHostSignature</tt> or <tt>AFNetworkServiceSignature</tt>.
 	A receiver will introspect the type using <tt>CFGetTypeID()</tt> to determine which has been passed.
  */
 typedef union _AFNetworkSignature {

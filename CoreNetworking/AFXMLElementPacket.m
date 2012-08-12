@@ -11,8 +11,8 @@
 #import "AFNetworkPacketRead.h"
 
 @interface AFXMLElementPacket ()
-@property (retain) AFNetworkPacketRead *currentRead;
-@property (readonly) NSMutableData *xmlBuffer;
+@property (retain, nonatomic) AFNetworkPacketRead *currentRead;
+@property (readonly, nonatomic) NSMutableData *xmlBuffer;
 @end
 
 @implementation AFXMLElementPacket

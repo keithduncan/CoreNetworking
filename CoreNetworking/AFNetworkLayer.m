@@ -13,16 +13,17 @@
 #import "AFNetworkDelegateProxy.h"
 
 @interface AFNetworkLayer ()
-@property (readwrite, retain) AFNetworkLayer *lowerLayer;
+@property (readwrite, retain, nonatomic) AFNetworkLayer *lowerLayer;
+@property (readwrite, retain, nonatomic) NSMutableDictionary *userInfo;
 @end
 
 @implementation AFNetworkLayer
 
 @synthesize lowerLayer = _lowerLayer;
 @synthesize delegate=_delegate;
-@synthesize transportInfo=_transportInfo;
+@synthesize userInfo=_userInfo;
 
-+ (Class)lowerLayer {
++ (Class)lowerLayerClass {
 	return Nil;
 }
 
@@ -30,7 +31,7 @@
 	self = [super init];
 	if (self == nil) return nil;
 	
-	_transportInfo = [[NSMutableDictionary alloc] init];
+	_userInfo = [[NSMutableDictionary alloc] init];
 	
 	return self;
 }
@@ -46,13 +47,13 @@
 }
 
 - (AFNetworkLayer *)initWithTransportSignature:(AFNetworkSignature)signature {
-	AFNetworkLayer *lowerLayer = [[[(id)[[self class] lowerLayer] alloc] initWithTransportSignature:signature] autorelease];
+	AFNetworkLayer *lowerLayer = [[[(id)[[self class] lowerLayerClass] alloc] initWithTransportSignature:signature] autorelease];
 	return [self initWithLowerLayer:(id)lowerLayer];
 }
 
 - (void)dealloc {
 	[_lowerLayer release];
-	[_transportInfo release];
+	[_userInfo release];
 	
 	[super dealloc];
 }
@@ -66,13 +67,18 @@
 }
 
 - (AFNetworkDelegateProxy *)delegateProxy:(AFNetworkDelegateProxy *)proxy {	
-	if (_delegate == nil) return proxy;
+	if (_delegate == nil) {
+		return proxy;
+	}
 	
-	if (proxy == nil) proxy = [[[AFNetworkDelegateProxy alloc] init] autorelease];
+	if (proxy == nil) {
+		proxy = [[[AFNetworkDelegateProxy alloc] init] autorelease];
+	}
 	
 	if ([_delegate respondsToSelector:@selector(delegateProxy:)]) {
 		proxy = [(id)_delegate delegateProxy:proxy];
 	}
+	
 	[proxy insertTarget:_delegate];
 	
 	return proxy;
@@ -82,7 +88,7 @@
 	return [self delegateProxy:nil];
 }
 
-- (NSDictionary *)transportInfo {
+- (NSDictionary *)_concatenatedUserInfo {
 	NSMutableDictionary *transportInfo = [NSMutableDictionary dictionary];
 	
 	NSMutableArray *layers = [NSMutableArray array];
@@ -90,22 +96,40 @@
 	
 	for (AFNetworkLayer *currentLayer in layers) {
 		// Note: the direct ivar access is important
-		[transportInfo setValuesForKeysWithDictionary:currentLayer->_transportInfo];
+		[transportInfo setValuesForKeysWithDictionary:currentLayer->_userInfo];
 	}
 	
 	return transportInfo;
 }
 
-- (id)valueForUndefinedKey:(NSString *)key {
-	return [_transportInfo valueForKey:key];
+- (id)userInfoValueForKey:(id <NSCopying>)key {
+	return [[self _concatenatedUserInfo] objectForKey:(id)key];
 }
 
-- (void)setValue:(id)value forUndefinedKey:(NSString *)key {
-	[_transportInfo setValue:value forKey:key];
+- (void)setUserInfoValue:(id)value forKey:(id <NSCopying>)key {
+	[_userInfo setValue:value forKey:(id)key];
 }
+
+- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
+	
+}
+
+- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
+	
+}
+
+#if defined(DISPATCH_API_VERSION)
+
+- (void)scheduleInQueue:(dispatch_queue_t)queue {
+	
+}
+
+#endif
 
 - (void)networkLayerDidOpen:(id)layer {
-	if (layer == self.lowerLayer) layer = self;
+	if (layer == self.lowerLayer) {
+		layer = self;
+	}
 	
 	if ([self.delegate respondsToSelector:_cmd]) {
 		[self.delegate networkLayerDidOpen:layer];
@@ -113,7 +137,9 @@
 }
 
 - (void)networkLayerDidClose:(id)layer {
-	if (layer == self.lowerLayer) layer = self;
+	if (layer == self.lowerLayer) {
+		layer = self;
+	}
 	
 	if ([self.delegate respondsToSelector:_cmd]) {
 		[self.delegate networkLayerDidClose:layer];

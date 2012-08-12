@@ -10,7 +10,8 @@
 
 #import "AFNetworkPacketRead.h"
 #import "AFHTTPMessage.h"
-#import "AFNetworkConstants.h"
+
+#import "AFNetwork-Constants.h"
 
 NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 	if (!CFHTTPMessageIsHeaderComplete(message)) {
@@ -28,8 +29,8 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 }
 
 @interface AFHTTPHeadersPacket ()
-@property (retain) CFHTTPMessageRef message __attribute__((NSObject));
-@property (retain) AFNetworkPacketRead *currentRead;
+@property (retain, nonatomic) AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef message;
+@property (retain, nonatomic) AFNetworkPacketRead *currentRead;
 @end
 
 @implementation AFHTTPHeadersPacket
@@ -68,7 +69,9 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 		}
 		
 		NSInteger bytesRead = [self.currentRead performRead:readStream];
-		if (bytesRead < 0) return -1;
+		if (bytesRead < 0) {
+			return -1;
+		}
 		
 		currentBytesRead += bytesRead;
 	} while (self.currentRead == nil);

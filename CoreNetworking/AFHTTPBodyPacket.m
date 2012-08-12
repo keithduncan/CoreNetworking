@@ -10,9 +10,9 @@
 
 #import "AFHTTPMessage.h"
 #import "AFNetworkPacketRead.h"
-#import "AFNetworkConstants.h"
 
-#import "AFNetworkMacros.h"
+#import "AFNetwork-Constants.h"
+#import "AFNetwork-Macros.h"
 
 AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadNotificationName);
 AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
@@ -20,8 +20,8 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 @interface AFHTTPBodyPacket ()
 - (id)initWithMessage:(CFHTTPMessageRef)message;
 
-@property (assign) __strong CFHTTPMessageRef message __attribute__((NSObject));
-@property (retain) AFNetworkPacket <AFNetworkPacketReading> *currentPacket;
+@property (assign, nonatomic) AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef message;
+@property (retain, nonatomic) AFNetworkPacket <AFNetworkPacketReading> *currentPacket;
 
 - (BOOL)_processDidCompleteNotification:(NSNotification *)notification;
 - (BOOL)_appendCurrentBuffer;
@@ -149,9 +149,11 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	if (transferEncoding != nil) {
 		if ([transferEncoding caseInsensitiveCompare:@"identity"] == NSOrderedSame) {
 			// nop
-		} else if ([transferEncoding caseInsensitiveCompare:@"chunked"] == NSOrderedSame) {
+		}
+		else if ([transferEncoding caseInsensitiveCompare:@"chunked"] == NSOrderedSame) {
 			return [[[_AFHTTPBodyChunkedPacket alloc] initWithMessage:message] autorelease];
-		} else {
+		}
+		else {
 			if (errorRef != NULL) {
 				NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 										   [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"%@ is an unknown transfer encoding.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFHTTPBodyPacket parse body packet unknown transfer encoding error failure reason"), transferEncoding], NSLocalizedFailureReasonErrorKey,
@@ -164,8 +166,19 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	
 	NSString *contentLength = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease];
 	if (contentLength != nil) {
+		NSInteger contentLengthValue = [contentLength integerValue];
+		if (contentLengthValue < 0) {
+			if (errorRef != NULL) {
+				NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+										   NSLocalizedStringFromTableInBundle(@"The Content-Length header cannot be negative.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFHTTPBodyPacket parse body packet unknown transfer encoding error failure reason"), NSLocalizedFailureReasonErrorKey,
+										   nil];
+				*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorParse userInfo:errorInfo];
+			}
+			return nil;
+		}
+		
 		AFHTTPBodyPacket *packet = [[[AFHTTPBodyPacket alloc] initWithMessage:message] autorelease];
-		AFNetworkPacketRead *dataPacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:[contentLength integerValue]]] autorelease];
+		AFNetworkPacketRead *dataPacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:contentLengthValue]] autorelease];
 		[[NSNotificationCenter defaultCenter] addObserver:packet selector:@selector(_dataPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:dataPacket];
 		[packet setCurrentPacket:dataPacket];
 		return packet;
@@ -173,14 +186,14 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	
 	NSString *contentType = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentTypeHeader)) autorelease];
 	if ([[contentType lowercaseString] hasPrefix:@"multipart/byteranges"]) {
-		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot parse range size", __PRETTY_FUNCTION__];
-#warning fix this to parse the range size
+		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%s, cannot parse range size", __PRETTY_FUNCTION__] userInfo:nil];
+		// WARNING: fix this to parse the range size
 		return nil;
 	}
 	
 	if (errorRef != NULL) {
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-#warning complete this error
+								   // WARNING: complete this error
 								   nil];
 		*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:errorInfo];
 	}

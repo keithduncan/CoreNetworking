@@ -6,11 +6,15 @@
 //  Copyright 2010. All rights reserved.
 //
 
-#import "CoreNetworking/AFNetworkPacket.h"
+#import <Foundation/Foundation.h>
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
-#endif
+#endif /* TARGET_OS_IPHONE */
+
+#import "CoreNetworking/AFNetworkPacket.h"
+
+#import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkPacketRead;
 
@@ -21,7 +25,7 @@
 	This method uses the "Content-Length" header of the response to determine how much more a client should read to complete the packet.
 	If CFHTTPMessageIsHeaderComplete(self.response) returns false, this method returns -1.
  */
-extern NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message);
+AFNETWORK_EXTERN NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message);
 
 /*!
 	\brief
@@ -29,7 +33,7 @@ extern NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message);
  */
 @interface AFHTTPHeadersPacket : AFNetworkPacket <AFNetworkPacketReading> {
  @private
-	__strong CFHTTPMessageRef _message;
+	AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef _message;
 	AFNetworkPacketRead *_currentRead;
 }
 

@@ -40,8 +40,12 @@
 
 - (BOOL)respondsToSelector:(SEL)selector {
 	for (id currentDispatchTarget in _dispatchOrder) {
-		if (![currentDispatchTarget respondsToSelector:selector]) continue;
-		if ([[self _dispatchedTargetsForSelector:selector] containsObject:currentDispatchTarget]) continue;
+		if (![currentDispatchTarget respondsToSelector:selector]) {
+			continue;
+		}
+		if ([[self _dispatchedTargetsForSelector:selector] containsObject:currentDispatchTarget]) {
+			continue;
+		}
 		return YES;
 	}
 	
@@ -72,12 +76,15 @@
 }
 
 - (id)_dispatchTargetForSelector:(SEL)selector {
-	id dispatchTarget = nil;
 	for (NSUInteger idx = 0; idx < [_dispatchOrder count]; idx++) {
 		id currentDispatchTarget = [_dispatchOrder objectAtIndex:idx];
 		
-		if (![currentDispatchTarget respondsToSelector:selector]) continue;
-		if ([[self _dispatchedTargetsForSelector:selector] containsObject:currentDispatchTarget]) continue;
+		if (![currentDispatchTarget respondsToSelector:selector]) {
+			continue;
+		}
+		if ([[self _dispatchedTargetsForSelector:selector] containsObject:currentDispatchTarget]) {
+			continue;
+		}
 		
 		return currentDispatchTarget;
 	}
@@ -104,7 +111,7 @@
 	id dispatchTarget = [self _dispatchTargetForSelector:selector];
 	
 	if (dispatchTarget == nil) {
-		[NSException raise:NSInternalInconsistencyException format:@"%s, cannot dispatch to a nil target", __PRETTY_FUNCTION__];
+		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%s, cannot dispatch to a nil target", __PRETTY_FUNCTION__] userInfo:nil];
 		return;
 	}
 	

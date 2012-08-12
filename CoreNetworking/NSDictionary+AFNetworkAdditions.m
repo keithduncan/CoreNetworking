@@ -8,6 +8,8 @@
 
 #import "NSDictionary+AFNetworkAdditions.h"
 
+#warning these should be split out into functions or another object to avoid polluting the method namespace on NSDictionary
+
 @implementation NSDictionary (AFNetworkAdditions)
 
 + (id)dictionaryWithString:(NSString *)string separator:(NSString *)separator delimiter:(NSString *)delimiter {
@@ -47,7 +49,7 @@
 	}
 	
 	return nil;
-#endif
+#endif /* NS_BLOCKS_AVAILABLE */
 }
 
 @end

@@ -8,12 +8,19 @@
 
 #import "AFHTTPTransaction.h"
 
+NSString *const AFHTTPTransactionRequestPacketsKey = @"requestPackets";
+NSString *const AFHTTPTransactionResponsePacketsKey = @"responsePackets";
+
 @implementation AFHTTPTransaction
 
-@synthesize requestPackets=_requestPackets, responsePackets=_responsePackets;
+@synthesize requestPackets=_requestPackets, finishedRequestPackets=_finishedRequestPackets;
+@synthesize responsePackets=_responsePackets, finishedResponsePackets=_finishedResponsePackets;
 @synthesize context=_context;
 
 - (id)initWithRequestPackets:(NSArray *)requestPackets responsePackets:(NSArray *)responsePackets context:(void *)context {
+	NSParameterAssert(requestPackets != nil);
+	NSParameterAssert(responsePackets != nil);
+	
 	self = [super init];
 	if (self == nil) return nil;
 	

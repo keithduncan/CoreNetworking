@@ -8,10 +8,10 @@
 
 #import "AFNetworkPacketWrite.h"
 
-#import "AFNetworkFunctions.h"
+#import "AFNetwork-Functions.h"
 
 @interface AFNetworkPacketWrite ()
-@property (assign) NSUInteger totalBytesWritten;
+@property (assign, nonatomic) NSUInteger totalBytesWritten;
 @end
 
 @implementation AFNetworkPacketWrite
@@ -37,10 +37,15 @@
 }
 
 - (float)currentProgressWithBytesDone:(NSInteger *)bytesDone bytesTotal:(NSInteger *)bytesTotal {
-	NSInteger done = [self totalBytesWritten], total = [self.buffer length];
-	if (bytesDone != NULL) *bytesDone = done;
-	if (bytesTotal != NULL) *bytesTotal = total;
-	return ((float)done/(float)total);
+	NSInteger done = self.totalBytesWritten, total = [self.buffer length];
+	
+	if (bytesDone != NULL) {
+		*bytesDone = done;
+	}
+	if (bytesTotal != NULL) {
+		*bytesTotal = total;
+	}
+	return ((float)done / (float)total);
 }
 
 - (NSInteger)performWrite:(NSOutputStream *)writeStream {
@@ -59,10 +64,10 @@
 			return -1;
 		}
 		
-		[self setTotalBytesWritten:([self totalBytesWritten] + bytesWritten)];
+		[self setTotalBytesWritten:(self.totalBytesWritten + bytesWritten)];
 		currentBytesWritten += bytesWritten;
 		
-		BOOL packetComplete = ([self totalBytesWritten] == [self.buffer length]);
+		BOOL packetComplete = (self.totalBytesWritten == [self.buffer length]);
 		if (packetComplete) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 			break;

@@ -18,7 +18,7 @@
 - (NSData *)MD5Hash;
 - (NSData *)SHA1Hash;
 
-- (NSData *)HMACUsingSHA1_withSecretKey:(NSData *)secretKey;
+- (NSData *)HMACUsingSHA1WithSecretKey:(NSData *)secretKey;
 
 @end
 

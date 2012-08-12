@@ -6,6 +6,6 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "AFNetworkConstants.h"
+#import "AFNetwork-Constants.h"
 
 NSString *const AFCoreNetworkingBundleIdentifier = @"com.thirty-three.corenetworking";
