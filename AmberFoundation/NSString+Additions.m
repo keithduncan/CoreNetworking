@@ -10,14 +10,6 @@
 
 #import "NSArray+Additions.h"
 
-@implementation NSString (AFAdditions)
-
-- (BOOL)isEmpty {
-	return [[self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""];
-}
-
-@end
-
 @implementation NSString (AFKeyValueCoding)
 
 - (NSArray *)keyPathComponents {

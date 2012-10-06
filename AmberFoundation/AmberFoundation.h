@@ -15,12 +15,6 @@
 */
 
 //
-//	Functions
-//
-
-#import "AmberFoundation/AFRange.h"
-
-//
 //	Utility Objects
 //
 
@@ -35,14 +29,7 @@
 
 #import "AmberFoundation/AFProtocolProxy.h"
 #import "AmberFoundation/AFPriorityProxy.h"
-#import "AmberFoundation/AFKeyPathAccumulatorProxy.h"
 #import "AmberFoundation/AFTargetProxy.h"
-
-//
-//	Protocols
-//
-
-#import "AmberFoundation/AFPropertyListProtocol.h"
 
 //
 //	Categories

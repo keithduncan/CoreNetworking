@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define AF_SECT_METADATA "__class_metadata"
+#define AF_SECT_METADATA "__afclass_metadata"
 
 /*!
 	\details
@@ -28,6 +28,10 @@ extern NSData *AFBundleSectionData(NSBundle *bundle, const char *segmentName, co
  */
 extern id af_class_getMetadataObjectForKey(Class classObject, const char *key);
 
+/*!
+	\brief
+	
+ */
 @interface NSObject (AFMetadata)
 
 /*!

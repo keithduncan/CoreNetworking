@@ -13,8 +13,6 @@
 #import <objc/runtime.h>
 #import <CoreFoundation/CFPreferences.h>
 
-#import "AFPropertyListProtocol.h"
-
 #import "NSString+Additions.h"
 
 NSString *const AFUserDefaultsDidChangeNotificationName = @"AFUserDefaultsDidChangeNotification";
@@ -37,24 +35,61 @@ static NSString *const kAFBundleRegisteredDefaults = @"kRegisteredDefaults";
 @synthesize registrationDomain=_registration;
 @synthesize identifier=_identifier;
 
-static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
+static BOOL _AFObjectIsPlistSerialisable(id object) {
+	if ([object isKindOfClass:[NSString class]]) {
+		return YES;
+	}
+	else if ([object isKindOfClass:[NSData class]]) {
+		return YES;
+	}
+    else if ([object isKindOfClass:[NSDate class]]) {
+		return YES;
+	}
+	else if ([object isKindOfClass:[NSNumber class]]) {
+		return YES;
+	}
+	else if ([object isKindOfClass:[NSArray class]]) {
+		for (id currentObject in (NSArray *)object) {
+			if (!_AFObjectIsPlistSerialisable(currentObject)) {
+				return NO;
+			}
+		}
+		
+		return YES;
+    }
+	else if ([object isKindOfClass:[NSDictionary class]]) {
+		for (id currentKey in (NSDictionary *)object) {
+			if ([currentKey isKindOfClass:[NSString class]]) {
+				return NO;
+			}
+			if (!_AFObjectIsPlistSerialisable([object objectForKey:currentKey])) {
+				return NO;
+			}
+		}
+		
+		return YES;
+    }
+	return NO;
+}
+
+static id _AFTypedValueForKey(id self, SEL _cmd, NSString *key) {
 	id value = [self objectForKey:key];
-	return (AFObjectIsPlistSerialisable(value) ? value : nil);
+	return (_AFObjectIsPlistSerialisable(value) ? value : nil);
 }
 
 + (void)initialize {
 	if (self != [AFUserDefaults class]) return;
 	
 	const char *typedMethodTypes = "@@:@";
-	class_addMethod(self, @selector(stringForKey:), (IMP)TypedValueForKey, typedMethodTypes);
-	class_addMethod(self, @selector(arrayForKey:), (IMP)TypedValueForKey, typedMethodTypes);
-	class_addMethod(self, @selector(dictionaryForKey:), (IMP)TypedValueForKey, typedMethodTypes);
-	class_addMethod(self, @selector(dataForKey:), (IMP)TypedValueForKey, typedMethodTypes);
-	class_addMethod(self, @selector(stringArrayForKey:), (IMP)TypedValueForKey, typedMethodTypes);
+	class_addMethod(self, @selector(stringForKey:), (IMP)_AFTypedValueForKey, typedMethodTypes);
+	class_addMethod(self, @selector(arrayForKey:), (IMP)_AFTypedValueForKey, typedMethodTypes);
+	class_addMethod(self, @selector(dictionaryForKey:), (IMP)_AFTypedValueForKey, typedMethodTypes);
+	class_addMethod(self, @selector(dataForKey:), (IMP)_AFTypedValueForKey, typedMethodTypes);
+	class_addMethod(self, @selector(stringArrayForKey:), (IMP)_AFTypedValueForKey, typedMethodTypes);
 }
 
 - (id)initWithBundleIdentifier:(NSString *)identifier {
-	NSParameterAssert((identifier != nil && ![identifier isEmpty]));
+	NSParameterAssert(identifier != nil && [identifier length] != 0);
 	
 	self = [self init];
 	if (self == nil) return nil;
@@ -76,14 +111,16 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 - (id)objectForKey:(NSString *)key {
 	for (NSDictionary *domain in [self _searchList]) {
 		id value = [domain objectForKey:key];
-		if (value != nil) return value;
+		if (value != nil) {
+			return value;
+		}
 	}
 	
 	return nil;
 }
 
 - (void)setObject:(id)value forKey:(NSString *)key {
-	NSAssert(AFObjectIsPlistSerialisable(value), @"value was not an object of plist type");
+	NSAssert(_AFObjectIsPlistSerialisable(value), @"value was not an object of plist type");
 	CFPreferencesSetValue((CFStringRef)key, (CFPropertyListRef)value, (CFStringRef)self.identifier, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
 }
 
@@ -149,8 +186,9 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 - (BOOL)synchronize {
 	BOOL result = [self _synchronize];
 	
-	if (result)
+	if (result) {
 		[[NSDistributedNotificationCenter defaultCenter] postNotificationName:AFUserDefaultsDidChangeNotificationName object:self.identifier userInfo:nil options:0];
+	}
 	
 	return result;
 }
@@ -176,7 +214,9 @@ static id TypedValueForKey(id self, SEL _cmd, NSString *key) {
 }
 
 - (void)_preferencesDidChange:(NSNotification *)notification {
-	if (![[notification object] isEqualToString:self.identifier]) return;
+	if (![[notification object] isEqualToString:self.identifier]) {
+		return;
+	}
 	
 	[self _synchronize];
 }

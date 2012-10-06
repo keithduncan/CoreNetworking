@@ -8,16 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (AFAdditions)
-
-/*!
-	\brief
-	Compares the receiver, after trimming whitespace, to @"".
- */
-- (BOOL)isEmpty;
-
-@end
-
 /*!
 	\brief
 	Assists in manipulating KVC dotted paths.
