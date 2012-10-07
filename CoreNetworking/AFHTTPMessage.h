@@ -18,47 +18,14 @@
 @protocol AFNetworkPacketWriting;
 
 /*
-	Message Functions
+	Schemes
  */
 
-/*!
-	\brief
-	Convert an <tt>NSURLRequest</tt> object to a <tt>CFHTTPMessageRef</tt> request.
-	
-	\details
-	If the request uses a stream for the body, an exception is thrown.
- */
-AFNETWORK_EXTERN CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request);
-
-/*!
-	\brief
-	Convert a <tt>CFHTTPMessageRef</tt> request to an <tt>NSURLRequest</tt> object.
- */
-AFNETWORK_EXTERN NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message);
-
-/*!
-	\brief
-	Convert an <tt>NSHTTPURLResponse</tt> object to a <tt>CFHTTPMessageRef</tt> response.
-	
-	\details
-	The message will not have a body, since that is captured separately from the <tt>NSHTTPURLResponse</tt> object.
- */
-AFNETWORK_EXTERN CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response);
-
-/*!
-	\brief
-	Convert a <tt>CFHTTPMessageRef</tt> response to an <tt>NSHTTPURLResponse</tt> object.
- */
-AFNETWORK_EXTERN NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(NSURL *URL, CFHTTPMessageRef message);
-
-/*!
-	\brief
-	Packetises a message.
- */
-AFNETWORK_EXTERN AFNetworkPacket <AFNetworkPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message);
+AFNETWORK_EXTERN NSString *const AFNetworkSchemeHTTP;
+AFNETWORK_EXTERN NSString *const AFNetworkSchemeHTTPS;
 
 /*
-	HTTP methods
+	Message Methods
  */
 
 AFNETWORK_EXTERN NSString *const AFHTTPMethodHEAD;
@@ -71,44 +38,7 @@ AFNETWORK_EXTERN NSString *const AFHTTPMethodPUT;
 AFNETWORK_EXTERN NSString *const AFHTTPMethodDELETE;
 
 /*
-	AFHTTPConnection Schemes
- */
-
-AFNETWORK_EXTERN NSString *const AFNetworkSchemeHTTP;
-AFNETWORK_EXTERN NSString *const AFNetworkSchemeHTTPS;
-
-/*
-	AFHTTPConnection Message Headers
- */
-
-AFNETWORK_EXTERN NSString *const AFHTTPMessageServerHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageUserAgentHeader;
-
-AFNETWORK_EXTERN NSString *const AFHTTPMessageHostHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageConnectionHeader;
-
-AFNETWORK_EXTERN NSString *const AFHTTPMessageContentLengthHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageContentTypeHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageContentRangeHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageContentMD5Header;
-
-AFNETWORK_EXTERN NSString *const AFHTTPMessageETagHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageIfNoneMatchHeader;
-
-AFNETWORK_EXTERN NSString *const AFHTTPMessageTransferEncodingHeader;
-
-AFNETWORK_EXTERN NSString *const AFHTTPMessageAllowHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageAcceptHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageLocationHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageRangeHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageExpectHeader;
-
-AFNETWORK_EXTERN NSString *const AFHTTPMessageWWWAuthenticateHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageAuthorizationHeader;
-AFNETWORK_EXTERN NSString *const AFHTTPMessageProxyAuthorizationHeader;
-
-/*
-	AFHTTPConnection Message Codes
+	Message Codes
 */
 
 typedef AFNETWORK_ENUM(NSInteger, AFHTTPStatusCode) {
@@ -154,6 +84,91 @@ typedef AFNETWORK_ENUM(NSInteger, AFHTTPStatusCode) {
 	This is typed to return a CFStringRef to minimise the impedance mismatch with <tt>CFHTTPMessageCreate()</tt>.
  */
 AFNETWORK_EXTERN CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code);
+
+/*
+	Message Headers
+ */
+
+AFNETWORK_EXTERN NSString *const AFHTTPMessageServerHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageUserAgentHeader;
+
+AFNETWORK_EXTERN NSString *const AFHTTPMessageHostHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageConnectionHeader;
+
+AFNETWORK_EXTERN NSString *const AFHTTPMessageContentLengthHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageContentTypeHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageContentRangeHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageContentMD5Header;
+
+AFNETWORK_EXTERN NSString *const AFHTTPMessageETagHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageIfMatchHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageIfNoneMatchHeader;
+
+AFNETWORK_EXTERN NSString *const AFHTTPMessageTransferEncodingHeader;
+
+AFNETWORK_EXTERN NSString *const AFHTTPMessageAllowHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageAcceptHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageLocationHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageRangeHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageExpectHeader;
+
+AFNETWORK_EXTERN NSString *const AFHTTPMessageWWWAuthenticateHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageAuthorizationHeader;
+AFNETWORK_EXTERN NSString *const AFHTTPMessageProxyAuthorizationHeader;
+
+/*
+	Message Functions
+ */
+
+/*!
+	\brief
+	Convert an <tt>NSURLRequest</tt> object to a <tt>CFHTTPMessageRef</tt> request.
+	
+	\details
+	If the request uses a stream for the body, an exception is thrown.
+ */
+AFNETWORK_EXTERN CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *request);
+
+/*!
+	\brief
+	Convert a <tt>CFHTTPMessageRef</tt> request to an <tt>NSURLRequest</tt> object.
+ */
+AFNETWORK_EXTERN NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message);
+
+/*!
+	\brief
+	Convert an <tt>NSHTTPURLResponse</tt> object to a <tt>CFHTTPMessageRef</tt> response.
+	
+	\details
+	The message will not have a body, since that is captured separately from the <tt>NSHTTPURLResponse</tt> object.
+ */
+AFNETWORK_EXTERN CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response);
+
+/*!
+	\brief
+	Convert a <tt>CFHTTPMessageRef</tt> response to an <tt>NSHTTPURLResponse</tt> object.
+ */
+AFNETWORK_EXTERN NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(NSURL *URL, CFHTTPMessageRef message);
+
+/*
+ 
+ */
+
+/*!
+	\brief
+	Response convenience constructor
+ */
+extern CFHTTPMessageRef AFHTTPMessageMakeResponseWithCode(AFHTTPStatusCode responseCode);
+
+/*!
+	\brief
+	Packetises a message.
+ */
+AFNETWORK_EXTERN AFNetworkPacket <AFNetworkPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message);
+
+/*
+ 
+ */
 
 /*!
 	\brief

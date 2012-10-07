@@ -143,6 +143,10 @@ void _AFHTTPPrintResponse(NSURLResponse *response) {
 	_AFHTTPPrintMessage((CFHTTPMessageRef)[NSMakeCollectable(AFHTTPMessageCreateForResponse((id)response)) autorelease]);
 }
 
+CFHTTPMessageRef AFHTTPMessageMakeResponseWithCode(AFHTTPStatusCode responseCode) {
+	return (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCFHTTPVersion1_1)) autorelease];
+}
+
 AFNetworkPacket <AFNetworkPacketWriting> *AFHTTPConnectionPacketForMessage(CFHTTPMessageRef message) {
 	NSData *messageData = [NSMakeCollectable(CFHTTPMessageCopySerializedMessage(message)) autorelease];
 	return [[[AFNetworkPacketWrite alloc] initWithData:messageData] autorelease];
@@ -174,6 +178,7 @@ NSString *const AFHTTPMessageContentRangeHeader = @"Content-Range";
 NSString *const AFHTTPMessageContentMD5Header = @"Content-MD5";
 
 NSString *const AFHTTPMessageETagHeader = @"ETag";
+NSString *const AFHTTPMessageIfMatchHeader = @"If-Match";
 NSString *const AFHTTPMessageIfNoneMatchHeader = @"If-None-Match";
 
 NSString *const AFHTTPMessageTransferEncodingHeader = @"Transfer-Encoding";
@@ -257,7 +262,10 @@ NSString *AFHTTPAgentString(void) {
 	if (agentString == nil) {
 		NSMutableArray *components = [NSMutableArray array];
 		[components addObjectsFromArray:[NSArray arrayWithObjects:AFHTTPAgentStringForBundle([NSBundle mainBundle]), nil]];
-		[components addObjectsFromArray:[NSArray arrayWithObjects:AFHTTPAgentStringForBundle([NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier]), nil]];
+		NSBundle *coreNetworkingBundle = [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier];
+		if (coreNetworkingBundle != nil) {
+			[components addObjectsFromArray:[NSArray arrayWithObjects:AFHTTPAgentStringForBundle(coreNetworkingBundle), nil]];
+		}
 		NSString *newAgentString = [([components count] > 0 ? [components componentsJoinedByString:@" "] : @"") copy];
 		
 		if (!objc_atomicCompareAndSwapGlobalBarrier(nil, newAgentString, &agentString)) {
