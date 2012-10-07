@@ -77,23 +77,25 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 
 - (void)prepareMessageForTransport:(CFHTTPMessageRef)message {
 	do {
-		if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease] != nil) {
+		NSString *contentLength = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease];
+		if (contentLength != nil) {
 			break;
 		}
 		
 		NSData *bodyData = [NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease];
+		
 		/*
 			Note
 			
-			the message doesn't have a Content-Length but does have a body
+			the message doesn't have a Content-Length
 			
 			assume that the content length needs to be set
 			
-			if we have a Content-Length, or don't have a Content-Length and the body is nil, assume the message body is transferred 'oob' with respect to this code
+			the only thing we can set it based on is the body
+			
+			if callers are transferring the body outside of the CFHTTPMessage they MUST set a content length
+			to avoid this method truncating the body to length zero
 		 */
-		if (bodyData != nil) {
-			break;
-		}
 		
 		NSUInteger requestBodyLength = [bodyData length];
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:requestBodyLength] stringValue]);
