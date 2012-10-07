@@ -357,6 +357,12 @@ NSError *AFNetworkStreamPrepareDisplayError(AFNetworkStream *stream, NSError *er
 			}
 			case ETIMEDOUT: /* Operation timed out */
 			{
+				/*
+					Note
+					
+					this is received when our TCP keepalive probes go unanswered
+				 */
+				
 				NSString *errorRecoverySuggestion = nil;
 				if (streamRemoteHostname != nil) {
 					errorRecoverySuggestion = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"The server \u201c%@\u201d isn\u2019t responding.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkStreamPrepareDisplayError connection timed out with hostname error recovery suggestion"), streamRemoteHostname];
