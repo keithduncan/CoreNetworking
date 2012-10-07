@@ -39,7 +39,7 @@
 		NSParameterAssert([_terminator unsignedIntegerValue] > 0);
 		[_buffer setLength:[_terminator unsignedIntegerValue]];
 	}
-	if ([_terminator isKindOfClass:[NSData class]]) {
+	else if ([_terminator isKindOfClass:[NSData class]]) {
 		NSParameterAssert([_terminator length] > 0);
 	}
 	
@@ -58,8 +58,12 @@
 	
 	NSUInteger done = [self totalBytesRead], total = [self.buffer length];
 	
-	if (bytesDone != NULL) *bytesDone = done;
-	if (bytesTotal != NULL) *bytesTotal = (hasTotal ? total : NSUIntegerMax);
+	if (bytesDone != NULL) {
+		*bytesDone = done;
+	}
+	if (bytesTotal != NULL) {
+		*bytesTotal = (hasTotal ? total : NSUIntegerMax);
+	}
 	
 	if (!hasTotal) {
 		return NAN;
@@ -74,12 +78,10 @@
 	if ([[self terminator] isKindOfClass:[NSNumber class]]) {
 		return ([[self terminator] unsignedIntegerValue] - [self totalBytesRead]);
 	}
-	
-	if ([[self terminator] isEqual:[NSNull null]]) {
+	else if ([[self terminator] isEqual:[NSNull null]]) {
 		return (64 * 1024);
 	}
-	
-	if ([[self terminator] isKindOfClass:[NSData class]]) {
+	else if ([[self terminator] isKindOfClass:[NSData class]]) {
 		NSUInteger maximumReadLength = 1;
 		
 		while (maximumReadLength < [[self terminator] length]) {
@@ -149,7 +151,8 @@
 		}
 		
 		BOOL packetComplete = NO;
-		if ([[self terminator] isKindOfClass:[NSNumber class]] || [[self terminator] isKindOfClass:[NSNull class]]) {
+		if ([[self terminator] isKindOfClass:[NSNull class]] ||
+			[[self terminator] isKindOfClass:[NSNumber class]]) {
 			packetComplete = ([self totalBytesRead] == [[self buffer] length]);
 		}
 		else if ([[self terminator] isKindOfClass:[NSData class]]) {
@@ -159,6 +162,7 @@
 			@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%s, cannot detect completion for an unknown terminator", __PRETTY_FUNCTION__] userInfo:nil];
 			return -1;
 		}
+		
 		if (packetComplete) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 			break;
