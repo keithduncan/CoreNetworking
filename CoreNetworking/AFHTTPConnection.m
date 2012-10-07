@@ -81,11 +81,21 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPConnectionReadResponseContext);
 			break;
 		}
 		
-		NSUInteger requestBodyLength = [[NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease] length];
-		if (requestBodyLength == 0) {
-			//break;
+		NSData *bodyData = [NSMakeCollectable(CFHTTPMessageCopyBody(message)) autorelease];
+		/*
+			Note
+			
+			the message doesn't have a Content-Length but does have a body
+			
+			assume that the content length needs to be set
+			
+			if we have a Content-Length, or don't have a Content-Length and the body is nil, assume the message body is transferred 'oob' with respect to this code
+		 */
+		if (bodyData != nil) {
+			break;
 		}
 		
+		NSUInteger requestBodyLength = [bodyData length];
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[[NSNumber numberWithUnsignedInteger:requestBodyLength] stringValue]);
 	} while (0);
 	
