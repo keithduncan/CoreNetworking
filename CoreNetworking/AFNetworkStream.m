@@ -166,8 +166,8 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 	
 	[description appendFormat:@" "];
 	[description appendFormat:@"%@, ", self.stream];
-	[description appendFormat:@"open: %d, ", ((self.streamFlags & _AFNetworkStreamFlagsDidOpen) == _AFNetworkStreamFlagsDidOpen)];
-	[description appendFormat:@"pending dequeue: %d, ", ((self.streamFlags & _AFNetworkStreamFlagsTryDequeue) == _AFNetworkStreamFlagsTryDequeue)];
+	[description appendFormat:@"Open: %@, ", ((self.streamFlags & _AFNetworkStreamFlagsDidOpen) == _AFNetworkStreamFlagsDidOpen) ? @"YES" : @"NO"];
+	[description appendFormat:@"Try Dequeue: %@, ", ((self.streamFlags & _AFNetworkStreamFlagsTryDequeue) == _AFNetworkStreamFlagsTryDequeue) ? @"YES" : @"NO"];
 	[description appendFormat:@"Queued Packets: %lu, ", (NSUInteger)[self.packetQueue count]];
 	[description appendFormat:@"Current Packet: %@", [self.packetQueue currentPacket]];
 	[description appendString:@"\n"];
