@@ -341,7 +341,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	 */
 	NSDictionary *streamProperty = [NSDictionary dictionaryWithDictionary:options];
 	
-	AFNetworkStream *stream = (self.readStream ? : self.writeStream);
+	AFNetworkStream *stream = (self.writeStream ? : self.readStream);
 	BOOL startTLS = [stream setStreamProperty:streamProperty forKey:(id)kCFStreamPropertySSLSettings];
 	if (!startTLS) {
 		if (errorRef != NULL) {
