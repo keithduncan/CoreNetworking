@@ -303,6 +303,10 @@ NSArray *AFHTTPMessageParseAcceptHeader(NSString *acceptHeader) {
 		
 		while (1) {
 			NSString *parameterPair = tryAtomicScanGroup(scanner, ^ NSString * (NSScanner *scanner1) {
+				if (![scanner scanString:@";" intoString:NULL]) {
+					return nil;
+				}
+				
 				NSString *attribute = scanAttribute(scanner1);
 				if (attribute == nil) {
 					return nil;
@@ -333,6 +337,10 @@ NSArray *AFHTTPMessageParseAcceptHeader(NSString *acceptHeader) {
 			}
 		}
 		
+		if ([parameters count] == 0) {
+			return nil;
+		}
+		
 		return parameters;
 	};
 	
@@ -352,16 +360,26 @@ NSArray *AFHTTPMessageParseAcceptHeader(NSString *acceptHeader) {
 		
 		NSString *mediaRange = scanMediaRange(acceptHeaderScanner);
 		
-		NSDictionary *parameters = nil;
-		NSDictionary *acceptParameters = nil;
+		__block NSDictionary *parameters = nil;
+		__block NSDictionary *acceptParameters = nil;
 		
 		if (mediaRange != nil) {
-			if ([acceptHeaderScanner scanString:@";" intoString:NULL]) {
-				parameters = scanParameters(acceptHeaderScanner);
-			}
-			if ([acceptHeaderScanner scanString:@";" intoString:NULL]) {
-				acceptParameters = scanAcceptParameters(acceptHeaderScanner);
-			}
+			tryAtomicScanGroup(acceptHeaderScanner, ^ NSString * (NSScanner *scanner) {
+				parameters = scanParameters(scanner);
+				if (parameters == nil) {
+					return nil;
+				}
+				
+				return @"";
+			});
+			tryAtomicScanGroup(acceptHeaderScanner, ^ NSString * (NSScanner *scanner) {
+				acceptParameters = scanAcceptParameters(scanner);
+				if (acceptParameters == nil) {
+					return nil;
+				}
+				
+				return @"";
+			});
 		}
 		
 		if (mediaRange != nil) {
@@ -388,34 +406,93 @@ NSArray *AFHTTPMessageParseAcceptHeader(NSString *acceptHeader) {
 	return accepts;
 }
 
-static NSNumber *_AFHTTPMessageQualityFromParameters(NSDictionary *parameters) {
-	return [parameters objectForKey:@"q"] ? : [NSNumber numberWithInteger:1];
+static NSString *_AFHTTPMessageQualityFromParameters(NSDictionary *parameters) {
+	return [parameters objectForKey:@"q"] ? : @"1";
 }
 
 static NSArray *_AFHTTPMessageOrderAcceptTypesByQuality(NSArray *accepts) {
-	NSSortDescriptor *qualitySortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"parameters" ascending:NO comparator:^ NSComparisonResult (id obj1, id obj2) {
-		NSNumber *obj1Quality = _AFHTTPMessageQualityFromParameters(obj1);
-		NSNumber *obj2Quality = _AFHTTPMessageQualityFromParameters(obj2);
+	NSSortDescriptor *qualitySortDescriptor = [NSSortDescriptor sortDescriptorWithKey:AFHTTPMessageAcceptAcceptParametersKey ascending:NO comparator:^ NSComparisonResult (id obj1, id obj2) {
+		NSString *obj1Quality = _AFHTTPMessageQualityFromParameters(obj1);
+		NSString *obj2Quality = _AFHTTPMessageQualityFromParameters(obj2);
 		
-		return [obj1Quality compare:obj2Quality];
+		return [obj1Quality compare:obj2Quality options:NSNumericSearch];
 	}];
 	
 	// more specific > less specific
-	NSSortDescriptor *specificitySortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"parameters" ascending:NO comparator:^ NSComparisonResult (id obj1, id obj2) {
-		return NSOrderedSame;
+	NSSortDescriptor *specificitySortDescriptor = [NSSortDescriptor sortDescriptorWithKey:AFHTTPMessageAcceptParametersKey ascending:NO comparator:^ NSComparisonResult (id obj1, id obj2) {
+		NSUInteger count1 = [obj1 count];
+		NSUInteger count2 = [obj2 count];
+		if (count1 == count2) {
+			return NSOrderedSame;
+		}
+		return (count1 < count2 ? NSOrderedAscending : NSOrderedDescending);
 	}];
 	
 	return [accepts sortedArrayUsingDescriptors:[NSArray arrayWithObjects:qualitySortDescriptor, specificitySortDescriptor, nil]];
 }
 
-AFNETWORK_EXTERN NSString *AFHTTPMessageChooseContentTypeForAcceptHeader(NSArray *accepts, NSArray *serverTypePreference) {
-	NSArray *clientPreference = _AFHTTPMessageOrderAcceptTypesByQuality(accepts);
-	for (NSString *currentType in clientPreference) {
+/*!
+	\brief
+	Modeled on UTTypeConformsTo but for MIME types
+ */
+static BOOL _AFHTTPMessageTypeConformsTo(NSString *type, NSString *conformsTo) {
+	NSString *slash = @"/";
+	NSArray *typeComponents = [type componentsSeparatedByString:slash];
+	if ([typeComponents count] != 2) {
+		return NO;
+	}
+	
+	NSArray *conformsToComponents = [conformsTo componentsSeparatedByString:slash];
+	if ([conformsToComponents count] != 2) {
+		return NO;
+	}
+	
+	if (/* full wildcard */ [[conformsToComponents objectAtIndex:0] isEqualToString:@"*"]) {
+		return YES;
+	}
+	if (! /* same type */ [[conformsToComponents objectAtIndex:0] isEqualToString:[typeComponents objectAtIndex:0]]) {
+		return NO;
+	}
+	
+	if (/* subtype wildcard */ [[conformsToComponents objectAtIndex:1] isEqualToString:@"*"]) {
+		return YES;
+	}
+	if (! /* same subtype */ [[conformsToComponents objectAtIndex:1] isEqualToString:[typeComponents objectAtIndex:1]]) {
+		return NO;
+	}
+	
+	// full match
+	return YES;
+}
+
+static NSString *_AFHTTPMessageFirstAcceptMatching(NSString *typeMaybeWildcard, NSArray *types) {
+	for (NSString *currentType in types) {
+		if (!_AFHTTPMessageTypeConformsTo(currentType, typeMaybeWildcard)) {
+			continue;
+		}
 		
+		return currentType;
 	}
 	
 	return nil;
 }
+
+NSString *AFHTTPMessageChooseContentTypeForAccepts(NSArray *accepts, NSArray *serverTypePreference) {
+	NSArray *clientPreference = _AFHTTPMessageOrderAcceptTypesByQuality(accepts);
+	for (AFHTTPMessageAccept *currentAccept in clientPreference) {
+		NSString *serverType = _AFHTTPMessageFirstAcceptMatching([currentAccept type], serverTypePreference);
+		if (serverType == nil) {
+			continue;
+		}
+		
+		return serverType;
+	}
+	
+	return nil;
+}
+
+NSString *const AFHTTPMessageAcceptParametersKey = @"parameters";
+NSString *const AFHTTPMessageAcceptAcceptParametersKey = @"acceptParameters";
 
 @implementation AFHTTPMessageAccept
 
@@ -443,6 +520,10 @@ AFNETWORK_EXTERN NSString *AFHTTPMessageChooseContentTypeForAcceptHeader(NSArray
 	[_acceptParameters release];
 	
 	[super dealloc];
+}
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"%@ %@", [super description], [self type]];
 }
 
 @end

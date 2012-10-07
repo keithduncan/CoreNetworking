@@ -10,6 +10,8 @@
 
 #import "CoreNetworking/AFNetwork-Macros.h"
 
+@class AFHTTPMessageAccept;
+
 /*!
 	\brief
 	Parse non empty accept header values and their parameters.
@@ -30,7 +32,7 @@ AFNETWORK_EXTERN NSArray *AFHTTPMessageParseAcceptHeader(NSString *acceptHeader)
 	One of the objects passed in `preferredContentTypes` or nil
 	If nil is returned it would be appropriate to return a "406 Not Acceptable" response
  */
-AFNETWORK_EXTERN NSString *AFHTTPMessageChooseContentTypeForAcceptHeader(NSArray *accepts, NSArray *serverTypePreference);
+AFNETWORK_EXTERN NSString *AFHTTPMessageChooseContentTypeForAccepts(NSArray *accepts, NSArray *serverTypePreference);
 
 /*!
 	\brief
@@ -42,7 +44,10 @@ AFNETWORK_EXTERN NSString *AFHTTPMessageChooseContentTypeForAcceptHeader(NSArray
 
 @property (readonly, copy, nonatomic) NSString *type;
 
+extern NSString *const AFHTTPMessageAcceptParametersKey;
 @property (readonly, copy, nonatomic) NSDictionary *parameters;
+
+extern NSString *const AFHTTPMessageAcceptAcceptParametersKey;
 @property (readonly, copy, nonatomic) NSDictionary *acceptParameters;
 
 @end
