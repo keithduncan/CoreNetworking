@@ -10,11 +10,6 @@
 
 #import <objc/runtime.h>
 
-static void _AFNetworkCallScopedBlock(dispatch_block_t const *blockRef) {
-	if (*blockRef != nil) (*blockRef)();
-}
-#define af_scoped_block_t dispatch_block_t __attribute__((cleanup(_AFNetworkCallScopedBlock), unused))
-
 /*
 	\brief
 	ABNF is from <http://tools.ietf.org/html/rfc2616#section-14.1>

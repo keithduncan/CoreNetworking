@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define AFNETWORK_API_VERSION 20120405
+#define AFNETWORK_API_VERSION 20121007
 
 #if defined(__cplusplus)
 	#define AFNETWORK_EXTERN extern "C"
@@ -41,3 +41,8 @@
 	#define AFNETWORK_ENUM(_type, _name) _type _name; enum
 	#define AFNETWORK_OPTIONS(_type, _name) _type _name; enum
 #endif
+
+static void _AFNetworkCallScopedBlock(dispatch_block_t const *blockRef) {
+	if (*blockRef != nil) (*blockRef)();
+}
+#define af_scoped_block_t dispatch_block_t __attribute__((cleanup(_AFNetworkCallScopedBlock), unused))
