@@ -40,7 +40,7 @@ AFNetworkServiceRecordType _AFNetworkServiceRecordNameForRecordType(uint16_t rec
 		}
 	}
 	
-	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"unknown record type (%ld)", record] userInfo:nil];
+	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"unknown record type (%hd)", record] userInfo:nil];
 	return -1;
 }
 
