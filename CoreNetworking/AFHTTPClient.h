@@ -39,9 +39,6 @@
  @private
 	NSString *_userAgent;
 	
-	AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPAuthenticationRef _authentication;
-	NSDictionary *_authenticationCredentials;
-	
 	BOOL _shouldStartTLS;
 	
 	AFNetworkPacketQueue *_transactionQueue;
@@ -53,9 +50,6 @@
 + (void)setUserAgent:(NSString *)userAgent;
 
 @property (copy, nonatomic) NSString *userAgent;
-
-@property (retain, nonatomic) AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPAuthenticationRef authentication;
-@property (copy, nonatomic) NSDictionary *authenticationCredentials;
 
 /*
 	Transaction Methods

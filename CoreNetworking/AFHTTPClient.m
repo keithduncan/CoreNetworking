@@ -52,7 +52,6 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPClientReadResponseContext); // The last packet
 
 @dynamic delegate;
 @synthesize userAgent=_userAgent;
-@synthesize authentication=_authentication, authenticationCredentials=_authenticationCredentials;
 @synthesize transactionQueue=_transactionQueue;
 
 + (void)initialize {
@@ -103,23 +102,10 @@ static NSString *_AFHTTPClientUserAgent = nil;
 - (void)dealloc {
 	[_userAgent release];
 	
-	if (_authentication != NULL) {
-		CFRelease(_authentication);
-	}
-	[_authenticationCredentials release];
-	
 	[_transactionQueue removeObserver:self forKeyPath:@"currentPacket"];
 	[_transactionQueue release];
 	
 	[super dealloc];
-}
-
-- (void)finalize {
-	if (_authentication != NULL) {
-		CFRelease(_authentication);
-	}
-	
-	[super finalize];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -168,12 +154,6 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	NSString *agent = self.userAgent;
 	if (agent != nil) {
 		CFHTTPMessageSetHeaderFieldValue(message, (CFStringRef)AFHTTPMessageUserAgentHeader, (CFStringRef)agent);
-	}
-	
-	if (self.authentication != NULL) {
-		#warning this error isn't handled
-		CFStreamError error = {};
-		Boolean authenticated __attribute__((unused)) = CFHTTPMessageApplyCredentialDictionary(message, self.authentication, (CFDictionaryRef)self.authenticationCredentials, &error);
 	}
 }
 
@@ -370,12 +350,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	
 	struct objc_super target = {
 		.receiver = self,
-#if !__OBJC2__
-		.class
-#else 
-		.super_class
-#endif /* !__OBJC2__ */
-			= [self superclass],
+		.super_class = [self superclass],
 	};
 	((void (*)(struct objc_super *, SEL, id <AFNetworkConnectionLayer>))objc_msgSendSuper)(&target, @selector(networkLayerDidClose:), layer);
 }
