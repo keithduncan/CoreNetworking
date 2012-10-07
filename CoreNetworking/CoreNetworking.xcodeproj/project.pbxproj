@@ -171,8 +171,8 @@
 		53D4568F16209630006FAD65 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53D4568D16209630006FAD65 /* InfoPlist.strings */; };
 		53D4569216209630006FAD65 /* CoreNetworking_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D4569116209630006FAD65 /* CoreNetworking_Tests.m */; };
 		53D4569A1620967D006FAD65 /* AFHTTPMessage_AcceptParsing.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D456991620967D006FAD65 /* AFHTTPMessage_AcceptParsing.m */; };
-		53D457E61621A8D5006FAD65 /* AFHTTPMessageAccept.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D457E41621A8D5006FAD65 /* AFHTTPMessageAccept.h */; };
-		53D457E71621A8D5006FAD65 /* AFHTTPMessageAccept.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D457E41621A8D5006FAD65 /* AFHTTPMessageAccept.h */; };
+		53D457E61621A8D5006FAD65 /* AFHTTPMessageAccept.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D457E41621A8D5006FAD65 /* AFHTTPMessageAccept.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53D457E71621A8D5006FAD65 /* AFHTTPMessageAccept.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D457E41621A8D5006FAD65 /* AFHTTPMessageAccept.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53D457E81621A8D5006FAD65 /* AFHTTPMessageAccept.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D457E51621A8D5006FAD65 /* AFHTTPMessageAccept.m */; };
 		53D457E91621A8D5006FAD65 /* AFHTTPMessageAccept.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D457E51621A8D5006FAD65 /* AFHTTPMessageAccept.m */; };
 		53D457EC1621AC64006FAD65 /* CoreNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5370E0710F5B0571008F5991 /* CoreNetworking.framework */; };
@@ -703,10 +703,10 @@
 				5301E21014CCA0450045F87C /* AFNetworkURLConnection.h in Headers */,
 				5301E29614CCA18B0045F87C /* AFNetworkService-Functions.h in Headers */,
 				53395D5615D44597007F602C /* AFNetworkPacketClose.h in Headers */,
+				53D457E61621A8D5006FAD65 /* AFHTTPMessageAccept.h in Headers */,
 				532298E714D5FC450097133D /* AFNetworkServiceScope+AFNetworkPrivate.h in Headers */,
 				53A39FD914DE0303001E1DA4 /* AFNetworkService-PrivateFunctions.h in Headers */,
 				53ECEAF614E14F6900F7517E /* AFNetworkPacket+AFNetworkPrivate.h in Headers */,
-				53D457E61621A8D5006FAD65 /* AFHTTPMessageAccept.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1263,6 +1263,7 @@
 				53D4569516209630006FAD65 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
