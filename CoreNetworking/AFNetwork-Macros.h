@@ -42,7 +42,7 @@
 	#define AFNETWORK_OPTIONS(_type, _name) _type _name; enum
 #endif
 
-static void _AFNetworkCallScopedBlock(dispatch_block_t const *blockRef) {
+static __attribute__((unused)) void _AFNetworkCallScopedBlock(dispatch_block_t const *blockRef) {
 	if (*blockRef != nil) (*blockRef)();
 }
 #define af_scoped_block_t dispatch_block_t __attribute__((cleanup(_AFNetworkCallScopedBlock), unused))

@@ -171,10 +171,10 @@
 		53D4568F16209630006FAD65 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53D4568D16209630006FAD65 /* InfoPlist.strings */; };
 		53D4569216209630006FAD65 /* CoreNetworking_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D4569116209630006FAD65 /* CoreNetworking_Tests.m */; };
 		53D4569A1620967D006FAD65 /* AFHTTPMessage_AcceptParsing.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D456991620967D006FAD65 /* AFHTTPMessage_AcceptParsing.m */; };
-		53D457E61621A8D5006FAD65 /* AFHTTPMessageAccept.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D457E41621A8D5006FAD65 /* AFHTTPMessageAccept.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53D457E71621A8D5006FAD65 /* AFHTTPMessageAccept.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D457E41621A8D5006FAD65 /* AFHTTPMessageAccept.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53D457E81621A8D5006FAD65 /* AFHTTPMessageAccept.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D457E51621A8D5006FAD65 /* AFHTTPMessageAccept.m */; };
-		53D457E91621A8D5006FAD65 /* AFHTTPMessageAccept.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D457E51621A8D5006FAD65 /* AFHTTPMessageAccept.m */; };
+		53D457E61621A8D5006FAD65 /* AFHTTPMessageMediaType.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D457E41621A8D5006FAD65 /* AFHTTPMessageMediaType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53D457E71621A8D5006FAD65 /* AFHTTPMessageMediaType.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D457E41621A8D5006FAD65 /* AFHTTPMessageMediaType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53D457E81621A8D5006FAD65 /* AFHTTPMessageMediaType.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D457E51621A8D5006FAD65 /* AFHTTPMessageMediaType.m */; };
+		53D457E91621A8D5006FAD65 /* AFHTTPMessageMediaType.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D457E51621A8D5006FAD65 /* AFHTTPMessageMediaType.m */; };
 		53D457EC1621AC64006FAD65 /* CoreNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5370E0710F5B0571008F5991 /* CoreNetworking.framework */; };
 		53D6A4C30FF7B72F002E05CC /* AFXMLElementPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D6A4C10FF7B72F002E05CC /* AFXMLElementPacket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53D6A4C40FF7B72F002E05CC /* AFXMLElementPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D6A4C20FF7B72F002E05CC /* AFXMLElementPacket.m */; };
@@ -319,8 +319,8 @@
 		53D4569116209630006FAD65 /* CoreNetworking_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreNetworking_Tests.m; sourceTree = "<group>"; };
 		53D456981620967D006FAD65 /* AFHTTPMessage_AcceptParsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPMessage_AcceptParsing.h; sourceTree = "<group>"; };
 		53D456991620967D006FAD65 /* AFHTTPMessage_AcceptParsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPMessage_AcceptParsing.m; sourceTree = "<group>"; };
-		53D457E41621A8D5006FAD65 /* AFHTTPMessageAccept.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPMessageAccept.h; sourceTree = "<group>"; };
-		53D457E51621A8D5006FAD65 /* AFHTTPMessageAccept.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPMessageAccept.m; sourceTree = "<group>"; };
+		53D457E41621A8D5006FAD65 /* AFHTTPMessageMediaType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPMessageMediaType.h; sourceTree = "<group>"; };
+		53D457E51621A8D5006FAD65 /* AFHTTPMessageMediaType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPMessageMediaType.m; sourceTree = "<group>"; };
 		53D6A4C10FF7B72F002E05CC /* AFXMLElementPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFXMLElementPacket.h; sourceTree = "<group>"; };
 		53D6A4C20FF7B72F002E05CC /* AFXMLElementPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLElementPacket.m; sourceTree = "<group>"; };
 		53DAE1A314432D4500943E8C /* AFNetworkSchedulerProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkSchedulerProxy.h; sourceTree = "<group>"; };
@@ -388,8 +388,8 @@
 			children = (
 				538307AF101384DF000DA939 /* AFHTTPMessage.h */,
 				538307B0101384DF000DA939 /* AFHTTPMessage.m */,
-				53D457E41621A8D5006FAD65 /* AFHTTPMessageAccept.h */,
-				53D457E51621A8D5006FAD65 /* AFHTTPMessageAccept.m */,
+				53D457E41621A8D5006FAD65 /* AFHTTPMessageMediaType.h */,
+				53D457E51621A8D5006FAD65 /* AFHTTPMessageMediaType.m */,
 				532AA4840FC206C2000FCC3F /* AFHTTPConnection.h */,
 				532AA4850FC206C2000FCC3F /* AFHTTPConnection.m */,
 				533508240FD6FC4E004FFF97 /* AFHTTPClient.h */,
@@ -703,7 +703,7 @@
 				5301E21014CCA0450045F87C /* AFNetworkURLConnection.h in Headers */,
 				5301E29614CCA18B0045F87C /* AFNetworkService-Functions.h in Headers */,
 				53395D5615D44597007F602C /* AFNetworkPacketClose.h in Headers */,
-				53D457E61621A8D5006FAD65 /* AFHTTPMessageAccept.h in Headers */,
+				53D457E61621A8D5006FAD65 /* AFHTTPMessageMediaType.h in Headers */,
 				532298E714D5FC450097133D /* AFNetworkServiceScope+AFNetworkPrivate.h in Headers */,
 				53A39FD914DE0303001E1DA4 /* AFNetworkService-PrivateFunctions.h in Headers */,
 				53ECEAF614E14F6900F7517E /* AFNetworkPacket+AFNetworkPrivate.h in Headers */,
@@ -761,7 +761,7 @@
 				53A39FDA14DE0303001E1DA4 /* AFNetworkService-PrivateFunctions.h in Headers */,
 				53ECEAF714E14F6900F7517E /* AFNetworkPacket+AFNetworkPrivate.h in Headers */,
 				53395D5715D44597007F602C /* AFNetworkPacketClose.h in Headers */,
-				53D457E71621A8D5006FAD65 /* AFHTTPMessageAccept.h in Headers */,
+				53D457E71621A8D5006FAD65 /* AFHTTPMessageMediaType.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -829,7 +829,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Keith Duncan";
 			};
 			buildConfigurationList = 5343E6FE0C21FB1000B63E6E /* Build configuration list for PBXProject "CoreNetworking" */;
@@ -940,7 +940,7 @@
 				53A39FDB14DE0303001E1DA4 /* AFNetworkService-PrivateFunctions.m in Sources */,
 				53ECEAF814E14F6900F7517E /* AFNetworkPacket+AFNetworkPrivate.m in Sources */,
 				53395D5815D44597007F602C /* AFNetworkPacketClose.m in Sources */,
-				53D457E81621A8D5006FAD65 /* AFHTTPMessageAccept.m in Sources */,
+				53D457E81621A8D5006FAD65 /* AFHTTPMessageMediaType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -993,7 +993,7 @@
 				53A39FDC14DE0303001E1DA4 /* AFNetworkService-PrivateFunctions.m in Sources */,
 				53ECEAF914E14F6900F7517E /* AFNetworkPacket+AFNetworkPrivate.m in Sources */,
 				53395D5915D44597007F602C /* AFNetworkPacketClose.m in Sources */,
-				53D457E91621A8D5006FAD65 /* AFHTTPMessageAccept.m in Sources */,
+				53D457E91621A8D5006FAD65 /* AFHTTPMessageMediaType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1045,7 +1045,6 @@
 				);
 				CLANG_ANALYZER_DEADCODE_DEADSTORES = NO;
 				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
-				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1072,7 +1071,6 @@
 				);
 				CLANG_ANALYZER_DEADCODE_DEADSTORES = NO;
 				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
-				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_OPTIMIZATION_LEVEL = s;
@@ -1097,6 +1095,7 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DOXYGEN_PATH = /Developer/Applications/Doxygen.app/Contents/Resources/doxygen;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1119,6 +1118,7 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DOXYGEN_PATH = /Developer/Applications/Doxygen.app/Contents/Resources/doxygen;

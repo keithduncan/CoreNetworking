@@ -60,7 +60,7 @@
 /* HTTP */
 
 #import "CoreNetworking/AFHTTPMessage.h"
-#import "CoreNetworking/AFHTTPMessageAccept.h"
+#import "CoreNetworking/AFHTTPMessageMediaType.h"
 
 #import "CoreNetworking/AFHTTPMessagePacket.h"
 #import "CoreNetworking/AFHTTPHeadersPacket.h"
