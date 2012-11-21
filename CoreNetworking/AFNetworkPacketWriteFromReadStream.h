@@ -21,8 +21,8 @@
  */
 @interface AFNetworkPacketWriteFromReadStream : AFNetworkPacket <AFNetworkPacketWriting> {
  @private
-	NSInteger _totalBytesToRead;
-	NSInteger _bytesRead;
+	NSInteger _totalBytesToWrite;
+	NSInteger _bytesWritten;
 	
 	AFNETWORK_STRONG uint8_t *_readBuffer;
 	size_t _bufferSize;
@@ -45,13 +45,13 @@
 	\brief
 	Designated Initialiser.
 	
-	\param readStream
-	The stream should not be open, an exception is thrown if it is.
-	
 	\param totalBytesToWrite
 	Pass -1 to read until the readStream is at end.
+	
+	\param readStream
+	The stream should not be open, an exception is thrown if it is.
  */
-- (id)initWithReadStream:(NSInputStream *)readStream totalBytesToRead:(NSInteger)totalBytesToRead;
+- (id)initWithTotalBytesToWrite:(NSInteger)totalBytesToWrite readStream:(NSInputStream *)readStream;
 
 #if NS_BLOCKS_AVAILABLE
 

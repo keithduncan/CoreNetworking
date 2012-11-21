@@ -21,8 +21,8 @@
  */
 @interface AFNetworkPacketReadToWriteStream : AFNetworkPacket <AFNetworkPacketReading> {
  @private
-	NSInteger _totalBytesToWrite;
-	NSInteger _bytesWritten;
+	NSInteger _totalBytesToRead;
+	NSInteger _bytesRead;
 	
 	AFNETWORK_STRONG uint8_t *_readBuffer;
 	size_t _bufferSize;
@@ -39,8 +39,11 @@
 	The stream should not be open, an exception is thrown if it is.
 	
 	\param totalBytesToRead
-	Pass -1 to write until the writeStream is at end.
+	Pass -1 to read until the read stream is at end.
+	
+	\details
+	writeStream is opened when this packet starts and is closed when this packet finishes
  */
-- (id)initWithWriteStream:(NSOutputStream *)writeStream totalBytesToWrite:(NSInteger)totalBytesToWrite;
+- (id)initWithTotalBytesToRead:(NSInteger)totalBytesToRead writeStream:(NSOutputStream *)writeStream;
 
 @end

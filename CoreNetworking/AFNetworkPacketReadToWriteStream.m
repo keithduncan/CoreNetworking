@@ -14,8 +14,8 @@
 // Note: this doesn't simply reuse the AFNetworkTransport with provided write and read streams since the base packets would read and then write the whole packet. This adaptor class minimises the memory footprint.
 
 @interface AFNetworkPacketReadToWriteStream ()
-@property (assign, nonatomic) NSInteger totalBytesToWrite;
-@property (assign, nonatomic) NSInteger bytesWritten;
+@property (assign, nonatomic) NSInteger totalBytesToRead;
+@property (assign, nonatomic) NSInteger bytesRead;
 
 @property (assign, nonatomic) NSOutputStream *writeStream;
 @property (assign, nonatomic) BOOL writeStreamOpen;
@@ -23,19 +23,19 @@
 
 @implementation AFNetworkPacketReadToWriteStream
 
-@synthesize totalBytesToWrite=_totalBytesToWrite, bytesWritten=_bytesWritten, writeStream=_writeStream, writeStreamOpen=_writeStreamOpen;
+@synthesize totalBytesToRead=_totalBytesToRead, bytesRead=_bytesRead, writeStream=_writeStream, writeStreamOpen=_writeStreamOpen;
 
-- (id)initWithWriteStream:(NSOutputStream *)writeStream totalBytesToWrite:(NSInteger)totalBytesToWrite {
+- (id)initWithWriteStream:(NSOutputStream *)writeStream totalBytesToRead:(NSInteger)totalBytesToRead {
 	NSParameterAssert(writeStream != nil && [writeStream streamStatus] == NSStreamStatusNotOpen);
-	NSParameterAssert(totalBytesToWrite != 0);
+	NSParameterAssert(totalBytesToRead != 0);
 	
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_totalBytesToWrite = totalBytesToWrite;
+	_totalBytesToRead = totalBytesToRead;
 	
 	_bufferSize = (64 * 1024);
-	_bufferSize = MIN(_bufferSize, _totalBytesToWrite);
+	_bufferSize = MIN(_bufferSize, _totalBytesToRead);
 	
 #if TARGET_OS_IPHONE
 	_readBuffer = malloc(_bufferSize);
@@ -57,17 +57,17 @@
 }
 
 - (float)currentProgressWithBytesDone:(NSInteger *)bytesDone bytesTotal:(NSInteger *)bytesTotal {
-	if (_totalBytesToWrite < 0) {
+	if (_totalBytesToRead < 0) {
 		return [super currentProgressWithBytesDone:bytesDone bytesTotal:bytesTotal];
 	}
 	
 	if (bytesDone != NULL) {
-		*bytesDone = _bytesWritten;
+		*bytesDone = _bytesRead;
 	}
 	if (bytesTotal != NULL) {
-		*bytesTotal = _totalBytesToWrite;
+		*bytesTotal = _totalBytesToRead;
 	}
-	return ((float)_bytesWritten / (float)_totalBytesToWrite);
+	return ((float)_bytesRead / (float)_totalBytesToRead);
 }
 
 - (NSInteger)performRead:(NSInputStream *)readStream {
@@ -98,7 +98,7 @@
 	
 	while ([readStream hasBytesAvailable]) {
 		/* Read */
-		NSInteger bytesRead = [readStream read:_readBuffer maxLength:MIN(_bufferSize, (_totalBytesToWrite - _bytesWritten))];
+		NSInteger bytesRead = [readStream read:_readBuffer maxLength:MIN(_bufferSize, (_totalBytesToRead - _bytesRead))];
 		if (bytesRead < 0) {
 			NSError *readStreamError = [readStream streamError];
 			if (readStreamError == nil) {
@@ -134,10 +134,11 @@
 		}
 		
 		currentBytesRead += bytesRead;
-		_bytesWritten += bytesRead;
+		_bytesRead += bytesRead;
 		
 		/* Check */
-		if ((_totalBytesToWrite == _bytesWritten) || (_totalBytesToWrite == -1 && [[self writeStream] streamStatus] == NSStreamStatusAtEnd)) {
+		if ((_totalBytesToRead == _bytesRead) ||
+			(_totalBytesToRead == -1 && ([readStream streamStatus] == NSStreamStatusAtEnd || [readStream streamStatus] == NSStreamStatusClosed))) {
 			CFWriteStreamClose((CFWriteStreamRef)[self writeStream]);
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
