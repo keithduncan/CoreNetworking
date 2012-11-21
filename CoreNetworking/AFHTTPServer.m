@@ -163,8 +163,8 @@
 			return;
 		}
 		
-		if ([[self delegate] respondsToSelector:@selector(networkServer:renderResourceForRequest:)]) {
-			response = [[self delegate] networkServer:self renderResourceForRequest:request];
+		if ([self.delegate respondsToSelector:@selector(networkServer:renderResourceForRequest:)]) {
+			response = [self.delegate networkServer:self renderResourceForRequest:request];
 			
 			if (response != NULL) {
 				[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
@@ -283,7 +283,7 @@
 	
 	if (!keepAlive) {
 		AFNetworkPacket *closePacket = [[[AFNetworkPacketClose alloc] init] autorelease];
-		[connection performWrite:closePacket withTimeout:0 context:NULL];
+		[connection performWrite:closePacket withTimeout:-1 context:NULL];
 		return;
 	}
 	
