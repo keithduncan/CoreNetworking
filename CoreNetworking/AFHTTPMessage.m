@@ -203,6 +203,8 @@ CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 			
 		case AFHTTPStatusCodeOK:
 			return CFSTR("OK");
+		case AFHTTPStatusCodeCreated:
+			return CFSTR("Created");
 		case AFHTTPStatusCodePartialContent:
 			return CFSTR("Partial Content");
 			
@@ -225,8 +227,8 @@ CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code) {
 			return CFSTR("Unauthorized");
 		case AFHTTPStatusCodeNotFound:
 			return CFSTR("Not Found");
-		case AFHTTPStatusCodeMethodNotAllowed:
-			return CFSTR("Method Not Allowed");
+		case AFHTTPStatusCodeNotAllowed:
+			return CFSTR("Not Allowed");
 		case AFHTTPStatusCodeNotAcceptable:
 			return CFSTR("Not Acceptable");
 		case AFHTTPStatusCodeUnsupportedMediaType:

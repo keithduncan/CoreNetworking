@@ -48,6 +48,7 @@ typedef AFNETWORK_ENUM(NSInteger, AFHTTPStatusCode) {
 	
 	// 2xx class, request succeeded
 	AFHTTPStatusCodeOK								= 200, /* OK */
+	AFHTTPStatusCodeCreated							= 201, /* Created */
 	AFHTTPStatusCodePartialContent					= 206, /* Partial Content */
 	
 	// 3xx class, redirection
@@ -62,7 +63,7 @@ typedef AFNETWORK_ENUM(NSInteger, AFHTTPStatusCode) {
 	AFHTTPStatusCodeBadRequest						= 400, /* Bad Request */
 	AFHTTPStatusCodeUnauthorized					= 401, /* Unauthorized */
 	AFHTTPStatusCodeNotFound						= 404, /* Not Found */
-	AFHTTPStatusCodeMethodNotAllowed				= 405, /* Method Not Allowed */
+	AFHTTPStatusCodeNotAllowed						= 405, /* Method Not Allowed */
 	AFHTTPStatusCodeNotAcceptable					= 406, /* Not Acceptable */
 	AFHTTPStatusCodeProxyAuthenticationRequired		= 407, /* Proxy Authentication Required */
 	AFHTTPStatusCodeConflict						= 409, /* Conflict */
