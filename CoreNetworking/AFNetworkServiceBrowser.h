@@ -28,10 +28,6 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainBrowsable;
  */
 AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 
-/*!
-	\brief
-	
- */
 @protocol AFNetworkServiceBrowserDelegate <NSObject>
 
  @required
@@ -48,7 +44,7 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 
 /*!
 	\brief
-	
+	Query the DNS services including link-local multicast for services matching a pattern.
  */
 @interface AFNetworkServiceBrowser : NSObject <AFNetworkSchedulable> {
  @private
@@ -88,7 +84,7 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 	(**, Y , **) - find all name scopes with type Y in every domain
 	(X , Y , **) - find all name scopes with type Y in domain X
 	
-	The last two modes are the browse operations supported by `NSNetServiceBrowser`.
+	The first two and last two modes are the browse operations supported by `NSNetServiceBrowser`, the others are composite searches.
  */
 - (id)initWithServiceScope:(AFNetworkServiceScope *)serviceScope;
 
@@ -123,7 +119,7 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 
 /*!
 	\brief
-	
+	Cancel the search.
  */
 - (void)invalidate;
 

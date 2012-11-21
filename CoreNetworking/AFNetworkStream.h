@@ -15,10 +15,6 @@
 
 @class AFNetworkStream;
 
-/*!
-	\brief
-	
- */
 @protocol AFNetworkStreamDelegate <NSObject>
 
  @required
@@ -95,10 +91,6 @@
  */
 - (id)initWithStream:(NSStream *)stream;
 
-/*!
-	\brief
-	
- */
 @property (assign, nonatomic) id <AFNetworkStreamDelegate> delegate;
 
 /*

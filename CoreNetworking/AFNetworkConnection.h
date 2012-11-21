@@ -14,25 +14,17 @@
 
 @class AFNetworkServiceScope;
 
-/*!
-	\brief
-	
- */
 @protocol AFNetworkConnectionControlDelegate <AFNetworkConnectionLayerControlDelegate>
 
 @end
 
-/*!
-	\brief
-	
- */
 @protocol AFNetworkConnectionDataDelegate <AFNetworkConnectionLayerDataDelegate>
 
 @end
 
 /*!
 	\brief
-	
+	Wrapper protocol.
  */
 @protocol AFNetworkConnectionDelegate <AFNetworkConnectionLayerDelegate, AFNetworkConnectionControlDelegate, AFNetworkConnectionDataDelegate>
 
@@ -83,16 +75,8 @@
  */
 - (id <AFNetworkConnectionLayer>)initWithService:(AFNetworkServiceScope *)serviceScope;
 
-/*!
-	\brief
-	
- */
 - (AFNetworkLayer <AFNetworkConnectionLayer> *)lowerLayer;
 
-/*!
-	\brief
-	
- */
 @property (assign, nonatomic) id <AFNetworkConnectionDelegate> delegate;
 
 /*!

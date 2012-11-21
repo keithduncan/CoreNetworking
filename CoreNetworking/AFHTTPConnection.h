@@ -17,18 +17,10 @@
 
 @class AFHTTPConnection;
 
-/*!
-	\brief
-	
- */
 @protocol AFHTTPConnectionControlDelegate <AFNetworkConnectionControlDelegate>
 
 @end
 
-/*!
-	\brief
-	
- */
 @protocol AFHTTPConnectionDataDelegate <AFNetworkConnectionDataDelegate>
 
 - (void)networkConnection:(AFHTTPConnection *)connection didReceiveRequest:(CFHTTPMessageRef)request;
@@ -39,7 +31,7 @@
 
 /*!
 	\brief
-	
+	Wrapper protocol.
  */
 @protocol AFHTTPConnectionDelegate <AFNetworkConnectionDelegate, AFHTTPConnectionControlDelegate, AFHTTPConnectionDataDelegate>
 

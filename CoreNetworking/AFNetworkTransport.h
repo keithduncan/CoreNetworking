@@ -23,26 +23,10 @@
 @class AFNetworkPacketWrite;
 @class AFNetworkPacketRead;
 
-/*!
-	\brief
-	
- */
 @protocol AFNetworkTransportControlDelegate <AFNetworkConnectionLayerControlDelegate>
-
- @optional
-
-/*!
-	\brief
-	When the socket is closing you can keep it open until the writes are complete, but you'll have to ensure the object remains live.
- */
-- (BOOL)networkTransportShouldRemainOpenPendingWrites:(AFNetworkTransport *)transport;
 
 @end
 
-/*!
-	\brief
-	
- */
 @protocol AFNetworkTransportDataDelegate <AFNetworkConnectionLayerDataDelegate>
 
  @optional
@@ -64,10 +48,6 @@
 
 @end
 
-/*!
-	\brief
-	
- */
 @protocol AFNetworkTransportDelegate <AFNetworkConnectionLayerDelegate, AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate>
 
 @end

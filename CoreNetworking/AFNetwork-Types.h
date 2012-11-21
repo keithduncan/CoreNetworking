@@ -83,7 +83,7 @@ typedef struct _AFNetworkInternetTransportSignature AFNetworkInternetTransportSi
 /*!
 	\brief
 	Based on CFSocketSignature allowing for higher-level functionality.
-	The un-intuitive layout of the structure is very important; because the first pointer-width bits are a <tt>CFType</tt>, the structure can be introspected using <tt>CFGetTypeID()</tt>.
+	The un-intuitive layout of the structure is very important; because the first pointer is a <tt>CFType</tt>, the structure can be introspected using <tt>CFGetTypeID()</tt>.
 	
 	\details
 	Doesn't include a <tt>protocolFamily</tt> field like CFSocketSignature because a host may resolve to a number of addresses each with a different protocol family.

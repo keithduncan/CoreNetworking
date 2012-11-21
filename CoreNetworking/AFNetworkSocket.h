@@ -14,10 +14,6 @@
 
 #import "CoreNetworking/AFNetwork-Macros.h"
 
-/*!
-	\brief
-	
- */
 @protocol AFNetworkSocketDelegate <AFNetworkConnectionLayerHostDelegate, AFNetworkConnectionLayerDelegate>
 
 @end
@@ -64,10 +60,6 @@
  */
 - (id)initWithNativeHandle:(CFSocketNativeHandle)handle;
 
-/*!
-	\brief
-	
- */
 @property (assign, nonatomic) id <AFNetworkSocketDelegate> delegate;
 
 /*!

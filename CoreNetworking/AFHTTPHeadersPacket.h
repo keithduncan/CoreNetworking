@@ -29,7 +29,7 @@ AFNETWORK_EXTERN NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef m
 
 /*!
 	\brief
-	
+	Read upto the end of the empty line and following \r\n before the body starts
  */
 @interface AFHTTPHeadersPacket : AFNetworkPacket <AFNetworkPacketReading> {
  @private

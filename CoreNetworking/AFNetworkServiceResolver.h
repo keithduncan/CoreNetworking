@@ -33,7 +33,7 @@
 
 /*!
 	\brief
-	
+	Can resolve address records and monitor ephemeral record types such as TXT or NULL records.
  */
 @interface AFNetworkServiceResolver : NSObject <AFNetworkSchedulable> {
  @private
@@ -95,17 +95,17 @@
 
 /*!
 	\brief
-	
+	Start watching a record type, may start a long-lived query (LLQ)
  */
 - (void)addMonitorForRecord:(AFNetworkServiceRecordType)record;
 /*!
 	\brief
-	
+	Remove a previously added monitor
  */
 - (void)removeMonitorForRecord:(AFNetworkServiceRecordType)record;
 /*!
 	\brief
-	
+	Snapshot of the most recent record update, does not perform any I/O
  */
 - (NSData *)dataForRecord:(AFNetworkServiceRecordType)record;
 
@@ -124,7 +124,7 @@
 
 /*!
 	\brief
-	
+	The delegate will not receive any further messages, all queries are cancelled
  */
 - (void)invalidate;
 

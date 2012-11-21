@@ -16,7 +16,7 @@ AFNETWORK_EXTERN NSString *const AFNetworkDocumentMIMEContentDisposition;
 
 /*!
 	\brief
-	
+	An abstract superclass, this defines a serialisation API for subclass documents to conform to.
  */
 @interface AFNetworkDocument : NSObject
 
@@ -35,9 +35,14 @@ AFNETWORK_EXTERN NSString *const AFNetworkDocumentMIMEContentDisposition;
  */
 - (NSArray *)serialisedPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef;
 
+@end
+
+@interface AFNetworkDocument (AFNetworkAdditions)
+
 /*!
 	\brief
-	Used to convert the document into a wire format. This inefficiently decomposes the document into a single data object.
+	Used to convert the document into a wire format.
+	This inefficiently decomposes the document into a single data object and you should avoid using it.
 	
 	\details
 	The default implementation is suitable for inheriting, it uses <tt>serialisedPacketsWithContentType:frameLength:</tt> to generate the packets, then accumulates them in an in-memory stream returning the result.

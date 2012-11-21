@@ -21,6 +21,10 @@ NSString *const AFNetworkDocumentMIMEContentDisposition = @"Content-Disposition"
 	return nil;
 }
 
+@end
+
+@implementation AFNetworkDocument (AFNetworkAdditions)
+
 - (NSData *)serialisedDataWithContentType:(NSString **)contentTypeRef {
 	NSUInteger frameLength = 0;
 	NSArray *writePackets = [self serialisedPacketsWithContentType:contentTypeRef frameLength:&frameLength];

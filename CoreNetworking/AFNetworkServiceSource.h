@@ -34,14 +34,9 @@
 /*!
 	\brief
 	Because the DNS-SD doesn't provide a reference counting mechanism, you must ensure the service remains valid for the lifetime of this object.
-	The source is scheduled on the current run loop.
  */
 - (id)initWithService:(DNSServiceRef)service;
 
-/*!
-	\brief
-	
- */
 @property (readonly, nonatomic) DNSServiceRef service;
 
 /*!

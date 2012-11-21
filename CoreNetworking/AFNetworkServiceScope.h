@@ -19,7 +19,9 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceScopeWildcard;
 
 /*!
 	\brief
+	Scope can include a wildcard to define a area of interest, or fully specify an individual service.
 	
+	This is the primitive type for all the DNS-SD integration.
  */
 @interface AFNetworkServiceScope : NSObject {
  @package
@@ -30,31 +32,31 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceScopeWildcard;
 
 /*!
 	\brief
-	
+	Designated initialiser
  */
 - (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name;
 
 /*!
 	\brief
-	
+	Domain may be the local domain, registered and queried using multicast DNS, or a wide area domain.
  */
 @property (readonly, copy, nonatomic) NSString *domain;
 
 /*!
 	\brief
-	
+	Suitable application and network layers can be inferred from the type
  */
 @property (readonly, copy, nonatomic) NSString *type;
 
 /*!
 	\brief
-	
+	Per service identifier
  */
 @property (readonly, copy, nonatomic) NSString *name;
 
 /*!
 	\brief
-	
+	Compares the domain, type and name strings for equality.
  */
 - (BOOL)isEqualToScope:(AFNetworkServiceScope *)scope;
 

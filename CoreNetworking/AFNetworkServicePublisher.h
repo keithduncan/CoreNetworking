@@ -95,7 +95,7 @@
 
 /*!
 	\brief
-	
+	Stop publishing data for a specific record.
  */
 - (void)removeDataForRecord:(AFNetworkServiceRecordType)record;
 

@@ -21,10 +21,6 @@
 @class AFNetworkPacketQueue;
 @class AFHTTPTransaction;
 
-/*!
-	\brief
-	
- */
 @protocol AFHTTPClientDelegate <AFHTTPConnectionDelegate>
 
 - (void)networkConnection:(AFHTTPClient *)connection didReceiveResponse:(CFHTTPMessageRef)response context:(void *)context;
@@ -100,7 +96,7 @@
 
 /*!
 	\brief
-	
+	Append your own request/response pair reading packets
  */
 - (void)enqueueTransaction:(AFHTTPTransaction *)transaction;
 
