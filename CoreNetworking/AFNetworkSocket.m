@@ -90,8 +90,8 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	}
 	
 #if DEBUGFULL
-	int reuseAddr = 1;
-	int sockoptError __attribute__((unused)) = setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_REUSEADDR, &reuseAddr, sizeof(reuseAddr));
+	int reuseAddress = 1;
+	int setsockoptError __attribute__((unused)) = setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_REUSEADDR, &reuseAddress, sizeof(reuseAddress));
 #endif /* DEBUGFULL */
 	
 	return self;
@@ -181,6 +181,22 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	CFSocketRef socket = self.socket;
 	CFSocketNativeHandle nativeHandle = CFSocketGetNative(socket);
 	
+	if (signature->protocolFamily == PF_INET6) {
+		/*
+			Note
+			
+			we use getaddrinfo to be address family agnostic
+			
+			however when binding a socket to the wildcard IPv6 address "::" by default OS X also listens on the wildcard IPv4 address "0.0.0.0"
+			
+			a subsequent socket binding to the wildcard IPv4 address will fail with EADDRINUSE even though we didn't actually bind that address in userspace
+			
+			this prevents that behaviour, at the cost of hardcoding per-protocol knowledge into otherwise protocol agnostic code
+		 */
+		int ipv6Only = 1;
+		int setsockoptError __attribute__((unused)) = setsockopt(nativeHandle, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
+	}
+	
 	int bindError = bind(nativeHandle, (const struct sockaddr *)CFDataGetBytePtr(signature->address), CFDataGetLength(signature->address));
 	if (bindError != 0) {
 		if (errorRef != NULL) {
@@ -207,8 +223,6 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 									   nil];
 			*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:errorInfo];
 		}
-		
-		[self close];
 		return NO;
 	}
 	
