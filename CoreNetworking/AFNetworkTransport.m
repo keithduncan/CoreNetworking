@@ -41,7 +41,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	_AFNetworkTransportConnectionFlagsDidOpen		= 1UL << 0, // connection has been established
 	_AFNetworkTransportConnectionFlagsWillStartTLS	= 1UL << 1,
 	_AFNetworkTransportConnectionFlagsDidStartTLS	= 1UL << 2,
-	_AFNetworkTransportConnectionFlagsCloseSoon		= 1UL << 3, // disconnect as soon as nothing is queued
 	_AFNetworkTransportConnectionFlagsDidClose		= 1UL << 4, // the stream has disconnected
 };
 
@@ -233,10 +232,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	[description appendFormat:@"\tWrite Stream: %@", [self.writeStream description]];
 	[description appendFormat:@"\tRead Stream: %@", [self.readStream description]];
 	
-	if ((_connectionFlags & _AFNetworkTransportConnectionFlagsCloseSoon) == _AFNetworkTransportConnectionFlagsCloseSoon) {
-		[description appendString: @"will close pending writes\n"];
-	}
-	
 	[description appendString:@"}"];
 	
 	return description;
@@ -285,23 +280,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	if ([self isClosed]) {
 		[self.delegate networkLayerDidClose:self];
 		return;
-	}
-	
-	// Note: you can only prevent a local close, if the streams were closed remotely there's nothing we can do
-	if ((([self writeFlags] & _AFNetworkTransportStreamFlagsDidClose) != _AFNetworkTransportStreamFlagsDidClose) && (([self readFlags] & _AFNetworkTransportStreamFlagsDidClose) != _AFNetworkTransportStreamFlagsDidClose)) {
-		BOOL pendingWrites = ([self.writeStream countOfEnqueuedPackets] > 0);
-		
-		if (pendingWrites) {
-			BOOL shouldRemainOpen = NO;
-			if ([self.delegate respondsToSelector:@selector(networkTransportShouldRemainOpenPendingWrites:)]) {
-				shouldRemainOpen = [self.delegate networkTransportShouldRemainOpenPendingWrites:self];
-			}
-			
-			if (shouldRemainOpen) {
-				self.connectionFlags = (self.connectionFlags | _AFNetworkTransportConnectionFlagsCloseSoon);
-				return;
-			}
-		}
 	}
 	
 	if (self.writeStream != nil) {
@@ -417,9 +395,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 #pragma mark Writing
 
 - (void)performWrite:(id)buffer withTimeout:(NSTimeInterval)timeout context:(void *)context {
-	if ((self.connectionFlags & _AFNetworkTransportConnectionFlagsCloseSoon) == _AFNetworkTransportConnectionFlagsCloseSoon) {
-		return;
-	}
 	NSParameterAssert(buffer != nil);
 	
 	AFNetworkPacketWrite *packet = nil;
@@ -439,9 +414,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 #pragma mark Reading
 
 - (void)performRead:(id)terminator withTimeout:(NSTimeInterval)timeout context:(void *)context {
-	if ((self.connectionFlags & _AFNetworkTransportConnectionFlagsCloseSoon) == _AFNetworkTransportConnectionFlagsCloseSoon) {
-		return;
-	}
 	NSParameterAssert(terminator != nil);
 	
 	AFNetworkPacketRead *packet = nil;
@@ -548,19 +520,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	NSCParameterAssert(delegateSelector != NULL);
 	
 	((void (*)(id, SEL, id, id, void *))objc_msgSend)(self.delegate, delegateSelector, self, networkPacket, networkPacket.context);
-	
-	
-	if (networkStream == self.writeStream) {
-		if ((self.connectionFlags & _AFNetworkTransportConnectionFlagsCloseSoon) != _AFNetworkTransportConnectionFlagsCloseSoon) {
-			return;
-		}
-		if ([self.writeStream countOfEnqueuedPackets] != 0) {
-			return;
-		}
-		
-		[self close];
-		return;
-	}
 }
 
 @end
