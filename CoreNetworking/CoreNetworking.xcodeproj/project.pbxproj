@@ -95,6 +95,7 @@
 		53656037116FC6210006DCAF /* AFNetworkPacketWriteFromReadStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5BF113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53656042116FC7970006DCAF /* AFNetworkPacketReadToWriteStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 533AD5C6113BF98000FED57B /* AFNetworkPacketReadToWriteStream.m */; };
 		53656043116FC7990006DCAF /* AFNetworkPacketReadToWriteStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 533AD5C5113BF98000FED57B /* AFNetworkPacketReadToWriteStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		536CB8091624C30900BFD08D /* AFHTTPMessage_ContentTypeParsing.m in Sources */ = {isa = PBXBuildFile; fileRef = 536CB8081624C30900BFD08D /* AFHTTPMessage_ContentTypeParsing.m */; };
 		5370E0AC0F5B061D008F5991 /* AFNetworkConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0880F5B061D008F5991 /* AFNetworkConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5370E0AD0F5B061D008F5991 /* AFNetworkConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0890F5B061D008F5991 /* AFNetworkConnection.m */; };
 		5370E0B00F5B061D008F5991 /* AFNetworkServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E08C0F5B061D008F5991 /* AFNetworkServer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -265,6 +266,8 @@
 		535677CE126B8DC8002872B2 /* AFNetworkDelegateProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkDelegateProxy.h; sourceTree = "<group>"; };
 		535677CF126B8DC8002872B2 /* AFNetworkDelegateProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkDelegateProxy.m; sourceTree = "<group>"; };
 		535A12CF14DAD5CF009E03A4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		536CB8071624C30900BFD08D /* AFHTTPMessage_ContentTypeParsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPMessage_ContentTypeParsing.h; sourceTree = "<group>"; };
+		536CB8081624C30900BFD08D /* AFHTTPMessage_ContentTypeParsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPMessage_ContentTypeParsing.m; sourceTree = "<group>"; };
 		5370E0710F5B0571008F5991 /* CoreNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5370E0720F5B0571008F5991 /* CoreNetworking-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CoreNetworking-Info.plist"; sourceTree = "<group>"; };
 		5370E0880F5B061D008F5991 /* AFNetworkConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkConnection.h; sourceTree = "<group>"; };
@@ -628,6 +631,8 @@
 				53D4569116209630006FAD65 /* CoreNetworking_Tests.m */,
 				53D456981620967D006FAD65 /* AFHTTPMessage_AcceptParsing.h */,
 				53D456991620967D006FAD65 /* AFHTTPMessage_AcceptParsing.m */,
+				536CB8071624C30900BFD08D /* AFHTTPMessage_ContentTypeParsing.h */,
+				536CB8081624C30900BFD08D /* AFHTTPMessage_ContentTypeParsing.m */,
 				53D4568B16209630006FAD65 /* Supporting Files */,
 			);
 			name = Tests;
@@ -1003,6 +1008,7 @@
 			files = (
 				53D4569216209630006FAD65 /* CoreNetworking_Tests.m in Sources */,
 				53D4569A1620967D006FAD65 /* AFHTTPMessage_AcceptParsing.m in Sources */,
+				536CB8091624C30900BFD08D /* AFHTTPMessage_ContentTypeParsing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

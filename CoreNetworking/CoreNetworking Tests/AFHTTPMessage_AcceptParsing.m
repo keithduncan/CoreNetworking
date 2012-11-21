@@ -8,7 +8,7 @@
 
 #import "AFHTTPMessage_AcceptParsing.h"
 
-#import "AFHTTPMessageAccept.h"
+#import "AFHTTPMessageMediaType.h"
 
 @implementation AFHTTPMessage_AcceptParsing
 
@@ -16,7 +16,7 @@
 	NSArray *accepts = AFHTTPMessageParseAcceptHeader(@"text/plain;level=1;foo=bar;q=1;baz=qux");
 	STAssertTrue([accepts count] == 1, @"only one accept should be found");
 	
-	AFHTTPMessageAccept *accept = [accepts lastObject];
+	AFHTTPMessageAcceptType *accept = [accepts lastObject];
 	STAssertEqualObjects([accept type], @"text/plain", @"type should be text/plain");
 	
 	STAssertEqualObjects([accept parameters], ([NSDictionary dictionaryWithObjectsAndKeys:@"1", @"level", @"bar", @"foo", nil]), @"parameters should only include 'level' and 'foo' keys");
@@ -32,7 +32,7 @@
 	NSArray *accepts = AFHTTPMessageParseAcceptHeader(@"image/png;q=0.2,text/plain;q=1,text/*;q=0.8,*/*;q=0.1");
 	
 	NSString *provideType = @"image/jpeg";
-	NSString *chosenType = AFHTTPMessageChooseContentTypeForAccepts(accepts, [NSArray arrayWithObject:provideType]);
+	NSString *chosenType = AFHTTPMessageChooseContentTypeForAcceptTypes(accepts, [NSArray arrayWithObject:provideType]);
 	STAssertEqualObjects(chosenType, provideType, @"accept header and server provider intersection not met");
 }
 
@@ -40,7 +40,7 @@
 	NSArray *accepts = AFHTTPMessageParseAcceptHeader(@"image/png;q=0.2,text/plain;q=1,text/*;q=0.8");
 	
 	NSString *provideType = @"image/jpeg";
-	NSString *chosenType = AFHTTPMessageChooseContentTypeForAccepts(accepts, [NSArray arrayWithObject:provideType]);
+	NSString *chosenType = AFHTTPMessageChooseContentTypeForAcceptTypes(accepts, [NSArray arrayWithObject:provideType]);
 	STAssertNil(chosenType, @"no intersection between client accept preference and server availability should return nil");
 }
 
