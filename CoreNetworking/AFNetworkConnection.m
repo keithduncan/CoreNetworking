@@ -101,22 +101,14 @@
 }
 
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)packet context:(void *)context {
-	if ([[self delegate] respondsToSelector:@selector(networkLayer:didWrite:context:)]) {
-		[[self delegate] networkLayer:self didWrite:packet context:context];
-	}
-	else {
-		//@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"uncaught write with context %p", context] userInfo:nil];
-		//nop
+	if ([self.delegate respondsToSelector:@selector(networkLayer:didWrite:context:)]) {
+		[self.delegate networkLayer:self didWrite:packet context:context];
 	}
 }
 
-- (void)networkLayer:(id<AFNetworkTransportLayer>)layer didRead:(id)packet context:(void *)context {
-	if ([[self delegate] respondsToSelector:@selector(networkLayer:didRead:context:)]) {
-		[[self delegate] networkLayer:self didRead:packet context:context];
-	}
-	else {
-		//@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"uncaught read with context %p", context] userInfo:nil];
-		//nop
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)packet context:(void *)context {
+	if ([self.delegate respondsToSelector:@selector(networkLayer:didRead:context:)]) {
+		[self.delegate networkLayer:self didRead:packet context:context];
 	}
 }
 
