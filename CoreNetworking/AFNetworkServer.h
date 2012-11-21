@@ -176,6 +176,22 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkInternetSocketScope) {
 - (AFNetworkSocket *)openSocketWithSignature:(const AFNetworkSocketSignature)signature address:(NSData *)address error:(NSError **)errorRef;
 
 /*
+ 
+ */
+
+/*!
+	\brief
+	Close all listen sockets
+ */
+- (void)closeListenSockets;
+
+/*!
+	\brief
+	Close all listen sockets and connected clients
+ */
+- (void)close;
+
+/*
 	Server Clients
  */
 

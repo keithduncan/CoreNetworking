@@ -162,6 +162,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 - (BOOL)openInternetSocketsWithSocketSignature:(const AFNetworkSocketSignature)socketSignature scope:(AFNetworkInternetSocketScope)scope port:(uint16_t)port errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler {
 	struct addrinfo hints = {
 		.ai_family = AF_UNSPEC,
+		.ai_socktype = socketSignature.socketType,
 		.ai_flags = AI_PASSIVE,
 	};
 	struct addrinfo *addresses = NULL;
@@ -305,9 +306,28 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 		return nil;
 	}
 	
-	[[self.clientPools objectAtIndex:0] addConnectionsObject:newSocket];
+	AFNetworkPool *listenPool = [self.clientPools objectAtIndex:0];
+	[listenPool addConnectionsObject:newSocket];
 	
 	return newSocket;
+}
+
+- (void)closeListenSockets {
+	AFNetworkPool *listenPool = [self.clientPools objectAtIndex:0];
+	for (AFNetworkSocket *currentLayer in listenPool.connections) {
+		[currentLayer close];
+		[listenPool removeConnectionsObject:currentLayer];
+	}
+}
+
+- (void)close {
+	[self closeListenSockets];
+	
+	AFNetworkPool *transportPool = [self.clientPools objectAtIndex:1];
+	for (AFNetworkTransport *transportLayer in transportPool.connections) {
+		[transportLayer close];
+		[transportPool removeConnectionsObject:transportLayer];
+	}
 }
 
 - (void)encapsulateNetworkLayer:(id <AFNetworkConnectionLayer>)layer {
