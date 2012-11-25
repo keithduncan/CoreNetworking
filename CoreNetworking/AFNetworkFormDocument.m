@@ -206,6 +206,7 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 #pragma mark -
 
 @interface AFNetworkFormDocument ()
+@property (readonly, nonatomic) NSMutableArray *fieldOrder;
 @property (readonly, nonatomic) NSMutableDictionary *values, *files;
 @end
 
@@ -217,6 +218,8 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 	self = [super init];
 	if (self == nil) return nil;
 	
+	_fieldOrder = [[NSMutableArray alloc] init];
+	
 	_values = [[NSMutableDictionary alloc] init];
 	_files = [[NSMutableDictionary alloc] init];
 	
@@ -224,10 +227,17 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 }
 
 - (void)dealloc {
+	[_fieldOrder release];
+	
 	[_values release];
 	[_files release];
 	
 	[super dealloc];
+}
+
+- (void)_addToFieldOrder:(NSString *)fieldname {
+	[[self fieldOrder] removeObject:fieldname];
+	[[self fieldOrder] addObject:fieldname];
 }
 
 - (NSString *)valueForField:(NSString *)fieldname {
@@ -235,6 +245,8 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 }
 
 - (void)setValue:(NSString *)value forField:(NSString *)fieldname {
+	[self _addToFieldOrder:fieldname];
+	
 	[[self values] setValue:value forKey:fieldname];
 	[[self files] removeObjectForKey:fieldname];
 }
@@ -245,6 +257,8 @@ static NSString *const _AFNetworkFormDocumentFileFieldPartLocationKey = @"locati
 
 - (void)addFileByReferencingURL:(NSURL *)location withFilename:(NSString *)filename toField:(NSString *)fieldname {
 	NSParameterAssert([location isFileURL]);
+	
+	[self _addToFieldOrder:fieldname];
 	
 	NSMutableDictionary *parts = [[self files] objectForKey:fieldname];
 	if (parts == nil) {
