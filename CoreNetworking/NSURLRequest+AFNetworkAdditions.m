@@ -8,12 +8,22 @@
 
 #import "NSURLRequest+AFNetworkAdditions.h"
 
-#import "NSDictionary+AFNetworkAdditions.h"
+#import "AFHTTPMessageMediaType.h"
 
-#warning this should be split out into an AFNetworkURLRequest object and be transformable into an NSURLRequest object
+#warning these methods should be split out into an AFNetworkURLRequest object and be transformable into an NSURLRequest object
 
 static NSString * (^URLEncodeString)(NSString *) = ^ NSString * (NSString *string) {
-	return NSMakeCollectable(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR("!*'();:@&=+$,/?%#[]"), kCFStringEncodingUTF8));
+	if (string == nil) {
+		return nil;
+	}
+	return [NSMakeCollectable(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR("!*'();:@&=+$,/?%#[]"), kCFStringEncodingUTF8)) autorelease];
+};
+
+static NSString * (^URLDecodeString)(NSString *) = ^ NSString * (NSString *string) {
+	if (string == nil) {
+		return nil;
+	}
+	return [NSMakeCollectable(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR("!*'();:@&=+$,/?%#[]"), kCFStringEncodingUTF8)) autorelease];
 };
 
 static NSString *const AFHTTPBodyFileLocationKey = @"AFHTTPBodyFileLocation";
@@ -21,21 +31,79 @@ static NSString *const AFHTTPBodyFileLocationKey = @"AFHTTPBodyFileLocation";
 @implementation NSURLRequest (AFNetworkAdditions)
 
 - (NSDictionary *)_parametersFromString:(NSString *)string {
-	return [NSDictionary dictionaryWithString:string separator:@"=" delimiter:@"&"];
+	NSString *delimiter = @"=", *separator = @"&";
+	
+	NSArray *parameterPairs = [string componentsSeparatedByString:delimiter];
+	
+	NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:[parameterPairs count]];
+	
+	for (NSString *currentPair in parameterPairs) {
+		NSArray *pairComponents = [currentPair componentsSeparatedByString:separator];
+		
+		NSString *key = ([pairComponents count] >= 1 ? [pairComponents objectAtIndex:0] : nil);
+		key = URLDecodeString(key);
+		if (key == nil) {
+			continue;
+		}
+		
+		id value = nil;
+		if ([pairComponents count] >= 2) {
+			value = [pairComponents objectAtIndex:1];
+			value = URLDecodeString(value);
+		}
+		else {
+			value = [NSNull null];
+		}
+		
+		if (value == nil) {
+			continue;
+		}
+		
+		[parameters setObject:value forKey:key];
+	}
+	
+	return parameters;
 }
 
 - (NSDictionary *)parametersFromQuery {
 	NSString *query = [[self URL] query];
-	if (query == nil) return nil;
+	if (query == nil) {
+		return nil;
+	}
 	return [self _parametersFromString:query];
 }
 
 - (NSDictionary *)parametersFromBody {
-	if (![[self valueForHTTPHeaderField:@"Content-Type"] isEqualToString:@"application/x-www-form-urlencoded"]) {
+	NSString *contentType = [self valueForHTTPHeaderField:@"Content-Type"];
+	AFHTTPMessageMediaType *mediaType = AFHTTPMessageParseContentTypeHeader(contentType);
+	if (mediaType == nil) {
 		return nil;
 	}
 	
-	NSString *bodyString = [[[NSString alloc] initWithData:[self HTTPBody] encoding:NSUTF8StringEncoding] autorelease];
+	if ([[mediaType type] caseInsensitiveCompare:@"application/x-www-form-urlencoded"] != NSOrderedSame) {
+		return nil;
+	}
+	
+	NSStringEncoding encoding = 0;
+	do {
+		NSString *textEncodingName = [[mediaType parameters] objectForKey:@"charset"];
+		if (textEncodingName == nil) {
+			break;
+		}
+		
+		CFStringEncoding stringEncoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)textEncodingName);
+		if (stringEncoding == kCFStringEncodingInvalidId) {
+			break;
+		}
+		
+		encoding = CFStringConvertEncodingToNSStringEncoding(stringEncoding);
+	} while (0);
+	
+	if (encoding == 0) {
+		encoding = NSISOLatin1StringEncoding;
+	}
+	
+	NSString *bodyString = [[[NSString alloc] initWithData:[self HTTPBody] encoding:encoding] autorelease];
 	return [self _parametersFromString:bodyString];
 }
 
@@ -62,7 +130,9 @@ static NSString *const AFHTTPBodyFileLocationKey = @"AFHTTPBodyFileLocation";
 		NSMutableString *parameter = [NSMutableString string];
 		[parameter appendString:URLEncodeString(key)];
 		[parameter appendString:@"="];
-		if (![obj isKindOfClass:[NSNull class]]) [parameter appendString:URLEncodeString(obj)]; 
+		if ([obj isKindOfClass:[NSString class]]) {
+			[parameter appendString:URLEncodeString(obj)];
+		}
 		
 		[queryParameters addObject:parameter];
 	}];

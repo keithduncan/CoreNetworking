@@ -12,8 +12,8 @@
 
 #import "AFNetworkPacketWrite.h"
 #import "AFNetworkPacketWriteFromReadStream.h"
+#import "AFHTTPMessageMediaType.h"
 
-#import "NSDictionary+AFNetworkAdditions.h"
 #import "NSURLRequest+AFNetworkAdditions.h"
 
 #import "AFNetwork-Constants.h"
@@ -36,34 +36,17 @@
 
 - (id)initWithURL:(NSURL *)URL message:(CFHTTPMessageRef)message {
 	NSString *MIMEType = nil; NSString *textEncodingName = nil;
-	NSString *contentType = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentTypeHeader)) autorelease];
-	if (contentType != nil) {
-		NSRange parameterSeparator = [contentType rangeOfString:@";"];
-		if (parameterSeparator.location == NSNotFound) {
-			MIMEType = contentType;
+	
+	do {
+		NSString *contentType = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentTypeHeader)) autorelease];
+		AFHTTPMessageMediaType *mediaType = AFHTTPMessageParseContentTypeHeader(contentType);
+		if (mediaType == nil) {
+			break;
 		}
-		else {
-			MIMEType = [contentType substringToIndex:parameterSeparator.location];
-			
-			NSMutableDictionary *contentTypeParameters = [NSMutableDictionary dictionaryWithString:[contentType substringFromIndex:(parameterSeparator.location + 1)] separator:@"=" delimiter:@";"];
-			[[[contentTypeParameters copy] autorelease] enumerateKeysAndObjectsUsingBlock:^ (id key, id obj, BOOL *stop) {
-				[contentTypeParameters removeObjectForKey:key];
-				
-				key = [[key mutableCopy] autorelease];
-				CFStringTrimWhitespace((CFMutableStringRef)key);
-				
-				obj = [[obj mutableCopy] autorelease];
-				CFStringTrimWhitespace((CFMutableStringRef)obj);
-				
-				[contentTypeParameters setObject:obj forKey:key];
-			}];
-			textEncodingName = [contentTypeParameters objectForCaseInsensitiveKey:@"charset"];
-			
-			if ([textEncodingName characterAtIndex:0] == '"' && [textEncodingName characterAtIndex:([textEncodingName length] - 1)] == '"') {
-				textEncodingName = [textEncodingName substringWithRange:NSMakeRange(1, [textEncodingName length] - 2)];
-			}
-		}
-	}
+		
+		MIMEType = contentType;
+		textEncodingName = [[mediaType parameters] objectForKey:@"charset"];
+	} while (0);
 	
 	NSString *contentLength = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease];
 	

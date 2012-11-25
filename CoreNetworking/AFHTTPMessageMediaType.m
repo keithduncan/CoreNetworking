@@ -374,6 +374,10 @@ static NSDictionary * (^_scanParameters)(NSScanner *, NSString *) = ^ NSDictiona
 	subtype        = token
  */
 AFHTTPMessageMediaType *AFHTTPMessageParseContentTypeHeader(NSString *contentTypeHeader) {
+	if (contentTypeHeader == nil) {
+		return nil;
+	}
+	
 	NSScanner *contentTypeHeaderScanner = [NSScanner scannerWithString:contentTypeHeader];
 	[contentTypeHeaderScanner setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
 	
@@ -447,6 +451,10 @@ AFHTTPMessageMediaType *AFHTTPMessageParseContentTypeHeader(NSString *contentTyp
 	quoted-pair			= "\" ( HTAB / SP / VCHAR / obs-text )
  */
 NSArray *AFHTTPMessageParseAcceptHeader(NSString *acceptHeader) {
+	if (acceptHeader == nil) {
+		return nil;
+	}
+	
 	NSMutableArray *accepts = [NSMutableArray array];
 	
 	NSDictionary * (^scanParameters)(NSScanner *) = ^ NSDictionary * (NSScanner *scanner) {

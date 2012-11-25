@@ -64,7 +64,7 @@
 
 /*!
 	\brief
-	Offers inline synchronous error handling.
+	Offers inline synchronous error reporting.
  */
 - (BOOL)open:(NSError **)errorRef;
 

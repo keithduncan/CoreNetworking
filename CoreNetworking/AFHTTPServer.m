@@ -13,9 +13,8 @@
 #import "AFNetworkTransport.h"
 #import "AFHTTPConnection.h"
 #import "AFHTTPMessage.h"
+#import "AFHTTPMessageMediaType.h"
 #import "AFNetworkPacketClose.h"
-
-#import "NSDictionary+AFNetworkAdditions.h"
 
 #define AF_ENABLE_REQUEST_LOGGING() (1 || [[[[NSProcessInfo processInfo] environment] objectForKey:@"com.thirty-three.corenetworking.http.server.log.requests"] isEqual:@"1"])
 #define AF_ENABLE_RESPONSE_LOGGING() (1 || [[[[NSProcessInfo processInfo] environment] objectForKey:@"com.thirty-three.corenetworking.http.server.log.responses"] isEqual:@"1"])
@@ -103,7 +102,6 @@
 	@try {
 		NSString *requestMethod = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
 		NSURL *requestURL = [NSMakeCollectable(CFHTTPMessageCopyRequestURL(request)) autorelease];
-		NSDictionary *requestHeaders = [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields(request)) autorelease];
 		NSData *requestBody __attribute__((unused)) = [NSMakeCollectable(CFHTTPMessageCopyBody(request)) autorelease];
 		
 		if (AF_ENABLE_REQUEST_LOGGING()) {
@@ -111,7 +109,7 @@
 		}
 		
 		// Note: assert that the client has included the Host: header as required by HTTP/1.1
-		if ([requestHeaders objectForCaseInsensitiveKey:AFHTTPMessageHostHeader] == nil) {
+		if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader)) autorelease] == nil) {
 			AFHTTPStatusCode responseCode = AFHTTPStatusCodeBadRequest;
 			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 			
@@ -225,30 +223,22 @@
 		
 		do {
 			NSString *contentType = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentTypeHeader)) autorelease];
-			if (contentType == nil) {
+			AFHTTPMessageMediaType *mediaType = AFHTTPMessageParseContentTypeHeader(contentType);
+			if (mediaType == nil) {
 				break;
 			}
 			
-			NSScanner *contentTypeScanner = [NSScanner scannerWithString:contentType];
-			
-			NSString *mimeType = nil;
-			BOOL scanMimeType = [contentTypeScanner scanUpToString:@";" intoString:&mimeType];
-			if (!scanMimeType) {
-				break;
-			}
-			
-			NSString *mimeParametersString = [contentType substringFromIndex:[contentTypeScanner scanLocation]];
-			NSDictionary *mimeParameters = [NSDictionary dictionaryWithString:mimeParametersString separator:@"=" delimiter:@","];
-			
-			NSString *textEncodingName = [mimeParameters objectForCaseInsensitiveKey:@"encoding"];
+			NSString *textEncodingName = [[mediaType parameters] objectForKey:@"charset"];
 			if (textEncodingName == nil) {
 				break;
 			}
 			
-			CFStringEncoding encoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)textEncodingName);
-			if (encoding != kCFStringEncodingInvalidId) {
-				bodyEncoding = CFStringConvertEncodingToNSStringEncoding(encoding);
+			CFStringEncoding stringEncoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)textEncodingName);
+			if (stringEncoding == kCFStringEncodingInvalidId) {
+				break;
 			}
+			
+			bodyEncoding = CFStringConvertEncodingToNSStringEncoding(stringEncoding);
 		} while (0);
 		
 		NSString *bodyString = [[[NSString alloc] initWithData:(id)messageBody encoding:bodyEncoding] autorelease];
@@ -261,15 +251,12 @@
 }
 
 - (void)_returnResponse:(CFHTTPMessageRef)response forRequest:(CFHTTPMessageRef)request connection:(id)connection permitKeepAlive:(BOOL)permitKeepAlive {
-	NSDictionary *requestHeaders = [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields(request)) autorelease];
-	
-	NSString *connectionValue = [requestHeaders objectForCaseInsensitiveKey:AFHTTPMessageConnectionHeader];
+	NSString *connectionValue = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)AFHTTPMessageConnectionHeader)) autorelease];
 	BOOL keepAlive = (connectionValue != nil && [connectionValue caseInsensitiveCompare:@"keep-alive"] == NSOrderedSame) && permitKeepAlive;
 	CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageConnectionHeader, (keepAlive ? CFSTR("keep-alive") : CFSTR("close")));
-
+	
 #if 0
-	NSDictionary *responseHeaders = [NSMakeCollectable(CFHTTPMessageCopyAllHeaderFields(response)) autorelease];
-	NSString *contentLengthValue = [responseHeaders objectForCaseInsensitiveKey:AFHTTPMessageContentLengthHeader];
+	NSString *contentLengthValue = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(request, AFHTTPMessageContentLengthHeader)) autorelease];
 	if (contentLengthValue == nil) {
 		CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageContentLengthHeader, CFSTR("0"));
 	}
