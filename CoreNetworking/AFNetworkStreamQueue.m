@@ -6,7 +6,7 @@
 //  Copyright 2010. All rights reserved.
 //
 
-#import "AFNetworkStream.h"
+#import "AFNetworkStreamQueue.h"
 
 #import <objc/message.h>
 #import <objc/objc-auto.h>
@@ -27,7 +27,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 	_AFNetworkStreamFlagsTryDequeue = 1UL << 1,
 };
 
-@interface AFNetworkStream () <NSStreamDelegate>
+@interface AFNetworkStreamQueue () <NSStreamDelegate>
 @property (assign, nonatomic) NSUInteger streamFlags;
 
 @property (readonly, nonatomic) NSStream *stream;
@@ -38,7 +38,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 @property (readonly, nonatomic) AFNetworkPacketQueue *packetQueue;
 @end
 
-@interface AFNetworkStream (AFNetworkStreamPrivate)
+@interface AFNetworkStreamQueue (AFNetworkStreamPrivate)
 - (void)_updateStreamFlags:(_AFNetworkStreamFlags)newStreamFlags;
 
 - (void)_tryClearDequeuePacketsIfScheduled;
@@ -56,11 +56,11 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 - (void)_forwardError:(NSError *)error;
 @end
 
-@interface AFNetworkStream (_Subclasses)
+@interface AFNetworkStreamQueue (_Subclasses)
 
 @end
 
-@implementation AFNetworkStream
+@implementation AFNetworkStreamQueue
 
 @synthesize delegate=_delegate;
 @synthesize stream=_stream;
@@ -395,7 +395,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 
 @end
 
-@implementation AFNetworkStream (AFNetworkStreamPrivate)
+@implementation AFNetworkStreamQueue (AFNetworkStreamPrivate)
 
 - (void)_updateStreamFlags:(_AFNetworkStreamFlags)newStreamFlags {
 	if ((self.streamFlags & _AFNetworkStreamFlagsTryDequeue) == _AFNetworkStreamFlagsTryDequeue && (newStreamFlags & _AFNetworkStreamFlagsTryDequeue) == 0) {

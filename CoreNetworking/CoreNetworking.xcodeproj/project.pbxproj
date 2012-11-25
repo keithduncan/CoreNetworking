@@ -138,10 +138,10 @@
 		53B2015F0F6D7739001DC8E7 /* AFNetworkPacketWrite.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B2014F0F6D7739001DC8E7 /* AFNetworkPacketWrite.m */; };
 		53B201600F6D7739001DC8E7 /* AFNetworkSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53B201610F6D7739001DC8E7 /* AFNetworkSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B201510F6D7739001DC8E7 /* AFNetworkSocket.m */; };
-		53C0B63E113DAD360011A604 /* AFNetworkStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C0B63C113DAD360011A604 /* AFNetworkStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53C0B63F113DAD360011A604 /* AFNetworkStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C0B63D113DAD360011A604 /* AFNetworkStream.m */; };
-		53C0B640113DAD360011A604 /* AFNetworkStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C0B63C113DAD360011A604 /* AFNetworkStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53C0B641113DAD360011A604 /* AFNetworkStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C0B63D113DAD360011A604 /* AFNetworkStream.m */; };
+		53C0B63E113DAD360011A604 /* AFNetworkStreamQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C0B63C113DAD360011A604 /* AFNetworkStreamQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53C0B63F113DAD360011A604 /* AFNetworkStreamQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C0B63D113DAD360011A604 /* AFNetworkStreamQueue.m */; };
+		53C0B640113DAD360011A604 /* AFNetworkStreamQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 53C0B63C113DAD360011A604 /* AFNetworkStreamQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53C0B641113DAD360011A604 /* AFNetworkStreamQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 53C0B63D113DAD360011A604 /* AFNetworkStreamQueue.m */; };
 		53C156F7104060E7008D1E82 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C156F6104060E7008D1E82 /* CoreServices.framework */; };
 		53CB1DA314462B430013C40A /* AFNetworkServiceBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = 53CB1DA114462B430013C40A /* AFNetworkServiceBrowser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53CB1DA414462B430013C40A /* AFNetworkServiceBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = 53CB1DA114462B430013C40A /* AFNetworkServiceBrowser.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -293,8 +293,8 @@
 		53B201500F6D7739001DC8E7 /* AFNetworkSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkSocket.h; sourceTree = "<group>"; };
 		53B201510F6D7739001DC8E7 /* AFNetworkSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkSocket.m; sourceTree = "<group>"; };
 		53BEF6A10F5B6A2700063B8D /* libCoreNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCoreNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		53C0B63C113DAD360011A604 /* AFNetworkStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkStream.h; sourceTree = "<group>"; };
-		53C0B63D113DAD360011A604 /* AFNetworkStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkStream.m; sourceTree = "<group>"; };
+		53C0B63C113DAD360011A604 /* AFNetworkStreamQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkStreamQueue.h; sourceTree = "<group>"; };
+		53C0B63D113DAD360011A604 /* AFNetworkStreamQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkStreamQueue.m; sourceTree = "<group>"; };
 		53C156F6104060E7008D1E82 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		53CB1DA114462B430013C40A /* AFNetworkServiceBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkServiceBrowser.h; sourceTree = "<group>"; };
 		53CB1DA214462B430013C40A /* AFNetworkServiceBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkServiceBrowser.m; sourceTree = "<group>"; };
@@ -462,8 +462,8 @@
 				53B201510F6D7739001DC8E7 /* AFNetworkSocket.m */,
 				535511EF0FAF4A34004F8FC5 /* AFNetworkTransport.h */,
 				535511F00FAF4A34004F8FC5 /* AFNetworkTransport.m */,
-				53C0B63C113DAD360011A604 /* AFNetworkStream.h */,
-				53C0B63D113DAD360011A604 /* AFNetworkStream.m */,
+				53C0B63C113DAD360011A604 /* AFNetworkStreamQueue.h */,
+				53C0B63D113DAD360011A604 /* AFNetworkStreamQueue.m */,
 				5370E0880F5B061D008F5991 /* AFNetworkConnection.h */,
 				5370E0890F5B061D008F5991 /* AFNetworkConnection.m */,
 			);
@@ -680,7 +680,7 @@
 				538307B1101384DF000DA939 /* AFHTTPMessage.h in Headers */,
 				5349CAAE1040245A0030FD57 /* AFHTTPServer.h in Headers */,
 				533AD715113C81A200FED57B /* AFHTTPHeadersPacket.h in Headers */,
-				53C0B640113DAD360011A604 /* AFNetworkStream.h in Headers */,
+				53C0B640113DAD360011A604 /* AFNetworkStreamQueue.h in Headers */,
 				538EC15C115D6E5A00A8E8F9 /* AFNetworkFormDocument.h in Headers */,
 				53656037116FC6210006DCAF /* AFNetworkPacketWriteFromReadStream.h in Headers */,
 				53656043116FC7990006DCAF /* AFNetworkPacketReadToWriteStream.h in Headers */,
@@ -734,7 +734,7 @@
 				538307B3101384DF000DA939 /* AFHTTPMessage.h in Headers */,
 				5349CAB01040245A0030FD57 /* AFHTTPServer.h in Headers */,
 				533AD717113C81A200FED57B /* AFHTTPHeadersPacket.h in Headers */,
-				53C0B63E113DAD360011A604 /* AFNetworkStream.h in Headers */,
+				53C0B63E113DAD360011A604 /* AFNetworkStreamQueue.h in Headers */,
 				538EC15E115D6E5A00A8E8F9 /* AFNetworkFormDocument.h in Headers */,
 				53554A231175BE37005DD3A7 /* NSURLRequest+AFNetworkAdditions.h in Headers */,
 				5315B13E124DF1AF009A6280 /* AFHTTPBodyPacket.h in Headers */,
@@ -911,7 +911,7 @@
 				538307B2101384DF000DA939 /* AFHTTPMessage.m in Sources */,
 				5349CAAF1040245A0030FD57 /* AFHTTPServer.m in Sources */,
 				533AD716113C81A200FED57B /* AFHTTPHeadersPacket.m in Sources */,
-				53C0B641113DAD360011A604 /* AFNetworkStream.m in Sources */,
+				53C0B641113DAD360011A604 /* AFNetworkStreamQueue.m in Sources */,
 				538EC15D115D6E5A00A8E8F9 /* AFNetworkFormDocument.m in Sources */,
 				53656036116FC61B0006DCAF /* AFNetworkPacketWriteFromReadStream.m in Sources */,
 				53656042116FC7970006DCAF /* AFNetworkPacketReadToWriteStream.m in Sources */,
@@ -965,7 +965,7 @@
 				533AD5C4113BF96200FED57B /* AFNetworkPacketWriteFromReadStream.m in Sources */,
 				533AD5CA113BF98000FED57B /* AFNetworkPacketReadToWriteStream.m in Sources */,
 				533AD718113C81A200FED57B /* AFHTTPHeadersPacket.m in Sources */,
-				53C0B63F113DAD360011A604 /* AFNetworkStream.m in Sources */,
+				53C0B63F113DAD360011A604 /* AFNetworkStreamQueue.m in Sources */,
 				538EC15F115D6E5A00A8E8F9 /* AFNetworkFormDocument.m in Sources */,
 				53554A241175BE37005DD3A7 /* NSURLRequest+AFNetworkAdditions.m in Sources */,
 				533D6E72117A4B93005A65D3 /* CoreNetworking.m in Sources */,

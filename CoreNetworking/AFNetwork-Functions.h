@@ -12,7 +12,7 @@
 
 #import "CoreNetworking/AFNetwork-Macros.h"
 
-@class AFNetworkStream;
+@class AFNetworkStreamQueue;
 
 /*
 	BSD Networking
@@ -87,4 +87,4 @@ AFNETWORK_EXTERN BOOL AFNetworkIsConnectedToInternet(void);
 	\brief
 	Errors from AFNetworkStream are raw and unsuitable for display to the user, this function attempts to generate a legible error.
  */
-AFNETWORK_EXTERN NSError *AFNetworkStreamPrepareDisplayError(AFNetworkStream *stream, NSError *error);
+AFNETWORK_EXTERN NSError *AFNetworkStreamPrepareDisplayError(AFNetworkStreamQueue *stream, NSError *error);

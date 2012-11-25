@@ -13,9 +13,9 @@
 @class AFNetworkPacketQueue;
 @class AFNetworkPacket;
 
-@class AFNetworkStream;
+@class AFNetworkStreamQueue;
 
-@protocol AFNetworkStreamDelegate <NSObject>
+@protocol AFNetworkStreamQueueDelegate <NSObject>
 
  @required
 
@@ -30,13 +30,13 @@
 	
 	all other events are captured and processed.
  */
-- (void)networkStream:(AFNetworkStream *)networkStream didReceiveEvent:(NSStreamEvent)event;
+- (void)networkStream:(AFNetworkStreamQueue *)networkStream didReceiveEvent:(NSStreamEvent)event;
 
 /*!
 	\brief
 	You must implement this method to handle any errors; errors must be handled.
  */
-- (void)networkStream:(AFNetworkStream *)networkStream didReceiveError:(NSError *)error;
+- (void)networkStream:(AFNetworkStreamQueue *)networkStream didReceiveError:(NSError *)error;
 
  @optional
 
@@ -44,13 +44,13 @@
 	\brief
 	Implement to know when a packet has been removed from the stream's queue.
  */
-- (void)networkStream:(AFNetworkStream *)networkStream didDequeuePacket:(AFNetworkPacket *)packet;
+- (void)networkStream:(AFNetworkStreamQueue *)networkStream didDequeuePacket:(AFNetworkPacket *)packet;
 
 /*!
 	\brief
 	Implement this method to be informed of packet progress.
  */
-- (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSInteger)bytesTransferred totalBytesTransferred:(NSInteger)totalBytesTransferred totalBytesExpectedToTransfer:(NSInteger)totalBytesExpectedToTransfer;
+- (void)networkStream:(AFNetworkStreamQueue *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSInteger)bytesTransferred totalBytesTransferred:(NSInteger)totalBytesTransferred totalBytesExpectedToTransfer:(NSInteger)totalBytesExpectedToTransfer;
 
 @end
 
@@ -60,9 +60,9 @@
 	\brief
 	
  */
-@interface AFNetworkStream : NSObject {
+@interface AFNetworkStreamQueue : NSObject {
  @protected
-	id <AFNetworkStreamDelegate> _delegate;
+	id <AFNetworkStreamQueueDelegate> _delegate;
 	
 	NSStream *_stream;
 	SEL _performSelector;
@@ -91,7 +91,7 @@
  */
 - (id)initWithStream:(NSStream *)stream;
 
-@property (assign, nonatomic) id <AFNetworkStreamDelegate> delegate;
+@property (assign, nonatomic) id <AFNetworkStreamQueueDelegate> delegate;
 
 /*
 	Scheduling

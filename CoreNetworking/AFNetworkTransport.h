@@ -18,7 +18,7 @@
 #import "CoreNetworking/AFNetwork-Types.h"
 
 @class AFNetworkTransport;
-@class AFNetworkStream;
+@class AFNetworkStreamQueue;
 
 @class AFNetworkPacketWrite;
 @class AFNetworkPacketRead;
@@ -68,10 +68,10 @@
 		AFNetworkHostSignature _host;
 	} _signature;
 	
-	AFNetworkStream *_writeStream;
+	AFNetworkStreamQueue *_writeStream;
 	NSUInteger _writeFlags;
 	
-	AFNetworkStream *_readStream;
+	AFNetworkStreamQueue *_readStream;
 	NSUInteger _readFlags;
 	
 	NSUInteger _connectionFlags;

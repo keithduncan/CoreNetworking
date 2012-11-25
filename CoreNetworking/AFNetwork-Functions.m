@@ -20,7 +20,7 @@
 #import <Security/Security.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
-#import "AFNetworkStream.h"
+#import "AFNetworkStreamQueue.h"
 
 #import "AFNetwork-Constants.h"
 
@@ -248,7 +248,7 @@ static BOOL _AFNetworkCheckIsConnectedToInternet(NSError *underlyingError, NSErr
 	return YES;
 }
 
-NSError *AFNetworkStreamPrepareDisplayError(AFNetworkStream *stream, NSError *error) {
+NSError *AFNetworkStreamPrepareDisplayError(AFNetworkStreamQueue *stream, NSError *error) {
 	NSString *streamRemoteHostname = [stream streamPropertyForKey:(id)kCFStreamPropertySocketRemoteHostName];
 	
 	if ([[error domain] isEqualToString:(id)kCFErrorDomainCFNetwork] && [error code] == kCFHostErrorUnknown) {

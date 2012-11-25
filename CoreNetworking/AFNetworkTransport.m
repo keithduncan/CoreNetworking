@@ -23,7 +23,7 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 
 #import "AFNetworkSocket.h"
-#import "AFNetworkStream.h"
+#import "AFNetworkStreamQueue.h"
 #import "AFNetworkPacketQueue.h"
 #import "AFNetworkPacketRead.h"
 #import "AFNetworkPacketWrite.h"
@@ -45,17 +45,17 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 };
 
 @interface AFNetworkTransport ()
-@property (readwrite, retain, nonatomic) AFNetworkStream *writeStream;
+@property (readwrite, retain, nonatomic) AFNetworkStreamQueue *writeStream;
 @property (assign, nonatomic) NSUInteger writeFlags;
 
-@property (readwrite, retain, nonatomic) AFNetworkStream *readStream;
+@property (readwrite, retain, nonatomic) AFNetworkStreamQueue *readStream;
 @property (assign, nonatomic) NSUInteger readFlags;
 
 @property (assign, nonatomic) NSUInteger connectionFlags;
 @end
 
 // Note: the selectors aren't all actually implemented, some are added dynamically
-@interface AFNetworkTransport (Delegate) <AFNetworkStreamDelegate>
+@interface AFNetworkTransport (Delegate) <AFNetworkStreamQueueDelegate>
 @end
 
 @interface AFNetworkTransport (Streams)
@@ -319,7 +319,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	 */
 	NSDictionary *streamProperty = [NSDictionary dictionaryWithDictionary:options];
 	
-	AFNetworkStream *stream = (self.writeStream ? : self.readStream);
+	AFNetworkStreamQueue *stream = (self.writeStream ? : self.readStream);
 	BOOL startTLS = [stream setStreamProperty:streamProperty forKey:(id)kCFStreamPropertySSLSettings];
 	if (!startTLS) {
 		if (errorRef != NULL) {
@@ -341,7 +341,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 
 #pragma mark -
 
-- (void)networkStream:(AFNetworkStream *)stream didReceiveEvent:(NSStreamEvent)event {
+- (void)networkStream:(AFNetworkStreamQueue *)stream didReceiveEvent:(NSStreamEvent)event {
 	NSParameterAssert(stream == self.writeStream || stream == self.readStream);
 	
 	switch (event) {
@@ -387,7 +387,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	}
 }
 
-- (void)networkStream:(AFNetworkStream *)stream didReceiveError:(NSError *)error {
+- (void)networkStream:(AFNetworkStreamQueue *)stream didReceiveError:(NSError *)error {
 	NSError *newError = AFNetworkStreamPrepareDisplayError(stream, error);
 	[self.delegate networkLayer:self didReceiveError:newError];
 }
@@ -438,13 +438,13 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 
 - (void)_configureWithWriteStream:(NSOutputStream *)writeStream readStream:(NSInputStream *)readStream {
 	if (writeStream != nil) {
-		AFNetworkStream *stream = [[(AFNetworkStream *)[AFNetworkStream alloc] initWithStream:writeStream] autorelease];
+		AFNetworkStreamQueue *stream = [[(AFNetworkStreamQueue *)[AFNetworkStreamQueue alloc] initWithStream:writeStream] autorelease];
 		stream.delegate = self;
 		self.writeStream = stream;
 	}
 	
 	if (readStream != nil) {
-		AFNetworkStream *stream = [[(AFNetworkStream *)[AFNetworkStream alloc] initWithStream:readStream] autorelease];
+		AFNetworkStreamQueue *stream = [[(AFNetworkStreamQueue *)[AFNetworkStreamQueue alloc] initWithStream:readStream] autorelease];
 		stream.delegate = self;
 		self.readStream = stream;
 	}
@@ -493,7 +493,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	}
 }
 
-- (void)networkStream:(AFNetworkStream *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSInteger)bytesTransferred totalBytesTransferred:(NSInteger)totalBytesTransferred totalBytesExpectedToTransfer:(NSInteger)totalBytesExpectedToTransfer {
+- (void)networkStream:(AFNetworkStreamQueue *)networkStream didTransfer:(AFNetworkPacket *)packet bytesTransferred:(NSInteger)bytesTransferred totalBytesTransferred:(NSInteger)totalBytesTransferred totalBytesExpectedToTransfer:(NSInteger)totalBytesExpectedToTransfer {
 	SEL delegateSelector = NULL;
 	if (networkStream == self.writeStream) {
 		delegateSelector = @selector(networkTransport:didWritePartialDataOfLength:totalBytesWritten:totalBytesExpectedToWrite:context:);
@@ -509,7 +509,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	((void (*)(id, SEL, id, NSUInteger, NSUInteger, NSUInteger, void *))objc_msgSend)(self.delegate, delegateSelector, self, bytesTransferred, totalBytesTransferred, totalBytesExpectedToTransfer, packet.context);
 }
 
-- (void)networkStream:(AFNetworkStream *)networkStream didDequeuePacket:(AFNetworkPacket *)networkPacket {
+- (void)networkStream:(AFNetworkStreamQueue *)networkStream didDequeuePacket:(AFNetworkPacket *)networkPacket {
 	SEL delegateSelector = NULL;
 	if (networkStream == self.writeStream) {
 		delegateSelector = @selector(networkLayer:didWrite:context:);
