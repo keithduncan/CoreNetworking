@@ -21,7 +21,7 @@
 /*!
 	\brief
 	Read the port field from an Internet address family socket address.
-	The port is converted to host byte order.
+	The port is converted to host byte order for return.
 	
 	\details
 	Use of this function should be avoided as it assumes the layout of the socket address,
