@@ -13,25 +13,12 @@
 @implementation AFNetworkServiceScope (AFNetworkPrivate)
 
 - (BOOL)_scopeDomainIsWildcard {
-	BOOL domainIsWildcard = NO;
-	domainIsWildcard = (domainIsWildcard || [self.domain isEqualToString:AFNetworkServiceScopeWildcard]);
-	domainIsWildcard = (domainIsWildcard || [self.domain isEqualToString:AFNetworkServiceBrowserDomainBrowsable]);
-	domainIsWildcard = (domainIsWildcard || [self.domain isEqualToString:AFNetworkServiceBrowserDomainPublishable]);
-	return domainIsWildcard;
+	NSString *domain = self.domain;
+	return [domain isEqualToString:AFNetworkServiceScopeWildcard] || [domain isEqualToString:AFNetworkServiceBrowserDomainBrowsable] || [domain isEqualToString:AFNetworkServiceBrowserDomainPublishable];
 }
 
 - (BOOL)_scopeContainsWildcard {
-	BOOL scopeContainsWildcard = NO;
-	if (!scopeContainsWildcard) {
-		scopeContainsWildcard = [self _scopeDomainIsWildcard];
-	}
-	if (!scopeContainsWildcard) {
-		scopeContainsWildcard = [self.type isEqualToString:AFNetworkServiceScopeWildcard];
-	}
-	if (!scopeContainsWildcard) {
-		scopeContainsWildcard = [self.name isEqualToString:AFNetworkServiceScopeWildcard];
-	}
-	return scopeContainsWildcard;
+	return [self _scopeDomainIsWildcard] || [self.type isEqualToString:AFNetworkServiceScopeWildcard] || [self.name isEqualToString:AFNetworkServiceScopeWildcard];
 }
 
 @end
