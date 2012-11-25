@@ -108,16 +108,22 @@ NSString *const AFNetworkServiceBrowserDomainPublishable = @"*r";
 }
 
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
+	NSAssert(self.serviceSource == nil, @"cannot reschedule a browser after a search has started");
+	
 	_AFNetworkServiceSourceEnvironmentScheduleInRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
 }
 
 - (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
+	NSAssert(self.serviceSource == nil, @"cannot reschedule a browser after a search has started");
+	
 	_AFNetworkServiceSourceEnvironmentUnscheduleFromRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
 }
 
 #if defined(DISPATCH_API_VERSION)
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
+	NSAssert(self.serviceSource == nil, @"cannot reschedule a browser after a search has started");
+	
 	_AFNetworkServiceSourceEnvironmentScheduleInQueue((_AFNetworkServiceSourceEnvironment *)&_sources, queue);
 }
 

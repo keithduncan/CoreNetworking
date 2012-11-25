@@ -29,11 +29,11 @@
  @private
 	AFNETWORK_STRONG CFSocketSignature *_signature;
 	
-	AFNETWORK_STRONG __attribute__((NSObject)) CFSocketRef _socket;
+	AFNETWORK_STRONG CFSocketRef _socket;
 	NSUInteger _socketFlags;
 	
 	struct {
-		AFNETWORK_STRONG __attribute__((NSObject)) CFRunLoopSourceRef _runLoopSource;
+		AFNETWORK_STRONG CFRunLoopSourceRef _runLoopSource;
 		AFNETWORK_STRONG void *_dispatchSource;
 	} _sources;
 }

@@ -22,7 +22,7 @@ typedef AFNETWORK_ENUM(NSUInteger, _AFNetworkSocketFlags) {
 };
 
 @interface AFNetworkSocket ()
-@property (assign, nonatomic) AFNETWORK_STRONG __attribute__((NSObject)) CFSocketRef socket;
+@property (assign, nonatomic) AFNETWORK_STRONG CFSocketRef socket;
 @property (assign, nonatomic) NSUInteger socketFlags;
 
 - (void)_resumeSources;

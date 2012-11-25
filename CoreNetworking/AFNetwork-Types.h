@@ -98,7 +98,7 @@ struct _AFNetworkHostSignature {
 	/*
 		This defines _where_ to communicate
 	 */
-	AFNETWORK_STRONG __attribute__((NSObject)) CFHostRef host;
+	AFNETWORK_STRONG CFHostRef host;
 	/*
 		This defines _how_ to communicate.
 	 */
@@ -114,7 +114,7 @@ struct _AFNetworkServiceSignature {
 	/*
 		This defines _where_ and _how_ to communicate
 	 */
-	AFNETWORK_STRONG __attribute__((NSObject)) CFNetServiceRef service;
+	AFNETWORK_STRONG CFNetServiceRef service;
 };
 typedef struct _AFNetworkServiceSignature AFNetworkServiceSignature;
 

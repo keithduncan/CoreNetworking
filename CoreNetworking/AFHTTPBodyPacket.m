@@ -20,7 +20,7 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 @interface AFHTTPBodyPacket ()
 - (id)initWithMessage:(CFHTTPMessageRef)message;
 
-@property (assign, nonatomic) AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef message;
+@property (assign, nonatomic) AFNETWORK_STRONG CFHTTPMessageRef message;
 @property (retain, nonatomic) AFNetworkPacket <AFNetworkPacketReading> *currentPacket;
 
 - (BOOL)_processDidCompleteNotification:(NSNotification *)notification;

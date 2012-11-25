@@ -42,7 +42,7 @@
 	NSMapTable *_recordToDataMap;
 	
 	struct {
-		AFNETWORK_STRONG __attribute__((NSObject)) CFTypeRef _runLoopSource;
+		AFNETWORK_STRONG CFTypeRef _runLoopSource;
 		void *_dispatchSource;
 	} _sources;
 	

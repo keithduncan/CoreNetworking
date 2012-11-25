@@ -70,7 +70,7 @@
 	NSUInteger _streamFlags;
 	
 	struct {
-		AFNETWORK_STRONG __attribute__((NSObject)) CFTypeRef _runLoopSource;
+		AFNETWORK_STRONG CFTypeRef _runLoopSource;
 		AFNETWORK_STRONG void *_dispatchSource;
 	} _sources;
 	

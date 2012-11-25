@@ -25,7 +25,7 @@
 
 @synthesize totalBytesToRead=_totalBytesToRead, bytesRead=_bytesRead, writeStream=_writeStream, writeStreamOpen=_writeStreamOpen;
 
-- (id)initWithWriteStream:(NSOutputStream *)writeStream totalBytesToRead:(NSInteger)totalBytesToRead {
+- (id)initWithTotalBytesToRead:(NSInteger)totalBytesToRead writeStream:(NSOutputStream *)writeStream {
 	NSParameterAssert(writeStream != nil && [writeStream streamStatus] == NSStreamStatusNotOpen);
 	NSParameterAssert(totalBytesToRead != 0);
 	

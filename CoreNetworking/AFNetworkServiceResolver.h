@@ -40,7 +40,7 @@
 	AFNetworkServiceScope *_serviceScope;
 	
 	struct {
-		AFNETWORK_STRONG __attribute__((NSObject)) CFTypeRef _runLoopSource;
+		AFNETWORK_STRONG CFTypeRef _runLoopSource;
 		void *_dispatchSource;
 	} _sources;
 	
@@ -49,7 +49,7 @@
 	NSMapTable *_recordToQueryServiceMap;
 	
 	struct {
-		AFNETWORK_STRONG __attribute__((NSObject)) CFTypeRef _runLoopTimer;
+		AFNETWORK_STRONG CFTypeRef _runLoopTimer;
 		void *_dispatchTimer;
 	} _timers;
 	void *_resolveService;

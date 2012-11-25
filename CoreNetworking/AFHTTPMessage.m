@@ -21,12 +21,12 @@
 
 @interface _AFHTTPURLResponse : NSHTTPURLResponse {
  @private
-	AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef _message;
+	AFNETWORK_STRONG CFHTTPMessageRef _message;
 }
 
 - (id)initWithURL:(NSURL *)URL message:(CFHTTPMessageRef)message;
 
-@property (assign, nonatomic) AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef message;
+@property (assign, nonatomic) AFNETWORK_STRONG CFHTTPMessageRef message;
 
 @end
 

@@ -39,7 +39,7 @@ AFNETWORK_EXTERN BOOL AFNetworkServiceCheckAndForwardError(id self, id delegate,
  */
 
 struct _AFNetworkServiceSourceEnvironment {
-	AFNETWORK_STRONG __attribute__((NSObject)) CFTypeRef _runLoopSource;
+	AFNETWORK_STRONG CFTypeRef _runLoopSource;
 	void *_dispatchSource;
 };
 typedef struct _AFNetworkServiceSourceEnvironment _AFNetworkServiceSourceEnvironment;
@@ -53,6 +53,7 @@ AFNETWORK_EXTERN void _AFNetworkServiceSourceEnvironmentScheduleInQueue(_AFNetwo
 
 #endif /* defined(DISPATCH_API_VERSION) */
 
+AFNETWORK_EXTERN BOOL _AFNetworkServiceSourceEnvironmentIsScheduled(_AFNetworkServiceSourceEnvironment *sourceEnvironment);
 AFNETWORK_EXTERN void _AFNetworkServiceSourceEnvironmentCleanup(_AFNetworkServiceSourceEnvironment *sourceEnvironment);
 
 /*

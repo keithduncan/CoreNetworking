@@ -27,7 +27,7 @@
  */
 @interface AFHTTPMessagePacket : AFNetworkPacket <AFNetworkPacketReading> {
  @private
-	AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef _message;
+	AFNETWORK_STRONG CFHTTPMessageRef _message;
 	
 	NSURL *_bodyStorage;
 	NSOutputStream *_bodyStream;

@@ -33,7 +33,7 @@ AFNETWORK_EXTERN NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef m
  */
 @interface AFHTTPHeadersPacket : AFNetworkPacket <AFNetworkPacketReading> {
  @private
-	AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef _message;
+	AFNETWORK_STRONG CFHTTPMessageRef _message;
 	AFNetworkPacketRead *_currentRead;
 }
 

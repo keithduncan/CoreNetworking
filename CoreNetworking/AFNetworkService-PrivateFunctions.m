@@ -28,32 +28,40 @@ DNSServiceErrorType _AFNetworkServiceScopeFullname(AFNetworkServiceScope *scope,
 	return kDNSServiceErr_NoError;
 }
 
-AFNetworkServiceRecordType _AFNetworkServiceRecordNameForRecordType(uint16_t record) {
-	switch (record) {
-		case kDNSServiceType_TXT:
-		{
-			return AFNetworkServiceRecordTypeTXT;
+static const struct _AFNetworkServiceRecordTypeToRecordName {
+	uint16_t type;
+	AFNetworkServiceRecordType name;
+} recordTypeToRecordNameMap[] = {
+	{
+		.type = kDNSServiceType_TXT,
+		.name = AFNetworkServiceRecordTypeTXT,
+	},
+	{
+		.type = kDNSServiceType_NULL,
+		.name = AFNetworkServiceRecordTypeNULL,
+	},
+};
+
+AFNetworkServiceRecordType _AFNetworkServiceRecordNameForRecordType(uint16_t recordType) {
+	for (NSUInteger idx = 0; idx < sizeof(recordTypeToRecordNameMap)/sizeof(*recordTypeToRecordNameMap); idx++) {
+		if (recordTypeToRecordNameMap[idx].type != recordType) {
+			continue;
 		}
-		case kDNSServiceType_NULL:
-		{
-			return AFNetworkServiceRecordTypeNULL;
-		}
+		
+		return recordTypeToRecordNameMap[idx].name;
 	}
 	
-	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"unknown record type (%hd)", record] userInfo:nil];
+	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"unknown record type (%hd)", recordType] userInfo:nil];
 	return -1;
 }
 
 uint16_t _AFNetworkServiceRecordTypeForRecordName(AFNetworkServiceRecordType recordName) {
-	switch (recordName) {
-		case AFNetworkServiceRecordTypeTXT:
-		{
-			return kDNSServiceType_TXT;
+	for (NSUInteger idx = 0; idx < sizeof(recordTypeToRecordNameMap)/sizeof(*recordTypeToRecordNameMap); idx++) {
+		if (recordTypeToRecordNameMap[idx].name != recordName) {
+			continue;
 		}
-		case AFNetworkServiceRecordTypeNULL:
-		{
-			return kDNSServiceType_NULL;
-		}
+		
+		return recordTypeToRecordNameMap[idx].type;
 	}
 	
 	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"unknown record name (%ld)", recordName] userInfo:nil];
@@ -130,6 +138,10 @@ void _AFNetworkServiceSourceEnvironmentScheduleInQueue(_AFNetworkServiceSourceEn
 }
 
 #endif /* defined(DISPATCH_API_VERSION) */
+
+BOOL _AFNetworkServiceSourceEnvironmentIsScheduled(_AFNetworkServiceSourceEnvironment *sourceEnvironment) {
+	return ((sourceEnvironment->_runLoopSource != NULL) || (sourceEnvironment->_dispatchSource != NULL));
+}
 
 void _AFNetworkServiceSourceEnvironmentCleanup(_AFNetworkServiceSourceEnvironment *sourceEnvironment) {
 	if (sourceEnvironment->_runLoopSource != NULL) {

@@ -33,7 +33,7 @@ AFNETWORK_EXTERN NSString *const AFHTTPBodyPacketDidReadNotificationName;
  */
 @interface AFHTTPBodyPacket : AFNetworkPacket <AFNetworkPacketReading> {
  @protected
-	AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef _message;
+	AFNETWORK_STRONG CFHTTPMessageRef _message;
 	AFNetworkPacket <AFNetworkPacketReading> *_currentPacket;
 	BOOL _appendBodyDataToMessage;
 }

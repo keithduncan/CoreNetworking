@@ -23,10 +23,10 @@
  @private
 	DNSServiceRef _service;
 	
-	AFNETWORK_STRONG __attribute__((NSObject)) CFFileDescriptorRef _fileDescriptor;
+	AFNETWORK_STRONG CFFileDescriptorRef _fileDescriptor;
 	
 	struct {
-		AFNETWORK_STRONG __attribute__((NSObject)) CFTypeRef _runLoopSource;
+		AFNETWORK_STRONG CFTypeRef _runLoopSource;
 		void *_dispatchSource;
 	} _sources;
 }

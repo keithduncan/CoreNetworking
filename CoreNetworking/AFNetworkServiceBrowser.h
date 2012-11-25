@@ -51,7 +51,7 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 	AFNetworkServiceScope *_serviceScope;
 	
 	struct {
-		AFNETWORK_STRONG __attribute__((NSObject)) CFTypeRef _runLoopSource;
+		AFNETWORK_STRONG CFTypeRef _runLoopSource;
 		void *_dispatchSource;
 	} _sources;
 	
