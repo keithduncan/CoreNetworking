@@ -200,7 +200,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageContentLengthHeader, (CFStringRef)[fileSize stringValue]);
 		AFNetworkPacket *requestPacket = AFHTTPConnectionPacketForMessage(requestMessage);
 		
-		AFNetworkPacketWriteFromReadStream *streamPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] totalBytesToRead:-1] autorelease];
+		AFNetworkPacketWriteFromReadStream *streamPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithTotalBytesToWrite:-1 readStream:[NSInputStream inputStreamWithURL:fileLocation]] autorelease];
 		
 		NSArray *requestPackets = [NSArray arrayWithObjects:
 								   requestPacket,
@@ -275,7 +275,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	CFHTTPMessageSetHeaderFieldValue(requestMessage, (CFStringRef)AFHTTPMessageExpectHeader, (CFStringRef)@"100-Continue");
 	
 	AFNetworkPacket *headersPacket = AFHTTPConnectionPacketForMessage(requestMessage);
-	AFNetworkPacketWriteFromReadStream *bodyPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithReadStream:[NSInputStream inputStreamWithURL:fileLocation] totalBytesToRead:[fileSize unsignedIntegerValue]] autorelease];
+	AFNetworkPacketWriteFromReadStream *bodyPacket = [[[AFNetworkPacketWriteFromReadStream alloc] initWithTotalBytesToWrite:[fileSize unsignedIntegerValue] readStream:[NSInputStream inputStreamWithURL:fileLocation]] autorelease];
 	
 	NSArray *requestPackets = [NSArray arrayWithObjects:
 							   headersPacket,
