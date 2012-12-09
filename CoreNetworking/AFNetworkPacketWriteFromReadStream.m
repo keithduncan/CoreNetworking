@@ -96,9 +96,9 @@
 				maximumReadSize = MIN(maximumReadSize, (_totalBytesToWrite - _bytesWritten));
 			}
 			
-			NSInteger bytesRead = [[self readStream] read:_readBuffer maxLength:maximumReadSize];
+			NSInteger bytesRead = [self.readStream read:_readBuffer maxLength:maximumReadSize];
 			if (bytesRead < 0) {
-				NSError *readStreamError = [[self readStream] streamError];
+				NSError *readStreamError = [self.readStream streamError];
 				if (readStreamError == nil) {
 					readStreamError = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorUnknown userInfo:nil];
 				}
@@ -116,7 +116,7 @@
 			_bufferLength = bytesRead;
 			
 			if (bytesRead > 0) {
-				NSData * (^readStreamFilter)(NSData *) = [self readStreamFilter];
+				NSData * (^readStreamFilter)(NSData *) = self.readStreamFilter;
 				if (readStreamFilter != nil) {
 					NSAutoreleasePool *pool = [NSAutoreleasePool new];
 					
@@ -172,7 +172,7 @@
 		
 		/* Check */
 		if ((_bytesWritten == _totalBytesToWrite) ||
-			(_bufferOffset == _bufferLength && _totalBytesToWrite == -1 && [[self readStream] streamStatus] == NSStreamStatusAtEnd)) {
+			(_bufferOffset == _bufferLength && _totalBytesToWrite == -1 && [self.readStream streamStatus] == NSStreamStatusAtEnd)) {
 			[self _postCompletionNotification:[NSNotification notificationWithName:AFNetworkPacketDidCompleteNotificationName object:self]];
 			break;
 		}
@@ -209,6 +209,7 @@
 		return NO;
 	}
 	
+	// Note: we cannot steal the stream delegate
 	do {
 		// nop
 	} while (CFReadStreamGetStatus((CFReadStreamRef)self.readStream) != kCFStreamStatusOpen && CFReadStreamGetStatus((CFReadStreamRef)self.readStream) != kCFStreamStatusError);

@@ -86,6 +86,7 @@
 			return -1;
 		}
 		
+		// Note: we cannot steal the delegate of the stream
 		do {
 			// nop
 		} while (CFWriteStreamGetStatus((CFWriteStreamRef)_writeStream) != kCFStreamStatusOpen && CFWriteStreamGetStatus((CFWriteStreamRef)_writeStream) != kCFStreamStatusError);
