@@ -29,7 +29,7 @@
 	\details
 	The completed buffer is an NSString, allowing the caller to use whatever XML library is available.
  */
-@interface AFXMLElementPacket : AFNetworkPacket <AFNetworkPacketReading> {
+@interface AFNetworkXMLElementPacket : AFNetworkPacket <AFNetworkPacketReading> {
  @private
 	NSStringEncoding _encoding;
 	

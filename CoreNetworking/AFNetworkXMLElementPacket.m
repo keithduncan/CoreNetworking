@@ -6,16 +6,16 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import "AFXMLElementPacket.h"
+#import "AFNetworkXMLElementPacket.h"
 
 #import "AFNetworkPacketRead.h"
 
-@interface AFXMLElementPacket ()
+@interface AFNetworkXMLElementPacket ()
 @property (retain, nonatomic) AFNetworkPacketRead *currentRead;
 @property (readonly, nonatomic) NSMutableData *xmlBuffer;
 @end
 
-@implementation AFXMLElementPacket
+@implementation AFNetworkXMLElementPacket
 
 @synthesize currentRead=_currentRead, xmlBuffer=_xmlBuffer;
 

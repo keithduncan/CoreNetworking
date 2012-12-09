@@ -76,7 +76,7 @@
 
 /* XMPP */
 
-#import "CoreNetworking/AFXMLElementPacket.h"
+#import "CoreNetworking/AFNetworkXMLElementPacket.h"
 
 // See <http://code.google.com/p/objectivexmpp/> for implementation
 
