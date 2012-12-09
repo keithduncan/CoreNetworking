@@ -169,7 +169,7 @@ NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress, NSError **
 		return nil;
 	}
 	
-	return [[[NSString alloc] initWithBytes:socketAddressPresentation length:socketAddressPresentationLength encoding:NSASCIIStringEncoding] autorelease];
+	return [[[NSString alloc] initWithCString:socketAddressPresentation encoding:NSASCIIStringEncoding] autorelease];
 }
 
 NSData *AFNetworkSocketPresentationToAddress(NSString *presentation, NSError **errorRef) {
