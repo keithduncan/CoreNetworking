@@ -263,12 +263,14 @@ static void _AFNetworkServiceBrowserEnumerateNamesCallback(DNSServiceRef sdRef, 
 	DNSServiceRef newService = NULL;
 	DNSServiceErrorType newServiceError = kDNSServiceErr_NoError;
 	
+	uint32_t interfaceIndex = kDNSServiceInterfaceIndexAny;
+	
 	if ([self _scope:scope isEqual:AFNetworkServiceBrowserDomainBrowsable :nil :nil] ||
 		[self _scope:scope isEqual:AFNetworkServiceScopeWildcard :nil :nil]) {
-		newServiceError = DNSServiceEnumerateDomains(&newService, kDNSServiceFlagsBrowseDomains, kDNSServiceInterfaceIndexAny, _AFNetworkServiceBrowserEnumerateDomainsCallback, self);
+		newServiceError = DNSServiceEnumerateDomains(&newService, kDNSServiceFlagsBrowseDomains, interfaceIndex, _AFNetworkServiceBrowserEnumerateDomainsCallback, self);
 	}
 	else if ([self _scope:scope isEqual:AFNetworkServiceBrowserDomainPublishable :nil :nil]) {
-		newServiceError = DNSServiceEnumerateDomains(&newService, kDNSServiceFlagsRegistrationDomains, kDNSServiceInterfaceIndexAny, _AFNetworkServiceBrowserEnumerateDomainsCallback, self);
+		newServiceError = DNSServiceEnumerateDomains(&newService, kDNSServiceFlagsRegistrationDomains, interfaceIndex, _AFNetworkServiceBrowserEnumerateDomainsCallback, self);
 	}
 	else if ((![scope.domain isEqualToString:AFNetworkServiceScopeWildcard] && [scope.type isEqualToString:AFNetworkServiceScopeWildcard] && scope.name == nil) ||
 			 (![scope.domain isEqualToString:AFNetworkServiceScopeWildcard] && [scope.type isEqualToString:AFNetworkServiceScopeWildcard] && [scope.name isEqualToString:AFNetworkServiceScopeWildcard])) {
@@ -278,7 +280,7 @@ static void _AFNetworkServiceBrowserEnumerateNamesCallback(DNSServiceRef sdRef, 
 			return;
 		}
 		
-		newServiceError = DNSServiceQueryRecord(&newService, (DNSServiceFlags)0, kDNSServiceInterfaceIndexAny, [fullname UTF8String], kDNSServiceType_PTR, kDNSServiceClass_IN, _AFNetworkServiceBrowserEnumerateTypesCallback, self);
+		newServiceError = DNSServiceQueryRecord(&newService, (DNSServiceFlags)0, interfaceIndex, [fullname UTF8String], kDNSServiceType_PTR, kDNSServiceClass_IN, _AFNetworkServiceBrowserEnumerateTypesCallback, self);
 	}
 	else if (( [scope.domain isEqualToString:AFNetworkServiceScopeWildcard] && ![scope.type isEqualToString:AFNetworkServiceScopeWildcard] && [scope.name isEqualToString:AFNetworkServiceScopeWildcard]) ||
 			 (![scope.domain isEqualToString:AFNetworkServiceScopeWildcard] && ![scope.type isEqualToString:AFNetworkServiceScopeWildcard] && [scope.name isEqualToString:AFNetworkServiceScopeWildcard])) {
@@ -289,7 +291,7 @@ static void _AFNetworkServiceBrowserEnumerateNamesCallback(DNSServiceRef sdRef, 
 		
 		const char *type = [scope.type UTF8String];
 		
-		newServiceError = DNSServiceBrowse(&newService, (DNSServiceFlags)0, kDNSServiceInterfaceIndexAny, type, domain, _AFNetworkServiceBrowserEnumerateNamesCallback, self);
+		newServiceError = DNSServiceBrowse(&newService, (DNSServiceFlags)0, interfaceIndex, type, domain, _AFNetworkServiceBrowserEnumerateNamesCallback, self);
 	}
 	else if ([self _scope:scope isEqual:AFNetworkServiceScopeWildcard :AFNetworkServiceScopeWildcard :nil] ||
 			 [self _scope:scope isEqual:AFNetworkServiceScopeWildcard :AFNetworkServiceScopeWildcard :AFNetworkServiceScopeWildcard]) {
