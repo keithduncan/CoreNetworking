@@ -36,18 +36,21 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceScopeWildcard;
  */
 - (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name;
 
+extern NSString *const AFNetworkServiceScopeDomainKey;
 /*!
 	\brief
 	Domain may be the local domain, registered and queried using multicast DNS, or a wide area domain.
  */
 @property (readonly, copy, nonatomic) NSString *domain;
 
+extern NSString *const AFNetworkServiceScopeTypeKey;
 /*!
 	\brief
 	Suitable application and network layers can be inferred from the type
  */
 @property (readonly, copy, nonatomic) NSString *type;
 
+extern NSString *const AFNetworkServiceScopeNameKey;
 /*!
 	\brief
 	Per service identifier
@@ -59,5 +62,11 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceScopeWildcard;
 	Compares the domain, type and name strings for equality.
  */
 - (BOOL)isEqualToScope:(AFNetworkServiceScope *)scope;
+
+/*!
+	\brief
+	Suitable for displaying in an interface
+ */
+@property (readonly, nonatomic) NSString *displayDescription;
 
 @end

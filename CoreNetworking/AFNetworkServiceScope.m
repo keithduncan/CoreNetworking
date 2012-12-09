@@ -10,6 +10,10 @@
 
 NSString *const AFNetworkServiceScopeWildcard = @"";
 
+NSString *const AFNetworkServiceScopeDomainKey = @"domain";
+NSString *const AFNetworkServiceScopeTypeKey = @"type";
+NSString *const AFNetworkServiceScopeNameKey = @"name";
+
 @implementation AFNetworkServiceScope
 
 @synthesize domain=_domain, type=_type, name=_name;
@@ -65,7 +69,7 @@ NSString *const AFNetworkServiceScopeWildcard = @"";
 	return YES;
 }
 
-- (NSString *)_partitionedFullName {
+- (NSString *)_fullNameWithPartitions:(BOOL)partitions {
 	NSString * (^correctLabel)(NSString *) = ^ NSString * (NSString *label) {
 		if ([label isEqualToString:AFNetworkServiceScopeWildcard]) {
 			label = @"*";
@@ -73,17 +77,27 @@ NSString *const AFNetworkServiceScopeWildcard = @"";
 		if (label == nil) {
 			label = @"";
 		}
-		return [NSString stringWithFormat:@"<%@>", label];
+		if ([label hasSuffix:@"."]) {
+			label = [label substringToIndex:[label length] - 1];
+		}
+		if (partitions) {
+			label = [NSString stringWithFormat:@"<%@>", label];
+		}
+		return label;
 	};
 	return [NSString stringWithFormat:@"%@.%@.%@", correctLabel(self.name), correctLabel(self.type), correctLabel(self.domain)];
 }
 
 - (NSUInteger)hash {
-	return [[self _partitionedFullName] hash];
+	return [[self _fullNameWithPartitions:NO] hash];
 }
 
 - (NSString *)debugDescription {
-	return [NSString stringWithFormat:@"<%@ %p> { %@ }", [self class], self, [self _partitionedFullName]];
+	return [NSString stringWithFormat:@"<%@ %p> { %@ }", [self class], self, [self _fullNameWithPartitions:YES]];
+}
+
+- (NSString *)displayDescription {
+	return [self _fullNameWithPartitions:NO];
 }
 
 @end
