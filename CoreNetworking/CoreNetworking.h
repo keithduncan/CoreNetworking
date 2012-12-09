@@ -50,7 +50,6 @@
 	Categories
  */
 
-#import "CoreNetworking/NSDictionary+AFNetworkAdditions.h"
 #import "CoreNetworking/NSURLRequest+AFNetworkAdditions.h"
 
 /*
