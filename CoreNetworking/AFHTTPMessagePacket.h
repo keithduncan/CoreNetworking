@@ -6,15 +6,13 @@
 //  Copyright 2009. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "CoreNetworking/AFNetworkPacket.h"
 
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif /* TARGET_OS_IPHONE */
 
-#import "CoreNetworking/AFNetworkPacket.h"
-
-#import "CoreNetworking/AFNetwork-Macros.h"
+#import "CoreNetworking/AFNetworkMacros.h"
 
 @class AFNetworkPacketRead;
 
@@ -31,6 +29,8 @@
 	
 	NSURL *_bodyStorage;
 	NSOutputStream *_bodyStream;
+	
+	NSUInteger _state;
 	
 	AFNetworkPacket <AFNetworkPacketReading> *_currentRead;
 }
