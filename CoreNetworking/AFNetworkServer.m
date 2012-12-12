@@ -379,15 +379,12 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 
 - (void)networkLayerDidClose:(id <AFNetworkConnectionLayer>)layer {
 	NSUInteger bucket = [self _bucketContainingLayer:layer];
-	
-	if (layer.lowerLayer != nil) {
-		id <AFNetworkTransportLayer> lowerLayer = [layer lowerLayer];
-		
-		lowerLayer.delegate = (id)self;
-		[lowerLayer close];
-	}
-	
 	[[self.clientPools objectAtIndex:bucket] removeConnectionsObject:layer];
+	
+	id <AFNetworkTransportLayer> lowerLayer = layer.lowerLayer;
+	if (lowerLayer != nil) {
+		[self networkLayerDidClose:lowerLayer];
+	}
 }
 
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didReceiveError:(NSError *)error {
