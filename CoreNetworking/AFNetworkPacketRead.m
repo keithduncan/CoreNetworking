@@ -135,7 +135,6 @@
 		
 		NSInteger bytesRead = [readStream read:readBuffer maxLength:maximumReadLength];
 		if (bytesRead < 0) {
-#warning check if this error is reported by event to the stream delegate, making this redundant? also in AFPacketWrite
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 											  [readStream streamError], AFNetworkPacketErrorKey,
 											  nil];
