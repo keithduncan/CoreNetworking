@@ -309,7 +309,7 @@ SharedTeardown:;
 		
 		_timers._runLoopTimer = resolveTimeout;
 	}
-	if (_sources._dispatchSource != NULL) {
+	else if (_sources._dispatchSource != NULL) {
 		dispatch_queue_t dispatchQueue = _sources._dispatchSource;
 		dispatch_source_t dispatchTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatchQueue);
 		dispatch_source_set_event_handler(dispatchTimer, ^ {
@@ -319,6 +319,9 @@ SharedTeardown:;
 		dispatch_source_set_timer(dispatchTimer, DISPATCH_TIME_NOW, timeout * NSEC_PER_SEC, 0);
 		dispatch_resume(dispatchTimer);
 		_timers._dispatchTimer = dispatchTimer;
+	}
+	else {
+		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported scheduling environment, cannot set up resolve timeout" userInfo:nil];
 	}
 }
 
