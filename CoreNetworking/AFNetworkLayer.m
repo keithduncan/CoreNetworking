@@ -128,22 +128,30 @@
 
 - (void)networkLayerDidOpen:(id)layer {
 	if (layer == self.lowerLayer) {
-		layer = self;
+		layer = (id)self;
 	}
 	
-	if ([self.delegate respondsToSelector:_cmd]) {
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidOpen:)]) {
 		[self.delegate networkLayerDidOpen:layer];
 	}
 }
 
 - (void)networkLayerDidClose:(id)layer {
 	if (layer == self.lowerLayer) {
-		layer = self;
+		layer = (id)self;
 	}
 	
-	if ([self.delegate respondsToSelector:_cmd]) {
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidClose:)]) {
 		[self.delegate networkLayerDidClose:layer];
 	}
+}
+
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didReceiveError:(NSError *)error {
+	if (layer == self.lowerLayer) {
+		layer = (id)self;
+	}
+	
+	[self.delegate networkLayer:layer didReceiveError:error];
 }
 
 @end
