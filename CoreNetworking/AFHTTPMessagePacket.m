@@ -12,8 +12,8 @@
 #import "AFHTTPBodyPacket.h"
 #import "AFHTTPMessage.h"
 
-#import "AFNetworkConstants.h"
-#import "AFNetworkMacros.h"
+#import "AFNetwork-Constants.h"
+#import "AFNetwork-Macros.h"
 
 AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketHeadersContext);
 AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);

@@ -12,7 +12,7 @@
 #import <CFNetwork/CFNetwork.h>
 #endif /* TARGET_OS_IPHONE */
 
-#import "CoreNetworking/AFNetworkMacros.h"
+#import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkPacketRead;
 
