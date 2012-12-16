@@ -34,7 +34,7 @@ typedef AFNETWORK_ENUM(NSUInteger, _AFNetworkSocketFlags) {
 @synthesize socketFlags=_socketFlags;
 @synthesize socket=_socket;
 
-static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
+static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackType type, CFDataRef address, void const *data, void *info) {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	
 	AFNetworkSocket *self = [[(AFNetworkSocket *)info retain] autorelease];
@@ -54,9 +54,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 				return;
 			}
 			
-			if ([self.delegate respondsToSelector:@selector(networkLayer:didAcceptConnection:)]) {
-				[self.delegate networkLayer:self didAcceptConnection:newSocket];
-			}
+			[self.delegate networkLayer:self didAcceptConnection:newSocket];
 			
 			break;
 		}
@@ -72,7 +70,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	[pool drain];
 }
 
-- (id)initWithSocketSignature:(const CFSocketSignature *)signature {
+- (id)initWithSocketSignature:(CFSocketSignature const *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
@@ -101,10 +99,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	self = [self init];
 	if (self == nil) return nil;
 	
-	CFSocketContext context = {
-		.info = self,
-	};
-	_socket = (CFSocketRef)CFSocketCreateWithNative(kCFAllocatorDefault, handle, (CFOptionFlags)0, _AFNetworkSocketCallback, &context);
+	_socket = (CFSocketRef)CFSocketCreateWithNative(kCFAllocatorDefault, handle, (CFOptionFlags)0, NULL, NULL);
 	if (_socket == NULL) {
 		[self release];
 		return nil;
@@ -197,7 +192,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 		int setsockoptError __attribute__((unused)) = setsockopt(nativeHandle, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
 	}
 	
-	int bindError = bind(nativeHandle, (const struct sockaddr *)CFDataGetBytePtr(signature->address), CFDataGetLength(signature->address));
+	int bindError = bind(nativeHandle, (struct sockaddr const *)CFDataGetBytePtr(signature->address), CFDataGetLength(signature->address));
 	if (bindError != 0) {
 		if (errorRef != NULL) {
 			int underlyingErrorCode = errno;
@@ -226,10 +221,16 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 		return NO;
 	}
 	
-	listen(nativeHandle, 256);
+	int listenError = listen(nativeHandle, 256);
+	if (listenError != 0) {
+		
+	}
 	
 	self.socketFlags = (self.socketFlags | _AFNetworkSocketFlagsDidOpen);
-	[self.delegate networkLayerDidOpen:self];
+	
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidOpen:)]) {
+		[self.delegate networkLayerDidOpen:self];
+	}
 	
 	[self _resumeSources];
 	
@@ -248,7 +249,9 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	
 	CFSocketInvalidate(self.socket);
 	
-	[self.delegate networkLayerDidClose:self];
+	if ([self.delegate respondsToSelector:@selector(networkLayerDidClose:)]) {
+		[self.delegate networkLayerDidClose:self];
+	}
 }
 
 - (BOOL)isClosed {
@@ -262,7 +265,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	NSData *localAddress = (NSData *)[NSMakeCollectable(CFSocketCopyAddress(self.socket)) autorelease];
 	if (localAddress != NULL) {
 		[description appendFormat:@"\tAddress: %@\n", AFNetworkSocketAddressToPresentation(localAddress, NULL)];
-		[description appendFormat:@"\tPort: %ld\n", (unsigned long)af_sockaddr_in_read_port((const struct sockaddr_storage *)CFDataGetBytePtr((CFDataRef)localAddress))];
+		[description appendFormat:@"\tPort: %ld\n", (unsigned long)af_sockaddr_in_read_port((struct sockaddr_storage const *)CFDataGetBytePtr((CFDataRef)localAddress))];
 	}
 	
 	[description appendString:@"}"];
@@ -279,7 +282,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 		_sources._runLoopSource = (CFRunLoopSourceRef)CFMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0));
 	}
 	
-	CFRunLoopAddSource([runLoop getCFRunLoop], _sources._runLoopSource, (CFStringRef)mode);
+	CFRunLoopAddSource([runLoop getCFRunLoop], (CFRunLoopSourceRef)_sources._runLoopSource, (CFStringRef)mode);
 }
 
 - (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
@@ -287,10 +290,8 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	
 	[super unscheduleFromRunLoop:runLoop forMode:mode];
 	
-	CFRunLoopRemoveSource([runLoop getCFRunLoop], _sources._runLoopSource, (CFStringRef)mode);
+	CFRunLoopRemoveSource([runLoop getCFRunLoop], (CFRunLoopSourceRef)_sources._runLoopSource, (CFStringRef)mode);
 }
-
-#if defined(DISPATCH_API_VERSION)
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
 	NSParameterAssert(_sources._runLoopSource == NULL);
@@ -358,18 +359,14 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	}
 }
 
-#endif
-
 - (void)_resumeSources {
 	if (_sources._runLoopSource != NULL) {
 		//nop
 	}
 	
-#if defined(DISPATCH_API_VERSION)
 	if (_sources._dispatchSource != NULL) {
 		dispatch_resume(_sources._dispatchSource);
 	}
-#endif /* defined(DISPATCH_API_VERSION) */
 }
 
 - (id)local {
