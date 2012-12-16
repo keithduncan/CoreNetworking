@@ -338,7 +338,6 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	if (self.transactionQueue.count > 0) {
 		[self.transactionQueue emptyQueue];
 		
-		#warning complete this error
 		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 								   NSLocalizedStringFromTableInBundle(@"Server unexpectedly dropped the connection", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFHTTPClient network closed with inflight transaction error description"), NSLocalizedDescriptionKey,
 								   NSLocalizedStringFromTableInBundle(@"This sometimes occurs when the server is busy. Please wait a few minutes and try again.", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFHTTPClient network closed with inflight transaction error recovery suggestion"), NSLocalizedRecoverySuggestionErrorKey,

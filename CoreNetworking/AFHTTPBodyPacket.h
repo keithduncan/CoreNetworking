@@ -55,7 +55,7 @@ AFNETWORK_EXTERN NSString *const AFHTTPBodyPacketDidReadNotificationName;
 	Attempts to interpret the message header and generate an appropriate packet.
 	
 	\details
-	If the message has an incomplete header, or <tt>+messageHasBody:</tt> returns NO, an exception is thrown.
+	If the message has an incomplete header, or `+messageHasBody:` returns NO, an exception is thrown.
  */
 + (AFHTTPBodyPacket *)parseBodyPacketFromMessage:(CFHTTPMessageRef)message error:(NSError **)errorRef;
 

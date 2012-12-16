@@ -19,7 +19,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketHeadersContext);
 AFNETWORK_NSSTRING_CONTEXT(_AFHTTPMessagePacketBodyContext);
 
 @interface AFHTTPMessagePacket ()
-@property (readonly, nonatomic) AFNETWORK_STRONG __attribute__((NSObject)) CFHTTPMessageRef message;
+@property (readonly, nonatomic) AFNETWORK_STRONG CFHTTPMessageRef message;
 
 @property (readwrite, retain, nonatomic) NSOutputStream *bodyStream;
 

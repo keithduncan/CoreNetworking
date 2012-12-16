@@ -79,10 +79,10 @@ typedef AFNETWORK_ENUM(NSInteger, AFHTTPStatusCode) {
 /*!
 	\brief
 	Returns a description string for the given code.
-	It will throw an exception if passed a code not listed in the <tt>AFHTTPStatusCode<tt> enum.
+	It will throw an exception if passed a code not listed in the `AFHTTPStatusCode` enum.
 	
 	\details
-	This is typed to return a CFStringRef to minimise the impedance mismatch with <tt>CFHTTPMessageCreate()</tt>.
+	This is typed to return a CFStringRef to minimise the impedance mismatch with `CFHTTPMessageCreate()`.
  */
 AFNETWORK_EXTERN CFStringRef AFHTTPStatusCodeGetDescription(AFHTTPStatusCode code);
 
@@ -123,7 +123,7 @@ AFNETWORK_EXTERN NSString *const AFHTTPMessageProxyAuthorizationHeader;
 
 /*!
 	\brief
-	Convert an <tt>NSURLRequest</tt> object to a <tt>CFHTTPMessageRef</tt> request.
+	Convert an `NSURLRequest` object to a `CFHTTPMessageRef` request.
 	
 	\details
 	If the request uses a stream for the body, an exception is thrown.
@@ -132,22 +132,22 @@ AFNETWORK_EXTERN CFHTTPMessageRef AFHTTPMessageCreateForRequest(NSURLRequest *re
 
 /*!
 	\brief
-	Convert a <tt>CFHTTPMessageRef</tt> request to an <tt>NSURLRequest</tt> object.
+	Convert a `CFHTTPMessageRef` request to an `NSURLRequest` object.
  */
 AFNETWORK_EXTERN NSURLRequest *AFHTTPURLRequestForHTTPMessage(CFHTTPMessageRef message);
 
 /*!
 	\brief
-	Convert an <tt>NSHTTPURLResponse</tt> object to a <tt>CFHTTPMessageRef</tt> response.
+	Convert an `NSHTTPURLResponse` object to a `CFHTTPMessageRef` response.
 	
 	\details
-	The message will not have a body, since that is captured separately from the <tt>NSHTTPURLResponse</tt> object.
+	The message will not have a body, since that is captured separately from the `NSHTTPURLResponse` object.
  */
 AFNETWORK_EXTERN CFHTTPMessageRef AFHTTPMessageCreateForResponse(NSHTTPURLResponse *response);
 
 /*!
 	\brief
-	Convert a <tt>CFHTTPMessageRef</tt> response to an <tt>NSHTTPURLResponse</tt> object.
+	Convert a `CFHTTPMessageRef` response to an `NSHTTPURLResponse` object.
  */
 AFNETWORK_EXTERN NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(NSURL *URL, CFHTTPMessageRef message);
 

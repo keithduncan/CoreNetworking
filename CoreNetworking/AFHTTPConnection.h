@@ -75,7 +75,7 @@
 	Overridable for subclasses, before a message is sent.
 	
 	\details
-	Adds the <tt>messageHeaders</tt> and a "Content-Length" header.
+	Adds the `messageHeaders` and a "Content-Length" header.
  */
 - (void)prepareMessageForTransport:(CFHTTPMessageRef)message;
 

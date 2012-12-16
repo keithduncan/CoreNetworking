@@ -21,7 +21,7 @@
 	This packet will read either a request or response and return a CFHTTPMessageRef as it's buffer.
 	
 	\details
-	This is a composite packet, wrapping <tt>AFHTTPHeadersPacket</tt> and <tt>AFHTTPBodyPacket</tt>.
+	This is a composite packet, wrapping `AFHTTPHeadersPacket` and `AFHTTPBodyPacket`.
  */
 @interface AFHTTPMessagePacket : AFNetworkPacket <AFNetworkPacketReading> {
  @private

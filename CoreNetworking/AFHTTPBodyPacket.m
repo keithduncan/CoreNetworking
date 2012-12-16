@@ -252,7 +252,7 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 		NSData *currentBuffer = [[self currentPacket] buffer];
 		
 		CFRetain(currentBuffer);
-		Boolean appendBytes = CFHTTPMessageAppendBytes([self message], (const UInt8 *)[currentBuffer bytes], [currentBuffer length]);
+		Boolean appendBytes = CFHTTPMessageAppendBytes([self message], (uint8_t const *)[currentBuffer bytes], [currentBuffer length]);
 		CFRelease(currentBuffer);
 		
 		if (!appendBytes) {

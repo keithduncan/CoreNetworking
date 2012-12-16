@@ -83,7 +83,7 @@
 
 /*!
 	\brief
-	Counterpart to <tt>performDownload:onResource:withHeaders:withLocation:</tt>.
+	Counterpart to `performDownload:onResource:withHeaders:withLocation:`.
 	
 	\details
 	Will handle large files by streaming them from disk.
