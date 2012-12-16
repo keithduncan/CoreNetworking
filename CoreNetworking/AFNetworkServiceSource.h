@@ -51,8 +51,6 @@
  */
 - (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
-#if defined(DISPATCH_API_VERSION)
-
 /*!
 	\brief
 	Creates a dispatch source internally.
@@ -61,8 +59,6 @@
 	A layer can only be scheduled in a single queue at a time, to unschedule it pass NULL.
  */
 - (void)scheduleInQueue:(dispatch_queue_t)queue;
-
-#endif
 
 /*!
 	\brief
@@ -78,14 +74,12 @@
 
 @end
 
-#if defined(DISPATCH_API_VERSION)
-
 /*!
 	\brief
 	Create and schedule a dispatch source for the mDNSResponder socket held by the service argument.
 	
 	\details
-	This source acts like the Cocoa <tt>-performSelector:...</tt> methods, it creates and destroys a behind the scenes source for you.
+	This source acts like the Cocoa `-performSelector:...` methods, it creates and destroys a behind the scenes source for you.
 	
 	\param service
 	Must not be NULL
@@ -97,5 +91,3 @@
 	Does not return an owning reference, you must retain it if you keep a reference for later cancellation.
  */
 AFNETWORK_EXTERN dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service, dispatch_queue_t queue);
-
-#endif

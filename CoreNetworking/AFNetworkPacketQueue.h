@@ -10,9 +10,9 @@
 
 /*!
 	\brief
-	The intended usage is that you add packets using <tt>-enqueuePacket:</tt>.
-	You observe the <tt>currentWritePacket</tt> property to learn when there's a new packet to process.
-	Then call <tt>-dequeuePacket</tt> once you've finished processing the <tt>currentPacket</tt>.
+	The intended usage is that you add packets using `-enqueuePacket:`.
+	You observe the `currentWritePacket` property to learn when there's a new packet to process.
+	Then call `-dequeuePacket` once you've finished processing the `currentPacket`.
  */
 @interface AFNetworkPacketQueue : NSObject {
  @private
@@ -56,7 +56,7 @@
 
 /*!
 	\brief
-	The method first removes all queued packets, then calls <tt>-dequeuePacket</tt>. This ensures that when terminating, you can flush the queue, without starting a new packet.
+	The method first removes all queued packets, then calls `-dequeuePacket`. This ensures that when terminating, you can flush the queue, without starting a new packet.
  */
 - (void)emptyQueue;
 

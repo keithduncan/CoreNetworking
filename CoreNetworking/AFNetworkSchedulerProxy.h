@@ -13,11 +13,7 @@
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 - (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
-#if defined(DISPATCH_API_VERSION)
-
 - (void)scheduleInQueue:(dispatch_queue_t)queue;
-
-#endif
 
 @end
 

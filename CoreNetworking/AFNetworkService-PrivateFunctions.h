@@ -47,11 +47,7 @@ typedef struct _AFNetworkServiceSourceEnvironment _AFNetworkServiceSourceEnviron
 AFNETWORK_EXTERN void _AFNetworkServiceSourceEnvironmentScheduleInRunLoop(_AFNetworkServiceSourceEnvironment *sourceEnvironment, NSRunLoop *runLoop, NSString *runLoopMode);
 AFNETWORK_EXTERN void _AFNetworkServiceSourceEnvironmentUnscheduleFromRunLoop(_AFNetworkServiceSourceEnvironment *sourceEnvironment, NSRunLoop *runLoop, NSString *runLoopMode);
 
-#if defined(DISPATCH_API_VERSION)
-
 AFNETWORK_EXTERN void _AFNetworkServiceSourceEnvironmentScheduleInQueue(_AFNetworkServiceSourceEnvironment *sourceEnvironment, dispatch_queue_t queue);
-
-#endif /* defined(DISPATCH_API_VERSION) */
 
 AFNETWORK_EXTERN BOOL _AFNetworkServiceSourceEnvironmentIsScheduled(_AFNetworkServiceSourceEnvironment *sourceEnvironment);
 AFNETWORK_EXTERN void _AFNetworkServiceSourceEnvironmentCleanup(_AFNetworkServiceSourceEnvironment *sourceEnvironment);

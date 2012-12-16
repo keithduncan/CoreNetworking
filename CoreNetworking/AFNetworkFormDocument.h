@@ -33,13 +33,13 @@
 	The fieldname must be unique per document, setting a value for an existing fieldname will overwrite the previous value.
 	
 	\param value
-	If nil, the existing value for <tt>filename</tt> is removed.
+	If nil, the existing value for `filename` is removed.
  */
 - (void)setValue:(NSString *)value forField:(NSString *)fieldname;
 
 /*!
 	\brief
-	Unordered collection of previously added URLs using <tt>-addFileByReferencingURL:withFilename:toField:</tt>.
+	Unordered collection of previously added URLs using `-addFileByReferencingURL:withFilename:toField:`.
  */
 - (NSSet *)fileLocationsForField:(NSString *)fieldname;
 

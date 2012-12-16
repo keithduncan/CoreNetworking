@@ -12,7 +12,7 @@
 
 /*!
 	\brief
-	Parses the parameter list in the <tt>URL</tt> property.
+	Parses the parameter list in the `URL` property.
 	
 	\result
 	Returns nil if there are no parameters.
@@ -21,7 +21,7 @@
 
 /*!
 	\brief
-	Parses the parameter list in the <tt>HTTPBody</tt> property if the <tt>Content-Type</tt> header is <tt>application/x-www-form-urlencoded</tt>.
+	Parses the parameter list in the `HTTPBody` property if the `Content-Type` header is `application/x-www-form-urlencoded`.
 	
 	\result
 	Returns nil if there are no parameters.
@@ -40,10 +40,10 @@
 
 /*!
 	\brief
-	Appends the query parameters to <tt>URL</tt> property.
+	Appends the query parameters to `URL` property.
 	
 	\param parameters
-	This value must map <tt>NSString</tt> keys to <tt>NSString</tt> objects.
+	This value must map `NSString` keys to `NSString` objects.
  */
 - (void)appendQueryParameters:(NSDictionary *)parameters;
 

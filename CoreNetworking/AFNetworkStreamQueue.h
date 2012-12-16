@@ -71,7 +71,7 @@
 	
 	struct {
 		AFNETWORK_STRONG CFTypeRef _runLoopSource;
-		AFNETWORK_STRONG void *_dispatchSource;
+		void *_dispatchSource;
 	} _sources;
 	
 	NSUInteger _queueSuspendCount;
@@ -102,11 +102,7 @@
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 - (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
-#if defined(DISPATCH_API_VERSION)
-
 - (void)scheduleInQueue:(dispatch_queue_t)queue;
-
-#endif /* defined(DISPATCH_API_VERSION) */
 
 /*
 	State

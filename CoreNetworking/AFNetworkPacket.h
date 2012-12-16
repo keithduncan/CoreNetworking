@@ -15,7 +15,7 @@
 	Posted when the packet completed (successfully or otherwise).
 	
 	\details
-	If the packet is completing because an error was encountered, return it under the <tt>AFPacketErrorKey</tt> key.
+	If the packet is completing because an error was encountered, return it under the `AFPacketErrorKey` key.
  */
 AFNETWORK_EXTERN NSString *const AFNetworkPacketDidCompleteNotificationName;
 

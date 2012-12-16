@@ -31,7 +31,7 @@ AFNETWORK_EXTERN NSString *const AFNetworkDocumentMIMEContentDisposition;
 	The combined frame length of the packets. Must not be NULL.
 	
 	\return
-	An ordered collection of <tt>AFPacket <AFNetworkPacketWriting></tt> objects which should be replayed over a write stream, nil if the document couldn't be serialised.
+	An ordered collection of `AFPacket <AFNetworkPacketWriting>` objects which should be replayed over a write stream, nil if the document couldn't be serialised.
  */
 - (NSArray *)serialisedPacketsWithContentType:(NSString **)contentTypeRef frameLength:(NSUInteger *)frameLengthRef;
 
@@ -45,7 +45,7 @@ AFNETWORK_EXTERN NSString *const AFNetworkDocumentMIMEContentDisposition;
 	This inefficiently decomposes the document into a single data object and you should avoid using it.
 	
 	\details
-	The default implementation is suitable for inheriting, it uses <tt>serialisedPacketsWithContentType:frameLength:</tt> to generate the packets, then accumulates them in an in-memory stream returning the result.
+	The default implementation is suitable for inheriting, it uses `serialisedPacketsWithContentType:frameLength:` to generate the packets, then accumulates them in an in-memory stream returning the result.
  
 	\param contentTypeRef
 	The MIME type of the serialised document. Must not be NULL.

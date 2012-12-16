@@ -24,7 +24,7 @@
 	\brief
 	The server should consult the delegate for conditional operations. If your subclass provides a delegate protocol, it should conform to this one.
  */
-@protocol AFNetworkServerDelegate <AFNetworkConnectionLayerHostDelegate>
+@protocol AFNetworkServerDelegate <NSObject>
 
  @optional
 
@@ -59,7 +59,7 @@
 	\details
 	After instantiating the server you can use one of the convenience methods to open socket(s)
  */
-@interface AFNetworkServer : NSObject <AFNetworkServerDelegate, AFNetworkConnectionLayerHostDelegate> {
+@interface AFNetworkServer : NSObject <AFNetworkServerDelegate> {
  @private
 	AFNetworkSchedulerProxy *_scheduler;
 	
@@ -78,7 +78,7 @@
 	Designated Constructor.
 	
 	\details
-	This should call the designated initialiser with an appropriate encapsulation class. By default this creates a server with <tt>AFNetworkTransport</tt> as the encapsulation class.
+	This should call the designated initialiser with an appropriate encapsulation class. By default this creates a server with `AFNetworkTransport` as the encapsulation class.
  */
 + (id)server;
 

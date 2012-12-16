@@ -23,7 +23,7 @@
 	A very simple Objective-C wrapper around CFSocketRef.
 	
 	\details
-	The purpose of this class is to spawn more sockets upon revieving inbound connections.
+	Create more `AFNetworkSocket` objects upon revieving inbound connections.
  */
 @interface AFNetworkSocket : AFNetworkLayer <AFNetworkConnectionLayer> {
  @private
@@ -33,21 +33,21 @@
 	NSUInteger _socketFlags;
 	
 	struct {
-		AFNETWORK_STRONG CFRunLoopSourceRef _runLoopSource;
-		AFNETWORK_STRONG void *_dispatchSource;
+		AFNETWORK_STRONG CFTypeRef _runLoopSource;
+		void *_dispatchSource;
 	} _sources;
 }
 
 /*!
 	\brief
 	Host Initialiser.
-	This is not governed by a protocol, luckily <tt>AFConnectionServer</tt> can instantiate this class specifically.
+	This is not governed by a protocol, luckily `AFConnectionServer` can instantiate this class specifically.
 	A socket is created with the given characteristics and the address is set.
 	
 	\details
 	If the socket cannot be created they return nil.
  */
-- (id)initWithSocketSignature:(const CFSocketSignature *)signature;
+- (id)initWithSocketSignature:(CFSocketSignature const *)signature;
 
 /*!
 	\brief
@@ -70,23 +70,23 @@
 
 /*!
 	\brief
-	This is not set as the lower layer because <tt>AFNetworkSocket</tt> shouldn't be thought of as sitting above CFSocketRef, it should be thought of <em>as</em> a CFSocketRef.
+	This is not set as the lower layer because `AFNetworkSocket` shouldn't be thought of as sitting above `CFSocketRef`, it should be thought of *as* a `CFSocketRef`.
  */
 @property (readonly, nonatomic) id local;
 /*!
 	\brief
-	This returns the <tt>-[AFNetworkSocket socket]</tt> local address.
+	This returns the `-[AFNetworkSocket socket]` local address.
  */
 @property (readonly, nonatomic) id localAddress;
 
 /*!
 	\brief
-	This creates a CFHostRef wrapping the <tt>-peerAddress</tt>.
+	This creates a CFHostRef wrapping the `-peerAddress`.
  */
 @property (readonly, nonatomic) id peer;
 /*!
 	\brief
-	This returns the <tt>-[AFNetworkSocket socket]</tt> peer address.
+	This returns the `-[AFNetworkSocket socket]` peer address.
 	This is likely to be of most use when determining the reachbility of an endpoint.
  */
 @property (readonly, nonatomic) id peerAddress;

@@ -54,7 +54,7 @@
 	If you provide a host, the details are captured and the host copied.
 	If you provide an <AFNetServiceCommon> it will be used to create a CFNetService internally.
 	
-	The default implementation creates a lower-layer using <tt>+lowerLayerClass</tt> and calls the same initialiser on the new object.
+	The default implementation creates a lower-layer using `+lowerLayerClass` and calls the same initialiser on the new object.
  */
 - (AFNetworkLayer *)initWithTransportSignature:(AFNetworkSignature)signature;
 
@@ -101,8 +101,6 @@
  */
 - (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
-#if defined(DISPATCH_API_VERSION)
-
 /*!
 	\brief
 	Create a dispatch_source internally and set the target to the provided queue.
@@ -111,7 +109,5 @@
 	A layer can only be scheduled in a single queue at a time, to unschedule it pass NULL.
  */
 - (void)scheduleInQueue:(dispatch_queue_t)queue;
-
-#endif /* defined(DISPATCH_API_VERSION) */
 
 @end
