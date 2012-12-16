@@ -12,16 +12,29 @@
 
 @class AFHTTPServer;
 
+@protocol AFHTTPServerRenderer <NSObject>
+
+/*!
+	\brief
+	When a request is received an object is asked to render a response
+	
+	\detail
+	If no renderer returns a response the server generates a 404 response
+ */
+- (CFHTTPMessageRef)networkServer:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;
+
+@end
+
 @protocol AFHTTPServerDataDelegate <AFNetworkServerDelegate>
 
  @optional
 
 /*!
 	\brief
-	When a request is received the delegate is asked to render a response
+	When a request is received an object is asked to render a response
 	
 	\detail
-	If unimplemented, a 404 response code is returned
+	If no renderer returns a response the server generates a 404 response
  */
 - (CFHTTPMessageRef)networkServer:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;
 
@@ -42,5 +55,11 @@
 	The HTTP server delegate participates in the response rendering process.
  */
 @property (assign, nonatomic) id <AFHTTPServerDataDelegate> delegate;
+
+/*!
+	\brief
+	The renderers are consulted before the delegate
+ */
+@property (retain, nonatomic) NSArray *renderers;
 
 @end

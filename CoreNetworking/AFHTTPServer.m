@@ -29,6 +29,7 @@
 @implementation AFHTTPServer
 
 @dynamic delegate;
+@synthesize renderers=_renderers;
 
 + (id)server {
 	return [[[self alloc] initWithEncapsulationClass:[AFHTTPConnection class]] autorelease];
@@ -62,15 +63,6 @@
 	return allowHeaderValue;
 }
 
-- (id)init {
-	self = [super init];
-	if (self == nil) return nil;
-	
-	_renderers = [[NSArray alloc] init];
-	
-	return self;
-}
-
 - (void)dealloc {
 	[_renderers release];
 	
@@ -95,101 +87,105 @@
 }
 
 - (void)networkConnection:(AFHTTPConnection *)connection didReceiveRequest:(CFHTTPMessageRef)request {
-	NSAutoreleasePool *pool = [NSAutoreleasePool new];
-	
-	CFHTTPMessageRef response = NULL;
-	
-	@try {
-		NSString *requestMethod = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
-		NSURL *requestURL = [NSMakeCollectable(CFHTTPMessageCopyRequestURL(request)) autorelease];
-		NSData *requestBody __attribute__((unused)) = [NSMakeCollectable(CFHTTPMessageCopyBody(request)) autorelease];
+	@autoreleasepool {
+		CFHTTPMessageRef response = NULL;
 		
-		if (AF_ENABLE_REQUEST_LOGGING()) {
-			[self _logMessage:request];
-		}
-		
-		// Note: assert that the client has included the Host: header as required by HTTP/1.1
-		if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader)) autorelease] == nil) {
-			AFHTTPStatusCode responseCode = AFHTTPStatusCodeBadRequest;
-			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+		@try {
+			NSString *requestMethod = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
+			NSURL *requestURL = [NSMakeCollectable(CFHTTPMessageCopyRequestURL(request)) autorelease];
+			NSData *requestBody __attribute__((unused)) = [NSMakeCollectable(CFHTTPMessageCopyBody(request)) autorelease];
 			
-			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
-			return;
-		}
-		
-		// Note: assert that the server implements the request method
-		BOOL requestMethodIsImplemented = [[[self class] _implementedMethods] containsObject:[requestMethod uppercaseString]];
-		if (!requestMethodIsImplemented) {
-			AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotImplemented;
-			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+			if (AF_ENABLE_REQUEST_LOGGING()) {
+				[self _logMessage:request];
+			}
 			
-			CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
+			// Note: assert that the client has included the Host: header as required by HTTP/1.1
+			if ([NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)AFHTTPMessageHostHeader)) autorelease] == nil) {
+				AFHTTPStatusCode responseCode = AFHTTPStatusCodeBadRequest;
+				response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+				
+				[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
+				return;
+			}
 			
-			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
-			return;
-		}
-		
-		// Note: top level server queries for * should probably be directed to a specific renderer
-		// Note: should these always be answered by this endpoint, or should they be forwardable to a host specified in the Host header?
-		if ([[requestURL lastPathComponent] isEqualToString:@"*"]) {
-			if ([requestMethod caseInsensitiveCompare:AFHTTPMethodOPTIONS] == NSOrderedSame) {
-				AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
+			// Note: assert that the server implements the request method
+			BOOL requestMethodIsImplemented = [[[self class] _implementedMethods] containsObject:[requestMethod uppercaseString]];
+			if (!requestMethodIsImplemented) {
+				AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotImplemented;
 				response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 				
 				CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
 				
-				[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
+				[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
+				return;
 			}
-			else {
-				AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotFound;
+			
+			// Note: top level server queries for * should probably be directed to a specific renderer
+			// Note: should these always be answered by this endpoint, or should they be forwardable to a host specified in the Host header?
+			if ([[requestURL lastPathComponent] isEqualToString:@"*"]) {
+				if ([requestMethod caseInsensitiveCompare:AFHTTPMethodOPTIONS] == NSOrderedSame) {
+					AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
+					response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+					
+					CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageAllowHeader, (CFStringRef)[[self class] _allowHeaderValue]);
+					
+					[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
+				}
+				else {
+					AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotFound;
+					response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+					
+					[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
+				}
+				return;
+			}
+			
+			// Note: echo the request back to the client
+			if ([requestMethod caseInsensitiveCompare:AFHTTPMethodTRACE] == NSOrderedSame) {
+				AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
 				response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 				
-				[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
-			}
-			return;
-		}
-		
-		// Note: echo the request back to the client
-		if ([requestMethod caseInsensitiveCompare:AFHTTPMethodTRACE] == NSOrderedSame) {
-			AFHTTPStatusCode responseCode = AFHTTPStatusCodeOK;
-			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
-			
-			CFHTTPMessageSetBody(response, (CFDataRef)[NSMakeCollectable(CFHTTPMessageCopySerializedMessage(request)) autorelease]);
-			CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageContentTypeHeader, CFSTR("message/http"));
-			
-			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
-			return;
-		}
-		
-		if ([self.delegate respondsToSelector:@selector(networkServer:renderResourceForRequest:)]) {
-			response = [self.delegate networkServer:self renderResourceForRequest:request];
-			
-			if (response != NULL) {
+				CFHTTPMessageSetBody(response, (CFDataRef)[NSMakeCollectable(CFHTTPMessageCopySerializedMessage(request)) autorelease]);
+				CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)AFHTTPMessageContentTypeHeader, CFSTR("message/http"));
+				
 				[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
 				return;
 			}
+			
+			NSMutableArray *rendererOrder = [NSMutableArray arrayWithArray:self.renderers];
+			id <AFHTTPServerDataDelegate> delegate = self.delegate;
+			if (delegate != nil && [delegate respondsToSelector:@selector(networkServer:renderResourceForRequest:)]) {
+				[rendererOrder addObject:delegate];
+			}
+			
+			for (id <AFHTTPServerRenderer> currentRenderer in rendererOrder) {
+				response = [currentRenderer networkServer:self renderResourceForRequest:request];
+				
+				if (response != NULL) {
+					[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
+					return;
+				}
+			}
+			
+			AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotFound;
+			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
 		}
-		
-		AFHTTPStatusCode responseCode = AFHTTPStatusCodeNotFound;
-		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
-		[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
-	}
-	@catch (NSException *exception) {
-		printf("*** Caught Response Handling Exception '%s', reason '%s'\n", [[exception name] UTF8String], [[exception reason] UTF8String]);
-		printf("*** Call Stack at throw:\n(\n");
-		NSArray *addresses = [exception callStackReturnAddresses];
-		for (NSUInteger idx = 0; idx < [addresses count]; idx++) {
-			NSNumber *address = [addresses objectAtIndex:idx];
-			printf("\t%ld\t0x%qX\n", idx, (unsigned long long)[address unsignedIntegerValue]);
+		@catch (NSException *exception) {
+			printf("*** Caught Response Handling Exception '%s', reason '%s'\n", [[exception name] UTF8String], [[exception reason] UTF8String]);
+			printf("*** Call Stack at throw:\n(\n");
+			NSArray *addresses = [exception callStackReturnAddresses];
+			for (NSUInteger idx = 0; idx < [addresses count]; idx++) {
+				NSNumber *address = [addresses objectAtIndex:idx];
+				printf("\t%ld\t0x%qX\n", idx, (unsigned long long)[address unsignedIntegerValue]);
+			}
+			printf(")\n");
+			
+			AFHTTPStatusCode responseCode = AFHTTPStatusCodeServerError;
+			response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
+			[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
 		}
-		printf(")\n");
-		
-		AFHTTPStatusCode responseCode = AFHTTPStatusCodeServerError;
-		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
-		[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:NO];
 	}
-	
-	[pool drain];
 }
 
 - (void)networkLayer:(id <AFNetworkConnectionLayer>)layer didReceiveError:(NSError *)error {
