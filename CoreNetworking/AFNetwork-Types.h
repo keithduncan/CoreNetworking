@@ -29,8 +29,8 @@
 	One of the 'PROTOCOL NUMBERS' defined in IETF-RFC-1700 <http://tools.ietf.org/html/rfc1700> - it is important that an appropriate `socketType` is also provided.
  */
 struct _AFNetworkSocketSignature {
-	const int32_t socketType;
-	const int32_t protocol;
+	int32_t const socketType;
+	int32_t const protocol;
 };
 typedef struct _AFNetworkSocketSignature AFNetworkSocketSignature;
 
@@ -46,13 +46,13 @@ static inline BOOL AFNetworkSocketSignatureEqualToSignature(AFNetworkSocketSigna
 	\brief
 	This is suitable for creating a network TCP socket.
 */
-AFNETWORK_EXTERN const AFNetworkSocketSignature AFNetworkSocketSignatureInternetTCP;
+AFNETWORK_EXTERN AFNetworkSocketSignature const AFNetworkSocketSignatureInternetTCP;
 
 /*!
 	\brief
 	This is suitable for creating a network UDP socket.
  */
-AFNETWORK_EXTERN const AFNetworkSocketSignature AFNetworkSocketSignatureInternetUDP;
+AFNETWORK_EXTERN AFNetworkSocketSignature const AFNetworkSocketSignatureInternetUDP;
 
 
 /*
@@ -61,16 +61,16 @@ AFNETWORK_EXTERN const AFNetworkSocketSignature AFNetworkSocketSignatureInternet
 
 /*!
 	\brief
-	A transport layer struct simply includes the post number too, the port number isn't included in the <tt>AFSocketType</tt> because it is useful without it.
+	A transport layer struct simply includes the post number too, the port number isn't included in the `AFSocketType` because it is useful without it.
  
 	\field type
-	See the documentation on <tt>AFSocketType</tt>.
+	See the documentation on `AFSocketType`.
 	
 	\field port
 	Identifies the Transport Layer address to communicate using (see IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122> in network byte order.
  */
 struct _AFNetworkInternetTransportSignature {
-	const AFNetworkSocketSignature type;
+	AFNetworkSocketSignature const type;
 	uint16_t port;
 };
 typedef struct _AFNetworkInternetTransportSignature AFNetworkInternetTransportSignature;
@@ -83,16 +83,16 @@ typedef struct _AFNetworkInternetTransportSignature AFNetworkInternetTransportSi
 /*!
 	\brief
 	Based on CFSocketSignature allowing for higher-level functionality.
-	The un-intuitive layout of the structure is very important; because the first pointer is a <tt>CFType</tt>, the structure can be introspected using <tt>CFGetTypeID()</tt>.
+	The un-intuitive layout of the structure is very important; because the first pointer is a `CFType`, the structure can be introspected using `CFGetTypeID()`.
 	
 	\details
-	Doesn't include a <tt>protocolFamily</tt> field like CFSocketSignature because a host may resolve to a number of addresses each with a different protocol family.
+	Doesn't include a `protocolFamily` field like CFSocketSignature because a host may resolve to a number of addresses each with a different protocol family.
 	
 	\field host
-	Clients receiving this struct should should copy this field using <tt>CFHostCreateCopy()</tt>. The addresses property should be resolved if it hasn't been already.
+	Clients receiving this struct should should copy this field using `CFHostCreateCopy()`. The addresses property should be resolved if it hasn't been already.
 	
 	\field transport
-	See the documentation for <tt>AFNetworkTransportLayer</tt>, it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc.) and the port.
+	See the documentation for `AFNetworkTransportLayer`, it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc.) and the port.
  */
 struct _AFNetworkHostSignature {
 	/*
@@ -102,13 +102,13 @@ struct _AFNetworkHostSignature {
 	/*
 		This defines _how_ to communicate.
 	 */
-	const AFNetworkInternetTransportSignature transport;
+	AFNetworkInternetTransportSignature const transport;
 };
 typedef struct _AFNetworkHostSignature AFNetworkHostSignature;
 
 /*!
 	\brief
-	This is a partner to <tt>AFNetworkTransportHostSignature</tt> except that a <tt>CFNetServiceRef</tt> is self describing and doesn't require a <tt>transport</tt> field.
+	This is a partner to `AFNetworkTransportHostSignature` except that a `CFNetServiceRef` is self describing and doesn't require a `transport` field.
  */
 struct _AFNetworkServiceSignature {
 	/*
@@ -120,8 +120,8 @@ typedef struct _AFNetworkServiceSignature AFNetworkServiceSignature;
 
 /*!
 	\brief
-	Allows for implemetations to accept either <tt>AFNetworkHostSignature</tt> or <tt>AFNetworkServiceSignature</tt>.
-	A receiver will introspect the type using <tt>CFGetTypeID()</tt> to determine which has been passed.
+	Allows for implemetations to accept either `AFNetworkHostSignature` or `AFNetworkServiceSignature`.
+	A receiver will introspect the type using `CFGetTypeID()` to determine which has been passed.
  */
 typedef union _AFNetworkSignature {
 	AFNetworkHostSignature *_host;

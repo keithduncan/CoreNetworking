@@ -28,7 +28,7 @@
 	its better to use <x-man-page://getaddrinfo> and <x-man-page://getnameinfo> to avoid hard
 	coding address families into the userspace
  */
-AFNETWORK_EXTERN uint16_t af_sockaddr_in_read_port(const struct sockaddr_storage *addr);
+AFNETWORK_EXTERN uint16_t af_sockaddr_in_read_port(struct sockaddr_storage const *addr);
 /*!
 	\brief
 	Write the port field to an Internet address familty socket address.
@@ -43,19 +43,19 @@ AFNETWORK_EXTERN void af_sockaddr_in_write_port(struct sockaddr_storage *addr, u
 	\brief
 	Compare addresses in an address family aware manner, accomodating for IPv6 mapped IPv4 addresses and wildcard addresses and ports
  */
-AFNETWORK_EXTERN bool af_sockaddr_compare(const struct sockaddr_storage *addr_a, const struct sockaddr_storage *addr_b);
+AFNETWORK_EXTERN bool af_sockaddr_compare(struct sockaddr_storage const *addr_a, struct sockaddr_storage const *addr_b);
 
 /*!
 	\brief
 	Convert network form into presentation form.
  */
-AFNETWORK_EXTERN int af_sockaddr_ntop(const struct sockaddr_storage *addr, char *destination, size_t destinationSize);
+AFNETWORK_EXTERN int af_sockaddr_ntop(struct sockaddr_storage const *addr, char *destination, size_t destinationSize);
 
 /*!
 	\brief
 	Convert presentation form into machine form.
  */
-AFNETWORK_EXTERN int af_sockaddr_pton(const char *presentation, struct sockaddr_storage *storage);
+AFNETWORK_EXTERN int af_sockaddr_pton(char const *presentation, struct sockaddr_storage *storage);
 
 /*
 	Cocoa Networking

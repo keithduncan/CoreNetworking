@@ -31,7 +31,7 @@
  */
 #define AFNETWORK_SOCKADDR_PORT(ptr) ((struct sockaddr_in *)ptr)->sin_port
 
-uint16_t af_sockaddr_in_read_port(const struct sockaddr_storage *addr) {
+uint16_t af_sockaddr_in_read_port(struct sockaddr_storage const *addr) {
 	return ntohs(AFNETWORK_SOCKADDR_PORT(addr));
 }
 
@@ -41,17 +41,17 @@ void af_sockaddr_in_write_port(struct sockaddr_storage *addr, uint16_t port) {
 
 #undef AFNETWORK_SOCKADDR_PORT
 
-static inline bool af_sockaddr_is_ipv4_mapped(const struct sockaddr_storage *addr) {
+static inline bool af_sockaddr_is_ipv4_mapped(struct sockaddr_storage const *addr) {
 	NSCParameterAssert(addr != NULL);
 	
-	const struct sockaddr_in6 *addr_6 = (const struct sockaddr_in6 *)addr;
+	struct sockaddr_in6 const *addr_6 = (struct sockaddr_in6 const *)addr;
 	return ((addr->ss_family == AF_INET6) && IN6_IS_ADDR_V4MAPPED(&(addr_6->sin6_addr)));
 }
 
-bool af_sockaddr_compare(const struct sockaddr_storage *addr_a, const struct sockaddr_storage *addr_b) {
+bool af_sockaddr_compare(struct sockaddr_storage const *addr_a, struct sockaddr_storage const *addr_b) {
 	// We have to handle IPv6 IPV4MAPPED addresses - convert them to IPv4
 	if (af_sockaddr_is_ipv4_mapped(addr_a)) {
-		const struct sockaddr_in6 *addr_a6 = (const struct sockaddr_in6 *)addr_a;
+		struct sockaddr_in6 const *addr_a6 = (struct sockaddr_in6 const *)addr_a;
 		
 		struct sockaddr_in *addr_a4 = (struct sockaddr_in *)alloca(sizeof(struct sockaddr_in));
 		memset(addr_a4, 0, sizeof(struct sockaddr_in));
@@ -61,14 +61,14 @@ bool af_sockaddr_compare(const struct sockaddr_storage *addr_a, const struct soc
 		addr_a = (const struct sockaddr_storage *)addr_a4;
 	}
 	if (af_sockaddr_is_ipv4_mapped(addr_b)) {
-		const struct sockaddr_in6 *addr_b6 = (const struct sockaddr_in6 *)addr_b;
+		struct sockaddr_in6 const *addr_b6 = (struct sockaddr_in6 const *)addr_b;
 		
 		struct sockaddr_in *addr_b4 = (struct sockaddr_in *)alloca(sizeof(struct sockaddr_in));
 		memset(addr_b4, 0, sizeof(struct sockaddr_in));
 		
 		memcpy(&(addr_b4->sin_addr.s_addr), &(addr_b6->sin6_addr.s6_addr[12]), sizeof(struct in_addr));
 		addr_b4->sin_port = addr_b6->sin6_port;
-		addr_b = (const struct sockaddr_storage *)addr_b4;
+		addr_b = (struct sockaddr_storage const *)addr_b4;
 	}
 	
 	if (addr_a->ss_family != addr_b->ss_family) {
@@ -78,8 +78,8 @@ bool af_sockaddr_compare(const struct sockaddr_storage *addr_a, const struct soc
 	int32_t addr_a_family = addr_a->ss_family;
 	
 	if (addr_a_family == AF_INET) {
-		const struct sockaddr_in *a_in = (struct sockaddr_in *)addr_a;
-		const struct sockaddr_in *b_in = (struct sockaddr_in *)addr_b;
+		struct sockaddr_in const *a_in = (struct sockaddr_in *)addr_a;
+		struct sockaddr_in const *b_in = (struct sockaddr_in *)addr_b;
 		
 		// Compare addresses
 		if ((a_in->sin_addr.s_addr != INADDR_ANY) && (b_in->sin_addr.s_addr != INADDR_ANY) && (a_in->sin_addr.s_addr != b_in->sin_addr.s_addr)) {
@@ -93,8 +93,8 @@ bool af_sockaddr_compare(const struct sockaddr_storage *addr_a, const struct soc
 	}
 	
 	if (addr_a_family == AF_INET6) {
-		const struct sockaddr_in6 *addr_a6 = (const struct sockaddr_in6 *)addr_a;
-		const struct sockaddr_in6 *addr_b6 = (const struct sockaddr_in6 *)addr_b;
+		struct sockaddr_in6 const *addr_a6 = (struct sockaddr_in6 const *)addr_a;
+		struct sockaddr_in6 const *addr_b6 = (struct sockaddr_in6 const *)addr_b;
 		
 		// Compare scope
 		if (addr_a6->sin6_scope_id && addr_b6->sin6_scope_id && (addr_a6->sin6_scope_id != addr_b6->sin6_scope_id)) {
@@ -116,11 +116,11 @@ bool af_sockaddr_compare(const struct sockaddr_storage *addr_a, const struct soc
 	return false;
 }
 
-int af_sockaddr_ntop(const struct sockaddr_storage *addr, char *destination, size_t destinationSize) {
-	return getnameinfo((const struct sockaddr *)addr, addr->ss_len, destination, destinationSize, NULL, 0, NI_NUMERICHOST);
+int af_sockaddr_ntop(struct sockaddr_storage const *addr, char *destination, size_t destinationSize) {
+	return getnameinfo((struct sockaddr const *)addr, addr->ss_len, destination, destinationSize, NULL, 0, NI_NUMERICHOST);
 }
 
-int af_sockaddr_pton(const char *presentation, struct sockaddr_storage *storage) {
+int af_sockaddr_pton(char const *presentation, struct sockaddr_storage *storage) {
 	struct addrinfo addressInfoHints = {
 		.ai_flags = AI_NUMERICHOST,
 	};
@@ -156,7 +156,7 @@ static BOOL _AFNetworkSocketCheckGetAddressInfoError(int result, NSError **error
 
 NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress, NSError **errorRef) {
 	CFRetain(socketAddress);
-	const struct sockaddr_storage *socketAddressBytes = (const struct sockaddr_storage *)[socketAddress bytes];
+	struct sockaddr_storage const *socketAddressBytes = (struct sockaddr_storage const *)[socketAddress bytes];
 	
 	char socketAddressPresentation[INET6_ADDRSTRLEN] = {};
 	size_t socketAddressPresentationLength = (sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation));
@@ -173,7 +173,7 @@ NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress, NSError **
 }
 
 NSData *AFNetworkSocketPresentationToAddress(NSString *presentation, NSError **errorRef) {
-	const char *presentationBytes = [presentation UTF8String];
+	char const *presentationBytes = [presentation UTF8String];
 	
 	struct sockaddr_storage storage = {};
 	int ptonError = af_sockaddr_pton(presentationBytes, &storage);

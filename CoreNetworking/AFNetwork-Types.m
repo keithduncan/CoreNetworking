@@ -13,12 +13,12 @@
 
 // Note: for internetwork sockets, the address family is determined through resolution
 
-const AFNetworkSocketSignature AFNetworkSocketSignatureInternetTCP = {
+AFNetworkSocketSignature const AFNetworkSocketSignatureInternetTCP = {
 	.socketType = SOCK_STREAM,
 	.protocol = IPPROTO_TCP,
 };
 
-const AFNetworkSocketSignature AFNetworkSocketSignatureInternetUDP = {
+AFNetworkSocketSignature const AFNetworkSocketSignatureInternetUDP = {
 	.socketType = SOCK_DGRAM,
 	.protocol = IPPROTO_UDP,
 };
