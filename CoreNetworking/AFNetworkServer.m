@@ -27,7 +27,7 @@
 #import "AFNetwork-Constants.h"
 #import "AFNetwork-Macros.h"
 
-@interface AFNetworkServer () <AFNetworkConnectionLayerControlDelegate>
+@interface AFNetworkServer () <AFNetworkConnectionLayerHostDelegate, AFNetworkConnectionLayerControlDelegate>
 @property (retain, nonatomic) NSArray *encapsulationClasses;
 @property (readwrite, retain, nonatomic) NSArray *clientPools;
 @end
@@ -39,7 +39,7 @@
 - (void)_scheduleLayer:(AFNetworkLayer *)layer;
 
 - (void)_initialiseWithEncapsulationClass:(Class)encapsulationClass;
-- (NSUInteger)_bucketContainingLayer:(id)layer;
+- (NSInteger)_bucketContainingLayer:(id)layer;
 @end
 
 @implementation AFNetworkServer
@@ -159,7 +159,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 	return [self delegateProxy:nil];
 }
 
-- (BOOL)openInternetSocketsWithSocketSignature:(const AFNetworkSocketSignature)socketSignature scope:(AFNetworkInternetSocketScope)scope port:(uint16_t)port errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler {
+- (BOOL)openInternetSocketsWithSocketSignature:(AFNetworkSocketSignature const)socketSignature scope:(AFNetworkInternetSocketScope)scope port:(uint16_t)port errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler {
 	struct addrinfo hints = {
 		.ai_family = AF_UNSPEC,
 		.ai_socktype = socketSignature.socketType,
@@ -208,7 +208,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 	return [self openInternetSocketsWithSocketSignature:socketSignature socketAddresses:socketAddresses errorHandler:errorHandler];
 }
 
-- (BOOL)openInternetSocketsWithSocketSignature:(const AFNetworkSocketSignature)socketSignature socketAddresses:(NSSet *)socketAddresses errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler {
+- (BOOL)openInternetSocketsWithSocketSignature:(AFNetworkSocketSignature const)socketSignature socketAddresses:(NSSet *)socketAddresses errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler {
 	NSMutableSet *socketObjects = [NSMutableSet setWithCapacity:[socketAddresses count]];
 	BOOL shouldCloseSocketObjects = NO;
 	
@@ -270,12 +270,12 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 	return YES;
 }
 
-- (AFNetworkSocket *)openSocketWithSignature:(const AFNetworkSocketSignature)signature address:(NSData *)address error:(NSError **)errorRef {
+- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address error:(NSError **)errorRef {
 	NSParameterAssert(self.clientPools != nil);
 	
 	CFRetain(address);
 	
-	unsigned long protocolFamily = ((const struct sockaddr_storage *)[address bytes])->ss_family;
+	unsigned long protocolFamily = ((struct sockaddr_storage const *)[address bytes])->ss_family;
 	
 	CFSocketSignature socketSignature = {
 		.socketType = signature.socketType,
@@ -350,7 +350,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 #pragma mark - Delegate
 
 - (void)networkLayer:(id)layer didAcceptConnection:(id <AFNetworkConnectionLayer>)connection {
-	NSUInteger bucket = [self _bucketContainingLayer:layer];
+	NSInteger bucket = [self _bucketContainingLayer:layer];
 	
 	if (bucket == 0) {
 		if ([self.delegate respondsToSelector:@selector(networkServer:shouldAcceptConnection:)]) {
@@ -369,7 +369,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 }
 
 - (void)networkLayerDidOpen:(id <AFNetworkTransportLayer>)layer {
-	if ([self _bucketContainingLayer:layer] == NSUIntegerMax) {
+	if ([self _bucketContainingLayer:layer] == NSNotFound) {
 		// Note: these are the initial socket layers opening, nothing else is spawned at this layer
 		return;
 	}
@@ -378,7 +378,10 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 }
 
 - (void)networkLayerDidClose:(id <AFNetworkConnectionLayer>)layer {
-	NSUInteger bucket = [self _bucketContainingLayer:layer];
+	NSInteger bucket = [self _bucketContainingLayer:layer];
+	if (bucket == NSNotFound) {
+		return;
+	}
 	[[self.clientPools objectAtIndex:bucket] removeConnectionsObject:layer];
 	
 	id <AFNetworkTransportLayer> lowerLayer = layer.lowerLayer;
@@ -429,15 +432,15 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 	[self setClientPools:newClientPools];
 }
 
-- (NSUInteger)_bucketContainingLayer:(id)layer {
-	for (NSUInteger idx = 0; idx < [self.clientPools count]; idx++) {
+- (NSInteger)_bucketContainingLayer:(id)layer {
+	for (NSInteger idx = 0; idx < [self.clientPools count]; idx++) {
 		if (![[[self.clientPools objectAtIndex:idx] connections] containsObject:layer]) {
 			continue;
 		}
 		return idx;
 	}
 	
-	return NSUIntegerMax;
+	return NSNotFound;
 }
 
 @end

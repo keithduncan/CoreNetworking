@@ -113,13 +113,11 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 		_sources._runLoopSource = NULL;
 	}
 	
-#if defined(DISPATCH_API_VERSION)
 	if (_sources._dispatchSource != NULL) {
 		dispatch_source_cancel(_sources._dispatchSource);
 		dispatch_release(_sources._dispatchSource);
 		_sources._dispatchSource = NULL;
 	}
-#endif
 	
 	[self _stopCurrentPacket];
 	[_packetQueue release];
@@ -128,13 +126,11 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 }
 
 - (void)finalize {
-#if defined(DISPATCH_API_VERSION)
 	if (_sources._dispatchSource != NULL) {
 		dispatch_source_cancel(_sources._dispatchSource);
 		dispatch_release(_sources._dispatchSource);
 		_sources._dispatchSource = NULL;
 	}
-#endif
 	
 	[super finalize];
 }
@@ -195,8 +191,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 	
 	[self.stream removeFromRunLoop:runLoop forMode:mode];
 }
-
-#if defined(DISPATCH_API_VERSION)
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
 	NSParameterAssert(_sources._runLoopSource == NULL);
@@ -278,18 +272,14 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 #endif
 }
 
-#endif /* defined(DISPATCH_API_VERSION) */
-
 - (void)_resumeSources {
 	if (_sources._runLoopSource != NULL) {
 		//nop
 	}
 	
-#if defined(DISPATCH_API_VERSION)
 	if (_sources._dispatchSource != NULL) {
 		dispatch_resume(_sources._dispatchSource);
 	}
-#endif /* defined(DISPATCH_API_VERSION) */
 }
 
 - (void)open {
@@ -399,18 +389,14 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 
 - (void)_updateStreamFlags:(_AFNetworkStreamFlags)newStreamFlags {
 	if ((self.streamFlags & _AFNetworkStreamFlagsTryDequeue) == _AFNetworkStreamFlagsTryDequeue && (newStreamFlags & _AFNetworkStreamFlagsTryDequeue) == 0) {
-#if defined(DISPATCH_API_VERSION)
 		if (_sources._dispatchSource != NULL) {
 			dispatch_resume(_sources._dispatchSource);
 		}
-#endif /* defined(DISPATCH_API_VERSION) */
 	}
 	else if ((self.streamFlags & _AFNetworkStreamFlagsTryDequeue) == 0 && (newStreamFlags & _AFNetworkStreamFlagsTryDequeue) == _AFNetworkStreamFlagsTryDequeue) {
-#if defined(DISPATCH_API_VERSION)
 		if (_sources._dispatchSource != NULL) {
 			dispatch_suspend(_sources._dispatchSource);
 		}
-#endif /* defined(DISPATCH_API_VERSION) */
 	}
 	
 	self.streamFlags = newStreamFlags;

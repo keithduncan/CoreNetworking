@@ -129,29 +129,25 @@ static BOOL _AFNetworkServicePublisherCheckAndForwardError(AFNetworkServicePubli
 	_AFNetworkServiceSourceEnvironmentUnscheduleFromRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
 }
 
-#if defined(DISPATCH_API_VERSION)
-
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
 	_AFNetworkServiceSourceEnvironmentScheduleInQueue((_AFNetworkServiceSourceEnvironment *)&_sources, queue);
 }
 
-#endif
-
 - (void)publishData:(NSData *)data forRecord:(AFNetworkServiceRecordType)record {
 	NSParameterAssert(data != nil);
 	
-	NSMapInsert(self.recordToDataMap, (const void *)record, (const void *)[[data copy] autorelease]);
+	NSMapInsert(self.recordToDataMap, (void const *)record, (void const *)[[data copy] autorelease]);
 	
 	[self _updateDataForRecordIfRequired:record];
 }
 
 - (void)removeDataForRecord:(AFNetworkServiceRecordType)record {
-	NSMapRemove(self.recordToDataMap, (const void *)record);
+	NSMapRemove(self.recordToDataMap, (void const *)record);
 	
 	[self _updateDataForRecordIfRequired:record];
 }
 
-static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSServiceFlags flags, DNSServiceErrorType errorCode, const char *replyName, const char *replyType, const char *replyDomain, void *context) {
+static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSServiceFlags flags, DNSServiceErrorType errorCode, char const *replyName, char const *replyType, char const *replyDomain, void *context) {
 	AFNetworkServicePublisher *self = [[(id)context retain] autorelease];
 	
 	if (![self.serviceSource isValid]) {
@@ -185,7 +181,7 @@ static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSS
 	
 	NSData *TXTRecordData = [self _validatedRecordDataForRecord:AFNetworkServiceRecordTypeTXT];
 	
-	DNSServiceErrorType registerError = DNSServiceRegister((DNSServiceRef *)&_service, (DNSServiceFlags)0, kDNSServiceInterfaceIndexAny, [scope.name UTF8String], [scope.type UTF8String], [scope.domain UTF8String], NULL, htons(self.port), (uint16_t)[TXTRecordData length], (const void *)[TXTRecordData bytes], _AFNetworkServicePublisherRegisterCallback, self);
+	DNSServiceErrorType registerError = DNSServiceRegister((DNSServiceRef *)&_service, (DNSServiceFlags)0, kDNSServiceInterfaceIndexAny, [scope.name UTF8String], [scope.type UTF8String], [scope.domain UTF8String], NULL, htons(self.port), (uint16_t)[TXTRecordData length], (void const *)[TXTRecordData bytes], _AFNetworkServicePublisherRegisterCallback, self);
 	if (!_AFNetworkServicePublisherCheckAndForwardError(self, registerError)) {
 		return;
 	}
@@ -215,7 +211,7 @@ static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSS
 @implementation AFNetworkServicePublisher (AFNetworkPrivate)
 
 - (NSData *)_validatedRecordDataForRecord:(AFNetworkServiceRecordType)record {
-	NSData *recordData = NSMapGet(self.recordToDataMap, (const void *)record);
+	NSData *recordData = NSMapGet(self.recordToDataMap, (void const *)record);
 	if ([recordData length] > UINT16_MAX) {
 		return nil;
 	}
@@ -229,19 +225,19 @@ static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSS
 	
 	NSData *recordData = [self _validatedRecordDataForRecord:record];
 	
-	DNSRecordRef existingRecord = NSMapGet(self.recordToHandleMap, (const void *)record);
+	DNSRecordRef existingRecord = NSMapGet(self.recordToHandleMap, (void const *)record);
 	if (existingRecord != NULL && recordData == nil) {
 		DNSServiceErrorType removeRecordError = DNSServiceRemoveRecord(_service, existingRecord, (DNSServiceFlags)0);
 #warning check the kind of errors we can get from this API at http://opensource.apple.com
 		
 		_AFNetworkServicePublisherCheckAndForwardError(self, removeRecordError);
 		
-		NSMapRemove(self.recordToHandleMap, (const void *)record);
+		NSMapRemove(self.recordToHandleMap, (void const *)record);
 		return;
 	}
 	
 	if (existingRecord != NULL || record == AFNetworkServiceRecordTypeTXT) {
-		DNSServiceErrorType updateRecordError = DNSServiceUpdateRecord(_service, existingRecord, (DNSServiceFlags)0, (uint16_t)[recordData length], (const void *)[recordData bytes], 0);
+		DNSServiceErrorType updateRecordError = DNSServiceUpdateRecord(_service, existingRecord, (DNSServiceFlags)0, (uint16_t)[recordData length], (void const *)[recordData bytes], 0);
 		
 		if (!_AFNetworkServicePublisherCheckAndForwardError(self, updateRecordError)) {
 #warning check the kind of errors we can get from this API at http://opensource.apple.com
@@ -259,12 +255,12 @@ static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSS
 	uint16_t recordType = _AFNetworkServiceRecordTypeForRecordName(record);
 	
 	DNSRecordRef newRecord = NULL;
-	DNSServiceErrorType newRecordError = DNSServiceAddRecord(_service, &newRecord, (DNSServiceFlags)0, recordType, (uint16_t)[recordData length], (const void *)[recordData bytes], 0);
+	DNSServiceErrorType newRecordError = DNSServiceAddRecord(_service, &newRecord, (DNSServiceFlags)0, recordType, (uint16_t)[recordData length], (void const *)[recordData bytes], 0);
 	if (!_AFNetworkServicePublisherCheckAndForwardError(self, newRecordError)) {
 		return;
 	}
 	
-	NSMapInsert(self.recordToHandleMap, (const void *)record, (const void *)newRecord);
+	NSMapInsert(self.recordToHandleMap, (void const *)record, (void const *)newRecord);
 }
 
 - (void)_addScope:(AFNetworkServiceScope *)scope {

@@ -118,15 +118,11 @@ static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolv
 	_AFNetworkServiceSourceEnvironmentUnscheduleFromRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
 }
 
-#if defined(DISPATCH_API_VERSION)
-
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
 	_AFNetworkServiceSourceEnvironmentScheduleInQueue((_AFNetworkServiceSourceEnvironment *)&_sources, queue);
 }
 
-#endif
-
-static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, const char *fullname, uint16_t rrtype, uint16_t rrclass, uint16_t rdlen, const void *rdata, uint32_t ttl, void *context) {
+static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *fullname, uint16_t rrtype, uint16_t rrclass, uint16_t rdlen, void const *rdata, uint32_t ttl, void *context) {
 	AFNetworkServiceResolver *self = [[(id)context retain] autorelease];
 	
 	if (![[self _serviceSourceForService:sdRef] isValid]) {
@@ -140,7 +136,7 @@ static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DN
 	AFNetworkServiceRecordType record = _AFNetworkServiceRecordNameForRecordType(rrtype);
 	
 	NSData *recordData = [NSData dataWithBytes:rdata length:rdlen];
-	NSMapInsert(self.recordToDataMap, (const void *)record, (const void *)recordData);
+	NSMapInsert(self.recordToDataMap, (void const *)record, (void const *)recordData);
 	
 	if ([self.delegate respondsToSelector:@selector(networkServiceResolver:didUpdateRecord:withData:)]) {
 		[self.delegate networkServiceResolver:self didUpdateRecord:record withData:recordData];
@@ -152,7 +148,7 @@ static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DN
 	NSParameterAssert(scope != nil);
 	NSParameterAssert(_sources._runLoopSource != NULL || _sources._dispatchSource != NULL);
 	
-	DNSServiceRef existingRecordQuery = NSMapGet(self.recordToQueryServiceMap, (const void *)record);
+	DNSServiceRef existingRecordQuery = NSMapGet(self.recordToQueryServiceMap, (void const *)record);
 	if (existingRecordQuery != NULL) {
 		return;
 	}
@@ -170,13 +166,13 @@ static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DN
 	if (!_AFNetworkServiceResolverCheckAndForwardError(self, newRecordQueryError)) {
 		return;
 	}
-	NSMapInsert(self.recordToQueryServiceMap, (const void *)record, (const void *)newRecordQueryService);
+	NSMapInsert(self.recordToQueryServiceMap, (void const *)record, (void const *)newRecordQueryService);
 	
 	[self _addServiceSourceForService:newRecordQueryService];
 }
 
 - (void)removeMonitorForRecord:(AFNetworkServiceRecordType)record {
-	DNSServiceRef existingRecordQuery = NSMapGet(self.recordToQueryServiceMap, (const void *)record);
+	DNSServiceRef existingRecordQuery = NSMapGet(self.recordToQueryServiceMap, (void const *)record);
 	if (existingRecordQuery == NULL) {
 		return;
 	}
@@ -184,14 +180,14 @@ static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DN
 	[self _removeServiceSourceForService:existingRecordQuery];
 	
 	DNSServiceRefDeallocate(existingRecordQuery);
-	NSMapRemove(self.recordToQueryServiceMap, (const void *)record);
+	NSMapRemove(self.recordToQueryServiceMap, (void const *)record);
 }
 
 - (NSData *)dataForRecord:(AFNetworkServiceRecordType)record {
-	return NSMapGet(self.recordToDataMap, (const void *)record);
+	return NSMapGet(self.recordToDataMap, (void const *)record);
 }
 
-static void _AFNetworkServiceResolverGetAddrInfoCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, const char *hostname, const struct sockaddr *address, uint32_t ttl, void *context) {
+static void _AFNetworkServiceResolverGetAddrInfoCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *hostname, struct sockaddr const *address, uint32_t ttl, void *context) {
 	AFNetworkServiceResolver *self = [[(id)context retain] autorelease];
 	
 	if (![[self _serviceSourceForService:sdRef] isValid]) {
@@ -217,7 +213,7 @@ static void _AFNetworkServiceResolverGetAddrInfoCallback(DNSServiceRef sdRef, DN
 	}
 }
 
-static void _AFNetworkServiceResolverResolveCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, const char *fullname, const char *hostname, uint16_t port, uint16_t txtLen, const unsigned char *txtRecord, void *context) {
+static void _AFNetworkServiceResolverResolveCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *fullname, char const *hostname, uint16_t port, uint16_t txtLen, unsigned char const *txtRecord, void *context) {
 	AFNetworkServiceResolver *self = [[(id)context retain] autorelease];
 	
 	if (![[self _serviceSourceForService:sdRef] isValid]) {
@@ -279,18 +275,18 @@ SharedTeardown:;
 @implementation AFNetworkServiceResolver (AFNetworkPrivate)
 
 - (AFNetworkServiceSource *)_serviceSourceForService:(DNSServiceRef)service {
-	return NSMapGet(self.serviceToServiceSourceMap, (const void *)service);
+	return NSMapGet(self.serviceToServiceSourceMap, (void const *)service);
 }
 
 - (void)_addServiceSourceForService:(DNSServiceRef)service {
 	AFNetworkServiceSource *newServiceSource = _AFNetworkServiceSourceEnvironmentServiceSource(service, (_AFNetworkServiceSourceEnvironment *)&_sources);
-	NSMapInsert(self.serviceToServiceSourceMap, (const void *)service, (const void *)newServiceSource);
+	NSMapInsert(self.serviceToServiceSourceMap, (void const *)service, (void const *)newServiceSource);
 }
 
 - (void)_removeServiceSourceForService:(DNSServiceRef)service {
 	AFNetworkServiceSource *serviceSource = [self _serviceSourceForService:service];
 	[serviceSource invalidate];
-	NSMapRemove(self.serviceToServiceSourceMap, (const void *)service);
+	NSMapRemove(self.serviceToServiceSourceMap, (void const *)service);
 }
 
 - (void)_scheduleTimerWithTimeout:(NSTimeInterval)timeout {

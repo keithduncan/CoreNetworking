@@ -68,7 +68,7 @@ NSDictionary *AFNetworkServicePropertyDictionaryFromTXTRecordData(NSData *TXTRec
 		uint8_t valueLength = 0;
 		void *value = NULL;
 		
-		TXTRecordGetItemAtIndex([TXTRecordData length], [TXTRecordData bytes], idx, currentKeyLength, currentKey, &valueLength, (const void **)&value);
+		TXTRecordGetItemAtIndex([TXTRecordData length], [TXTRecordData bytes], idx, currentKeyLength, currentKey, &valueLength, (void const **)&value);
 		
 		NSString *keyString = [NSString stringWithCString:currentKey encoding:NSASCIIStringEncoding];
 		if (keyString == nil) {

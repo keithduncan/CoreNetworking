@@ -62,12 +62,10 @@ static void	_AFNetworkServiceRunLoopSource(CFFileDescriptorRef fileDescriptor, C
 		_sources._runLoopSource = NULL;
 	}
 	
-#if defined(DISPATCH_API_VERSION)
 	if (_sources._dispatchSource != NULL) {
 		dispatch_release(_sources._dispatchSource);
 		_sources._dispatchSource = NULL;
 	}
-#endif
 	
 	[super dealloc];
 }
@@ -75,12 +73,10 @@ static void	_AFNetworkServiceRunLoopSource(CFFileDescriptorRef fileDescriptor, C
 - (void)finalize {
 	[self invalidate];
 	
-#if defined(DISPATCH_API_VERSION)
 	if (_sources._dispatchSource != NULL) {
 		dispatch_release(_sources._dispatchSource);
 		_sources._dispatchSource = NULL;
 	}
-#endif
 	
 	[super finalize];
 }
@@ -100,8 +96,6 @@ static void	_AFNetworkServiceRunLoopSource(CFFileDescriptorRef fileDescriptor, C
 	
 	CFRunLoopRemoveSource([runLoop getCFRunLoop], (CFRunLoopSourceRef)_sources._runLoopSource, (CFStringRef)mode);
 }
-
-#if defined(DISPATCH_API_VERSION)
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
 	NSParameterAssert(_sources._runLoopSource == NULL);
@@ -124,18 +118,14 @@ static void	_AFNetworkServiceRunLoopSource(CFFileDescriptorRef fileDescriptor, C
 	}
 }
 
-#endif
-
 - (void)invalidate {
 	if (_sources._runLoopSource != NULL) {
 		CFRunLoopSourceInvalidate((CFRunLoopSourceRef)_sources._runLoopSource);
 	}
 	
-#if defined(DISPATCH_API_VERSION)
 	if (_sources._dispatchSource != NULL) {
 		dispatch_source_cancel(_sources._dispatchSource);
 	}
-#endif
 }
 
 - (BOOL)isValid {
@@ -143,18 +133,14 @@ static void	_AFNetworkServiceRunLoopSource(CFFileDescriptorRef fileDescriptor, C
 		return CFRunLoopSourceIsValid((CFRunLoopSourceRef)_sources._runLoopSource);
 	}
 	
-#if defined(DISPATCH_API_VERSION)
 	if (_sources._dispatchSource != NULL) {
 		return (dispatch_source_testcancel(_sources._dispatchSource) == 0);
 	}
-#endif
 	
 	return NO;
 }
 
 @end
-
-#if defined(DISPATCH_API_VERSION)
 
 dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service, dispatch_queue_t queue) {
 	dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, DNSServiceRefSockFD(service), 0, queue);
@@ -165,5 +151,3 @@ dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service, dispa
 	
 	return source;
 }
-
-#endif

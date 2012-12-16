@@ -247,14 +247,10 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	[self.readStream unscheduleFromRunLoop:runLoop forMode:mode];
 }
 
-#if defined(DISPATCH_API_VERSION)
-
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
 	[self.writeStream scheduleInQueue:queue];
 	[self.readStream scheduleInQueue:queue];
 }
-
-#endif /* defined(DISPATCH_API_VERSION) */
 
 #pragma mark - Connection
 

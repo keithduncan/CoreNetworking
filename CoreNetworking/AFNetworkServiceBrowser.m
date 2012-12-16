@@ -119,21 +119,17 @@ NSString *const AFNetworkServiceBrowserDomainPublishable = @"*r";
 	_AFNetworkServiceSourceEnvironmentUnscheduleFromRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
 }
 
-#if defined(DISPATCH_API_VERSION)
-
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
 	NSAssert(self.serviceSource == nil, @"cannot reschedule a browser after a search has started");
 	
 	_AFNetworkServiceSourceEnvironmentScheduleInQueue((_AFNetworkServiceSourceEnvironment *)&_sources, queue);
 }
 
-#endif
-
 static BOOL _AFNetworkServiceBrowserCheckAndForwardError(AFNetworkServiceBrowser *self, DNSServiceErrorType errorCode) {
 	return AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(networkServiceBrowser:didReceiveError:), errorCode);
 }
 
-static void _AFNetworkServiceBrowserEnumerateDomainsCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, const char *replyDomain, void *context) {
+static void _AFNetworkServiceBrowserEnumerateDomainsCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *replyDomain, void *context) {
 	AFNetworkServiceBrowser *self = [[(id)context retain] autorelease];
 	
 	if (![self.serviceSource isValid]) {
@@ -157,7 +153,7 @@ static void _AFNetworkServiceBrowserEnumerateDomainsCallback(DNSServiceRef sdRef
 	}
 }
 
-static AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_t rdlen, const uint8_t *rdata) {
+static AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_t rdlen, uint8_t const *rdata) {
 	NSMutableArray *labels = [NSMutableArray arrayWithCapacity:3];
 	
 	uint16_t cumulativeLength = 0;
@@ -203,7 +199,7 @@ static AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_
 	return [[[AFNetworkServiceScope alloc] initWithDomain:domain type:type name:nil] autorelease];
 }
 
-static void _AFNetworkServiceBrowserEnumerateTypesCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, const char *fullname, uint16_t rrtype, uint16_t rrclass, uint16_t rdlen, const void *rdata, uint32_t ttl, void *context) {
+static void _AFNetworkServiceBrowserEnumerateTypesCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *fullname, uint16_t rrtype, uint16_t rrclass, uint16_t rdlen, void const *rdata, uint32_t ttl, void *context) {
 	AFNetworkServiceBrowser *self = [[(id)context retain] autorelease];
 	
 	if (![self.serviceSource isValid]) {
@@ -227,7 +223,7 @@ static void _AFNetworkServiceBrowserEnumerateTypesCallback(DNSServiceRef sdRef, 
 	}
 }
 
-static void _AFNetworkServiceBrowserEnumerateNamesCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, const char *replyName, const char *replyType, const char *replyDomain, void *context) {
+static void _AFNetworkServiceBrowserEnumerateNamesCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *replyName, char const *replyType, char const *replyDomain, void *context) {
 	AFNetworkServiceBrowser *self = [[(id)context retain] autorelease];
 	
 	if (![self.serviceSource isValid]) {
@@ -284,12 +280,12 @@ static void _AFNetworkServiceBrowserEnumerateNamesCallback(DNSServiceRef sdRef, 
 	}
 	else if (( [scope.domain isEqualToString:AFNetworkServiceScopeWildcard] && ![scope.type isEqualToString:AFNetworkServiceScopeWildcard] && [scope.name isEqualToString:AFNetworkServiceScopeWildcard]) ||
 			 (![scope.domain isEqualToString:AFNetworkServiceScopeWildcard] && ![scope.type isEqualToString:AFNetworkServiceScopeWildcard] && [scope.name isEqualToString:AFNetworkServiceScopeWildcard])) {
-		const char *domain = NULL;
+		char const *domain = NULL;
 		if (![scope.domain isEqualToString:AFNetworkServiceScopeWildcard]) {
 			domain = [scope.domain UTF8String];
 		}
 		
-		const char *type = [scope.type UTF8String];
+		char const *type = [scope.type UTF8String];
 		
 		newServiceError = DNSServiceBrowse(&newService, (DNSServiceFlags)0, interfaceIndex, type, domain, _AFNetworkServiceBrowserEnumerateNamesCallback, self);
 	}

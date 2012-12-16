@@ -28,10 +28,10 @@ DNSServiceErrorType _AFNetworkServiceScopeFullname(AFNetworkServiceScope *scope,
 	return kDNSServiceErr_NoError;
 }
 
-static const struct _AFNetworkServiceRecordTypeToRecordName {
+static struct _AFNetworkServiceRecordTypeToRecordName {
 	uint16_t type;
 	AFNetworkServiceRecordType name;
-} recordTypeToRecordNameMap[] = {
+} const recordTypeToRecordNameMap[] = {
 	{
 		.type = kDNSServiceType_TXT,
 		.name = AFNetworkServiceRecordTypeTXT,
@@ -119,8 +119,6 @@ void _AFNetworkServiceSourceEnvironmentUnscheduleFromRunLoop(_AFNetworkServiceSo
 	sourceEnvironment->_runLoopSource = NULL;
 }
 
-#if defined(DISPATCH_API_VERSION)
-
 void _AFNetworkServiceSourceEnvironmentScheduleInQueue(_AFNetworkServiceSourceEnvironment *sourceEnvironment, dispatch_queue_t queue) {
 	NSCParameterAssert(sourceEnvironment->_runLoopSource == NULL);
 	
@@ -137,8 +135,6 @@ void _AFNetworkServiceSourceEnvironmentScheduleInQueue(_AFNetworkServiceSourceEn
 	dispatch_retain(queue);
 }
 
-#endif /* defined(DISPATCH_API_VERSION) */
-
 BOOL _AFNetworkServiceSourceEnvironmentIsScheduled(_AFNetworkServiceSourceEnvironment *sourceEnvironment) {
 	return ((sourceEnvironment->_runLoopSource != NULL) || (sourceEnvironment->_dispatchSource != NULL));
 }
@@ -147,11 +143,9 @@ void _AFNetworkServiceSourceEnvironmentCleanup(_AFNetworkServiceSourceEnvironmen
 	if (sourceEnvironment->_runLoopSource != NULL) {
 		CFRelease(sourceEnvironment->_runLoopSource);
 	}
-#if defined(DISPATCH_API_VERSION)
 	if (sourceEnvironment->_dispatchSource != NULL) {
 		dispatch_release(sourceEnvironment->_dispatchSource);
 	}
-#endif /* defined(DISPATCH_API_VERSION) */
 }
 
 /*

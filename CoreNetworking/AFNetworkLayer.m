@@ -118,13 +118,9 @@
 	[self.lowerLayer unscheduleFromRunLoop:runLoop forMode:mode];
 }
 
-#if defined(DISPATCH_API_VERSION)
-
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
 	[self.lowerLayer scheduleInQueue:queue];
 }
-
-#endif
 
 - (void)networkLayerDidOpen:(id)layer {
 	if (layer == self.lowerLayer) {

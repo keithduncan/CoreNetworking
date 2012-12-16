@@ -50,7 +50,7 @@
 	
 	// Note: the order of execution here is crucial, don't change it
 	
-	const NSUInteger newPacketIndex = 0;
+	NSUInteger newPacketIndex = 0;
 	
 	id newPacket = [[self.packets objectAtIndex:newPacketIndex] retain];
 	
