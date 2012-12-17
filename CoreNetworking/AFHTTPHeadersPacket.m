@@ -30,7 +30,7 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 }
 
 @interface AFHTTPHeadersPacket ()
-@property (retain, nonatomic) AFNETWORK_STRONG CFHTTPMessageRef message;
+@property (assign, nonatomic) AFNETWORK_STRONG CFHTTPMessageRef message;
 @property (retain, nonatomic) AFNetworkPacket <AFNetworkPacketReading> *currentRead;
 
 - (void)_observePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet;
