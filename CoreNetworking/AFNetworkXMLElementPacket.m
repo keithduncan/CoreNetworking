@@ -1,5 +1,5 @@
 //
-//  AFXMLElementPacket.m
+//  AFNetworkXMLElementPacket.m
 //  Amber
 //
 //  Created by Keith Duncan on 28/06/2009.
@@ -11,7 +11,13 @@
 #import "AFNetworkPacketRead.h"
 
 @interface AFNetworkXMLElementPacket ()
-@property (retain, nonatomic) AFNetworkPacketRead *currentRead;
+@property (retain, nonatomic) AFNetworkPacket <AFNetworkPacketReading> *currentRead;
+
+- (void)_observePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet;
+- (void)_unobservePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet;
+- (void)_observeAndSetCurrentPacket:(AFNetworkPacket <AFNetworkPacketReading> *)newPacket;
+- (void)_unobserveAndClearCurrentPacket;
+
 @property (readonly, nonatomic) NSMutableData *xmlBuffer;
 @end
 
@@ -38,7 +44,9 @@
 }
 
 - (void)dealloc {
+	[self _unobservePacket:_currentRead];
 	[_currentRead release];
+	
 	[_xmlBuffer release];
 	
 	[super dealloc];
@@ -53,6 +61,31 @@
 	return [[[AFNetworkPacketRead alloc] initWithTerminator:terminator] autorelease];
 }
 
+- (void)_observePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet {
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:packet];
+}
+
+- (void)_unobservePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:packet];
+}
+
+- (void)_observeAndSetCurrentPacket:(AFNetworkPacket <AFNetworkPacketReading> *)newPacket {
+	[self _unobserveAndClearCurrentPacket];
+	
+	[self _observePacket:newPacket];
+	self.currentRead = newPacket;
+}
+
+- (void)_unobserveAndClearCurrentPacket {
+	AFNetworkPacket <AFNetworkPacketReading> *currentPacket = self.currentRead;
+	if (currentPacket == nil) {
+		return;
+	}
+	
+	[self _unobservePacket:currentPacket];
+	self.currentRead = nil;
+}
+
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets
 
 - (NSInteger)performRead:(NSInputStream *)readStream {
@@ -61,13 +94,13 @@
 	do {
 		if (self.currentRead == nil) {
 			AFNetworkPacketRead *newPacket = [self _nextReadPacket];
-			
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_readPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:newPacket];
-			self.currentRead = newPacket;
+			[self _observeAndSetCurrentPacket:newPacket];
 		}
 		
 		NSInteger bytesRead = [self.currentRead performRead:readStream];
-		if (bytesRead < 0) return -1;
+		if (bytesRead < 0) {
+			return -1;
+		}
 		
 		currentBytesRead += bytesRead;
 	} while (self.currentRead == nil);
@@ -77,7 +110,6 @@
 
 - (void)_readPacketDidComplete:(NSNotification *)notification {
 	AFNetworkPacketRead *packet = [notification object];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:AFNetworkPacketDidCompleteNotificationName object:packet];
 	
 	NSError *packetError = [[notification userInfo] objectForKey:AFNetworkPacketErrorKey];
 	if (packetError != nil) {
@@ -85,22 +117,26 @@
 		return;
 	}
 	
-	
-	[[self xmlBuffer] appendData:packet.buffer];
+	[self.xmlBuffer appendData:packet.buffer];
 	
 	NSString *xmlString = [[[NSString alloc] initWithData:self.currentRead.buffer encoding:_encoding] autorelease];
 	xmlString = [xmlString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	
-	if (!NSEqualRanges([xmlString rangeOfString:@"</"], NSMakeRange(NSNotFound, 0))) _depth--;
-	else if (!NSEqualRanges([xmlString rangeOfString:@"/>"], NSMakeRange(NSNotFound, 0))) (void)_depth;
-	else _depth++;
+	if ([xmlString rangeOfString:@"</"].location != NSNotFound) {
+		_depth--;
+	}
+	else if ([xmlString rangeOfString:@"/>"].location != NSNotFound) {
+		(void)_depth;
+	}
+	else {
+		_depth++;
+	}
 	
-	if (_depth <= 0) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
+	if (_depth > 0) {
 		return;
 	}
 	
-	self.currentRead = nil;
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 }
 
 @end

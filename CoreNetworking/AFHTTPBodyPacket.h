@@ -21,7 +21,7 @@
 	Posted for each piece of data read from the input stream.
  */
 AFNETWORK_EXTERN NSString *const AFHTTPBodyPacketDidReadNotificationName;
-	
+
 	AFNETWORK_EXTERN NSString *const AFHTTPBodyPacketDidReadDataKey;
 
 /*!
@@ -34,7 +34,7 @@ AFNETWORK_EXTERN NSString *const AFHTTPBodyPacketDidReadNotificationName;
 @interface AFHTTPBodyPacket : AFNetworkPacket <AFNetworkPacketReading> {
  @protected
 	AFNETWORK_STRONG CFHTTPMessageRef _message;
-	AFNetworkPacket <AFNetworkPacketReading> *_currentPacket;
+	AFNetworkPacket <AFNetworkPacketReading> *_currentRead;
 	BOOL _appendBodyDataToMessage;
 }
 

@@ -37,8 +37,8 @@ typedef NSUInteger AFHTTPMessagePacketState;
 
 - (void)_observePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet;
 - (void)_unobservePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet;
-- (void)_unobserveAndClearCurrentPacket;
 - (void)_observeAndSetCurrentPacket:(AFNetworkPacket <AFNetworkPacketReading> *)newPacket;
+- (void)_unobserveAndClearCurrentPacket;
 
 - (void)_headersPacketDidComplete:(NSNotification *)notification;
 
@@ -139,6 +139,13 @@ typedef NSUInteger AFHTTPMessagePacketState;
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:packet];
 }
 
+- (void)_observeAndSetCurrentPacket:(AFNetworkPacket <AFNetworkPacketReading> *)newPacket {
+	[self _unobserveAndClearCurrentPacket];
+	
+	[self _observePacket:newPacket];
+	self.currentRead = newPacket;
+}
+
 - (void)_unobserveAndClearCurrentPacket {
 	AFNetworkPacket <AFNetworkPacketReading> *currentPacket = self.currentRead;
 	if (currentPacket == nil) {
@@ -147,13 +154,6 @@ typedef NSUInteger AFHTTPMessagePacketState;
 	
 	[self _unobservePacket:currentPacket];
 	self.currentRead = nil;
-}
-
-- (void)_observeAndSetCurrentPacket:(AFNetworkPacket <AFNetworkPacketReading> *)newPacket {
-	[self _unobserveAndClearCurrentPacket];
-	
-	[self _observePacket:newPacket];
-	self.currentRead = newPacket;
 }
 
 // Note: this is a compound packet, the stream bytes availability is checked in the subpackets

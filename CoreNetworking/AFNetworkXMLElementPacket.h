@@ -1,5 +1,5 @@
 //
-//  AFXMLElementPacket.h
+//  AFNetworkXMLElementPacket.h
 //  Amber
 //
 //  Created by Keith Duncan on 28/06/2009.

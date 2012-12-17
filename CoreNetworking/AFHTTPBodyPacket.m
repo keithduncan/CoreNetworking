@@ -17,18 +17,6 @@
 AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadNotificationName);
 AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 
-@interface AFHTTPBodyPacket ()
-- (id)initWithMessage:(CFHTTPMessageRef)message;
-
-@property (assign, nonatomic) AFNETWORK_STRONG CFHTTPMessageRef message;
-@property (retain, nonatomic) AFNetworkPacket <AFNetworkPacketReading> *currentPacket;
-
-- (BOOL)_processDidCompleteNotification:(NSNotification *)notification;
-- (BOOL)_appendCurrentBuffer;
-@end
-
-#pragma mark -
-
 @interface _AFHTTPBodyChunkedPacket : AFHTTPBodyPacket
 
 - (void)_startChunkRead;
@@ -40,85 +28,30 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 
 @end
 
-@implementation _AFHTTPBodyChunkedPacket
+@interface AFHTTPBodyPacket ()
+- (id)initWithMessage:(CFHTTPMessageRef)message;
 
-- (NSInteger)performRead:(NSInputStream *)inputStream {
-	NSInteger currentBytesRead = 0;
-	
-	do {
-		if ([self currentPacket] == nil) [self _startChunkRead];
-		
-		NSInteger bytesRead = [[self currentPacket] performRead:inputStream];
-		if (bytesRead < 0) return -1;
-		
-		currentBytesRead += bytesRead;
-	} while ([self currentPacket] == nil);
-	
-	return currentBytesRead;
-}
+@property (assign, nonatomic) AFNETWORK_STRONG CFHTTPMessageRef message;
+@property (retain, nonatomic) AFNetworkPacket <AFNetworkPacketReading> *currentRead;
 
-- (void)_startChunkRead {
-	AFNetworkPacketRead *newlinePacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_chunkSizePacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:newlinePacket];
-	[self setCurrentPacket:newlinePacket];
-}
+- (void)_observePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet selector:(SEL)selector;
+- (void)_unobservePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet;
+- (void)_observeAndSetCurrentPacket:(AFNetworkPacket <AFNetworkPacketReading> *)newPacket selector:(SEL)selector;
+- (void)_unobserveAndClearCurrentPacket;
 
-- (void)_chunkSizePacketDidComplete:(NSNotification *)notification {
-	if (![self _processDidCompleteNotification:notification]) return;
-	
-	NSString *sizeString = [[[[NSString alloc] initWithData:[[self currentPacket] buffer] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	NSRange parametersSeparator = [sizeString rangeOfString:@";"];
-	if (parametersSeparator.location != NSNotFound) sizeString = [sizeString substringToIndex:parametersSeparator.location];
-	
-	unsigned packetSize = 0;
-	[[NSScanner scannerWithString:sizeString] scanHexInt:&packetSize];
-	if (packetSize == 0) {
-		[self _startChunkFooterRead:@selector(_chunksDidComplete:)];
-		return;
-	}
-	
-	AFNetworkPacketRead *chunkDataPacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:packetSize]] autorelease];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_chunkDataPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:chunkDataPacket];
-	[self setCurrentPacket:chunkDataPacket];
-}
-
-- (void)_chunkDataPacketDidComplete:(NSNotification *)notification {
-	if (![self _processDidCompleteNotification:notification]) return;
-	
-	if (![self _appendCurrentBuffer]) return;	
-	
-	[self _startChunkFooterRead:@selector(_chunkFooterDidComplete:)];
-}
-
-- (void)_startChunkFooterRead:(SEL)completionSelector {
-	AFNetworkPacketRead *newlinePacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:completionSelector name:AFNetworkPacketDidCompleteNotificationName object:newlinePacket];
-	[self setCurrentPacket:newlinePacket];
-}
-
-- (void)_chunkFooterDidComplete:(NSNotification *)notification {
-	if (![self _processDidCompleteNotification:notification]) return;
-	
-	[self setCurrentPacket:nil];
-}
-
-- (void)_chunksDidComplete:(NSNotification *)notification {
-	if (![self _processDidCompleteNotification:notification]) return;
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
-}
-
+- (BOOL)_checkDidCompleteNotification:(NSNotification *)notification;
+- (BOOL)_appendCurrentBuffer;
 @end
 
 #pragma mark -
 
 @implementation AFHTTPBodyPacket
 
-@synthesize message=_message, currentPacket=_currentPacket;
+@synthesize message=_message, currentRead=_currentRead;
 @synthesize appendBodyDataToMessage=_appendBodyDataToMessage;
 
 /*
- This is based on the order of precedence documented in IETF-RFC-2616 §4.4 <http://tools.ietf.org/html/rfc2616>
+	This is based on the order of precedence documented in IETF-RFC-2616 §4.4 <http://tools.ietf.org/html/rfc2616>
  */
 + (BOOL)messageHasBody:(CFHTTPMessageRef)message {
 	NSParameterAssert(CFHTTPMessageIsHeaderComplete(message));
@@ -132,7 +65,9 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	
 	NSString *contentLength = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentLengthHeader)) autorelease];
 	if (contentLength != nil) {
-		if ([contentLength integerValue] <= 0) return NO;
+		if ([contentLength integerValue] <= 0) {
+			return NO;
+		}
 		return YES;
 	}
 	
@@ -177,11 +112,12 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 			return nil;
 		}
 		
-		AFHTTPBodyPacket *packet = [[[AFHTTPBodyPacket alloc] initWithMessage:message] autorelease];
+		AFHTTPBodyPacket *bodyPacket = [[[AFHTTPBodyPacket alloc] initWithMessage:message] autorelease];
+		
 		AFNetworkPacketRead *dataPacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:contentLengthValue]] autorelease];
-		[[NSNotificationCenter defaultCenter] addObserver:packet selector:@selector(_dataPacketDidComplete:) name:AFNetworkPacketDidCompleteNotificationName object:dataPacket];
-		[packet setCurrentPacket:dataPacket];
-		return packet;
+		[bodyPacket _observeAndSetCurrentPacket:dataPacket selector:@selector(_dataPacketDidComplete:)];
+		
+		return bodyPacket;
 	}
 	
 	NSString *contentType = [NSMakeCollectable(CFHTTPMessageCopyHeaderFieldValue(message, (CFStringRef)AFHTTPMessageContentTypeHeader)) autorelease];
@@ -192,10 +128,7 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	}
 	
 	if (errorRef != NULL) {
-		NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-								   // WARNING: complete this error
-								   nil];
-		*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:errorInfo];
+		*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:nil];
 	}
 	return nil;
 }
@@ -214,18 +147,42 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 - (void)dealloc {
 	CFRelease(_message);
 	
-	[_currentPacket release];
+	[self _unobservePacket:_currentRead];
+	[_currentRead release];
 	
 	[super dealloc];
 }
 
-- (NSInteger)performRead:(NSInputStream *)inputStream {
-	return [[self currentPacket] performRead:inputStream];
+- (void)_observePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet selector:(SEL)selector {
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:selector name:AFNetworkPacketDidCompleteNotificationName object:packet];
 }
 
-- (BOOL)_processDidCompleteNotification:(NSNotification *)notification {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:[notification name] object:[notification object]];
+- (void)_unobservePacket:(AFNetworkPacket <AFNetworkPacketReading> *)packet {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:packet];
+}
+
+- (void)_unobserveAndClearCurrentPacket {
+	AFNetworkPacket <AFNetworkPacketReading> *currentPacket = self.currentRead;
+	if (currentPacket == nil) {
+		return;
+	}
 	
+	[self _unobservePacket:currentPacket];
+	self.currentRead = nil;
+}
+
+- (void)_observeAndSetCurrentPacket:(AFNetworkPacket <AFNetworkPacketReading> *)newPacket selector:(SEL)selector {
+	[self _unobserveAndClearCurrentPacket];
+	
+	[self _observePacket:newPacket selector:selector];
+	self.currentRead = newPacket;
+}
+
+- (NSInteger)performRead:(NSInputStream *)inputStream {
+	return [self.currentRead performRead:inputStream];
+}
+
+- (BOOL)_checkDidCompleteNotification:(NSNotification *)notification {
 	if ([[notification userInfo] objectForKey:AFNetworkPacketErrorKey] != nil) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
 		return NO;
@@ -234,31 +191,21 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 	return YES;
 }
 
-- (void)_dataPacketDidComplete:(NSNotification *)notification {
-	if (![self _processDidCompleteNotification:notification]) return;
-	if (![self _appendCurrentBuffer]) return;
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
-}
-
 - (BOOL)_appendCurrentBuffer {
+	NSData *currentBuffer = self.currentRead.buffer;
+	
 	NSDictionary *dataNotificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-										  [[self currentPacket] buffer], AFHTTPBodyPacketDidReadDataKey,
+										  currentBuffer, AFHTTPBodyPacketDidReadDataKey,
 										  nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName:AFHTTPBodyPacketDidReadNotificationName object:self userInfo:dataNotificationInfo];
 	
-	
-	if ([self appendBodyDataToMessage]) {
-		NSData *currentBuffer = [[self currentPacket] buffer];
-		
+	if (self.appendBodyDataToMessage) {
 		CFRetain(currentBuffer);
-		Boolean appendBytes = CFHTTPMessageAppendBytes([self message], (uint8_t const *)[currentBuffer bytes], [currentBuffer length]);
+		Boolean appendBytes = CFHTTPMessageAppendBytes(self.message, (uint8_t const *)[currentBuffer bytes], [currentBuffer length]);
 		CFRelease(currentBuffer);
 		
 		if (!appendBytes) {
-			NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									   nil];
-			NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorParse userInfo:errorInfo];
+			NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkPacketErrorParse userInfo:nil];
 			
 			NSDictionary *notificationInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 											  error, AFNetworkPacketErrorKey,
@@ -268,8 +215,101 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 		}
 	}
 	
-	
 	return YES;
+}
+
+- (void)_dataPacketDidComplete:(NSNotification *)notification {
+	if (![self _checkDidCompleteNotification:notification]) {
+		return;
+	}
+	if (![self _appendCurrentBuffer]) {
+		return;
+	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
+}
+
+@end
+
+@implementation _AFHTTPBodyChunkedPacket
+
+- (NSInteger)performRead:(NSInputStream *)inputStream {
+	NSInteger currentBytesRead = 0;
+	
+	do {
+		if (self.currentRead == nil) {
+			[self _startChunkRead];
+		}
+		
+		NSInteger bytesRead = [self.currentRead performRead:inputStream];
+		if (bytesRead < 0) {
+			return -1;
+		}
+		
+		currentBytesRead += bytesRead;
+	} while (self.currentRead == nil);
+	
+	return currentBytesRead;
+}
+
+- (void)_startChunkRead {
+	AFNetworkPacketRead *newlinePacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
+	[self _observeAndSetCurrentPacket:newlinePacket selector:@selector(_chunkSizePacketDidComplete:)];
+}
+
+- (void)_chunkSizePacketDidComplete:(NSNotification *)notification {
+	if (![self _checkDidCompleteNotification:notification]) {
+		return;
+	}
+	
+	NSString *sizeString = [[[[NSString alloc] initWithData:self.currentRead.buffer encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	NSRange parametersSeparator = [sizeString rangeOfString:@";"];
+	if (parametersSeparator.location != NSNotFound) {
+		sizeString = [sizeString substringToIndex:parametersSeparator.location];
+	}
+	
+	unsigned packetSize = 0;
+	[[NSScanner scannerWithString:sizeString] scanHexInt:&packetSize];
+	if (packetSize == 0) {
+		[self _startChunkFooterRead:@selector(_chunksDidComplete:)];
+		return;
+	}
+	
+	AFNetworkPacketRead *chunkDataPacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[NSNumber numberWithInteger:packetSize]] autorelease];
+	[self _observeAndSetCurrentPacket:chunkDataPacket selector:@selector(_chunkDataPacketDidComplete:)];
+}
+
+- (void)_chunkDataPacketDidComplete:(NSNotification *)notification {
+	if (![self _checkDidCompleteNotification:notification]) {
+		return;
+	}
+	
+	if (![self _appendCurrentBuffer]) {
+		return;
+	}
+	
+	[self _startChunkFooterRead:@selector(_chunkFooterDidComplete:)];
+}
+
+- (void)_startChunkFooterRead:(SEL)completionSelector {
+	AFNetworkPacketRead *newlinePacket = [[[AFNetworkPacketRead alloc] initWithTerminator:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]] autorelease];
+	[self _observeAndSetCurrentPacket:newlinePacket selector:completionSelector];
+}
+
+- (void)_chunkFooterDidComplete:(NSNotification *)notification {
+	if (![self _checkDidCompleteNotification:notification]) {
+		return;
+	}
+	
+	[self _unobserveAndClearCurrentPacket];
+}
+
+- (void)_chunksDidComplete:(NSNotification *)notification {
+	if (![self _checkDidCompleteNotification:notification]) {
+		return;
+	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self userInfo:[notification userInfo]];
 }
 
 @end
