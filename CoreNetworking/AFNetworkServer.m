@@ -16,7 +16,6 @@
 
 #import "AFNetworkSocket.h"
 #import "AFNetworkTransport.h"
-#import "AFNetworkPool.h"
 #import "AFNetworkConnection.h"
 
 #import "AFNetworkSchedulerProxy.h"
@@ -28,34 +27,29 @@
 #import "AFNetwork-Macros.h"
 
 @interface AFNetworkServer () <AFNetworkConnectionLayerHostDelegate, AFNetworkConnectionLayerControlDelegate>
+@property (retain, nonatomic) NSMutableSet *listeners;
 @property (retain, nonatomic) NSArray *encapsulationClasses;
-@property (readwrite, retain, nonatomic) NSArray *clientPools;
+@property (retain, nonatomic) NSMutableSet *connections;
 @end
 
 @interface AFNetworkServer (AFNetworkPrivate)
-- (void)_observeClientPools:(NSArray *)clientPools;
-- (void)_unobserveClientPools:(NSArray *)clientPools;
-
-- (void)_scheduleLayer:(AFNetworkLayer *)layer;
-
 - (void)_initialiseWithEncapsulationClass:(Class)encapsulationClass;
-- (NSInteger)_bucketContainingLayer:(id)layer;
+- (AFNetworkLayer *)_encapsulateNetworkLayer:(AFNetworkLayer *)layer;
+- (void)_fullyEncapsulateLayer:(AFNetworkLayer *)layer;
+- (void)_scheduleLayer:(AFNetworkLayer *)layer;
 @end
 
 @implementation AFNetworkServer
 
-static NSString *const _AFNetworkServerClientPoolsKey = @"clientPools";
-
-AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerClientPoolsObservationContext);
-AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
-
-@synthesize encapsulationClasses=_encapsulationClasses, clientPools=_clientPools;
-
 @synthesize scheduler=_scheduler;
 @synthesize delegate=_delegate;
 
+@synthesize listeners=_listeners;
+
+@synthesize encapsulationClasses=_encapsulationClasses, connections=_connections;
+
 + (id)server {
-	return [[[AFNetworkServer alloc] initWithEncapsulationClass:[AFNetworkTransport class]] autorelease];
+	return [[[self alloc] init] autorelease];
 }
 
 #pragma mark -
@@ -71,9 +65,11 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 	[_scheduler scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 #endif
 	
-	[self _initialiseWithEncapsulationClass:[AFNetworkTransport class]];
+	_listeners = [[NSMutableSet alloc] init];
 	
-	[self addObserver:self forKeyPath:_AFNetworkServerClientPoolsKey options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&_AFNetworkServerClientPoolsObservationContext];
+	_connections = [[NSMutableSet alloc] init];
+	
+	[self _initialiseWithEncapsulationClass:[AFNetworkTransport class]];
 	
 	return self;
 }
@@ -90,49 +86,12 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 - (void)dealloc {	
 	[_scheduler release];
 	
-	[self removeObserver:self forKeyPath:_AFNetworkServerClientPoolsKey];
-	[self _unobserveClientPools:_clientPools];
+	[_listeners release];
 	
 	[_encapsulationClasses release];
-	[_clientPools release];
+	[_connections release];
 	
 	[super dealloc];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-	if (context == &_AFNetworkServerClientPoolsObservationContext) {
-		id oldClientPools = [change objectForKey:NSKeyValueChangeOldKey];
-		if ([oldClientPools isEqual:[NSNull null]]) {
-			oldClientPools = nil;
-		}
-		[self _unobserveClientPools:oldClientPools];
-		
-		id newClientPools = [change objectForKey:NSKeyValueChangeNewKey];
-		if ([newClientPools isEqual:[NSNull null]]) {
-			newClientPools = nil;
-		}
-		[self _observeClientPools:newClientPools];
-	}
-	else if (context == &_AFNetworkServerPoolConnectionsObservationContext) {
-		if (object == [[self clientPools] objectAtIndex:0]) {
-			return;
-		}
-		if ([[change objectForKey:NSKeyValueChangeKindKey] unsignedIntegerValue] != NSKeyValueChangeInsertion) {
-			return;
-		}
-		
-		id newObjects = [change valueForKey:NSKeyValueChangeNewKey];
-		if (newObjects == nil || [newObjects isEqual:[NSNull null]]) {
-			return;
-		}
-		
-		for (AFNetworkLayer *currentNetworkLayer in newObjects) {
-			[self _scheduleLayer:currentNetworkLayer];
-		}
-	}
-	else {
-		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-	}
 }
 
 - (AFNetworkDelegateProxy *)delegateProxy:(AFNetworkDelegateProxy *)proxy {	
@@ -251,15 +210,17 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 		.protocol = 0,
 	};
 	
+	char const *fileSystemRepresentation = [[location path] fileSystemRepresentation];
+	
 	struct sockaddr_un address = {};
 	unsigned int maximumLength = sizeof(address.sun_path);
-	if (strlen([[location path] fileSystemRepresentation]) >= maximumLength) {
+	if (strlen(fileSystemRepresentation) >= maximumLength) {
 		@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"%s, (%@) must be < %lu characters including the NUL terminator", __PRETTY_FUNCTION__, [location path], (unsigned long)maximumLength] userInfo:nil];
 		return NO;
 	}
 	
 	address.sun_family = AF_UNIX;
-	strlcpy(address.sun_path, [[location path] fileSystemRepresentation], sizeof(address.sun_path));
+	strlcpy(address.sun_path, fileSystemRepresentation, sizeof(address.sun_path));
 	address.sun_len = SUN_LEN(&address);
 	
 	AFNetworkSocket *socket = [self openSocketWithSignature:signature address:[NSData dataWithBytes:&address length:address.sun_len] error:errorRef];
@@ -271,7 +232,7 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 }
 
 - (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address error:(NSError **)errorRef {
-	NSParameterAssert(self.clientPools != nil);
+	NSParameterAssert(self.listeners != nil);
 	
 	CFRetain(address);
 	
@@ -306,92 +267,71 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 		return nil;
 	}
 	
-	AFNetworkPool *listenPool = [self.clientPools objectAtIndex:0];
-	[listenPool addConnectionsObject:newSocket];
+	[self.listeners addObject:newSocket];
 	
 	return newSocket;
 }
 
 - (void)closeListenSockets {
-	AFNetworkPool *listenPool = [self.clientPools objectAtIndex:0];
-	for (AFNetworkSocket *currentLayer in listenPool.connections) {
+	for (AFNetworkSocket *currentLayer in self.listeners) {
 		[currentLayer close];
-		[listenPool removeConnectionsObject:currentLayer];
 	}
+	[self.listeners removeAllObjects];
 }
 
 - (void)close {
 	[self closeListenSockets];
 	
-	AFNetworkPool *transportPool = [self.clientPools objectAtIndex:1];
-	for (AFNetworkTransport *transportLayer in transportPool.connections) {
-		[transportLayer close];
-		[transportPool removeConnectionsObject:transportLayer];
+	for (AFNetworkLayer <AFNetworkTransportLayer> *currentLayer in self.connections) {
+		[currentLayer close];
 	}
-}
-
-- (void)encapsulateNetworkLayer:(id <AFNetworkConnectionLayer>)layer {
-	NSUInteger nextBucket = ([self.encapsulationClasses indexOfObject:[layer class]] + 1);
-	if (nextBucket >= [self.encapsulationClasses count]) {
-		return;
-	}
-	
-	Class encapsulationClass = [self.encapsulationClasses objectAtIndex:nextBucket];
-	id <AFNetworkConnectionLayer> newConnection = [[[encapsulationClass alloc] initWithLowerLayer:layer] autorelease];
-	
-	if ([self.delegate respondsToSelector:@selector(networkServer:didEncapsulateLayer:)]) {
-		[self.delegate networkServer:self didEncapsulateLayer:newConnection];
-	}
-	
-	[[self.clientPools objectAtIndex:nextBucket] addConnectionsObject:newConnection];
-	[newConnection open];
+	[self.connections removeAllObjects];
 }
 
 #pragma mark - Delegate
 
 - (void)networkLayer:(id)layer didAcceptConnection:(id <AFNetworkConnectionLayer>)connection {
-	NSInteger bucket = [self _bucketContainingLayer:layer];
+	NSParameterAssert([self.listeners containsObject:layer]);
 	
-	if (bucket == 0) {
-		if ([self.delegate respondsToSelector:@selector(networkServer:shouldAcceptConnection:)]) {
-			if (![self.delegate networkServer:self shouldAcceptConnection:connection]) {
-				[connection close];
-				return;
-			}
-		}
-		
-		if ([self.delegate respondsToSelector:@selector(networkServer:didAcceptConnection:)]) {
-			[self.delegate networkServer:self didAcceptConnection:connection];
-		}
+	BOOL shouldAccept = YES;
+	if ([self.delegate respondsToSelector:@selector(networkServer:shouldAcceptConnection:)]) {
+		shouldAccept = [self.delegate networkServer:self shouldAcceptConnection:connection];
 	}
 	
-	[self encapsulateNetworkLayer:connection];
+	if (!shouldAccept) {
+		[connection close];
+		return;
+	}
+	
+	if ([self.delegate respondsToSelector:@selector(networkServer:didAcceptConnection:)]) {
+		[self.delegate networkServer:self didAcceptConnection:connection];
+	}
+	
+	[self _fullyEncapsulateLayer:connection];
 }
 
 - (void)networkLayerDidOpen:(id <AFNetworkTransportLayer>)layer {
-	if ([self _bucketContainingLayer:layer] == NSNotFound) {
-		// Note: these are the initial socket layers opening, nothing else is spawned at this layer
-		return;
-	}
-	
-	[self encapsulateNetworkLayer:(id)layer];
+	//nop
 }
 
 - (void)networkLayerDidClose:(id <AFNetworkConnectionLayer>)layer {
-	NSInteger bucket = [self _bucketContainingLayer:layer];
-	if (bucket == NSNotFound) {
-		return;
+	if ([self.listeners containsObject:layer]) {
+		[self.listeners removeObject:layer];
 	}
-	[[self.clientPools objectAtIndex:bucket] removeConnectionsObject:layer];
-	
-	id <AFNetworkTransportLayer> lowerLayer = layer.lowerLayer;
-	if (lowerLayer != nil) {
-		[self networkLayerDidClose:lowerLayer];
+	else if ([self.connections containsObject:layer]) {
+		[self.connections removeObject:layer];
+	}
+	else {
+		@throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"unknown layer" userInfo:nil];
 	}
 }
 
 - (void)networkLayer:(id <AFNetworkTransportLayer>)layer didReceiveError:(NSError *)error {
 	[(id)self.delegate networkLayer:layer didReceiveError:error];
+}
+
+- (void)configureLayer:(id)layer {
+	[self _scheduleLayer:layer];
 }
 
 @end
@@ -400,47 +340,56 @@ AFNETWORK_NSSTRING_CONTEXT(_AFNetworkServerPoolConnectionsObservationContext);
 
 @implementation AFNetworkServer (AFNetworkPrivate)
 
-- (void)_observeClientPools:(NSArray *)clientPools {
-	for (AFNetworkPool *currentPool in clientPools) {
-		[currentPool addObserver:self forKeyPath:@"connections" options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:&_AFNetworkServerPoolConnectionsObservationContext];
-	}
-}
-
-- (void)_unobserveClientPools:(NSArray *)clientPools {
-	for (AFNetworkPool *currentPool in clientPools) {
-		[currentPool removeObserver:self forKeyPath:@"connections"];
-	}
-}
-
-- (void)_scheduleLayer:(AFNetworkLayer *)layer {
-	[self.scheduler scheduleNetworkLayer:(id)layer];
-	layer.delegate = self;
-}
-
 - (void)_initialiseWithEncapsulationClass:(Class)encapsulationClass {
 	NSMutableArray *newEncapsulationClasses = [NSMutableArray arrayWithObjects:encapsulationClass, nil];
 	for (id lowerLayer = [encapsulationClass lowerLayerClass]; lowerLayer != Nil; lowerLayer = [lowerLayer lowerLayerClass]) {
 		[newEncapsulationClasses insertObject:lowerLayer atIndex:0];
 	}
-	[self setEncapsulationClasses:newEncapsulationClasses];
-	
-	NSMutableArray *newClientPools = [NSMutableArray arrayWithCapacity:[newEncapsulationClasses count]];
-	for (NSUInteger idx = 0; idx < [newEncapsulationClasses count]; idx++) {
-		AFNetworkPool *currentPool = [[[AFNetworkPool alloc] init] autorelease];
-		[newClientPools addObject:currentPool];
-	}
-	[self setClientPools:newClientPools];
+	self.encapsulationClasses = newEncapsulationClasses;
 }
 
-- (NSInteger)_bucketContainingLayer:(id)layer {
-	for (NSInteger idx = 0; idx < [self.clientPools count]; idx++) {
-		if (![[[self.clientPools objectAtIndex:idx] connections] containsObject:layer]) {
-			continue;
-		}
-		return idx;
+- (AFNetworkLayer *)_encapsulateNetworkLayer:(AFNetworkLayer *)layer {
+	NSInteger classIndex = [self.encapsulationClasses indexOfObject:[layer class]];
+	if (classIndex == NSNotFound) {
+		return nil;
 	}
 	
-	return NSNotFound;
+	NSUInteger nextClassIndex = (classIndex + 1);
+	if (nextClassIndex >= [self.encapsulationClasses count]) {
+		return nil;
+	}
+	
+	Class encapsulationClass = [self.encapsulationClasses objectAtIndex:nextClassIndex];
+	AFNetworkLayer *newLayer = [[[encapsulationClass alloc] initWithLowerLayer:(id)layer] autorelease];
+	
+	if ([self.delegate respondsToSelector:@selector(networkServer:didEncapsulateLayer:)]) {
+		[self.delegate networkServer:self didEncapsulateLayer:(id)newLayer];
+	}
+	
+	return newLayer;
+}
+
+- (void)_fullyEncapsulateLayer:(AFNetworkLayer *)layer {
+	AFNetworkLayer *currentLayer = layer;
+	
+	while (1) {
+		AFNetworkLayer *encapsulatedLayer = [self _encapsulateNetworkLayer:currentLayer];
+		if (encapsulatedLayer == nil) {
+			break;
+		}
+		
+		currentLayer = encapsulatedLayer;
+	}
+	
+	[self configureLayer:currentLayer];
+	[self.connections addObject:currentLayer];
+	
+	[(id <AFNetworkTransportLayer>)currentLayer open];
+}
+
+- (void)_scheduleLayer:(AFNetworkLayer *)layer {
+	[self.scheduler scheduleNetworkLayer:(id)layer];
+	layer.delegate = self;
 }
 
 @end

@@ -16,7 +16,6 @@
 #import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkSocket;
-@class AFNetworkPool;
 @class AFNetworkSchedulerProxy;
 @class AFNetworkServer;
 
@@ -65,8 +64,10 @@
 	
 	id <AFNetworkServerDelegate> _delegate;
 	
+	NSMutableSet *_listeners;
+	
 	NSArray *_encapsulationClasses;
-	NSArray *_clientPools;
+	NSMutableSet *_connections;
 }
 
 /*
@@ -192,22 +193,30 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkInternetSocketScope) {
 - (void)close;
 
 /*
-	Server Clients
+	Delegate
+	
+	overrides must call super
+ */
+
+- (void)networkLayerDidOpen:(id <AFNetworkTransportLayer>)layer;
+- (void)networkLayerDidClose:(id <AFNetworkTransportLayer>)layer;
+
+/*
+	Subclass hooks
  */
 
 /*!
 	\brief
-	This method determines the class of the |layer| parameter and wraps it in the encapsulation class one higher than it.
+	Sent for each layer constructed from the listeners before the stack is sent `-open`
+	
+	Overrides must call super, the default implementation schedules the layer in the server environment using `scheduler`
 	
 	\details
-	Override point, if you need to customize layers before they are added to their connection pool, call super for creation first.
+	Preferred set up point over `-networkLayer:didOpen:` which is messaged by the listen layer sockets too
+	
+	\param layer
+	An instance of your server `encapsulationClass`
  */
-- (void)encapsulateNetworkLayer:(id <AFNetworkConnectionLayer>)layer;
-
-/*!
-	\brief
-	The pools of interest are likely to be the lowest level at index 0 containing the AFNetworkSockets and the top most pool containing the top-level connection objects this server has created.
- */
-@property (readonly, retain, nonatomic) NSArray *clientPools;
+- (void)configureLayer:(id)layer;
 
 @end

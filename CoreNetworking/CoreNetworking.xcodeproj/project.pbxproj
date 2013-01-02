@@ -182,10 +182,6 @@
 		53DAE1A614432D4500943E8C /* AFNetworkSchedulerProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DAE1A314432D4500943E8C /* AFNetworkSchedulerProxy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53DAE1A714432D4500943E8C /* AFNetworkSchedulerProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DAE1A414432D4500943E8C /* AFNetworkSchedulerProxy.m */; };
 		53DAE1A814432D4500943E8C /* AFNetworkSchedulerProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DAE1A414432D4500943E8C /* AFNetworkSchedulerProxy.m */; };
-		53DAE1AB1443348500943E8C /* AFNetworkPool.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DAE1A91443348500943E8C /* AFNetworkPool.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53DAE1AC1443348500943E8C /* AFNetworkPool.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DAE1A91443348500943E8C /* AFNetworkPool.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		53DAE1AD1443348500943E8C /* AFNetworkPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DAE1AA1443348500943E8C /* AFNetworkPool.m */; };
-		53DAE1AE1443348500943E8C /* AFNetworkPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 53DAE1AA1443348500943E8C /* AFNetworkPool.m */; };
 		53DC5EFD0F655F9800349623 /* AFNetworkConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E0880F5B061D008F5991 /* AFNetworkConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53DC5EFE0F655F9900349623 /* AFNetworkConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370E0890F5B061D008F5991 /* AFNetworkConnection.m */; };
 		53DC5F010F655F9A00349623 /* AFNetworkServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5370E08C0F5B061D008F5991 /* AFNetworkServer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -325,8 +321,6 @@
 		53D6A4C20FF7B72F002E05CC /* AFNetworkXMLElementPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkXMLElementPacket.m; sourceTree = "<group>"; };
 		53DAE1A314432D4500943E8C /* AFNetworkSchedulerProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkSchedulerProxy.h; sourceTree = "<group>"; };
 		53DAE1A414432D4500943E8C /* AFNetworkSchedulerProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkSchedulerProxy.m; sourceTree = "<group>"; };
-		53DAE1A91443348500943E8C /* AFNetworkPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkPool.h; sourceTree = "<group>"; };
-		53DAE1AA1443348500943E8C /* AFNetworkPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkPool.m; sourceTree = "<group>"; };
 		53ECEAF414E14F6900F7517E /* AFNetworkPacket+AFNetworkPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFNetworkPacket+AFNetworkPrivate.h"; sourceTree = "<group>"; };
 		53ECEAF514E14F6900F7517E /* AFNetworkPacket+AFNetworkPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFNetworkPacket+AFNetworkPrivate.m"; sourceTree = "<group>"; };
 		53FE19010F856A3200980D32 /* AFNetworkPacketQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkPacketQueue.h; sourceTree = "<group>"; };
@@ -520,8 +514,6 @@
 			children = (
 				5370E08C0F5B061D008F5991 /* AFNetworkServer.h */,
 				5370E08D0F5B061D008F5991 /* AFNetworkServer.m */,
-				53DAE1A91443348500943E8C /* AFNetworkPool.h */,
-				53DAE1AA1443348500943E8C /* AFNetworkPool.m */,
 			);
 			name = Server;
 			sourceTree = "<group>";
@@ -692,7 +684,6 @@
 				53554A251175BE37005DD3A7 /* NSURLRequest+AFNetworkAdditions.h in Headers */,
 				5315B140124DF1AF009A6280 /* AFHTTPBodyPacket.h in Headers */,
 				53567620126AF821002872B2 /* AFNetworkDocument.h in Headers */,
-				53DAE1AB1443348500943E8C /* AFNetworkPool.h in Headers */,
 				53DAE1A514432D4500943E8C /* AFNetworkSchedulerProxy.h in Headers */,
 				5356773F126B8933002872B2 /* AFNetwork-Macros.h in Headers */,
 				535677D0126B8DC8002872B2 /* AFNetworkDelegateProxy.h in Headers */,
@@ -748,7 +739,6 @@
 				53567741126B8933002872B2 /* AFNetwork-Macros.h in Headers */,
 				535677D2126B8DC8002872B2 /* AFNetworkDelegateProxy.h in Headers */,
 				53DAE1A614432D4500943E8C /* AFNetworkSchedulerProxy.h in Headers */,
-				53DAE1AC1443348500943E8C /* AFNetworkPool.h in Headers */,
 				53567622126AF821002872B2 /* AFNetworkDocument.h in Headers */,
 				53CB1DA414462B430013C40A /* AFNetworkServiceBrowser.h in Headers */,
 				53CB1DAA14462C350013C40A /* AFNetworkServiceScope.h in Headers */,
@@ -927,7 +917,6 @@
 				53567740126B8933002872B2 /* AFNetwork-Macros.m in Sources */,
 				535677D1126B8DC8002872B2 /* AFNetworkDelegateProxy.m in Sources */,
 				53DAE1A714432D4500943E8C /* AFNetworkSchedulerProxy.m in Sources */,
-				53DAE1AD1443348500943E8C /* AFNetworkPool.m in Sources */,
 				53CB1DA514462B430013C40A /* AFNetworkServiceBrowser.m in Sources */,
 				53CB1DAB14462C350013C40A /* AFNetworkServiceScope.m in Sources */,
 				53CB1E7F144645F40013C40A /* AFNetworkServicePublisher.m in Sources */,
@@ -979,7 +968,6 @@
 				53567742126B8933002872B2 /* AFNetwork-Macros.m in Sources */,
 				535677D3126B8DC8002872B2 /* AFNetworkDelegateProxy.m in Sources */,
 				53DAE1A814432D4500943E8C /* AFNetworkSchedulerProxy.m in Sources */,
-				53DAE1AE1443348500943E8C /* AFNetworkPool.m in Sources */,
 				53CB1DA614462B430013C40A /* AFNetworkServiceBrowser.m in Sources */,
 				53CB1DAC14462C350013C40A /* AFNetworkServiceScope.m in Sources */,
 				53CB1E80144645F40013C40A /* AFNetworkServicePublisher.m in Sources */,
