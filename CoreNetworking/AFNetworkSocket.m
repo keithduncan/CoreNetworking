@@ -89,7 +89,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	
 #if DEBUGFULL
 	int reuseAddress = 1;
-	int setsockoptError __attribute__((unused)) = setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_REUSEADDR, &reuseAddress, sizeof(reuseAddress));
+	__unused int setsockoptError = setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_REUSEADDR, &reuseAddress, sizeof(reuseAddress));
 #endif /* DEBUGFULL */
 	
 	return self;
@@ -189,7 +189,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 			this prevents that behaviour, at the cost of hardcoding per-protocol knowledge into otherwise protocol agnostic code
 		 */
 		int ipv6Only = 1;
-		int setsockoptError __attribute__((unused)) = setsockopt(nativeHandle, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
+		__unused int setsockoptError = setsockopt(nativeHandle, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
 	}
 	
 	int bindError = bind(nativeHandle, (struct sockaddr const *)CFDataGetBytePtr(signature->address), CFDataGetLength(signature->address));
@@ -213,7 +213,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 			}
 			
 			NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									   NSLocalizedStringFromTableInBundle(@"Couldn\u2019t open a socket", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkSocket couldn't open error description"), NSLocalizedDescriptionKey,
+									   NSLocalizedStringFromTableInBundle(@"Couldn\u2019t open socket", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkSocket couldn't open error description"), NSLocalizedDescriptionKey,
 									   underlyingError, NSUnderlyingErrorKey,
 									   nil];
 			*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:errorCode userInfo:errorInfo];
@@ -223,7 +223,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	
 	int listenError = listen(nativeHandle, 256);
 	if (listenError != 0) {
-		
+#warning error handling
 	}
 	
 	self.socketFlags = (self.socketFlags | _AFNetworkSocketFlagsDidOpen);

@@ -30,7 +30,7 @@ static void	_AFNetworkServiceRunLoopSource(CFFileDescriptorRef fileDescriptor, C
 	
 	AFNetworkServiceSource *self = info;
 	
-	DNSServiceErrorType error __attribute__((unused)) = DNSServiceProcessResult(self->_service);
+	__unused DNSServiceErrorType error = DNSServiceProcessResult(self->_service);
 	
 	_AFNetworkServiceRunLoopSourceEnableCallbacks(fileDescriptor);
 }

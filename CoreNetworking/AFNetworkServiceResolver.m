@@ -224,7 +224,7 @@ static void _AFNetworkServiceResolverResolveCallback(DNSServiceRef sdRef, DNSSer
 		return;
 	}
 	
-	uint16_t hostPort __attribute__((unused)) = ntohs(port);
+	__unused uint16_t hostPort = ntohs(port);
 	
 	DNSServiceRef getInfoService = NULL;
 	DNSServiceErrorType getInfoServiceError = DNSServiceGetAddrInfo(&getInfoService, (DNSServiceFlags)0, interfaceIndex, (DNSServiceProtocol)0, hostname, _AFNetworkServiceResolverGetAddrInfoCallback, self);
