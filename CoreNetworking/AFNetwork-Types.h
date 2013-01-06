@@ -61,10 +61,10 @@ AFNETWORK_EXTERN AFNetworkSocketSignature const AFNetworkSocketSignatureInternet
 
 /*!
 	\brief
-	A transport layer struct simply includes the post number too, the port number isn't included in the `AFSocketType` because it is useful without it.
+	A transport layer struct simply includes the post number too, the port number isn't included in the `AFNetworkSocketType` because it is useful without it.
  
 	\field type
-	See the documentation on `AFSocketType`.
+	See the documentation on `AFNetworkSocketType`.
 	
 	\field port
 	Identifies the Transport Layer address to communicate using (see IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122> in network byte order.
@@ -123,7 +123,8 @@ typedef struct _AFNetworkServiceSignature AFNetworkServiceSignature;
 	Allows for implemetations to accept either `AFNetworkHostSignature` or `AFNetworkServiceSignature`.
 	A receiver will introspect the type using `CFGetTypeID()` to determine which has been passed.
  */
-typedef union _AFNetworkSignature {
+union _AFNetworkSignature {
 	AFNetworkHostSignature *_host;
 	AFNetworkServiceSignature *_service;
-} AFNetworkSignature __attribute__((transparent_union));
+};
+typedef union _AFNetworkSignature AFNetworkSignature __attribute__((transparent_union));
