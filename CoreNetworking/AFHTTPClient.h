@@ -72,24 +72,6 @@
  */
 - (void)performRequest:(NSURLRequest *)request context:(void *)context;
 
-/*!
-	\brief
-	Replaces NSURLDownload which can't be scheduled in multiple run loops or modes.
-	
-	\details
-	Will handle large files by streaming them to disk.
- */
-- (void)performDownload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation context:(void *)context;
-
-/*!
-	\brief
-	Counterpart to `performDownload:onResource:withHeaders:withLocation:`.
-	
-	\details
-	Will handle large files by streaming them from disk.
- */
-- (BOOL)performUpload:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withLocation:(NSURL *)fileLocation context:(void *)context error:(NSError **)errorRef;
-
 /*
 	Primitive
  */
