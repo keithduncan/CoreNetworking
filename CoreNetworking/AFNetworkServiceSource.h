@@ -12,6 +12,8 @@
 
 #import "CoreNetworking/AFNetwork-Macros.h"
 
+@class AFNetworkSchedule;
+
 /*!
 	\brief
 	Allows for asynchronous DNSService API callbacks.
@@ -23,10 +25,12 @@
  @private
 	DNSServiceRef _service;
 	
-	AFNETWORK_STRONG CFFileDescriptorRef _fileDescriptor;
-	
+	AFNetworkSchedule *_schedule;
 	struct {
-		AFNETWORK_STRONG CFTypeRef _runLoopSource;
+		struct {
+			AFNETWORK_STRONG CFFileDescriptorRef _fileDescriptor;
+			AFNETWORK_STRONG CFRunLoopSourceRef _source;
+		} _runLoop;
 		void *_dispatchSource;
 	} _sources;
 }
@@ -41,24 +45,21 @@
 
 /*!
 	\brief
-	The source must be scheduled in at least one run loop to function.
+	The source must be scheduled in at least one environment to work.
  */
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
 /*!
 	\brief
-	The source must be scheduled in at least one run loop to function.
+	The source must be scheduled in at least one environment to work.
  */
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
+- (void)scheduleInQueue:(dispatch_queue_t)queue;
 
 /*!
 	\brief
-	Creates a dispatch source internally.
-	
-	\param queue
-	A layer can only be scheduled in a single queue at a time, to unschedule it pass NULL.
+	Must be sent after scheduling
  */
-- (void)scheduleInQueue:(dispatch_queue_t)queue;
+- (void)resume;
 
 /*!
 	\brief
@@ -73,21 +74,3 @@
 - (BOOL)isValid;
 
 @end
-
-/*!
-	\brief
-	Create and schedule a dispatch source for the mDNSResponder socket held by the service argument.
-	
-	\details
-	This source acts like the Cocoa `-performSelector:...` methods, it creates and destroys a behind the scenes source for you.
-	
-	\param service
-	Must not be NULL
-	
-	\param queue
-	Must not be NULL
-	
-	\return
-	Does not return an owning reference, you must retain it if you keep a reference for later cancellation.
- */
-AFNETWORK_EXTERN dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service, dispatch_queue_t queue);

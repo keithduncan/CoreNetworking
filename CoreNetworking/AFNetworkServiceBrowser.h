@@ -8,13 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CoreNetworking/AFNetworkSchedulerProxy.h"
-
 #import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkServiceScope;
 @class AFNetworkServiceBrowser;
 @class AFNetworkServiceSource;
+@class AFNetworkSchedule;
 
 /*!
 	\brief
@@ -46,14 +45,11 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 	\brief
 	Query the DNS services including link-local multicast for services matching a pattern.
  */
-@interface AFNetworkServiceBrowser : NSObject <AFNetworkSchedulable> {
+@interface AFNetworkServiceBrowser : NSObject {
  @private
 	AFNetworkServiceScope *_serviceScope;
 	
-	struct {
-		AFNETWORK_STRONG CFTypeRef _runLoopSource;
-		void *_dispatchSource;
-	} _sources;
+	AFNetworkSchedule *_schedule;
 	
 	id <AFNetworkServiceBrowserDelegate> _delegate;
 	
@@ -93,7 +89,6 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
  */
 
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue;
 

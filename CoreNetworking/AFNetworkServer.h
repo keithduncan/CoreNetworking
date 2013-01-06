@@ -16,7 +16,7 @@
 #import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkSocket;
-@class AFNetworkSchedulerProxy;
+@class AFNetworkSchedule;
 @class AFNetworkServer;
 
 /*!
@@ -60,7 +60,7 @@
  */
 @interface AFNetworkServer : NSObject <AFNetworkServerDelegate> {
  @private
-	AFNetworkSchedulerProxy *_scheduler;
+	AFNetworkSchedule *_schedule;
 	
 	id <AFNetworkServerDelegate> _delegate;
 	
@@ -98,9 +98,9 @@
 	Used to schedule each new network layer.
 	
 	\details
-	A default scheduler is created in `-init` targeting the global concurrent queue, this can be replaced.
+	A default schedule is created in `-init` targeting the global concurrent queue, this can be replaced.
  */
-@property (retain, nonatomic) AFNetworkSchedulerProxy *scheduler;
+@property (retain, nonatomic) AFNetworkSchedule *schedule;
 
 /*!
 	\brief
@@ -112,9 +112,9 @@
 	Socket Opening
  */
 
-typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkInternetSocketScope) {
-	AFNetworkInternetSocketScopeLocalOnly = 1UL << 0,
-	AFNetworkInternetSocketScopeGlobal = 1UL << 1,
+typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
+	AFNetworkInternetSocketScopeLocalOnly,
+	AFNetworkInternetSocketScopeGlobal,
 };
 /*!
 	\brief

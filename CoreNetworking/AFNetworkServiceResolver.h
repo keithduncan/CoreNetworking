@@ -8,14 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CoreNetworking/AFNetworkSchedulerProxy.h"
-
 #import "CoreNetworking/AFNetworkService-Constants.h"
+
 #import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkServiceScope;
 @class AFNetworkServiceResolver;
 @class AFNetworkServiceSource;
+@class AFNetworkSchedule;
 
 @protocol AFNetworkServiceResolverDelegate <NSObject>
 
@@ -25,7 +25,7 @@
 
  @optional
 
-- (void)networkServiceResolver:(AFNetworkServiceResolver *)networkServiceResolver didUpdateRecord:(AFNetworkServiceRecordType)recordType withData:(NSData *)recordData;
+- (void)networkServiceResolver:(AFNetworkServiceResolver *)networkServiceResolver didUpdateRecord:(AFNetworkDomainRecordType)recordType withData:(NSData *)recordData;
 
 - (void)networkServiceResolver:(AFNetworkServiceResolver *)networkServiceResolver didResolveAddress:(NSData *)address;
 
@@ -35,27 +35,22 @@
 	\brief
 	Can resolve address records and monitor ephemeral record types such as TXT or NULL records.
  */
-@interface AFNetworkServiceResolver : NSObject <AFNetworkSchedulable> {
+@interface AFNetworkServiceResolver : NSObject {
  @private
 	AFNetworkServiceScope *_serviceScope;
-	
-	struct {
-		AFNETWORK_STRONG CFTypeRef _runLoopSource;
-		void *_dispatchSource;
-	} _sources;
 	
 	id <AFNetworkServiceResolverDelegate> _delegate;
 	
 	NSMapTable *_recordToQueryServiceMap;
+	void *_resolveService;
+	void *_getInfoService;
 	
+	AFNetworkSchedule *_schedule;
+	NSMapTable *_serviceToServiceSourceMap;
 	struct {
 		AFNETWORK_STRONG CFTypeRef _runLoopTimer;
 		void *_dispatchTimer;
 	} _timers;
-	void *_resolveService;
-	void *_getInfoService;
-	
-	NSMapTable *_serviceToServiceSourceMap;
 	
 	NSMapTable *_recordToDataMap;
 	NSMutableArray *_addresses;
@@ -75,7 +70,6 @@
  */
 
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue;
 
@@ -93,17 +87,17 @@
 	\brief
 	Start watching a record type, may start a long-lived query (LLQ)
  */
-- (void)addMonitorForRecord:(AFNetworkServiceRecordType)record;
+- (void)addMonitorForRecord:(AFNetworkDomainRecordType)record;
 /*!
 	\brief
 	Remove a previously added monitor
  */
-- (void)removeMonitorForRecord:(AFNetworkServiceRecordType)record;
+- (void)removeMonitorForRecord:(AFNetworkDomainRecordType)record;
 /*!
 	\brief
 	Snapshot of the most recent record update, does not perform any I/O
  */
-- (NSData *)dataForRecord:(AFNetworkServiceRecordType)record;
+- (NSData *)dataForRecord:(AFNetworkDomainRecordType)record;
 
 /*!
 	\brief

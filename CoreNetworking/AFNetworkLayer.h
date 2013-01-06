@@ -61,6 +61,7 @@
 /*!
 	\brief
 	Data should be passed onto the lowerLayer for further processing.
+	This might be tunnel inside another connection layer, a proxy or a direct connection.
  */
 - (AFNetworkLayer *)lowerLayer;
 
@@ -85,8 +86,6 @@
 	Scheduling
 	
 	These methods do nothing by default as the abstract superclass has nothing to schedule
-	
-	Implementers MUST call super before invoking their own logic
  */
 
 /*!
@@ -94,12 +93,6 @@
 	The socket connection must be scheduled in at least one run loop to function.
  */
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
-
-/*!
-	\brief
-	The socket connection must remain scheduled in at least one run loop to function.
- */
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
 /*!
 	\brief

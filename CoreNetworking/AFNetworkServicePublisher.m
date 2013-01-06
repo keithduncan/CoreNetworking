@@ -13,6 +13,7 @@
 #import "AFNetworkServiceScope.h"
 #import "AFNetworkServiceScope+AFNetworkPrivate.h"
 #import "AFNetworkServiceSource.h"
+#import "AFNetworkSchedule.h"
 
 #import "AFNetworkService-Functions.h"
 #import "AFNetworkService-PrivateFunctions.h"
@@ -29,18 +30,20 @@
 
 struct _AFNetworkServicePublisher_CompileTimeAssertions {
 	char assert0[(sizeof(DNSServiceRef) <= sizeof(void *) ? 1 : -1)];
-	char assert1[(sizeof(AFNetworkServiceRecordType) <= sizeof(id) ? 1 : -1)];
-	char assert2[(sizeof(AFNetworkServiceRecordType) <= sizeof(void *) ? 1 : -1)];
+	char assert1[(sizeof(AFNetworkDomainRecordType) <= sizeof(id) ? 1 : -1)];
+	char assert2[(sizeof(AFNetworkDomainRecordType) <= sizeof(void *) ? 1 : -1)];
 };
 
 static BOOL _AFNetworkServicePublisherCheckAndForwardError(AFNetworkServicePublisher *self, DNSServiceErrorType errorCode) {
-	return AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(networkServicePublisher:didReceiveError:), errorCode);
+	return _AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(networkServicePublisher:didReceiveError:), errorCode);
 }
 
 @interface AFNetworkServicePublisher ()
 @property (retain, nonatomic) AFNetworkServiceScope *serviceScope;
 @property (assign, nonatomic) uint32_t port;
 @property (retain, nonatomic) NSMapTable *recordToDataMap;
+
+@property (retain, nonatomic) AFNetworkSchedule *schedule;
 
 @property (assign, nonatomic) DNSServiceRef service;
 @property (readwrite, retain, nonatomic) AFNetworkServiceSource *serviceSource;
@@ -51,8 +54,8 @@ static BOOL _AFNetworkServicePublisherCheckAndForwardError(AFNetworkServicePubli
 @end
 
 @interface AFNetworkServicePublisher (AFNetworkPrivate)
-- (NSData *)_validatedRecordDataForRecord:(AFNetworkServiceRecordType)record;
-- (void)_updateDataForRecordIfRequired:(AFNetworkServiceRecordType)record;
+- (NSData *)_validatedRecordDataForRecord:(AFNetworkDomainRecordType)record;
+- (void)_updateDataForRecordIfRequired:(AFNetworkDomainRecordType)record;
 
 - (void)_addScope:(AFNetworkServiceScope *)scope;
 - (void)_removeScope:(AFNetworkServiceScope *)scope;
@@ -108,7 +111,7 @@ static BOOL _AFNetworkServicePublisherCheckAndForwardError(AFNetworkServicePubli
 	[_serviceScope release];
 	[_recordToDataMap release];
 	
-	_AFNetworkServiceSourceEnvironmentCleanup((_AFNetworkServiceSourceEnvironment *)&_sources);
+	[_schedule release];
 	
 	if (_service != NULL) {
 		DNSServiceRefDeallocate((DNSServiceRef)_service);
@@ -121,19 +124,27 @@ static BOOL _AFNetworkServicePublisherCheckAndForwardError(AFNetworkServicePubli
 	[super dealloc];
 }
 
-- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	_AFNetworkServiceSourceEnvironmentScheduleInRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
+- (BOOL)_isScheduled {
+	return (self.schedule != nil);
 }
 
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	_AFNetworkServiceSourceEnvironmentUnscheduleFromRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
+- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
+	NSParameterAssert(![self _isScheduled]);
+	
+	AFNetworkSchedule *newSchedule = [[[AFNetworkSchedule alloc] init] autorelease];
+	[newSchedule scheduleInRunLoop:runLoop forMode:mode];
+	self.schedule = newSchedule;
 }
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
-	_AFNetworkServiceSourceEnvironmentScheduleInQueue((_AFNetworkServiceSourceEnvironment *)&_sources, queue);
+	NSParameterAssert(![self _isScheduled]);
+	
+	AFNetworkSchedule *newSchedule = [[[AFNetworkSchedule alloc] init] autorelease];
+	[newSchedule scheduleInQueue:queue];
+	self.schedule = newSchedule;
 }
 
-- (void)publishData:(NSData *)data forRecord:(AFNetworkServiceRecordType)record {
+- (void)publishData:(NSData *)data forRecord:(AFNetworkDomainRecordType)record {
 	NSParameterAssert(data != nil);
 	
 	NSMapInsert(self.recordToDataMap, (void const *)record, (void const *)[[data copy] autorelease]);
@@ -141,7 +152,7 @@ static BOOL _AFNetworkServicePublisherCheckAndForwardError(AFNetworkServicePubli
 	[self _updateDataForRecordIfRequired:record];
 }
 
-- (void)removeDataForRecord:(AFNetworkServiceRecordType)record {
+- (void)removeDataForRecord:(AFNetworkDomainRecordType)record {
 	NSMapRemove(self.recordToDataMap, (void const *)record);
 	
 	[self _updateDataForRecordIfRequired:record];
@@ -175,24 +186,26 @@ static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSS
 - (void)publish {
 	AFNetworkServiceScope *scope = self.serviceScope;
 	NSParameterAssert(scope != nil);
-	NSParameterAssert(_sources._runLoopSource != NULL || _sources._dispatchSource != NULL);
+	NSParameterAssert([self _isScheduled]);
 	NSParameterAssert(self.delegate != nil);
 	NSParameterAssert(self.service == NULL);
 	
-	NSData *TXTRecordData = [self _validatedRecordDataForRecord:AFNetworkServiceRecordTypeTXT];
+	NSData *TXTRecordData = [self _validatedRecordDataForRecord:AFNetworkDomainRecordTypeTXT];
 	
 	DNSServiceErrorType registerError = DNSServiceRegister((DNSServiceRef *)&_service, (DNSServiceFlags)0, kDNSServiceInterfaceIndexAny, [scope.name UTF8String], [scope.type UTF8String], [scope.domain UTF8String], NULL, htons(self.port), (uint16_t)[TXTRecordData length], (void const *)[TXTRecordData bytes], _AFNetworkServicePublisherRegisterCallback, self);
 	if (!_AFNetworkServicePublisherCheckAndForwardError(self, registerError)) {
 		return;
 	}
 	
-	AFNetworkServiceSource *newServiceSource = _AFNetworkServiceSourceEnvironmentServiceSource(_service, (_AFNetworkServiceSourceEnvironment *)&_sources);
+	AFNetworkServiceSource *newServiceSource = _AFNetworkServiceSourceForSchedule(_service, self.schedule);
 	self.serviceSource = newServiceSource;
 	
+	[newServiceSource resume];
+	
 	NSMapEnumerator recordToRecordDataEnumerator = NSEnumerateMapTable(self.recordToDataMap);
-	AFNetworkServiceRecordType recordType = 0; NSData *recordData = nil;
+	AFNetworkDomainRecordType recordType = 0; NSData *recordData = nil;
 	while (NSNextMapEnumeratorPair(&recordToRecordDataEnumerator, (void **)&recordType, (void **)&recordData)) {
-		if (recordType == AFNetworkServiceRecordTypeTXT) {
+		if (recordType == AFNetworkDomainRecordTypeTXT) {
 			continue;
 		}
 		
@@ -203,14 +216,19 @@ static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSS
 
 - (void)invalidate {
 	[self.serviceSource invalidate];
-#warning needs to remove the published records
+	
+	DNSServiceRefDeallocate(_service);
+	_service = NULL;
+	
+	[self.recordToDataMap removeAllObjects];
+	[self.recordToHandleMap removeAllObjects];
 }
 
 @end
 
 @implementation AFNetworkServicePublisher (AFNetworkPrivate)
 
-- (NSData *)_validatedRecordDataForRecord:(AFNetworkServiceRecordType)record {
+- (NSData *)_validatedRecordDataForRecord:(AFNetworkDomainRecordType)record {
 	NSData *recordData = NSMapGet(self.recordToDataMap, (void const *)record);
 	if ([recordData length] > UINT16_MAX) {
 		return nil;
@@ -218,7 +236,7 @@ static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSS
 	return recordData;
 }
 
-- (void)_updateDataForRecordIfRequired:(AFNetworkServiceRecordType)record {
+- (void)_updateDataForRecordIfRequired:(AFNetworkDomainRecordType)record {
 	if (_service == NULL) {
 		return;
 	}
@@ -236,7 +254,7 @@ static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSS
 		return;
 	}
 	
-	if (existingRecord != NULL || record == AFNetworkServiceRecordTypeTXT) {
+	if (existingRecord != NULL || record == AFNetworkDomainRecordTypeTXT) {
 		DNSServiceErrorType updateRecordError = DNSServiceUpdateRecord(_service, existingRecord, (DNSServiceFlags)0, (uint16_t)[recordData length], (void const *)[recordData bytes], 0);
 		
 		if (!_AFNetworkServicePublisherCheckAndForwardError(self, updateRecordError)) {
@@ -252,7 +270,7 @@ static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSS
 		return;
 	}
 	
-	uint16_t recordType = _AFNetworkServiceRecordTypeForRecordName(record);
+	uint16_t recordType = record;
 	
 	DNSRecordRef newRecord = NULL;
 	DNSServiceErrorType newRecordError = DNSServiceAddRecord(_service, &newRecord, (DNSServiceFlags)0, recordType, (uint16_t)[recordData length], (void const *)[recordData bytes], 0);

@@ -13,6 +13,7 @@
 #import "AFNetworkServiceScope.h"
 #import "AFNetworkServiceScope+AFNetworkPrivate.h"
 #import "AFNetworkServiceSource.h"
+#import "AFNetworkSchedule.h"
 
 #import "AFNetworkService-Functions.h"
 #import "AFNetworkService-PrivateFunctions.h"
@@ -31,6 +32,8 @@ NSString *const AFNetworkServiceBrowserDomainPublishable = @"*r";
 
 @interface AFNetworkServiceBrowser ()
 @property (readwrite, retain, nonatomic) AFNetworkServiceScope *serviceScope;
+
+@property (retain, nonatomic) AFNetworkSchedule *schedule;
 
 @property (assign, nonatomic) DNSServiceRef service;
 @property (readwrite, retain, nonatomic) AFNetworkServiceSource *serviceSource;
@@ -94,7 +97,7 @@ NSString *const AFNetworkServiceBrowserDomainPublishable = @"*r";
 - (void)dealloc {
 	[_serviceScope release];
 	
-	_AFNetworkServiceSourceEnvironmentCleanup((_AFNetworkServiceSourceEnvironment *)&_sources);
+	[_schedule release];
 	
 	if (_service != NULL) {
 		DNSServiceRefDeallocate(_service);
@@ -107,26 +110,28 @@ NSString *const AFNetworkServiceBrowserDomainPublishable = @"*r";
 	[super dealloc];
 }
 
-- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	NSAssert(self.serviceSource == nil, @"cannot reschedule a browser after a search has started");
-	
-	_AFNetworkServiceSourceEnvironmentScheduleInRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
+- (BOOL)_isScheduled {
+	return (self.schedule != nil);
 }
 
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	NSAssert(self.serviceSource == nil, @"cannot reschedule a browser after a search has started");
+- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
+	NSParameterAssert(![self _isScheduled]);
 	
-	_AFNetworkServiceSourceEnvironmentUnscheduleFromRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
+	AFNetworkSchedule *newSchedule = [[[AFNetworkSchedule alloc] init] autorelease];
+	[newSchedule scheduleInRunLoop:runLoop forMode:mode];
+	self.schedule = newSchedule;
 }
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
-	NSAssert(self.serviceSource == nil, @"cannot reschedule a browser after a search has started");
+	NSParameterAssert(![self _isScheduled]);
 	
-	_AFNetworkServiceSourceEnvironmentScheduleInQueue((_AFNetworkServiceSourceEnvironment *)&_sources, queue);
+	AFNetworkSchedule *newSchedule = [[[AFNetworkSchedule alloc] init] autorelease];
+	[newSchedule scheduleInQueue:queue];
+	self.schedule = newSchedule;
 }
 
 static BOOL _AFNetworkServiceBrowserCheckAndForwardError(AFNetworkServiceBrowser *self, DNSServiceErrorType errorCode) {
-	return AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(networkServiceBrowser:didReceiveError:), errorCode);
+	return _AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(networkServiceBrowser:didReceiveError:), errorCode);
 }
 
 static void _AFNetworkServiceBrowserEnumerateDomainsCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *replyDomain, void *context) {
@@ -252,7 +257,7 @@ static void _AFNetworkServiceBrowserEnumerateNamesCallback(DNSServiceRef sdRef, 
 - (void)searchForScopes {
 	AFNetworkServiceScope *scope = self.serviceScope;
 	NSParameterAssert(scope != nil);
-	NSParameterAssert(_sources._runLoopSource != NULL || _sources._dispatchSource != NULL);
+	NSParameterAssert([self _isScheduled]);
 	NSParameterAssert(self.delegate != nil);
 	NSParameterAssert(self.service == NULL);
 	
@@ -307,8 +312,10 @@ static void _AFNetworkServiceBrowserEnumerateNamesCallback(DNSServiceRef sdRef, 
 	}
 	self.service = newService;
 	
-	AFNetworkServiceSource *newServiceSource = _AFNetworkServiceSourceEnvironmentServiceSource(newService, (_AFNetworkServiceSourceEnvironment *)&_sources);
+	AFNetworkServiceSource *newServiceSource = _AFNetworkServiceSourceForSchedule(newService, self.schedule);
 	self.serviceSource = newServiceSource;
+	
+	[newServiceSource resume];
 }
 
 - (void)invalidate {
@@ -337,18 +344,7 @@ static void _AFNetworkServiceBrowserEnumerateNamesCallback(DNSServiceRef sdRef, 
 @implementation AFNetworkServiceBrowser (AFNetworkPrivate)
 
 - (void)_copyEnvironmentToServiceBrowser:(AFNetworkServiceBrowser *)serviceBrowser {
-	if (_sources._runLoopSource != NULL) {
-		CFTypeRef runLoopSource = _sources._runLoopSource;
-		
-		serviceBrowser->_sources._runLoopSource = runLoopSource;
-		CFRetain(runLoopSource);
-	}
-	if (_sources._dispatchSource != NULL) {
-		void *dispatchSource = _sources._dispatchSource;
-		
-		serviceBrowser->_sources._dispatchSource = dispatchSource;
-		dispatch_retain(dispatchSource);
-	}
+	serviceBrowser.schedule = self.schedule;
 }
 
 - (BOOL)_scope:(AFNetworkServiceScope *)scope isEqual:(NSString *)domain :(NSString *)type :(NSString *)name {

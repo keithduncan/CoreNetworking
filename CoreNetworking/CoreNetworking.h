@@ -31,8 +31,7 @@
 #import "CoreNetworking/AFNetworkPacketClose.h"
 
 #import "CoreNetworking/AFNetworkServer.h"
-#import "CoreNetworking/AFNetworkPool.h"
-#import "CoreNetworking/AFNetworkSchedulerProxy.h"
+#import "CoreNetworking/AFNetworkSchedule.h"
 
 #import "CoreNetworking/AFNetworkServiceScope.h"
 #import "CoreNetworking/AFNetworkServiceBrowser.h"
@@ -73,12 +72,18 @@
 #import "CoreNetworking/AFHTTPServer.h"
 
 /* FTP */
+// See <http://github.com/keithduncan/camera_server>
 
 /* XMPP */
+// See <http://code.google.com/p/objectivexmpp/> for implementation
 
 #import "CoreNetworking/AFNetworkXMLElementPacket.h"
 
-// See <http://code.google.com/p/objectivexmpp/> for implementation
+/* DNS */
+// Not Yet Implemented
+
+/* SMTP */
+// Not Yet Implemented
 
 /* AMQP */
 // Not Yet Implemented
@@ -86,13 +91,13 @@
 /* RTSP */
 // Not Yet Implemented
 
-/* SMTP */
-// Not Yet Implemented
-
 /* IMAP */
 // Not Yet Implemented
 
 /* MySQL */
+// Not Yet Implemented
+
+/* PostgresSQL */
 // Not Yet Implemented
 
 /* LDAP */

@@ -14,6 +14,7 @@
 
 #import "AFNetworkTransport.h"
 #import "AFNetworkPacketQueue.h"
+#import "AFNetworkSchedule.h"
 
 #import "AFNetworkDelegateProxy.h"
 
@@ -32,6 +33,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 
 @property (readonly, nonatomic) NSStream *stream;
 
+@property (retain, nonatomic) AFNetworkSchedule *schedule;
 - (void)_resumeSources;
 
 @property (assign, nonatomic) NSUInteger queueSuspendCount;
@@ -65,7 +67,8 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 @synthesize delegate=_delegate;
 @synthesize stream=_stream;
 @synthesize streamFlags=_streamFlags;
-@synthesize queueSuspendCount=_packetQueueSuspendCount, packetQueue=_packetQueue;
+@synthesize schedule=_schedule;
+@synthesize queueSuspendCount=_queueSuspendCount, packetQueue=_packetQueue;
 
 - (id)initWithStream:(NSStream *)stream {
 	NSParameterAssert([_stream streamStatus] == NSStreamStatusNotOpen);
@@ -75,18 +78,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 	
 	_stream = [stream retain];
 	[_stream setDelegate:self];
-	
-#if !defined(OBJC_NO_GC)
-	/*
-		Note
-		
-		the stream maintains a non zeroing weak reference to this object, there is no safe time (other than structured teardown) to finalize with this reference in place
-	 */
-	if ([NSGarbageCollector defaultCollector] != nil) {
-		static NSString *_AFNetworkStreamDelegateStrongReferenceAssociationContext;
-		objc_setAssociatedObject(_stream, &_AFNetworkStreamDelegateStrongReferenceAssociationContext, self, OBJC_ASSOCIATION_RETAIN);
-	}
-#endif /* !defined(OBJC_NO_GC) */
 	
 	if ([_stream isKindOfClass:[NSOutputStream class]]) {
 		_performSelector = @selector(performWrite:);
@@ -108,31 +99,12 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 	[_stream setDelegate:nil];
 	[_stream release];
 	
-	if (_sources._runLoopSource != NULL) {
-		CFRelease(_sources._runLoopSource);
-		_sources._runLoopSource = NULL;
-	}
-	
-	if (_sources._dispatchSource != NULL) {
-		dispatch_source_cancel(_sources._dispatchSource);
-		dispatch_release(_sources._dispatchSource);
-		_sources._dispatchSource = NULL;
-	}
+	[_schedule release];
 	
 	[self _stopCurrentPacket];
 	[_packetQueue release];
 	
 	[super dealloc];
-}
-
-- (void)finalize {
-	if (_sources._dispatchSource != NULL) {
-		dispatch_source_cancel(_sources._dispatchSource);
-		dispatch_release(_sources._dispatchSource);
-		_sources._dispatchSource = NULL;
-	}
-	
-	[super finalize];
 }
 
 - (AFNetworkDelegateProxy *)delegateProxy:(AFNetworkDelegateProxy *)proxy {	
@@ -171,120 +143,42 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 	return description;
 }
 
-- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	NSParameterAssert(_sources._dispatchSource == NULL);
-	
-	if (_sources._runLoopSource == NULL) {
-		/*
-			Note:
-			
-			this acts a placeholder to ensure a caller doesn't schedule the receiver in a dispatch_packetQueue
-		 */
-		_sources._runLoopSource = (CFTypeRef)CFMakeCollectable(CFRetain([[[NSObject alloc] init] autorelease]));
-	}
-	
-	[self.stream scheduleInRunLoop:runLoop forMode:mode];
+- (BOOL)_isScheduled {
+	return (self.schedule != nil);
 }
 
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	NSParameterAssert(_sources._runLoopSource != NULL);
+- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
+	NSParameterAssert(![self _isScheduled]);
 	
-	[self.stream removeFromRunLoop:runLoop forMode:mode];
+	AFNetworkSchedule *newSchedule = [[[AFNetworkSchedule alloc] init] autorelease];
+	[newSchedule scheduleInRunLoop:runLoop forMode:mode];
+	self.schedule = newSchedule;
 }
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
-	NSParameterAssert(_sources._runLoopSource == NULL);
+	NSParameterAssert(![self _isScheduled]);
 	
-#if 0
-	if (queue != NULL) {
-		if (_sources._dispatchSource == NULL) {
-			typedef id (*CopyStreamProperty)(CFTypeRef, CFStringRef);
-			
-			typedef CFSocketNativeHandle (^GetNativeStreamHandle)(CopyStreamProperty copyProperty, CFTypeRef stream);
-			GetNativeStreamHandle getNativeHandle = ^ CFSocketNativeHandle (CopyStreamProperty copyProperty, CFTypeRef stream) {
-				CFSocketNativeHandle handle = 0;
-				NSData *handleData = [(id)stream propertyForKey:(id)kCFStreamPropertySocketNativeHandle];
-				
-				NSParameterAssert(handleData != nil && [handleData length] > 0 && sizeof(CFSocketNativeHandle) <= [handleData length]);
-				[handleData getBytes:&handle length:[handleData length]];
-				
-				return handle;
-			};
-			
-			CopyStreamProperty getter = NULL;
-			
-			dispatch_source_type_t sourceType = 0;
-			NSStreamEvent eventType = NSStreamEventNone;
-			
-			if ([self.stream isKindOfClass:[NSOutputStream class]]) {
-				getter = (CopyStreamProperty)CFWriteStreamCopyProperty;
-				
-				sourceType = DISPATCH_SOURCE_TYPE_WRITE;
-				eventType = NSStreamEventHasSpaceAvailable;
-			}
-			else if ([self.stream isKindOfClass:[NSInputStream class]]) {
-				getter = (CopyStreamProperty)CFReadStreamCopyProperty;
-				
-				sourceType = DISPATCH_SOURCE_TYPE_READ;
-				eventType = NSStreamEventHasBytesAvailable;
-			}
-			else {
-				@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%s, cannot schedule stream of class %@", __PRETTY_FUNCTION__, [self.stream class]] userInfo:nil];
-				return;
-			}
-			
-			dispatch_source_t newSource = dispatch_source_create(sourceType, getNativeHandle(getter, self.stream), 0, queue);
-			dispatch_source_set_event_handler(newSource, ^ {
-				if ([self.stream streamStatus] == NSStreamStatusNotOpen) {
-					return;
-				}
-				
-				if ([self.stream streamStatus] == NSStreamStatusOpening) {
-					return;
-				}
-				
-				if ([self.stream streamStatus] == NSStreamStatusOpen && ![self isOpen]) {
-					[self stream:self.stream handleEvent:NSStreamEventOpenCompleted];
-					NSParameterAssert([self isOpen]);
-				}
-				
-				[self stream:self.stream handleEvent:eventType];
-			});
-			dispatch_source_set_cancel_handler(newSource, ^ {
-				[self close];
-			});
-			
-			_sources._dispatchSource = newSource;
-			return;
-		}
-		
-		dispatch_set_target_queue(_sources._dispatchSource, queue);
-		return;
-	}
-	
-	if (_sources._dispatchSource != NULL) {
-		dispatch_source_cancel(_sources._dispatchSource);
-		dispatch_release(_sources._dispatchSource);
-		_sources._dispatchSource = NULL;
-	}
-#else
-	@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%@ doesn't support scheduling in a queue currently", NSStringFromClass([self class])] userInfo:nil];
-#endif
+	AFNetworkSchedule *newSchedule = [[[AFNetworkSchedule alloc] init] autorelease];
+	[newSchedule scheduleInQueue:queue];
+	self.schedule = newSchedule;
 }
 
 - (void)_resumeSources {
-	if (_sources._runLoopSource != NULL) {
-		//nop
-	}
+	AFNetworkSchedule *schedule = self.schedule;
 	
-	if (_sources._dispatchSource != NULL) {
-		dispatch_resume(_sources._dispatchSource);
+	if (schedule->_runLoop != nil) {
+		NSRunLoop *runLoop = schedule->_runLoop;
+		
+		[self.stream scheduleInRunLoop:runLoop forMode:schedule->_runLoopMode];
+	}
+	else {
+		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment, cannot resume stream" userInfo:nil];
 	}
 }
 
 - (void)open {
-	NSParameterAssert(_sources._runLoopSource != NULL || _sources._dispatchSource != NULL);
-	NSParameterAssert(_delegate != nil);
+	NSParameterAssert([self _isScheduled]);
+	NSParameterAssert(self.delegate != nil);
 	
 	if ([self isOpen]) {
 		return;
@@ -388,17 +282,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 @implementation AFNetworkStreamQueue (AFNetworkStreamPrivate)
 
 - (void)_updateStreamFlags:(_AFNetworkStreamFlags)newStreamFlags {
-	if ((self.streamFlags & _AFNetworkStreamFlagsTryDequeue) == _AFNetworkStreamFlagsTryDequeue && (newStreamFlags & _AFNetworkStreamFlagsTryDequeue) == 0) {
-		if (_sources._dispatchSource != NULL) {
-			dispatch_resume(_sources._dispatchSource);
-		}
-	}
-	else if ((self.streamFlags & _AFNetworkStreamFlagsTryDequeue) == 0 && (newStreamFlags & _AFNetworkStreamFlagsTryDequeue) == _AFNetworkStreamFlagsTryDequeue) {
-		if (_sources._dispatchSource != NULL) {
-			dispatch_suspend(_sources._dispatchSource);
-		}
-	}
-	
 	self.streamFlags = newStreamFlags;
 }
 

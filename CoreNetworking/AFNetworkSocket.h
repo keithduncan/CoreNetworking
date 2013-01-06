@@ -14,26 +14,52 @@
 
 #import "CoreNetworking/AFNetwork-Macros.h"
 
-@protocol AFNetworkSocketDelegate <AFNetworkConnectionLayerHostDelegate, AFNetworkConnectionLayerDelegate>
+@class AFNetworkSocket;
+@class AFNetworkSchedule;
+
+/*!
+	\brief
+	Delegates must implement the method appropriate for the socket type.
+	SOCK_STREAM socket delegates must implement `-networkLayer:didReceiveConnection:`
+	SOCK_DGRAM socket delegates must implement `-networkLayer:didReceiveMessage:fromSender:`
+ */
+@protocol AFNetworkSocketHostDelegate <NSObject>
+
+ @optional
+
+- (void)networkLayer:(AFNetworkSocket *)socket didReceiveConnectionFromSender:(AFNetworkSocket *)sender;
+
+- (void)networkLayer:(AFNetworkSocket *)socket didReceiveMessage:(NSData *)message fromSender:(AFNetworkSocket *)sender;
+
+@end
+
+@protocol AFNetworkSocketDelegate <AFNetworkSocketHostDelegate>
+
+- (void)networkLayerDidOpen:(AFNetworkSocket *)socket;
+
+- (void)networkLayerDidClose:(AFNetworkSocket *)socket;
 
 @end
 
 /*!
 	\brief
-	A very simple Objective-C wrapper around CFSocketRef.
-	
-	\details
-	Create more `AFNetworkSocket` objects upon revieving inbound connections.
+	Creates more `AFNetworkSocket` objects upon revieving inbound connections or datagrams.
  */
-@interface AFNetworkSocket : AFNetworkLayer <AFNetworkConnectionLayer> {
+@interface AFNetworkSocket : AFNetworkLayer {
+ @package
+	CFSocketNativeHandle _socketNative;
+	
  @private
 	AFNETWORK_STRONG CFSocketSignature *_signature;
 	
-	AFNETWORK_STRONG CFSocketRef _socket;
 	NSUInteger _socketFlags;
 	
+	AFNetworkSchedule *_schedule;
 	struct {
-		AFNETWORK_STRONG CFTypeRef _runLoopSource;
+		struct {
+			AFNETWORK_STRONG CFTypeRef _fileDescriptor;
+			AFNETWORK_STRONG CFTypeRef _source;
+		} _runLoop;
 		void *_dispatchSource;
 	} _sources;
 }
@@ -41,8 +67,8 @@
 /*!
 	\brief
 	Host Initialiser.
-	This is not governed by a protocol, luckily `AFConnectionServer` can instantiate this class specifically.
-	A socket is created with the given characteristics and the address is set.
+	`AFNetworkServer` uses this method for the addresses passed to its open methods.
+	A socket is created with the given characteristics and the address is set/bound.
 	
 	\details
 	If the socket cannot be created they return nil.
@@ -52,7 +78,7 @@
 /*!
 	\brief
 	Connect initialiser.
-	This is not called by the framework, it is provided for you to bring exising FDs into the object graph.
+	Used to create new sockets for inbound connections or datagrams.
 	
 	\details
 	Since AFNetworkSocket doesnt actually perform any read/write operations; this method doesn't take any options.
@@ -60,35 +86,39 @@
  */
 - (id)initWithNativeHandle:(CFSocketNativeHandle)handle;
 
+/*!
+	\brief
+	SOCK_STREAM sockets will spawn additional connected layers
+	SOCK_DGRAM sockets will spwan messages
+ */
 @property (assign, nonatomic) id <AFNetworkSocketDelegate> delegate;
 
 /*!
 	\brief
 	Offers inline synchronous error reporting.
+	
+	\details
+	Asserts that the delegate is appropriate for the socket type.
  */
 - (BOOL)open:(NSError **)errorRef;
 
 /*!
 	\brief
-	This is not set as the lower layer because `AFNetworkSocket` shouldn't be thought of as sitting above `CFSocketRef`, it should be thought of *as* a `CFSocketRef`.
+	Close the underlying socket.
  */
-@property (readonly, nonatomic) id local;
-/*!
-	\brief
-	This returns the `-[AFNetworkSocket socket]` local address.
- */
-@property (readonly, nonatomic) id localAddress;
+- (void)close;
 
 /*!
 	\brief
-	This creates a CFHostRef wrapping the `-peerAddress`.
+	This returns the local socket address.
  */
-@property (readonly, nonatomic) id peer;
+@property (readonly, nonatomic) NSData *localAddress;
+
 /*!
 	\brief
-	This returns the `-[AFNetworkSocket socket]` peer address.
+	This returns the remote socket address.
 	This is likely to be of most use when determining the reachbility of an endpoint.
  */
-@property (readonly, nonatomic) id peerAddress;
+@property (readonly, nonatomic) NSData *peerAddress;
 
 @end

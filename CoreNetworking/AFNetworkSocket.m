@@ -9,117 +9,72 @@
 #import "AFNetworkSocket.h"
 
 #import <sys/socket.h>
+#import <sys/ioctl.h>
 #import <netinet/in.h>
 #import <objc/runtime.h>
+
+#import "AFNetworkSchedule.h"
 
 #import "AFNetwork-Functions.h"
 #import "AFNetwork-Constants.h"
 #import "AFNetwork-Macros.h"
 
-typedef AFNETWORK_ENUM(NSUInteger, _AFNetworkSocketFlags) {
+typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 	_AFNetworkSocketFlagsDidOpen	= 1UL << 0, // socket has been opened
 	_AFNetworkSocketFlagsDidClose	= 1UL << 1, // socket has been closed
+	
+	_AFNetworkSocketFlagsListen		= 1UL << 2, // listen() succeeded
 };
 
 @interface AFNetworkSocket ()
-@property (assign, nonatomic) AFNETWORK_STRONG CFSocketRef socket;
+@property (assign, nonatomic) CFSocketNativeHandle socketNative;
 @property (assign, nonatomic) NSUInteger socketFlags;
 
+@property (retain, nonatomic) AFNetworkSchedule *schedule;
 - (void)_resumeSources;
+@end
+
+@interface AFNetworkSocket ()
+- (void)_readCallback;
+- (void)_acceptCallback;
+- (void)_dataCallback;
 @end
 
 @implementation AFNetworkSocket
 
 @dynamic delegate;
-@synthesize socketFlags=_socketFlags;
-@synthesize socket=_socket;
 
-static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackType type, CFDataRef address, void const *data, void *info) {
-	NSAutoreleasePool *pool = [NSAutoreleasePool new];
+@synthesize socketNative=_socketNative;
+@synthesize socketFlags=_socketFlags;
+@synthesize schedule=_schedule;
+
+- (id)init {
+	self = [super init];
+	if (self == nil) return nil;
 	
-	AFNetworkSocket *self = [[(AFNetworkSocket *)info retain] autorelease];
-	NSCParameterAssert(listenSocket == self.socket);
+	_socketNative = -1;
 	
-	switch (type) {
-		case kCFSocketAcceptCallBack:
-		{
-			CFSocketNativeHandle nativeHandle = *(CFSocketNativeHandle *)data;
-			
-			AFNetworkSocket *newSocket = [[[[self class] alloc] initWithNativeHandle:nativeHandle] autorelease];
-			if (newSocket == nil) {
-				close(nativeHandle);
-				
-				[pool drain];
-				
-				return;
-			}
-			
-			[self.delegate networkLayer:self didAcceptConnection:newSocket];
-			
-			break;
-		}
-		default:
-		{
-			[pool drain];
-			
-			@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"%s, socket %p, received unexpected CFSocketCallBackType %lu", __PRETTY_FUNCTION__, self, type] userInfo:nil];
-			break;
-		}
-	}
-	
-	[pool drain];
+	return self;
 }
 
-- (id)initWithSocketSignature:(CFSocketSignature const *)signature {
+- (id)initWithSocketSignature:(CFSocketSignature const *)socketSignature {
 	self = [self init];
 	if (self == nil) return nil;
 	
 	_signature = malloc(sizeof(CFSocketSignature));
-	memcpy(_signature, signature, sizeof(CFSocketSignature));
+	memcpy(_signature, socketSignature, sizeof(CFSocketSignature));
 	CFRetain(_signature->address);
-	
-	CFSocketContext context = {
-		.info = self,
-	};
-	_socket = (CFSocketRef)CFSocketCreate(kCFAllocatorDefault, signature->protocolFamily, signature->socketType, signature->protocol, kCFSocketAcceptCallBack, _AFNetworkSocketCallback, &context);
-	if (_socket == NULL) {
-		[self release];
-		return nil;
-	}
-	
-#if DEBUGFULL
-	int reuseAddress = 1;
-	__unused int setsockoptError = setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_REUSEADDR, &reuseAddress, sizeof(reuseAddress));
-#endif /* DEBUGFULL */
 	
 	return self;
 }
 
-- (id)initWithNativeHandle:(CFSocketNativeHandle)handle {
+- (id)initWithNativeHandle:(CFSocketNativeHandle)socketNative {
 	self = [self init];
 	if (self == nil) return nil;
 	
-	_socket = (CFSocketRef)CFSocketCreateWithNative(kCFAllocatorDefault, handle, (CFOptionFlags)0, NULL, NULL);
-	if (_socket == NULL) {
-		[self release];
-		return nil;
-	}
+	_socketNative = socketNative;
 	
 	return self;
-}
-
-- (void)finalize {	
-	if (_signature != NULL) {
-		if (_signature->address != NULL) {
-			CFRelease(_signature->address);
-		}
-		free(_signature);
-	}
-	
-	CFSocketInvalidate(_socket);
-	CFRelease(_socket);
-	
-	[super finalize];
 }
 
 - (void)dealloc {
@@ -130,51 +85,37 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 		free(_signature);
 	}
 	
-	CFSocketInvalidate(_socket);
-	CFRelease(_socket);
+	[_schedule release];
 	
-	if (_sources._runLoopSource != NULL) {
-		CFRelease(_sources._runLoopSource);
-		_sources._runLoopSource = NULL;
+	if (_sources._runLoop._fileDescriptor != NULL) {
+		CFRelease(_sources._runLoop._fileDescriptor);
+	}
+	if (_sources._runLoop._source != NULL) {
+		CFRelease(_sources._runLoop._source);
+	}
+	
+	if (_sources._dispatchSource != NULL) {
+		dispatch_release(_sources._dispatchSource);
 	}
 	
 	[super dealloc];
 }
 
-- (void)open {
-	NSError *openError = nil;
-	BOOL open = [self open:&openError];
-	if (!open) {
-		[self.delegate networkLayer:self didReceiveError:openError];
-		return;
-	}
-	
-	return;
-}
-
-- (BOOL)open:(NSError **)errorRef {
-	NSParameterAssert(_sources._runLoopSource != NULL || _sources._dispatchSource != NULL);
-	NSParameterAssert(self.delegate != nil);
-	
-	if ([self isOpen]) {
+- (BOOL)_createSocketNativeIfNeeded:(NSError **)errorRef {
+	if (_socketNative >= 0) {
 		return YES;
 	}
 	
 	CFSocketSignature *signature = _signature;
 	NSParameterAssert(signature != NULL);
 	
-	/*
-		Note
-		
-		this implements the functionality of CFSocketSetAddress() as found in <http://opensource.apple.com/source/CF/CF-476.19/CFSocket.c>
-		
-		we reproduce it here instead of calling CFSocketSetAddress() directly because its return value doesn't give us access to the full gamut of errors
-		
-		we could assume that it calls bind()/listen() internally, but I'd rather avoid the assumption and implement the algorithm here explicitly
-	 */
-	
-	CFSocketRef socket = self.socket;
-	CFSocketNativeHandle nativeHandle = CFSocketGetNative(socket);
+	CFSocketNativeHandle newSocketNative = socket(signature->protocolFamily, signature->socketType, signature->protocol);
+	if (newSocketNative == -1) {
+		if (errorRef != NULL) {
+			*errorRef = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:nil];
+		}
+		return NO;
+	}
 	
 	if (signature->protocolFamily == PF_INET6) {
 		/*
@@ -189,10 +130,12 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 			this prevents that behaviour, at the cost of hardcoding per-protocol knowledge into otherwise protocol agnostic code
 		 */
 		int ipv6Only = 1;
-		__unused int setsockoptError = setsockopt(nativeHandle, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
+		__unused int ipv6OnlyError = setsockopt(newSocketNative, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
 	}
 	
-	int bindError = bind(nativeHandle, (struct sockaddr const *)CFDataGetBytePtr(signature->address), CFDataGetLength(signature->address));
+	[self _configureSocketNativePreBind:newSocketNative];
+	
+	int bindError = bind(newSocketNative, (struct sockaddr const *)CFDataGetBytePtr(signature->address), CFDataGetLength(signature->address));
 	if (bindError != 0) {
 		if (errorRef != NULL) {
 			int underlyingErrorCode = errno;
@@ -221,16 +164,73 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 		return NO;
 	}
 	
-	int listenError = listen(nativeHandle, 256);
-	if (listenError != 0) {
-#warning error handling
+	/*
+		Note
+		
+		this may fail for socket types that aren't connection-oriented
+		
+		hence we ignore the return value (and the value of errno) as in the CFSocket implementation of CFSocketSetAddress
+	 */
+	int listenError = listen(newSocketNative, 256);
+	if (listenError != -1) {
+		self.socketFlags = (self.socketFlags | _AFNetworkSocketFlagsListen);
 	}
+	
+	self.socketNative = newSocketNative;
+	return YES;
+}
+
+- (void)_configureSocketNativePreBind:(CFSocketNativeHandle)socketNative {
+#if DEBUGFULL
+	int reuseAddress = 1;
+	__unused int reuseAddressError = setsockopt(socketNative, SOL_SOCKET, SO_REUSEADDR, &reuseAddress, sizeof(reuseAddress));
+	
+	do {
+		int socketType = 0;
+		socklen_t socketTypeSize = sizeof(socketType);
+		int socketTypeError = getsockopt(socketNative, SOL_SOCKET, SO_TYPE, &socketType, &socketTypeSize);
+		if (socketTypeError == -1) {
+			break;
+		}
+		
+		if (socketType != SOCK_DGRAM) {
+			break;
+		}
+		
+		int reusePort = 1;
+		__unused int reusePortError = setsockopt(socketNative, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort));
+	} while (0);
+#endif /* DEBUGFULL */
+}
+
+- (BOOL)open:(NSError **)errorRef {
+	BOOL open = [self _actuallyOpenIfNeeded:errorRef];
+	if (!open) {
+		return NO;
+	}
+	
+	[self.delegate networkLayerDidOpen:self];
+	
+	return YES;
+}
+
+- (BOOL)_actuallyOpenIfNeeded:(NSError **)errorRef {
+	NSParameterAssert([self _isScheduled]);
+	
+	NSParameterAssert(self.delegate != nil);
+	
+	if ([self isOpen]) {
+		return YES;
+	}
+	
+	BOOL createSocket = [self _createSocketNativeIfNeeded:errorRef];
+	if (!createSocket) {
+		return NO;
+	}
+	
+	[self _assertDelegateIsAppropriateForSocketType];
 	
 	self.socketFlags = (self.socketFlags | _AFNetworkSocketFlagsDidOpen);
-	
-	if ([self.delegate respondsToSelector:@selector(networkLayerDidOpen:)]) {
-		[self.delegate networkLayerDidOpen:self];
-	}
 	
 	[self _resumeSources];
 	
@@ -238,7 +238,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 }
 
 - (BOOL)isOpen {
-	return ((self.socketFlags & _AFNetworkSocketFlagsDidOpen) == _AFNetworkSocketFlagsDidOpen);
+	return ((self.socketFlags & (_AFNetworkSocketFlagsDidOpen | _AFNetworkSocketFlagsDidClose)) == _AFNetworkSocketFlagsDidOpen);
 }
 
 - (void)close {
@@ -247,10 +247,32 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	}
 	self.socketFlags = (self.socketFlags | _AFNetworkSocketFlagsDidClose);
 	
-	CFSocketInvalidate(self.socket);
+	[self _invalidateSources];
+	[self _actuallyCloseIfNeeded];
 	
 	if ([self.delegate respondsToSelector:@selector(networkLayerDidClose:)]) {
 		[self.delegate networkLayerDidClose:self];
+	}
+}
+
+- (void)_actuallyCloseIfNeeded {
+	if (_sources._dispatchSource != NULL) {
+		// Note: dispatch sources are closed in the cancellation handler which run after any current activity
+		return;
+	}
+	
+	if (self.socketNative == -1) {
+		return;
+	}
+	
+	[self _actuallyClose];
+}
+
+- (void)_actuallyClose {
+	CFSocketNativeHandle socketNative = self.socketNative;
+	if (socketNative >= 0) {
+		__unused int closeError = close(socketNative);
+#warning look into whether we can receive EINTR on OS X and whether we need a threadsafe close pattern that doesn't use an EINTR loop, libdispatch uses dup2 to /dev/null, perhaps that is to handle this issue?
 	}
 }
 
@@ -262,7 +284,7 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	[description appendString:@"{\n"];
 	
-	NSData *localAddress = (NSData *)[NSMakeCollectable(CFSocketCopyAddress(self.socket)) autorelease];
+	NSData *localAddress = self.localAddress;
 	if (localAddress != NULL) {
 		[description appendFormat:@"\tAddress: %@\n", AFNetworkSocketAddressToPresentation(localAddress, NULL)];
 		[description appendFormat:@"\tPort: %ld\n", (unsigned long)af_sockaddr_in_read_port((struct sockaddr_storage const *)CFDataGetBytePtr((CFDataRef)localAddress))];
@@ -273,119 +295,268 @@ static void _AFNetworkSocketCallback(CFSocketRef listenSocket, CFSocketCallBackT
 	return description;
 }
 
-- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	NSParameterAssert(_sources._dispatchSource == NULL);
+- (void)_assertDelegateIsAppropriateForSocketType {
+	CFSocketNativeHandle socketNative = self.socketNative;
+	NSParameterAssert(socketNative != -1);
 	
-	[super scheduleInRunLoop:runLoop forMode:mode];
+	int socketType = 0;
+	socklen_t socketTypeSize = sizeof(socketType);
+	int socketTypeError = getsockopt(socketNative, SOL_SOCKET, SO_TYPE, &socketType, &socketTypeSize);
+	NSParameterAssert(socketTypeError != -1);
 	
-	if (_sources._runLoopSource == NULL) {
-		_sources._runLoopSource = (CFRunLoopSourceRef)CFMakeCollectable(CFSocketCreateRunLoopSource(kCFAllocatorDefault, _socket, 0));
+	SEL requiredSelector = NULL;
+	switch (socketType) {
+		case SOCK_STREAM:
+		{
+			requiredSelector = @selector(networkLayer:didReceiveConnectionFromSender:);
+			break;
+		}
+		case SOCK_DGRAM:
+		{
+			requiredSelector = @selector(networkLayer:didReceiveMessage:fromSender:);
+			break;
+		}
 	}
+	NSParameterAssert(requiredSelector != NULL);
 	
-	CFRunLoopAddSource([runLoop getCFRunLoop], (CFRunLoopSourceRef)_sources._runLoopSource, (CFStringRef)mode);
+	id <AFNetworkSocketDelegate> delegate = self.delegate;
+	NSParameterAssert(delegate != nil);
+	
+	NSParameterAssert([delegate respondsToSelector:requiredSelector]);
 }
 
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	NSParameterAssert(_sources._runLoopSource != NULL);
+- (BOOL)_isScheduled {
+	return (self.schedule != nil);
+}
+
+- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
+	NSParameterAssert(![self _isScheduled]);
 	
-	[super unscheduleFromRunLoop:runLoop forMode:mode];
-	
-	CFRunLoopRemoveSource([runLoop getCFRunLoop], (CFRunLoopSourceRef)_sources._runLoopSource, (CFStringRef)mode);
+	AFNetworkSchedule *newSchedule = [[[AFNetworkSchedule alloc] init] autorelease];
+	[newSchedule scheduleInRunLoop:runLoop forMode:mode];
+	self.schedule = newSchedule;
 }
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
-	NSParameterAssert(_sources._runLoopSource == NULL);
+	NSParameterAssert(![self _isScheduled]);
 	
-	[super scheduleInQueue:queue];
+	AFNetworkSchedule *newSchedule = [[[AFNetworkSchedule alloc] init] autorelease];
+	[newSchedule scheduleInQueue:queue];
+	self.schedule = newSchedule;
+}
+
+static void _AFNetworkSocketFileDescriptorEnableCallbacks(CFFileDescriptorRef fileDescriptor) {
+	CFFileDescriptorEnableCallBacks(fileDescriptor, kCFFileDescriptorReadCallBack);
+}
+
+static void _AFNetworkSocketFileDescriptorCallBack(CFFileDescriptorRef fileDescriptor, CFOptionFlags callBackTypes, void *info) {
+	AFNetworkSocket *self = info;
 	
-	if (queue != NULL) {
-		if (_sources._dispatchSource == NULL) {
-			CFSocketRef socket = _socket;
-			CFSocketNativeHandle nativeHandle = CFSocketGetNative(socket);
-			
-			dispatch_source_t newSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, nativeHandle, 0, queue);
-			dispatch_source_set_event_handler(newSource, ^ {
-				struct sockaddr *newSocketAddress = alloca(SOCK_MAXADDRLEN);
-				socklen_t newSocketAddressLength = sizeof(newSocketAddress);
-				CFSocketNativeHandle newNativeSocket = accept(nativeHandle, newSocketAddress, &newSocketAddressLength);
-				if (newNativeSocket == -1) {
-					switch (errno) {
-						case EBADF: /* socket is not a valid file descriptor. */
-							break;
-						case ECONNABORTED: /* The connection to socket has been aborted. */
-							break;
-						case EFAULT: /* The address parameter is not in a writable part of the user address space. */
-							break;
-						case EINTR: /* The accept() system call was terminated by a signal. */
-							break;
-						case EINVAL: /* socket is unwilling to accept connections. */
-							break;
-						case EMFILE: /* The per-process descriptor table is full. */
-									 /* The system file table is full. */
-							break;
-						case ENOMEM: /* Insufficient memory was available to complete the operation. */
-							break;
-						case ENOTSOCK: /* socket references a file type other than a socket. */
-							break;
-						case EOPNOTSUPP: /* socket is not of type SOCK_STREAM and thus does not accept connections. */
-							break;
-						case EWOULDBLOCK: /* socket is marked as non-blocking and no connections are present to be accepted. */
-							break;
-					}
-#warning handle these errors
-					return;
-				}
-				
-				NSData *newSocketAddressData = [NSData dataWithBytes:&newSocketAddress length:newSocketAddressLength];
-				
-				_AFNetworkSocketCallback(socket, kCFSocketAcceptCallBack, (CFDataRef)newSocketAddressData, &newNativeSocket, self);
-			});
-			dispatch_source_set_cancel_handler(newSource, ^ {
-				[self close];
-			});
-			
-			_sources._dispatchSource = newSource;
-			return;
-		}
-		
-		dispatch_set_target_queue(_sources._dispatchSource, queue);
-		return;
+	@autoreleasepool {
+		[self _readCallback];
 	}
 	
-	if (_sources._dispatchSource != NULL) {
-		dispatch_source_cancel(_sources._dispatchSource);
-		dispatch_release(_sources._dispatchSource);
-		_sources._dispatchSource = NULL;
-	}
+	_AFNetworkSocketFileDescriptorEnableCallbacks(fileDescriptor);
 }
 
 - (void)_resumeSources {
-	if (_sources._runLoopSource != NULL) {
-		//nop
+	AFNetworkSchedule *schedule = self.schedule;
+	NSParameterAssert(schedule != nil);
+	
+	if (schedule->_runLoop != nil) {
+		NSRunLoop *runLoop = schedule->_runLoop;
+		
+		CFFileDescriptorContext context = {
+			.info = self,
+		};
+		CFFileDescriptorRef newFileDescriptor = CFFileDescriptorCreate(kCFAllocatorDefault, self.socketNative, false, _AFNetworkSocketFileDescriptorCallBack, &context);
+		_sources._runLoop._fileDescriptor = newFileDescriptor;
+		
+		CFRunLoopSourceRef newRunLoopSource = CFFileDescriptorCreateRunLoopSource(kCFAllocatorDefault, newFileDescriptor, 0);
+		_sources._runLoop._source = newRunLoopSource;
+		
+		CFRunLoopAddSource([runLoop getCFRunLoop], newRunLoopSource, (CFStringRef)schedule->_runLoopMode);
+		
+		_AFNetworkSocketFileDescriptorEnableCallbacks(newFileDescriptor);
+	}
+	else if (schedule->_dispatchQueue != NULL) {
+		dispatch_queue_t dispatchQueue = schedule->_dispatchQueue;
+		
+		CFSocketNativeHandle socketNative = self.socketNative;
+		
+		dispatch_source_t newSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, socketNative, 0, dispatchQueue);
+		dispatch_source_set_event_handler(newSource, ^ {
+			[self _readCallback];
+		});
+		dispatch_source_set_cancel_handler(newSource, ^ {
+			[self _actuallyClose];
+		});
+		_sources._dispatchSource = newSource;
+		
+		dispatch_resume(newSource);
+	}
+	else {
+		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment, cannot resume socket" userInfo:nil];
+	}
+}
+
+- (BOOL)_isValid {
+	return (_sources._runLoop._source != NULL || _sources._dispatchSource != NULL);
+}
+
+- (void)_invalidateSources {
+	if (![self _isValid]) {
+		return;
 	}
 	
-	if (_sources._dispatchSource != NULL) {
-		dispatch_resume(_sources._dispatchSource);
+	if (_sources._runLoop._source != NULL) {
+		CFRunLoopSourceRef runLoopSource = (CFRunLoopSourceRef)_sources._runLoop._source;
+		CFRunLoopSourceInvalidate(runLoopSource);
+	}
+	else if (_sources._dispatchSource != NULL) {
+		dispatch_source_t dispatchSource = _sources._dispatchSource;
+		dispatch_source_cancel(dispatchSource);
+	}
+	else {
+		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment, cannot invalidate socket" userInfo:nil];
 	}
 }
 
-- (id)local {
-	return (id)self.socket;
+- (void)_readCallback {
+	if ((self.socketFlags & _AFNetworkSocketFlagsListen) == _AFNetworkSocketFlagsListen) {
+		[self _acceptCallback];
+		return;
+	}
+	
+	[self _dataCallback];
 }
 
-- (id)localAddress {
-	CFDataRef addr = (CFDataRef)[NSMakeCollectable(CFSocketCopyAddress(_socket)) autorelease];
-	return (id)addr;
+- (void)_acceptCallback {
+	struct sockaddr *newSocketAddress = alloca(SOCK_MAXADDRLEN);
+	socklen_t newSocketAddressLength = sizeof(newSocketAddress);
+	
+TryAccept:;
+	CFSocketNativeHandle newSocketNative = accept(self.socketNative, newSocketAddress, &newSocketAddressLength);
+	if (newSocketNative == -1) {
+		if (errno == EINTR) {
+			goto TryAccept;
+		}
+		
+		switch (errno) {
+			case EBADF: /* socket is not a valid file descriptor. */
+				break;
+			case ECONNABORTED: /* The connection to socket has been aborted. */
+				break;
+			case EFAULT: /* The address parameter is not in a writable part of the user address space. */
+				break;
+			case EINVAL: /* socket is unwilling to accept connections. */
+				break;
+			case EMFILE: /* The per-process descriptor table is full. */
+				/* The system file table is full. */
+				break;
+			case ENOMEM: /* Insufficient memory was available to complete the operation. */
+				break;
+			case ENOTSOCK: /* socket references a file type other than a socket. */
+				break;
+			case EOPNOTSUPP: /* socket is not of type SOCK_STREAM and thus does not accept connections. */
+				break;
+			case EWOULDBLOCK: /* socket is marked as non-blocking and no connections are present to be accepted. */
+				break;
+		}
+#warning handle these errors
+		return;
+	}
+	
+	__unused NSData *newSocketAddressData = [NSData dataWithBytes:&newSocketAddress length:newSocketAddressLength];
+	
+	AFNetworkSocket *newSocket = [self _socketForSocketNative:newSocketNative];
+	if (newSocket == nil) {
+		close(newSocketNative);
+		return;
+	}
+	
+	[self.delegate networkLayer:self didReceiveConnectionFromSender:newSocket];
 }
 
-- (id)peer {
-	id peer = [NSMakeCollectable(CFHostCreateWithAddress(kCFAllocatorDefault, (CFDataRef)[self peerAddress])) autorelease];
-	return peer;
+- (void)_dataCallback {
+	CFSocketNativeHandle socketNative = self.socketNative;
+	
+TryRecv:;
+	int availableData = 0;
+	socklen_t availableDataSize = sizeof(availableData);
+	int availableDataError = getsockopt(socketNative, SOL_SOCKET, SO_NREAD, &availableData, &availableDataSize);
+	if (availableDataError != 0) {
+		return;
+	}
+	
+	NSMutableData *data = [NSMutableData dataWithLength:availableData];
+	CFRetain(data);
+	
+	struct sockaddr_storage sender = {};
+	socklen_t senderSize = sizeof(sender);
+	ssize_t actualSize = recvfrom(socketNative, [data mutableBytes], [data length], /* flags */ 0, (struct sockaddr *)&sender, &senderSize);
+	
+	CFRelease(data);
+	
+	if (actualSize == 0) {
+		return;
+	}
+	else if (actualSize == -1) {
+		if (errno == EINTR) {
+			goto TryRecv;
+		}
+		return;
+	}
+	
+	[data setLength:actualSize];
+	
+	CFSocketSignature *signature = _signature;
+	NSParameterAssert(signature != NULL);
+	
+	CFSocketNativeHandle newSocketNative = socket(sender.ss_family, signature->socketType, signature->protocol);
+	if (newSocketNative == -1) {
+		return;
+	}
+	
+	// WARNING: should we bind() UDP sockets to the address of the socket they were received on, what if the socket has a wildcard address?
+	
+	int connectError = connect(newSocketNative, (struct sockaddr const *)&sender, senderSize);
+	if (connectError == -1) {
+		return;
+	}
+	
+	AFNetworkSocket *newSocket = [self _socketForSocketNative:newSocketNative];
+	
+	[self.delegate networkLayer:self didReceiveMessage:data fromSender:newSocket];
 }
 
-- (id)peerAddress {
-	CFDataRef addr = (CFDataRef)[NSMakeCollectable(CFSocketCopyPeerAddress(_socket)) autorelease];
-	return (id)addr;
+- (AFNetworkSocket *)_socketForSocketNative:(CFSocketNativeHandle)socketNative {
+	AFNetworkSocket *newSocket = [[[AFNetworkSocket alloc] initWithNativeHandle:socketNative] autorelease];
+	newSocket.schedule = self.schedule;
+	return newSocket;
+}
+
+- (NSData *)localAddress {
+	return [self _address:getsockname];
+}
+
+- (NSData *)peerAddress {
+	return [self _address:getpeername];
+}
+
+- (NSData *)_address:(int (*)(int, struct sockaddr *restrict, socklen_t *restrict))function {
+	NSParameterAssert(function != NULL);
+	
+	CFSocketNativeHandle socketNative = self.socketNative;
+	
+	struct sockaddr_storage address = {};
+	socklen_t addressSize = sizeof(address);
+	int addressError = function(socketNative, (struct sockaddr *)&address, &addressSize);
+	if (addressError != 0) {
+		return nil;
+	}
+	
+	return [NSData dataWithBytes:&address length:addressSize];
 }
 
 @end

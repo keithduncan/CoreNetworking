@@ -88,35 +88,24 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	self = [super initWithLowerLayer:layer];
 	if (self == nil) return nil;
 	
-	CFSocketRef dataSocket = (CFSocketRef)[networkSocket local];
-	CFSocketNativeHandle dataSocketNative = CFSocketGetNative(dataSocket);
-	
-	BOOL shouldCloseUnderlyingSocket = ((CFSocketGetSocketFlags(dataSocket) & kCFSocketCloseOnInvalidate) == kCFSocketCloseOnInvalidate);
-	if (shouldCloseUnderlyingSocket) {
-		CFSocketSetSocketFlags(dataSocket, CFSocketGetSocketFlags(dataSocket) & ~kCFSocketCloseOnInvalidate);
-	}
-	
-	CFDataRef peer = (CFDataRef)[networkSocket peer];
-	_signature._host.host = (CFHostRef)CFMakeCollectable(CFRetain(peer));
+	CFSocketNativeHandle socketNative = networkSocket->_socketNative;
+	networkSocket->_socketNative = -1;
 	
 	/* 
 		Note 
 		
-		the CFSocket must be invalidated for the CFStreams to capture the events
+		ensure the sockets claim on the file descriptor is relinquished
 	 */
 	[networkSocket setDelegate:nil];
 	[networkSocket close];
-	NSParameterAssert(!CFSocketIsValid(dataSocket));
 	
 	CFWriteStreamRef writeStream = NULL;
 	CFReadStreamRef readStream = NULL;
-	CFStreamCreatePairWithSocket(kCFAllocatorDefault, dataSocketNative, &readStream, &writeStream);
+	CFStreamCreatePairWithSocket(kCFAllocatorDefault, socketNative, &readStream, &writeStream);
 	
-	// Note: ensure this is done in the same method as setting the socket options to essentially balance a retain/release on the native socket
-	if (shouldCloseUnderlyingSocket) {
-		CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
-		CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
-	}
+	CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
+	CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
+	
 	[self _configureWithWriteStream:(id)writeStream readStream:(id)readStream];
 	
 	CFRelease(writeStream);
@@ -166,10 +155,12 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 }
 
 - (AFNetworkLayer *)initWithTransportSignature:(AFNetworkSignature)signature {
-	if (CFGetTypeID(*(CFTypeRef *)*(void **)&signature) == CFHostGetTypeID()) {
+	CFTypeID type = CFGetTypeID(*(CFTypeRef *)*(void **)&signature);
+	
+	if (type == CFHostGetTypeID()) {
 		return [self _initWithHostSignature:signature._host];
 	}
-	if (CFGetTypeID(*(CFTypeRef *)*(void **)&signature) == CFNetServiceGetTypeID()) {
+	else if (type == CFNetServiceGetTypeID()) {
 		return [self _initWithServiceSignature:signature._service];
 	}
 	
@@ -192,7 +183,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	[super dealloc];
 }
 
-- (id)localAddress {
+- (NSData *)localAddress {
 	NSParameterAssert([self isOpen]);
 	
 	CFSocketNativeHandle socket = 0;
@@ -210,12 +201,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	return [NSData dataWithBytes:socketAddress length:socketAddressLength];
 }
 
-- (CFTypeRef)peer {
-	// Note: this will also return the netService
-	return _signature._host.host;
-}
-
-- (id)peerAddress {
+- (NSData *)peerAddress {
 	NSParameterAssert([self isOpen]);
 	
 	return nil;
@@ -224,8 +210,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 - (NSString *)description {
 	NSMutableString *description = [[[super description] mutableCopy] autorelease];
 	[description appendString:@" {\n"];
-	
-	[description appendFormat:@"\tPeer: %@\n", [(id)[self peer] description]];
 	
 	[description appendFormat:@"\tOpened: %@, Closed: %@\n", ([self isOpen] ? @"YES" : @"NO"), ([self isClosed] ? @"YES" : @"NO")];
 	
@@ -240,11 +224,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
 	[self.writeStream scheduleInRunLoop:runLoop forMode:mode];
 	[self.readStream scheduleInRunLoop:runLoop forMode:mode];
-}
-
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	[self.writeStream unscheduleFromRunLoop:runLoop forMode:mode];
-	[self.readStream unscheduleFromRunLoop:runLoop forMode:mode];
 }
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {

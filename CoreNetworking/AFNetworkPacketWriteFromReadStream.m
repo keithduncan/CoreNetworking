@@ -115,11 +115,17 @@
 			_bufferOffset = 0;
 			_bufferLength = bytesRead;
 			
-			if (bytesRead > 0) {
+			do {
+				if (bytesRead <= 0) {
+					break;
+				}
+				
 				NSData * (^readStreamFilter)(NSData *) = self.readStreamFilter;
-				if (readStreamFilter != nil) {
-					NSAutoreleasePool *pool = [NSAutoreleasePool new];
-					
+				if (readStreamFilter == nil) {
+					break;
+				}
+				
+				@autoreleasepool {
 					NSData *readData = [NSData dataWithBytesNoCopy:_readBuffer length:_bufferLength freeWhenDone:NO];
 					readData = readStreamFilter(readData);
 					
@@ -135,10 +141,8 @@
 					[readData getBytes:_readBuffer length:newBufferSize];
 					
 					_bufferLength = newBufferSize;
-					
-					[pool drain];
 				}
-			}
+			} while (0);
 		}
 		
 		/* Write */

@@ -8,14 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CoreNetworking/AFNetworkSchedulerProxy.h"
-
 #import "CoreNetworking/AFNetworkService-Constants.h"
+
 #import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkServiceScope;
 @class AFNetworkServicePublisher;
 @class AFNetworkServiceSource;
+@class AFNetworkSchedule;
 
 @protocol AFNetworkServicePublisherDelegate <NSObject>
 
@@ -35,18 +35,15 @@
 	\brief
 	
  */
-@interface AFNetworkServicePublisher : NSObject <AFNetworkSchedulable> {
+@interface AFNetworkServicePublisher : NSObject {
  @private
 	AFNetworkServiceScope *_serviceScope;
 	uint32_t _port;
 	NSMapTable *_recordToDataMap;
 	
-	struct {
-		AFNETWORK_STRONG CFTypeRef _runLoopSource;
-		void *_dispatchSource;
-	} _sources;
-	
 	id <AFNetworkServicePublisherDelegate> _delegate;
+	
+	AFNetworkSchedule *_schedule;
 	
 	void *_service;
 	AFNetworkServiceSource *_serviceSource;
@@ -69,7 +66,6 @@
  */
 
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue;
 
@@ -87,13 +83,13 @@
 	\brief
 	Record data is accumulated until the receiver is published.
  */
-- (void)publishData:(NSData *)data forRecord:(AFNetworkServiceRecordType)record;
+- (void)publishData:(NSData *)data forRecord:(AFNetworkDomainRecordType)record;
 
 /*!
 	\brief
 	Stop publishing data for a specific record.
  */
-- (void)removeDataForRecord:(AFNetworkServiceRecordType)record;
+- (void)removeDataForRecord:(AFNetworkDomainRecordType)record;
 
 /*!
 	\brief

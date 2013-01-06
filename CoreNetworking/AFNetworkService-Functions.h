@@ -16,7 +16,7 @@
 	If the dictionary doesn't conform to this format, an exception is thrown.
 	
 	\return
-	Data suitable for publishing as an AFNetworkServiceRecordTypeTXT record.
+	Data suitable for publishing as an AFNetworkDomainRecordTypeTXT record.
  */
 AFNETWORK_EXTERN NSData *AFNetworkServiceTXTRecordDataFromPropertyDictionary(NSDictionary *TXTRecordDictionary);
 

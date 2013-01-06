@@ -14,17 +14,6 @@
 	Connection Layers
  */
 
-@protocol AFNetworkConnectionLayerHostDelegate <AFNetworkTransportLayerHostDelegate>
-
-/*!
-	\param layer
-	Could be the host that spawned it or an intermediate object.
- */
-- (void)networkLayer:(id)layer didAcceptConnection:(id <AFNetworkTransportLayer>)connection;
-
-@end
-
-
 @protocol AFNetworkConnectionLayerControlDelegate <AFNetworkTransportLayerControlDelegate>
 
 @end
@@ -42,7 +31,7 @@
 
 /*!
 	\brief
-	An AFNetworkConnectionLayer should maintain a stateful connection between endpoints.
+	An `AFNetworkConnectionLayer` should maintain a stateful connection between endpoints.
  */
 @protocol AFNetworkConnectionLayer <AFNetworkTransportLayer>
 
@@ -61,7 +50,7 @@
 
 /*!
 	\brief
-	This method can be used to determine if SSL/TLS has been started on the connection.
+	Determine if SSL/TLS has been started on the connection.
  */
 - (BOOL)isSecure;
 

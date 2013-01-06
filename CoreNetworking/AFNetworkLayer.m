@@ -111,15 +111,11 @@
 }
 
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	[self.lowerLayer scheduleInRunLoop:runLoop forMode:mode];
-}
-
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	[self.lowerLayer unscheduleFromRunLoop:runLoop forMode:mode];
+	
 }
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
-	[self.lowerLayer scheduleInQueue:queue];
+	
 }
 
 - (void)networkLayerDidOpen:(id)layer {

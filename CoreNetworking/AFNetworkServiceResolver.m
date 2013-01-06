@@ -13,6 +13,8 @@
 
 #import "AFNetworkServiceScope.h"
 #import "AFNetworkServiceScope+AFNetworkPrivate.h"
+#import "AFNetworkServiceSource.h"
+#import "AFNetworkSchedule.h"
 
 #import "AFNetworkService-Functions.h"
 #import "AFNetworkService-PrivateFunctions.h"
@@ -20,7 +22,7 @@
 #import "AFNetwork-Constants.h"
 
 static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolver *self, DNSServiceErrorType errorCode) {
-	return AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(networkServiceResolver:didReceiveError:), errorCode);
+	return _AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(networkServiceResolver:didReceiveError:), errorCode);
 }
 
 @interface AFNetworkServiceResolver ()
@@ -30,6 +32,8 @@ static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolv
 @property (assign, nonatomic) DNSServiceRef resolveService, getInfoService;
 
 @property (retain, nonatomic) NSMapTable *serviceToServiceSourceMap;
+
+@property (retain, nonatomic) AFNetworkSchedule *schedule;
 
 @property (retain, nonatomic) NSMapTable *recordToDataMap;
 @end
@@ -55,6 +59,8 @@ static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolv
 
 @synthesize serviceToServiceSourceMap=_serviceToServiceSourceMap;
 
+@synthesize schedule=_schedule;
+
 @synthesize recordToDataMap=_recordToDataMap;
 @synthesize addresses=_addresses;
 
@@ -79,13 +85,13 @@ static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolv
 - (void)dealloc {
 	[_serviceScope release];
 	
-	_AFNetworkServiceSourceEnvironmentCleanup((_AFNetworkServiceSourceEnvironment *)&_sources);
+	[_schedule release];
 	
 	[self invalidate];
 	[_serviceToServiceSourceMap release];
 	
 	NSMapEnumerator recordToQueryMapEnumerator = NSEnumerateMapTable(_recordToQueryServiceMap);
-	AFNetworkServiceRecordType recordType = 0; DNSServiceRef queryService = NULL;
+	AFNetworkDomainRecordType recordType = 0; DNSServiceRef queryService = NULL;
 	while (NSNextMapEnumeratorPair(&recordToQueryMapEnumerator, (void **)&recordType, (void **)&queryService)) {
 		DNSServiceRefDeallocate(queryService);
 	}
@@ -110,16 +116,24 @@ static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolv
 	[super dealloc];
 }
 
-- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	_AFNetworkServiceSourceEnvironmentScheduleInRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
+- (BOOL)_isScheduled {
+	return (self.schedule != nil);
 }
 
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
-	_AFNetworkServiceSourceEnvironmentUnscheduleFromRunLoop((_AFNetworkServiceSourceEnvironment *)&_sources, runLoop, mode);
+- (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode {
+	NSParameterAssert(![self _isScheduled]);
+	
+	AFNetworkSchedule *newSchedule = [[[AFNetworkSchedule alloc] init] autorelease];
+	[newSchedule scheduleInRunLoop:runLoop forMode:mode];
+	self.schedule = newSchedule;
 }
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue {
-	_AFNetworkServiceSourceEnvironmentScheduleInQueue((_AFNetworkServiceSourceEnvironment *)&_sources, queue);
+	NSParameterAssert(![self _isScheduled]);
+	
+	AFNetworkSchedule *newSchedule = [[[AFNetworkSchedule alloc] init] autorelease];
+	[newSchedule scheduleInQueue:queue];
+	self.schedule = newSchedule;
 }
 
 static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *fullname, uint16_t rrtype, uint16_t rrclass, uint16_t rdlen, void const *rdata, uint32_t ttl, void *context) {
@@ -133,7 +147,7 @@ static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DN
 		return;
 	}
 	
-	AFNetworkServiceRecordType record = _AFNetworkServiceRecordNameForRecordType(rrtype);
+	AFNetworkDomainRecordType record = rrtype;
 	
 	NSData *recordData = [NSData dataWithBytes:rdata length:rdlen];
 	NSMapInsert(self.recordToDataMap, (void const *)record, (void const *)recordData);
@@ -143,10 +157,10 @@ static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DN
 	}
 }
 
-- (void)addMonitorForRecord:(AFNetworkServiceRecordType)record {
+- (void)addMonitorForRecord:(AFNetworkDomainRecordType)record {
 	AFNetworkServiceScope *scope = self.serviceScope;
 	NSParameterAssert(scope != nil);
-	NSParameterAssert(_sources._runLoopSource != NULL || _sources._dispatchSource != NULL);
+	NSParameterAssert([self _isScheduled]);
 	
 	DNSServiceRef existingRecordQuery = NSMapGet(self.recordToQueryServiceMap, (void const *)record);
 	if (existingRecordQuery != NULL) {
@@ -159,7 +173,7 @@ static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DN
 		return;
 	}
 	
-	uint16_t recordType = _AFNetworkServiceRecordTypeForRecordName(record);
+	uint16_t recordType = record;
 	
 	DNSServiceRef newRecordQueryService = NULL;
 	DNSServiceErrorType newRecordQueryError = DNSServiceQueryRecord(&newRecordQueryService, (DNSServiceFlags)0, scope->_interfaceIndex, [fullname UTF8String], recordType, kDNSServiceClass_IN, _AFNetworkServiceResolverQueryRecordCallback, self);
@@ -171,7 +185,7 @@ static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DN
 	[self _addServiceSourceForService:newRecordQueryService];
 }
 
-- (void)removeMonitorForRecord:(AFNetworkServiceRecordType)record {
+- (void)removeMonitorForRecord:(AFNetworkDomainRecordType)record {
 	DNSServiceRef existingRecordQuery = NSMapGet(self.recordToQueryServiceMap, (void const *)record);
 	if (existingRecordQuery == NULL) {
 		return;
@@ -183,7 +197,7 @@ static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DN
 	NSMapRemove(self.recordToQueryServiceMap, (void const *)record);
 }
 
-- (NSData *)dataForRecord:(AFNetworkServiceRecordType)record {
+- (NSData *)dataForRecord:(AFNetworkDomainRecordType)record {
 	return NSMapGet(self.recordToDataMap, (void const *)record);
 }
 
@@ -244,7 +258,7 @@ SharedTeardown:;
 - (void)resolveWithTimeout:(NSTimeInterval)timeout {
 	AFNetworkServiceScope *scope = self.serviceScope;
 	NSParameterAssert(scope != nil);
-	NSParameterAssert(_sources._runLoopSource != NULL || _sources._dispatchSource != NULL);
+	NSParameterAssert([self _isScheduled]);
 	
 	if (_resolveService != NULL) {
 		return;
@@ -279,8 +293,10 @@ SharedTeardown:;
 }
 
 - (void)_addServiceSourceForService:(DNSServiceRef)service {
-	AFNetworkServiceSource *newServiceSource = _AFNetworkServiceSourceEnvironmentServiceSource(service, (_AFNetworkServiceSourceEnvironment *)&_sources);
+	AFNetworkServiceSource *newServiceSource = _AFNetworkServiceSourceForSchedule(service, self.schedule);
 	NSMapInsert(self.serviceToServiceSourceMap, (void const *)service, (void const *)newServiceSource);
+	
+	[newServiceSource resume];
 }
 
 - (void)_removeServiceSourceForService:(DNSServiceRef)service {
@@ -297,27 +313,31 @@ SharedTeardown:;
 		return;
 	}
 	
-	if (_sources._runLoopSource != NULL) {
-		NSTimer *resolveTimeout = [[NSTimer alloc] initWithFireDate:[[NSDate date] dateByAddingTimeInterval:timeout] interval:0 target:self selector:@selector(_resolveDidTimeout) userInfo:nil repeats:NO];
+	AFNetworkSchedule *schedule = self.schedule;
+	if (schedule->_runLoop != nil) {
+		NSRunLoop *runLoop = schedule->_runLoop;
 		
-		NSDictionary *runLoopEnvironment = _sources._runLoopSource;
-		[[runLoopEnvironment objectForKey:@"RunLoop"] addTimer:resolveTimeout forMode:[runLoopEnvironment objectForKey:@"Mode"]];
+		NSTimer *resolveTimeout = [[NSTimer alloc] initWithFireDate:[[NSDate date] dateByAddingTimeInterval:timeout] interval:0 target:self selector:@selector(_resolveDidTimeout) userInfo:nil repeats:NO];
+		[runLoop addTimer:resolveTimeout forMode:schedule->_runLoopMode];
 		
 		_timers._runLoopTimer = resolveTimeout;
 	}
-	else if (_sources._dispatchSource != NULL) {
-		dispatch_queue_t dispatchQueue = _sources._dispatchSource;
+	else if (schedule->_dispatchQueue != NULL) {
+		dispatch_queue_t dispatchQueue = schedule->_dispatchQueue;
+		
 		dispatch_source_t dispatchTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatchQueue);
+		
+		__weak __block AFNetworkServiceResolver *weakResolver = self;
 		dispatch_source_set_event_handler(dispatchTimer, ^ {
-#warning this shouldn't be a strong reference
-			[self _resolveDidTimeout];
+			[weakResolver _resolveDidTimeout];
 		});
 		dispatch_source_set_timer(dispatchTimer, DISPATCH_TIME_NOW, timeout * NSEC_PER_SEC, 0);
 		dispatch_resume(dispatchTimer);
+		
 		_timers._dispatchTimer = dispatchTimer;
 	}
 	else {
-		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported scheduling environment, cannot set up resolve timeout" userInfo:nil];
+		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment, cannot set up resolve timeout" userInfo:nil];
 	}
 }
 
@@ -359,9 +379,9 @@ SharedTeardown:;
 	}
 	
 	NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-#warning complete this error
+							   NSLocalizedStringFromTableInBundle(@"Couldn\u2019t resolve service", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkServiceResolver resolve timeout error description"),
 							   nil];
-	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:errorInfo];
+	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkServiceErrorUnknown userInfo:errorInfo];
 	
 	[self.delegate networkServiceResolver:self didReceiveError:error];
 }

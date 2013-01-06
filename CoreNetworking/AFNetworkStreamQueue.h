@@ -15,6 +15,8 @@
 
 @class AFNetworkStreamQueue;
 
+@class AFNetworkSchedule;
+
 @protocol AFNetworkStreamQueueDelegate <NSObject>
 
  @required
@@ -61,7 +63,7 @@
 	
  */
 @interface AFNetworkStreamQueue : NSObject {
- @protected
+ @private
 	id <AFNetworkStreamQueueDelegate> _delegate;
 	
 	NSStream *_stream;
@@ -69,16 +71,11 @@
 	
 	NSUInteger _streamFlags;
 	
-	struct {
-		AFNETWORK_STRONG CFTypeRef _runLoopSource;
-		void *_dispatchSource;
-	} _sources;
+	AFNetworkSchedule *_schedule;
 	
 	NSUInteger _queueSuspendCount;
 	AFNetworkPacketQueue *_packetQueue;
 	BOOL _dequeuing;
-	
-	NSTimer *_timeoutTimer;
 }
 
 /*
@@ -100,7 +97,6 @@
  */
 
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
-- (void)unscheduleFromRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
 - (void)scheduleInQueue:(dispatch_queue_t)queue;
 

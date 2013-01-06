@@ -17,8 +17,8 @@
 #import "AFNetworkSocket.h"
 #import "AFNetworkTransport.h"
 #import "AFNetworkConnection.h"
+#import "AFNetworkSchedule.h"
 
-#import "AFNetworkSchedulerProxy.h"
 #import "AFNetworkDelegateProxy.h"
 
 #import	"AFNetwork-Types.h"
@@ -26,7 +26,7 @@
 #import "AFNetwork-Constants.h"
 #import "AFNetwork-Macros.h"
 
-@interface AFNetworkServer () <AFNetworkConnectionLayerHostDelegate, AFNetworkConnectionLayerControlDelegate>
+@interface AFNetworkServer () <AFNetworkSocketDelegate, AFNetworkConnectionLayerControlDelegate>
 @property (retain, nonatomic) NSMutableSet *listeners;
 @property (retain, nonatomic) NSArray *encapsulationClasses;
 @property (retain, nonatomic) NSMutableSet *connections;
@@ -41,7 +41,7 @@
 
 @implementation AFNetworkServer
 
-@synthesize scheduler=_scheduler;
+@synthesize schedule=_schedule;
 @synthesize delegate=_delegate;
 
 @synthesize listeners=_listeners;
@@ -58,11 +58,11 @@
 	self = [super init];
 	if (self == nil) return nil;
 	
-	_scheduler = [[AFNetworkSchedulerProxy alloc] init];
+	_schedule = [[AFNetworkSchedule alloc] init];
 #if 0
-	[_scheduler scheduleInQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
+	[_schedule scheduleInQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
 #else
-	[_scheduler scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+	[_schedule scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 #endif
 	
 	_listeners = [[NSMutableSet alloc] init];
@@ -84,7 +84,7 @@
 }
 
 - (void)dealloc {	
-	[_scheduler release];
+	[_schedule release];
 	
 	[_listeners release];
 	
@@ -92,6 +92,13 @@
 	[_connections release];
 	
 	[super dealloc];
+}
+
+- (void)setSchedule:(AFNetworkSchedule *)schedule {
+	NSParameterAssert([self.listeners count] == 0);
+	
+	[_schedule autorelease];
+	_schedule = [schedule retain];
 }
 
 - (AFNetworkDelegateProxy *)delegateProxy:(AFNetworkDelegateProxy *)proxy {	
@@ -172,8 +179,6 @@
 	BOOL shouldCloseSocketObjects = NO;
 	
 	for (NSData *currentSocketAddress in socketAddresses) {
-		currentSocketAddress = [[currentSocketAddress mutableCopy] autorelease];
-		
 		NSError *currentSocketObjectError = nil;
 		AFNetworkSocket *currentSocketObject = [self openSocketWithSignature:socketSignature address:currentSocketAddress error:&currentSocketObjectError];
 		if (currentSocketObject == nil) {
@@ -233,16 +238,16 @@
 
 - (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address error:(NSError **)errorRef {
 	NSParameterAssert(self.listeners != nil);
+	NSParameterAssert(self.schedule != nil);
 	
 	CFRetain(address);
 	
 	unsigned long protocolFamily = ((struct sockaddr_storage const *)[address bytes])->ss_family;
 	
 	CFSocketSignature socketSignature = {
+		.protocolFamily = protocolFamily,
 		.socketType = signature.socketType,
 		.protocol = signature.protocol,
-		
-		.protocolFamily = protocolFamily,
 		.address = (CFDataRef)address,
 	};
 	
@@ -290,24 +295,24 @@
 
 #pragma mark - Delegate
 
-- (void)networkLayer:(id)layer didAcceptConnection:(id <AFNetworkConnectionLayer>)connection {
+- (void)networkLayer:(id)layer didReceiveConnectionFromSender:(AFNetworkSocket *)sender {
 	NSParameterAssert([self.listeners containsObject:layer]);
 	
 	BOOL shouldAccept = YES;
 	if ([self.delegate respondsToSelector:@selector(networkServer:shouldAcceptConnection:)]) {
-		shouldAccept = [self.delegate networkServer:self shouldAcceptConnection:connection];
+		shouldAccept = [self.delegate networkServer:self shouldAcceptConnection:sender];
 	}
 	
 	if (!shouldAccept) {
-		[connection close];
+		[sender close];
 		return;
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(networkServer:didAcceptConnection:)]) {
-		[self.delegate networkServer:self didAcceptConnection:connection];
+		[self.delegate networkServer:self didAcceptConnection:sender];
 	}
 	
-	[self _fullyEncapsulateLayer:connection];
+	[self _fullyEncapsulateLayer:sender];
 }
 
 - (void)networkLayerDidOpen:(id <AFNetworkTransportLayer>)layer {
@@ -331,7 +336,7 @@
 }
 
 - (void)configureLayer:(id)layer {
-	[self _scheduleLayer:layer];
+	
 }
 
 @end
@@ -378,6 +383,8 @@
 			break;
 		}
 		
+		[self _scheduleLayer:encapsulatedLayer];
+		
 		currentLayer = encapsulatedLayer;
 	}
 	
@@ -388,7 +395,23 @@
 }
 
 - (void)_scheduleLayer:(AFNetworkLayer *)layer {
-	[self.scheduler scheduleNetworkLayer:(id)layer];
+	AFNetworkSchedule *schedule = self.schedule;
+	NSParameterAssert(schedule != nil);
+	
+	if (schedule->_runLoop != nil) {
+		NSRunLoop *runLoop = schedule->_runLoop;
+		
+		[layer scheduleInRunLoop:runLoop forMode:schedule->_runLoopMode];
+	}
+	else if (schedule->_dispatchQueue != NULL) {
+		dispatch_queue_t dispatchQueue = schedule->_dispatchQueue;
+		
+		[layer scheduleInQueue:dispatchQueue];
+	}
+	else {
+		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment" userInfo:nil];
+	}
+	
 	layer.delegate = self;
 }
 

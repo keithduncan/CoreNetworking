@@ -83,19 +83,12 @@
 	\brief
 	This returns the local address of the connected stream.
  */
-@property (readonly, nonatomic) id localAddress;
-
-/*!
-	\brief
-	Depending on how the object was instantiated it may be a `CFNetServiceRef` or a `CFHostRef`
-	For a remote-initiated steam, it will always be a `CFHostRef`.
- */
-@property (readonly, nonatomic) CFTypeRef peer;
+@property (readonly, nonatomic) NSData *localAddress;
 
 /*!
 	\brief
 	This returns the remote address of the connected stream.
  */
-@property (readonly, nonatomic) id peerAddress;
+@property (readonly, nonatomic) NSData *peerAddress;
 
 @end

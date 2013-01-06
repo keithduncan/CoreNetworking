@@ -23,10 +23,10 @@
 
 /*!
 	\brief
-	An AFNetworkTransportLayer object should encapsulate data (as defined in IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122>
- 
+	An `AFNetworkTransportLayer` object should encapsulate data (as defined in IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122>
+	
 	\details
-	This implementation mandates that a layer pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a cluster-chain allowing for maximum flexiblity.
+	A layer should pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a two dimensional chain allowing for maximum flexiblity.
 */
 @protocol AFNetworkTransportLayer <NSObject>
 
@@ -82,8 +82,8 @@
 
 /*!
 	\brief
-	|buffer| should be an NSData to write over the file descriptor
-	This method should accept a AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
+	`buffer` is an NSData to write over the file descriptor
+	This method should accept a `AFPacket` subclass too, the tag and timeout of the packet will be set with the values you provide.
  */
 - (void)performWrite:(id)buffer withTimeout:(NSTimeInterval)duration context:(void *)context;
 
