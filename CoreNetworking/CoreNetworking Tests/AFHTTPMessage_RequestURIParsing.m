@@ -12,8 +12,7 @@
 
 @implementation AFHTTPMessage_RequestURIParsing
 
-- (void)testAbsoluteURIRequest
-{
+- (void)testAbsoluteURIRequest {
 	NSData *requestData = [@"GET http://example.com/ HTTP/1.1\r\n\r\n" dataUsingEncoding:NSASCIIStringEncoding];
 	NSInputStream *requestStream = [NSInputStream inputStreamWithData:requestData];
 	
