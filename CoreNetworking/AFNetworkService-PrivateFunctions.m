@@ -29,10 +29,6 @@ DNSServiceErrorType _AFNetworkServiceScopeFullname(AFNetworkServiceScope *scope,
 	return kDNSServiceErr_NoError;
 }
 
-/*
- 
- */
-
 BOOL _AFNetworkServiceCheckAndForwardError(id self, id delegate, SEL delegateSelector, int32_t errorCode) {
 	if (errorCode == kDNSServiceErr_NoError) {
 		return YES;
@@ -51,10 +47,6 @@ BOOL _AFNetworkServiceCheckAndForwardError(id self, id delegate, SEL delegateSel
 	return NO;
 }
 
-/*
- 
- */
-
 AFNetworkServiceSource *_AFNetworkServiceSourceForSchedule(DNSServiceRef service, AFNetworkSchedule *schedule) {
 	NSCParameterAssert(service != NULL);
 	NSCParameterAssert(schedule != nil);
@@ -70,4 +62,76 @@ AFNetworkServiceSource *_AFNetworkServiceSourceForSchedule(DNSServiceRef service
 	}
 	
 	return newServiceSource;
+}
+
+AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_t rdlen, uint8_t const *rdata) {
+	NSMutableArray *labels = [NSMutableArray arrayWithCapacity:3];
+	
+	uint16_t cumulativeLength = 0;
+	while (cumulativeLength < rdlen) {
+		uint8_t const *lengthByteRef = (rdata + cumulativeLength);
+		cumulativeLength++;
+		
+		uint8_t labelLength = *lengthByteRef;
+		if (labelLength == 0) {
+			continue;
+		}
+		
+		/*
+			Note
+			
+			top two bits are rdata extensions this function cannot support
+			
+			0b11xxxxxx is an offset inside the DNS response packet to anothe label to save duplicating it
+			0b01xxxxxx is an undefined extension
+			0b10xxxxxx is an undefined extension
+			
+			therefore the maximum label size value is (2^6)-1 == 63
+		 */
+		uint8_t maximumLabelLength = 63;
+		if (labelLength > maximumLabelLength) {
+			return nil;
+		}
+		
+		if ((cumulativeLength + labelLength) > rdlen) {
+			return nil;
+		}
+		
+		uint8_t const *labelBytes = (rdata + cumulativeLength);
+		cumulativeLength += labelLength;
+		
+		NSString *currentLabel = [[[NSString alloc] initWithBytes:labelBytes length:labelLength encoding:NSUTF8StringEncoding] autorelease];
+		if (currentLabel == nil) {
+			return nil;
+		}
+		
+		[labels addObject:currentLabel];
+	}
+	
+	/*
+		Note:
+		
+		the first two labels are taken as the type
+		
+		anything after them is taken as the domain
+		
+		we must have at least three labels
+	 */
+	if ([labels count] < 3) {
+		return nil;
+	}
+	
+	NSArray *typeLabels = [labels subarrayWithRange:NSMakeRange(0, 2)];
+	NSString *type = [typeLabels componentsJoinedByString:@"."];
+	if (![type hasSuffix:@"."]) {
+		type = [type stringByAppendingString:@"."];
+	}
+	
+	NSArray *domainLabels = [labels subarrayWithRange:NSMakeRange([typeLabels count], [labels count] - [typeLabels count])];
+	NSString *domain = [domainLabels componentsJoinedByString:@"."];
+	if (![domain hasSuffix:@"."]) {
+		domain = [domain stringByAppendingString:@"."];
+	}
+	
+	return [[[AFNetworkServiceScope alloc] initWithDomain:domain type:type name:nil] autorelease];
 }

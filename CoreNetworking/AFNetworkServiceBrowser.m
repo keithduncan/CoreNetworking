@@ -158,52 +158,6 @@ static void _AFNetworkServiceBrowserEnumerateDomainsCallback(DNSServiceRef sdRef
 	}
 }
 
-static AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_t rdlen, uint8_t const *rdata) {
-	NSMutableArray *labels = [NSMutableArray arrayWithCapacity:3];
-	
-	uint16_t cumulativeLength = 0;
-	do {
-		NSString *currentLabel = [NSMakeCollectable(CFStringCreateWithPascalString(kCFAllocatorDefault, (ConstStr255Param)(rdata + cumulativeLength), kCFStringEncodingUTF8)) autorelease];
-		if ([currentLabel lengthOfBytesUsingEncoding:NSUTF8StringEncoding] > (kDNSServiceMaxServiceName - 1)) {
-			return nil;
-		}
-		
-		cumulativeLength += ([currentLabel lengthOfBytesUsingEncoding:NSUTF8StringEncoding] + 1);
-		
-		if ([currentLabel isEqualToString:@""]) {
-			continue;
-		}
-		[labels addObject:currentLabel];
-	} while (cumulativeLength < rdlen);
-	
-	/*
-		Note:
-		
-		the first two labels are taken as the type
-		
-		anything after them is taken as the domain
-		
-		we must have at least three labels
-	 */
-	if ([labels count] < 3) {
-		return nil;
-	}
-	
-	NSArray *typeLabels = [labels subarrayWithRange:NSMakeRange(0, 2)];
-	NSString *type = [typeLabels componentsJoinedByString:@"."];
-	if (![type hasSuffix:@"."]) {
-		type = [type stringByAppendingString:@"."];
-	}
-	
-	NSArray *domainLabels = [labels subarrayWithRange:NSMakeRange([typeLabels count], [labels count] - [typeLabels count])];
-	NSString *domain = [domainLabels componentsJoinedByString:@"."];
-	if (![domain hasSuffix:@"."]) {
-		domain = [domain stringByAppendingString:@"."];
-	}
-	
-	return [[[AFNetworkServiceScope alloc] initWithDomain:domain type:type name:nil] autorelease];
-}
-
 static void _AFNetworkServiceBrowserEnumerateTypesCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *fullname, uint16_t rrtype, uint16_t rrclass, uint16_t rdlen, void const *rdata, uint32_t ttl, void *context) {
 	AFNetworkServiceBrowser *self = [[(id)context retain] autorelease];
 	

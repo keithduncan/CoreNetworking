@@ -16,15 +16,11 @@
 @class AFNetworkServiceSource;
 @class AFNetworkSchedule;
 
-/*
- 
+/*!
+	\brief
+	
  */
-
 AFNETWORK_EXTERN DNSServiceErrorType _AFNetworkServiceScopeFullname(AFNetworkServiceScope *scope, NSString **fullnameRef);
-
-/*
- 
- */
 
 /*
 	\brief
@@ -40,3 +36,9 @@ AFNETWORK_EXTERN BOOL _AFNetworkServiceCheckAndForwardError(id self, id delegate
 	
  */
 AFNETWORK_EXTERN AFNetworkServiceSource *_AFNetworkServiceSourceForSchedule(DNSServiceRef service, AFNetworkSchedule *schedule);
+
+/*!
+	\brief
+	
+ */
+AFNETWORK_EXTERN AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_t rdlen, uint8_t const *rdata);

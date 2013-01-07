@@ -115,3 +115,5 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 - (void)invalidate;
 
 @end
+
+extern AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_t rdlen, uint8_t const *rdata);

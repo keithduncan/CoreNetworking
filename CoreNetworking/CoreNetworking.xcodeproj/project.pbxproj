@@ -114,6 +114,7 @@
 		538AA1C81446D9C2003EEEE4 /* AFNetworkService-Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 538AA1C51446D9C2003EEEE4 /* AFNetworkService-Constants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		538AA1C91446D9C2003EEEE4 /* AFNetworkService-Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 538AA1C61446D9C2003EEEE4 /* AFNetworkService-Constants.m */; };
 		538AA1CA1446D9C2003EEEE4 /* AFNetworkService-Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 538AA1C61446D9C2003EEEE4 /* AFNetworkService-Constants.m */; };
+		538DEA77169B7F2900AA0663 /* AFNetworkService_DNSLabelBufferOverflow.m in Sources */ = {isa = PBXBuildFile; fileRef = 538DEA76169B7F2900AA0663 /* AFNetworkService_DNSLabelBufferOverflow.m */; };
 		538EC15C115D6E5A00A8E8F9 /* AFNetworkFormDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 538EC15A115D6E5A00A8E8F9 /* AFNetworkFormDocument.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		538EC15D115D6E5A00A8E8F9 /* AFNetworkFormDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 538EC15B115D6E5A00A8E8F9 /* AFNetworkFormDocument.m */; };
 		538EC15E115D6E5A00A8E8F9 /* AFNetworkFormDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 538EC15A115D6E5A00A8E8F9 /* AFNetworkFormDocument.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -277,6 +278,8 @@
 		538307B0101384DF000DA939 /* AFHTTPMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPMessage.m; sourceTree = "<group>"; };
 		538AA1C51446D9C2003EEEE4 /* AFNetworkService-Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFNetworkService-Constants.h"; sourceTree = "<group>"; };
 		538AA1C61446D9C2003EEEE4 /* AFNetworkService-Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFNetworkService-Constants.m"; sourceTree = "<group>"; };
+		538DEA75169B7F2900AA0663 /* AFNetworkService_DNSLabelBufferOverflow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkService_DNSLabelBufferOverflow.h; sourceTree = "<group>"; };
+		538DEA76169B7F2900AA0663 /* AFNetworkService_DNSLabelBufferOverflow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkService_DNSLabelBufferOverflow.m; sourceTree = "<group>"; };
 		538EC15A115D6E5A00A8E8F9 /* AFNetworkFormDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkFormDocument.h; sourceTree = "<group>"; };
 		538EC15B115D6E5A00A8E8F9 /* AFNetworkFormDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkFormDocument.m; sourceTree = "<group>"; };
 		53A028E40F6E8F41004F5414 /* AFNetwork-Types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFNetwork-Types.h"; sourceTree = "<group>"; };
@@ -622,6 +625,8 @@
 				536CB8081624C30900BFD08D /* AFHTTPMessage_ContentTypeParsing.m */,
 				53ADCA52168FADC800C18C81 /* AFHTTPMessage_RequestURIParsing.h */,
 				53ADCA53168FADC800C18C81 /* AFHTTPMessage_RequestURIParsing.m */,
+				538DEA75169B7F2900AA0663 /* AFNetworkService_DNSLabelBufferOverflow.h */,
+				538DEA76169B7F2900AA0663 /* AFNetworkService_DNSLabelBufferOverflow.m */,
 				53D4568B16209630006FAD65 /* Supporting Files */,
 			);
 			name = Tests;
@@ -991,6 +996,7 @@
 				53D4569A1620967D006FAD65 /* AFHTTPMessage_AcceptParsing.m in Sources */,
 				536CB8091624C30900BFD08D /* AFHTTPMessage_ContentTypeParsing.m in Sources */,
 				53ADCA54168FADC800C18C81 /* AFHTTPMessage_RequestURIParsing.m in Sources */,
+				538DEA77169B7F2900AA0663 /* AFNetworkService_DNSLabelBufferOverflow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
