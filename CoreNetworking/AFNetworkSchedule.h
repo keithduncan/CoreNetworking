@@ -15,7 +15,7 @@
 	Schedule environment for run loop and dispatch
  */
 @interface AFNetworkSchedule : NSObject {
- @package
+ @public
 	NSRunLoop *_runLoop;
 	NSString *_runLoopMode;
 	
