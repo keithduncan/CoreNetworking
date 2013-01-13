@@ -265,16 +265,25 @@
 		return nil;
 	}
 	
-	[self _scheduleLayer:newSocket];
-	
-	BOOL open = [newSocket open:errorRef];
-	if (!open) {
+	BOOL addListen = [self addListenSocket:newSocket error:errorRef];
+	if (!addListen) {
 		return nil;
 	}
 	
-	[self.listeners addObject:newSocket];
-	
 	return newSocket;
+}
+
+- (BOOL)addListenSocket:(AFNetworkSocket *)socket error:(NSError **)errorRef {
+	[self _scheduleLayer:socket];
+	
+	BOOL open = [socket open:errorRef];
+	if (!open) {
+		return NO;
+	}
+	
+	[self.listeners addObject:socket];
+	
+	return YES;
 }
 
 - (void)closeListenSockets {

@@ -156,7 +156,7 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 	This method makes no provisions for deleting an existing socket should it exist, and will fail if one does.
 	
 	\param location
-	Only file:// URLs are supported, an exception is thrown if you provide another scheme.
+	Only file scheme URLs are supported, an exception is thrown if you provide another scheme.
 	
 	\return
 	NO if the socket couldn't be created
@@ -175,6 +175,12 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 	This method is rarely applicable to higher-level servers, sockets are opened on the lowest layer of the stack.
  */
 - (AFNetworkSocket *)openSocketWithSignature:(const AFNetworkSocketSignature)signature address:(NSData *)address error:(NSError **)errorRef;
+
+/*!
+	\brief
+	
+ */
+- (BOOL)addListenSocket:(AFNetworkSocket *)socket error:(NSError **)errorRef;
 
 /*
  
