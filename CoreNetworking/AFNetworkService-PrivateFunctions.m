@@ -80,9 +80,9 @@ AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_t rdlen
 		/*
 			Note
 			
-			top two bits are rdata extensions this function cannot support
+			top two bits are rdata extensions this function cannot support because we don't have the full response packet to calculate offsets from
 			
-			0b11xxxxxx is an offset inside the DNS response packet to anothe label to save duplicating it
+			0b11xxxxxx is an offset inside the DNS response packet to another label to save duplicating it
 			0b01xxxxxx is an undefined extension
 			0b10xxxxxx is an undefined extension
 			
