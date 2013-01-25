@@ -42,4 +42,19 @@
 	return ((_runLoop != NULL) || (_dispatchQueue != NULL));
 }
 
+- (void)_performBlock:(void (^)(void))block
+{
+	if (_runLoop != nil) {
+		CFRunLoopRef runLoop = [_runLoop getCFRunLoop];
+		CFRunLoopPerformBlock(runLoop, (CFTypeRef)_runLoopMode, block);
+		CFRunLoopWakeUp(runLoop);
+	}
+	else if (_dispatchQueue != NULL) {
+		dispatch_async(_dispatchQueue, block);
+	}
+	else {
+		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unknown schedule environment" userInfo:nil];
+	}
+}
+
 @end
