@@ -112,10 +112,30 @@
 	Socket Opening
  */
 
+/*!
+	\brief
+	LocalOnly sockets can only be used from the local host
+	Global sockets MAY be globally accessible, and MUST be treated as globally accessible from a security perspective
+	
+	Global scope socket addresses are IP wildcard and are capable of receiving data from any host.
+	A number of factors will contribute to whether Global scope sockets are actually globally accessible.
+	
+	- Your host may have an interface with a globally routable address
+	- - Though a firewall may drop packets addressed to your port
+	- You might have a non globally routable address, such as an address in the private use ranges
+	- - But there may be a statically configured NAT port mapping
+	- - There may be a dynamically configured NAT port mapping
+	- - - An attacker may maliciously create a NAT port mapping
+	- - You may have received an address from a DHCP server, the previous owner of which may have constructed a dynamic port mapping
+	
+	Also consider that your host may be on a network with IPv4 NAT, but globally routable IPv6, sockets are opened for all address families to be IP protocol agnostic.
+	Remember that NAT is not a firewall, if you don't want to receive data from hosts other than the local host, don't use Global scope.
+ */
 typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 	AFNetworkInternetSocketScopeLocalOnly,
 	AFNetworkInternetSocketScopeGlobal,
 };
+
 /*!
 	\brief
 	Provides a socket address construction API and calls -openInternetSocketsWithSocketSignature:socketAddresses:errorHandler:, see its documentation for more information.
@@ -127,11 +147,11 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 	\param port
 	Transport layer port, can pass 0 to have an address chosen by the system
  */
-- (BOOL)openInternetSocketsWithSocketSignature:(const AFNetworkSocketSignature)socketSignature scope:(AFNetworkInternetSocketScope)scope port:(uint16_t)port errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler;
+- (BOOL)openInternetSocketsWithSocketSignature:(AFNetworkSocketSignature const)socketSignature scope:(AFNetworkInternetSocketScope)scope port:(uint16_t)port errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler;
 
 /*!
 	\brief
-	This method is for opening IP address family sockets scoped to an address list.
+	Open IP address family sockets scoped to an address list.
 	
 	\details
 	There is intentionally no port parameter, you must provide fully populated socket addresses.
@@ -146,14 +166,26 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 	\return
 	NO if any of the sockets couldn't be created (in which case this method is idempotent), YES if all sockets were successfully created
  */
-- (BOOL)openInternetSocketsWithSocketSignature:(const AFNetworkSocketSignature)socketSignature socketAddresses:(NSSet *)socketAddresses errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler;
+- (BOOL)openInternetSocketsWithSocketSignature:(AFNetworkSocketSignature const)socketSignature socketAddresses:(NSSet *)socketAddresses errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler;
 
 /*!
 	\brief
-	This method opens a UNIX socket at the specified path.
+	Open an IPv4 address socket and enable NAT-PMP or UPnP for the socket.
 	
 	\details
-	This method makes no provisions for deleting an existing socket should it exist, and will fail if one does.
+	Data received on this socket will have their `localAddress` faked to return the external interface's address
+	When returning providing the address to other network peers, or creating out-of-band channels, they should use this re-written `localAddress`
+	
+	External sockets require the host to be able to bind a wildcard IPv4 address.
+ */
+- (BOOL)openExternalSocketWithSocketSignature:(AFNetworkSocketSignature const)socketSignature port:(uint16_t)port error:(NSError **)errorRef;
+
+/*!
+	\brief
+	Opens a UNIX socket at the specified path.
+	
+	\details
+	Makes no provisions for deleting an existing socket in the file system should it exist, and will fail if one does.
 	
 	\param location
 	Only file scheme URLs are supported, an exception is thrown if you provide another scheme.
@@ -172,9 +204,9 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 	This is a funnel method, all the socket opening methods call this one.
 	
 	\details
-	This method is rarely applicable to higher-level servers, sockets are opened on the lowest layer of the stack.
+	Rarely applicable to higher-level servers, sockets are opened on the lowest layer of the stack.
  */
-- (AFNetworkSocket *)openSocketWithSignature:(const AFNetworkSocketSignature)signature address:(NSData *)address error:(NSError **)errorRef;
+- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address error:(NSError **)errorRef;
 
 /*!
 	\brief
