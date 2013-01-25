@@ -27,7 +27,7 @@
 
 /*!
 	\brief
-	This method retains the request and creates an empty response.
+	Retains the request and creates an empty response.
 	A NULL request, will result in an empty request being allocated.
  */
 - (id)initWithRequestPackets:(NSArray *)requestPackets responsePackets:(NSArray *)responsePackets context:(void *)context;

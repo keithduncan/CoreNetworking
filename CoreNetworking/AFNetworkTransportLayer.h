@@ -47,7 +47,7 @@
 
 /*!
 	\brief
-	This method is useful for accessing lower level properties.
+	Retrieve the lower layer.
  */
 - (id <AFNetworkTransportLayer>)lowerLayer;
 
@@ -82,15 +82,15 @@
 
 /*!
 	\brief
-	`buffer` is an NSData to write over the file descriptor
-	This method should accept a `AFPacket` subclass too, the tag and timeout of the packet will be set with the values you provide.
+	`buffer` is an `NSData` object to write over the file descriptor
+	Accepts an `AFNetworkPacket` subclass too, the tag and timeout of the packet will be set with the values you provide.
  */
 - (void)performWrite:(id)buffer withTimeout:(NSTimeInterval)duration context:(void *)context;
 
 /*!
 	\param terminator
-	Provide a pattern to match for the delegate to be called. This can be an NSNumber for length or an NSData for bit pattern.
-	This method should also accept an AFPacket subclass, the tag and timeout of the packet will be set with the values you provide.
+	Provide a pattern to match for the delegate to be called. This can be an `NSNumber` object for length or an `NSData` object for bit pattern.
+	Accepts an `AFNetworkPacket` subclass too, the tag and timeout of the packet will be set with the values you provide.
  */
 - (void)performRead:(id)terminator withTimeout:(NSTimeInterval)duration context:(void *)context;
 

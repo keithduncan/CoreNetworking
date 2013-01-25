@@ -22,7 +22,7 @@
 	\brief
 	This function returns the expected body length of the provided CFHTTPMessageRef.
  
-	This method uses the "Content-Length" header of the response to determine how much more a client should read to complete the packet.
+	Uses the "Content-Length" header of the response to determine how much more a client should read to complete the packet.
 	If CFHTTPMessageIsHeaderComplete(self.response) returns false, this method returns -1.
  */
 AFNETWORK_EXTERN NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message);

@@ -22,7 +22,7 @@
 
 /*!
 	\brief
-	Accommodates for the packet shifted into the |currentPacket| position too.
+	Accommodates for the packet shifted into the `currentPacket` position too.
  */
 - (NSUInteger)count;
 
@@ -41,7 +41,7 @@
 /*!
 	\brief
 	Call this method to shift a packet out of the queue into the currentPacket position.
-	If the queue is empty, or there is already a |currentPacket| this method returns false. 
+	If the queue is empty, or there is already a `currentPacket` this method returns false. 
 	
 	\return
 	(self.currentPacket != nil)
@@ -50,13 +50,13 @@
 
 /*!
 	\brief
-	This method should be called once you have processed the |currentPacket| to allow another to be shifted into the |currentPacket| position.
+	Should be called once you have processed the `currentPacket` to allow another to be shifted into the `currentPacket` position.
  */
 - (void)dequeued;
 
 /*!
 	\brief
-	The method first removes all queued packets, then calls `-dequeuePacket`. This ensures that when terminating, you can flush the queue, without starting a new packet.
+	First removes all queued packets, then calls `-dequeuePacket`. This ensures that when terminating, you can flush the queue, without starting a new packet.
  */
 - (void)emptyQueue;
 

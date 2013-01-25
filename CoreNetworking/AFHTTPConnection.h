@@ -91,7 +91,7 @@
 
 /*!
 	\brief
-	This method allows for raw HTTP messaging without starting the internal request/response matching.
+	Allows for raw HTTP messaging without starting the internal request/response matching.
  */
 - (void)performRequestMessage:(CFHTTPMessageRef)message;
 

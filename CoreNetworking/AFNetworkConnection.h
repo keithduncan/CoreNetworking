@@ -81,7 +81,7 @@
 
 /*!
 	\brief
-	This method returns nil for an inbound connection.
+	Returns nil for an inbound connection.
 	Otherwise, this method returns the CFHostRef hostname, or the CFNetServiceRef fullname.
  */
 @property (readonly, nonatomic) NSURL *peer;

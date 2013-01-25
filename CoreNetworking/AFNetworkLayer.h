@@ -34,7 +34,7 @@
 
 /*!
 	\brief
-	This method chains the layer classes.
+	Chains the layer classes.
  */
 + (Class)lowerLayerClass;
 
