@@ -19,6 +19,7 @@
 #import "CoreNetworking/AFNetworkSocket.h"
 #import "CoreNetworking/AFNetworkTransport.h"
 #import "CoreNetworking/AFNetworkStreamQueue.h"
+#import "CoreNetworking/AFNetworkStream.h"
 #import "CoreNetworking/AFNetworkConnection.h"
 
 #import "CoreNetworking/AFNetworkPacketQueue.h"
