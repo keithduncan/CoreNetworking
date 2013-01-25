@@ -58,7 +58,7 @@ bool af_sockaddr_compare(struct sockaddr_storage const *addr_a, struct sockaddr_
 		
 		memcpy(&(addr_a4->sin_addr.s_addr), &(addr_a6->sin6_addr.s6_addr[12]), sizeof(struct in_addr));
 		addr_a4->sin_port = addr_a6->sin6_port;
-		addr_a = (const struct sockaddr_storage *)addr_a4;
+		addr_a = (struct sockaddr_storage const *)addr_a4;
 	}
 	if (af_sockaddr_is_ipv4_mapped(addr_b)) {
 		struct sockaddr_in6 const *addr_b6 = (struct sockaddr_in6 const *)addr_b;
