@@ -184,22 +184,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 #if DEBUGFULL
 	int reuseAddress = 1;
 	__unused int reuseAddressError = setsockopt(socketNative, SOL_SOCKET, SO_REUSEADDR, &reuseAddress, sizeof(reuseAddress));
-	
-	do {
-		int socketType = 0;
-		socklen_t socketTypeSize = sizeof(socketType);
-		int socketTypeError = getsockopt(socketNative, SOL_SOCKET, SO_TYPE, &socketType, &socketTypeSize);
-		if (socketTypeError == -1) {
-			break;
-		}
-		
-		if (socketType != SOCK_DGRAM) {
-			break;
-		}
-		
-		int reusePort = 1;
-		__unused int reusePortError = setsockopt(socketNative, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort));
-	} while (0);
 #endif /* DEBUGFULL */
 }
 
