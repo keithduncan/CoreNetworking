@@ -196,9 +196,6 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 		if (socketType != SOCK_DGRAM) {
 			break;
 		}
-		
-		int reusePort = 1;
-		__unused int reusePortError = setsockopt(socketNative, SOL_SOCKET, SO_REUSEPORT, &reusePort, sizeof(reusePort));
 	} while (0);
 #endif /* DEBUGFULL */
 }
