@@ -9,6 +9,7 @@
 #import "AFNetworkServiceSource.h"
 
 #import "AFNetworkSchedule.h"
+#import "AFNetworkSchedule+AFNetworkPrivate.h"
 
 @interface AFNetworkServiceSource ()
 @property (retain, nonatomic) AFNetworkSchedule *schedule;
@@ -18,40 +19,6 @@
 
 @synthesize service=_service;
 @synthesize schedule=_schedule;
-
-static void _AFNetworkServiceRunLoopSourceEnableCallbacks(CFFileDescriptorRef fileDescriptor) {
-	CFFileDescriptorEnableCallBacks(fileDescriptor, kCFFileDescriptorReadCallBack);
-}
-
-static void	_AFNetworkServiceRunLoopSource(CFFileDescriptorRef fileDescriptor, CFOptionFlags callBackTypes, void *info) {
-	if ((callBackTypes & kCFFileDescriptorReadCallBack) != kCFFileDescriptorReadCallBack) return;
-	
-	AFNetworkServiceSource *self = info;
-	
-	__unused DNSServiceErrorType error = DNSServiceProcessResult(self->_service);
-	
-	_AFNetworkServiceRunLoopSourceEnableCallbacks(fileDescriptor);
-}
-
-/*!
-	\brief
-	Create and schedule a dispatch source for the mDNSResponder socket held by the service argument.
-	
-	\param service
-	Must not be NULL
-	
-	\param queue
-	Must not be NULL
- */
-static dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service, dispatch_queue_t queue) {
-	dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, DNSServiceRefSockFD(service), 0, queue);
-	
-	dispatch_source_set_event_handler(source, ^ {
-		DNSServiceProcessResult(service);
-	});
-	
-	return source;
-}
 
 - (id)initWithService:(DNSServiceRef)service {
 	NSParameterAssert(service != NULL);
@@ -75,14 +42,8 @@ static dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service
 - (void)_cleanup {
 	[self invalidate];
 	
-	CFFileDescriptorRef *fileDescriptorRef = &_sources._runLoop._fileDescriptor;
-	if (*fileDescriptorRef != NULL) {
-		CFRelease(*fileDescriptorRef);
-		CFRelease(_sources._runLoop._source);
-	}
-	
-	if (_sources._dispatchSource != NULL) {
-		dispatch_release(_sources._dispatchSource);
+	if (_dispatchSource != NULL) {
+		dispatch_release(_dispatchSource);
 	}
 }
 
@@ -112,53 +73,27 @@ static dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service
 	
 	NSParameterAssert(![self isValid]);
 	
-	if (schedule->_runLoop != nil) {
-		NSRunLoop *runLoop = schedule->_runLoop;
-		
-		CFFileDescriptorContext context = {
-			.info = self,
-		};
-		CFFileDescriptorRef newFileDescriptor = (CFFileDescriptorRef)CFMakeCollectable(CFFileDescriptorCreate(kCFAllocatorDefault, DNSServiceRefSockFD(_service), false, _AFNetworkServiceRunLoopSource, &context));
-		_AFNetworkServiceRunLoopSourceEnableCallbacks(newFileDescriptor);
-		_sources._runLoop._fileDescriptor = newFileDescriptor;
-		
-		CFRunLoopSourceRef newSource = CFFileDescriptorCreateRunLoopSource(kCFAllocatorDefault, newFileDescriptor, 0);
-		_sources._runLoop._source = newSource;
-		
-		CFRunLoopAddSource([runLoop getCFRunLoop], newSource, (CFStringRef)schedule->_runLoopMode);
-	}
-	else if (schedule->_dispatchQueue != NULL) {
-		dispatch_queue_t dispatchQueue = schedule->_dispatchQueue;
-		
-		dispatch_source_t newSource = AFNetworkServiceCreateQueueSource(self.service, dispatchQueue);
-		_sources._dispatchSource = newSource;
-		
-		dispatch_resume(newSource);
-	}
-	else {
-		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment, cannot resume service source" userInfo:nil];
-	}
+	DNSServiceRef service = self.service;
+	dispatch_source_t newSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, DNSServiceRefSockFD(service), 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+	dispatch_source_set_event_handler(newSource, ^ {
+		[schedule _performBlock:^ {
+			DNSServiceProcessResult(service);
+		}];
+	});
+	_dispatchSource = newSource;
+	
+	dispatch_resume(newSource);
 }
 
 - (void)invalidate {
-	CFRunLoopSourceRef *sourceRef = &_sources._runLoop._source;
-	if (*sourceRef != NULL) {
-		CFRunLoopSourceInvalidate(*sourceRef);
-	}
-	
-	if (_sources._dispatchSource != NULL) {
-		dispatch_source_cancel(_sources._dispatchSource);
+	if (_dispatchSource != NULL) {
+		dispatch_source_cancel(_dispatchSource);
 	}
 }
 
 - (BOOL)isValid {
-	CFRunLoopSourceRef *sourceRef = &_sources._runLoop._source;
-	if (*sourceRef != NULL) {
-		return CFRunLoopSourceIsValid(*sourceRef);
-	}
-	
-	if (_sources._dispatchSource != NULL) {
-		return (dispatch_source_testcancel(_sources._dispatchSource) == 0);
+	if (_dispatchSource != NULL) {
+		return (dispatch_source_testcancel(_dispatchSource) == 0);
 	}
 	
 	return NO;

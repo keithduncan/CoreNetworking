@@ -26,13 +26,7 @@
 	DNSServiceRef _service;
 	
 	AFNetworkSchedule *_schedule;
-	struct {
-		struct {
-			AFNETWORK_STRONG CFFileDescriptorRef _fileDescriptor;
-			AFNETWORK_STRONG CFRunLoopSourceRef _source;
-		} _runLoop;
-		void *_dispatchSource;
-	} _sources;
+	void *_dispatchSource;
 }
 
 /*!

@@ -55,13 +55,7 @@
 	NSUInteger _socketFlags;
 	
 	AFNetworkSchedule *_schedule;
-	struct {
-		struct {
-			AFNETWORK_STRONG CFTypeRef _fileDescriptor;
-			AFNETWORK_STRONG CFTypeRef _source;
-		} _runLoop;
-		void *_dispatchSource;
-	} _sources;
+	void *_dispatchSource;
 }
 
 /*!

@@ -14,6 +14,7 @@
 #import <objc/runtime.h>
 
 #import "AFNetworkSchedule.h"
+#import "AFNetworkSchedule+AFNetworkPrivate.h"
 
 #import "AFNetwork-Functions.h"
 #import "AFNetwork-Constants.h"
@@ -87,18 +88,15 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 	
 	[_schedule release];
 	
-	if (_sources._runLoop._fileDescriptor != NULL) {
-		CFRelease(_sources._runLoop._fileDescriptor);
-	}
-	if (_sources._runLoop._source != NULL) {
-		CFRelease(_sources._runLoop._source);
-	}
-	
-	if (_sources._dispatchSource != NULL) {
-		dispatch_release(_sources._dispatchSource);
+	if (_dispatchSource != NULL) {
+		dispatch_release(_dispatchSource);
 	}
 	
 	[super dealloc];
+}
+
+- (void)_messageDelegate:(void (^)(void))block {
+	[self.schedule _performBlock:block];
 }
 
 - (BOOL)_createSocketNativeIfNeeded:(NSError **)errorRef {
@@ -206,7 +204,9 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 		return NO;
 	}
 	
-	[self.delegate networkLayerDidOpen:self];
+	[self _messageDelegate:^ {
+		[self.delegate networkLayerDidOpen:self];
+	}];
 	
 	return YES;
 }
@@ -245,24 +245,12 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 	self.socketFlags = (self.socketFlags | _AFNetworkSocketFlagsDidClose);
 	
 	[self _invalidateSources];
-	[self _actuallyCloseIfNeeded];
 	
-	if ([self.delegate respondsToSelector:@selector(networkLayerDidClose:)]) {
-		[self.delegate networkLayerDidClose:self];
-	}
-}
-
-- (void)_actuallyCloseIfNeeded {
-	if (_sources._dispatchSource != NULL) {
-		// Note: dispatch sources are closed in the cancellation handler which run after any current activity
-		return;
-	}
-	
-	if (self.socketNative == -1) {
-		return;
-	}
-	
-	[self _actuallyClose];
+	[self _messageDelegate:^ {
+		if ([self.delegate respondsToSelector:@selector(networkLayerDidClose:)]) {
+			[self.delegate networkLayerDidClose:self];
+		}
+	}];
 }
 
 - (void)_actuallyClose {
@@ -360,45 +348,22 @@ static void _AFNetworkSocketFileDescriptorCallBack(CFFileDescriptorRef fileDescr
 	AFNetworkSchedule *schedule = self.schedule;
 	NSParameterAssert(schedule != nil);
 	
-	if (schedule->_runLoop != nil) {
-		NSRunLoop *runLoop = schedule->_runLoop;
-		
-		CFFileDescriptorContext context = {
-			.info = self,
-		};
-		CFFileDescriptorRef newFileDescriptor = CFFileDescriptorCreate(kCFAllocatorDefault, self.socketNative, false, _AFNetworkSocketFileDescriptorCallBack, &context);
-		_sources._runLoop._fileDescriptor = newFileDescriptor;
-		
-		CFRunLoopSourceRef newRunLoopSource = CFFileDescriptorCreateRunLoopSource(kCFAllocatorDefault, newFileDescriptor, 0);
-		_sources._runLoop._source = newRunLoopSource;
-		
-		CFRunLoopAddSource([runLoop getCFRunLoop], newRunLoopSource, (CFStringRef)schedule->_runLoopMode);
-		
-		_AFNetworkSocketFileDescriptorEnableCallbacks(newFileDescriptor);
-	}
-	else if (schedule->_dispatchQueue != NULL) {
-		dispatch_queue_t dispatchQueue = schedule->_dispatchQueue;
-		
-		CFSocketNativeHandle socketNative = self.socketNative;
-		
-		dispatch_source_t newSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, socketNative, 0, dispatchQueue);
-		dispatch_source_set_event_handler(newSource, ^ {
-			[self _readCallback];
-		});
-		dispatch_source_set_cancel_handler(newSource, ^ {
-			[self _actuallyClose];
-		});
-		_sources._dispatchSource = newSource;
-		
-		dispatch_resume(newSource);
-	}
-	else {
-		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment, cannot resume socket" userInfo:nil];
-	}
+	CFSocketNativeHandle socketNative = self.socketNative;
+	
+	dispatch_source_t newSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, socketNative, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+	dispatch_source_set_event_handler(newSource, ^ {
+		[self _readCallback];
+	});
+	dispatch_source_set_cancel_handler(newSource, ^ {
+		[self _actuallyClose];
+	});
+	_dispatchSource = newSource;
+	
+	dispatch_resume(newSource);
 }
 
 - (BOOL)_isValid {
-	return (_sources._runLoop._source != NULL || _sources._dispatchSource != NULL);
+	return (_dispatchSource != NULL);
 }
 
 - (void)_invalidateSources {
@@ -406,16 +371,8 @@ static void _AFNetworkSocketFileDescriptorCallBack(CFFileDescriptorRef fileDescr
 		return;
 	}
 	
-	if (_sources._runLoop._source != NULL) {
-		CFRunLoopSourceRef runLoopSource = (CFRunLoopSourceRef)_sources._runLoop._source;
-		CFRunLoopSourceInvalidate(runLoopSource);
-	}
-	else if (_sources._dispatchSource != NULL) {
-		dispatch_source_t dispatchSource = _sources._dispatchSource;
-		dispatch_source_cancel(dispatchSource);
-	}
-	else {
-		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment, cannot invalidate socket" userInfo:nil];
+	if (_dispatchSource != NULL) {
+		dispatch_source_cancel(_dispatchSource);
 	}
 }
 
@@ -472,7 +429,9 @@ TryAccept:;
 		return;
 	}
 	
-	[self.delegate networkLayer:self didReceiveConnectionFromSender:newSocket];
+	[self _messageDelegate:^ {
+		[self.delegate networkLayer:self didReceiveConnectionFromSender:newSocket];
+	}];
 }
 
 - (void)_dataCallback {
@@ -524,7 +483,9 @@ TryRecv:;
 	
 	AFNetworkSocket *newSocket = [self _socketForSocketNative:newSocketNative];
 	
-	[self.delegate networkLayer:self didReceiveMessage:data fromSender:newSocket];
+	[self _messageDelegate:^ {
+		[self.delegate networkLayer:self didReceiveMessage:data fromSender:newSocket];
+	}];
 }
 
 - (AFNetworkSocket *)_socketForSocketNative:(CFSocketNativeHandle)socketNative {
