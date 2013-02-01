@@ -27,9 +27,7 @@
 			CFFileDescriptorRef _fileDescriptor;
 			CFRunLoopSourceRef _source;
 		} _runLoop;
-		struct {
-			dispatch_source_t _source;
-		} _dispatch;
+		dispatch_source_t _dispatchSource;
 	} _sources;
 }
 
@@ -73,16 +71,18 @@ static void _AFNetworkStreamOpen(id stream) {
 }
 
 static void _AFNetworkStreamClose(_AFNetworkPrivateStream *stream) {
-	CFFileDescriptorRef *fileDescriptorRef = &stream->_sources._runLoop._fileDescriptor;
-	dispatch_source_t *sourceRef = &stream->_sources._dispatch._source;
+	CFFileDescriptorRef fileDescriptor = stream->_sources._runLoop._fileDescriptor;
+	if (fileDescriptor != NULL) {
+		CFFileDescriptorInvalidate(fileDescriptor);
+	}
 	
-	if (*fileDescriptorRef != NULL) {
-		CFFileDescriptorInvalidate(*fileDescriptorRef);
+	dispatch_source_t dispatchSource = stream->_sources._dispatchSource;
+	if (dispatchSource != NULL) {
+		dispatch_source_cancel(dispatchSource);
 	}
-	else if (*sourceRef != NULL) {
-		dispatch_source_cancel(*sourceRef);
-	}
-	else {
+	
+	
+	if (fileDescriptor == NULL && dispatchSource == NULL) {
 		close(stream.fileDescriptor);
 		stream.fileDescriptor = -1;
 	}
@@ -111,18 +111,19 @@ static void _AFNetworkStreamClose(_AFNetworkPrivateStream *stream) {
 	
 	[self close];
 	
-	CFFileDescriptorRef *fileDescriptorRef = &_sources._runLoop._fileDescriptor;
-	dispatch_source_t *sourceRef = &_sources._dispatch._source;
+	CFFileDescriptorRef fileDescriptor = _sources._runLoop._fileDescriptor;
+	if (fileDescriptor != NULL) {
+		CFRelease(fileDescriptor);
+	}
 	
-	if (*fileDescriptorRef != NULL) {
-		CFRelease(*fileDescriptorRef);
-		CFRelease(_sources._runLoop._source);
+	CFRunLoopSourceRef runLoopSource = _sources._runLoop._source;
+	if (runLoopSource != NULL) {
+		CFRelease(runLoopSource);
 	}
-	else if (*sourceRef != NULL) {
-		dispatch_release(*sourceRef);
-	}
-	else if (_fileDescriptor >= 0) {
-		close(_fileDescriptor);
+	
+	dispatch_source_t dispatchSource = _sources._dispatchSource;
+	if (dispatchSource != NULL) {
+		dispatch_release(dispatchSource);
 	}
 	
 	[super dealloc];
