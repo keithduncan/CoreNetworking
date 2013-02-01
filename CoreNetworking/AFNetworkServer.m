@@ -38,6 +38,7 @@
 - (AFNetworkLayer *)_encapsulateNetworkLayer:(AFNetworkLayer *)layer;
 - (void)_fullyEncapsulateLayer:(AFNetworkLayer *)layer;
 - (void)_scheduleLayer:(id)layer;
+- (void)_unscheduleLayer:(id)layer;
 @end
 
 @implementation AFNetworkServer
@@ -332,6 +333,7 @@
 
 - (void)closeListenSockets {
 	for (AFNetworkSocket *currentLayer in self.listeners) {
+		[self _unscheduleLayer:currentLayer];
 		[currentLayer close];
 	}
 	[self.listeners removeAllObjects];
@@ -341,6 +343,7 @@
 	[self closeListenSockets];
 	
 	for (AFNetworkLayer <AFNetworkTransportLayer> *currentLayer in self.connections) {
+		[self _unscheduleLayer:currentLayer];
 		[currentLayer close];
 	}
 	[self.connections removeAllObjects];
@@ -384,8 +387,8 @@
 	}
 }
 
-- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didReceiveError:(NSError *)error {
-	[(id)self.delegate networkLayer:layer didReceiveError:error];
+- (void)networkLayer:(id <AFNetworkConnectionLayer>)layer didReceiveError:(NSError *)error {
+	[layer close];
 }
 
 - (void)configureLayer:(id)layer {
@@ -466,6 +469,10 @@
 	}
 	
 	[layer setDelegate:self];
+}
+
+- (void)_unscheduleLayer:(id)layer {
+	[layer setDelegate:nil];
 }
 
 @end
