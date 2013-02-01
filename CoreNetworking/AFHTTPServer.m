@@ -16,8 +16,8 @@
 #import "AFHTTPMessageMediaType.h"
 #import "AFNetworkPacketClose.h"
 
-#define AF_ENABLE_REQUEST_LOGGING() (1 || [[[[NSProcessInfo processInfo] environment] objectForKey:@"com.thirty-three.corenetworking.http.server.log.requests"] isEqual:@"1"])
-#define AF_ENABLE_RESPONSE_LOGGING() (1 || [[[[NSProcessInfo processInfo] environment] objectForKey:@"com.thirty-three.corenetworking.http.server.log.responses"] isEqual:@"1"])
+#define AF_ENABLE_REQUEST_LOGGING() ([[[[NSProcessInfo processInfo] environment] objectForKey:@"com.thirty-three.corenetworking.http.server.log.requests"] isEqual:@"1"])
+#define AF_ENABLE_RESPONSE_LOGGING() ([[[[NSProcessInfo processInfo] environment] objectForKey:@"com.thirty-three.corenetworking.http.server.log.responses"] isEqual:@"1"])
 
 #define kCoreNetworkingHTTPServerVersion kCFHTTPVersion1_1
 
@@ -160,14 +160,6 @@
 		response = (CFHTTPMessageRef)[NSMakeCollectable(CFHTTPMessageCreateResponse(kCFAllocatorDefault, responseCode, AFHTTPStatusCodeGetDescription(responseCode), kCoreNetworkingHTTPServerVersion)) autorelease];
 		[self _returnResponse:response forRequest:request connection:connection permitKeepAlive:YES];
 	}
-}
-
-- (void)networkLayer:(id <AFNetworkConnectionLayer>)layer didReceiveError:(NSError *)error {
-	[layer close];
-}
-
-- (BOOL)networkTransportShouldRemainOpenPendingWrites:(AFNetworkTransport *)transport {
-	return YES;
 }
 
 @end
