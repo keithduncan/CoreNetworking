@@ -13,6 +13,16 @@
 - (NSInteger)_perform:(NSStream *)stream {
 	[stream close];
 	
+	/*
+		Note
+		
+		stream doesn't inform its delegate that it closed
+	 */
+	id <NSStreamDelegate> delegate = [stream delegate];
+	if ([delegate respondsToSelector:@selector(stream:handleEvent:)]) {
+		[delegate stream:stream handleEvent:NSStreamEventEndEncountered];
+	}
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkPacketDidCompleteNotificationName object:self];
 	
 	return 0;

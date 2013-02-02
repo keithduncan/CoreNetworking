@@ -94,7 +94,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	/* 
 		Note 
 		
-		ensure the sockets claim on the file descriptor is relinquished
+		ensure the socket's claim on the file descriptor is relinquished
 	 */
 	[networkSocket setDelegate:nil];
 	[networkSocket close];
@@ -102,6 +102,21 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	CFWriteStreamRef writeStream = NULL;
 	CFReadStreamRef readStream = NULL;
 	CFStreamCreatePairWithSocket(kCFAllocatorDefault, socketNative, &readStream, &writeStream);
+	
+	if (writeStream == NULL || readStream == NULL) {
+		close(socketNative);
+		
+		if (writeStream != NULL) {
+			CFRelease(writeStream);
+		}
+		
+		if (readStream != NULL) {
+			CFRelease(readStream);
+		}
+		
+		[self release];
+		return nil;
+	}
 	
 	CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
 	CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
@@ -127,6 +142,19 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	CFReadStreamRef readStream = NULL;
 	CFStreamCreatePairWithSocketToCFHost(kCFAllocatorDefault, *host, _signature._host.transport.port, &readStream, &writeStream);
 	
+	if (writeStream == NULL || readStream == NULL) {
+		if (writeStream != NULL) {
+			CFRelease(writeStream);
+		}
+		
+		if (readStream != NULL) {
+			CFRelease(readStream);
+		}
+		
+		[self release];
+		return nil;
+	}
+	
 	[self _configureWithWriteStream:(id)writeStream readStream:(id)readStream];
 	
 	CFRelease(writeStream);
@@ -145,6 +173,19 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	CFWriteStreamRef writeStream = NULL;
 	CFReadStreamRef readStream = NULL;
 	CFStreamCreatePairWithSocketToNetService(kCFAllocatorDefault, *service, &readStream, &writeStream);
+	
+	if (writeStream == NULL || readStream == NULL) {
+		if (writeStream != NULL) {
+			CFRelease(writeStream);
+		}
+		
+		if (readStream != NULL) {
+			CFRelease(readStream);
+		}
+		
+		[self release];
+		return nil;
+	}
 	
 	[self _configureWithWriteStream:(id)writeStream readStream:(id)readStream];
 	

@@ -75,10 +75,13 @@ static dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service
 - (void)_cleanup {
 	[self invalidate];
 	
-	CFFileDescriptorRef *fileDescriptorRef = &_sources._runLoop._fileDescriptor;
-	if (*fileDescriptorRef != NULL) {
-		CFRelease(*fileDescriptorRef);
-		CFRelease(_sources._runLoop._source);
+	CFFileDescriptorRef fileDescriptor = _sources._runLoop._fileDescriptor;
+	if (fileDescriptor != NULL) {
+		CFRelease(fileDescriptor);
+	}
+	CFRunLoopSourceRef runLoopSource = _sources._runLoop._source;
+	if (runLoopSource != NULL) {
+		CFRelease(runLoopSource);
 	}
 	
 	if (_sources._dispatchSource != NULL) {
@@ -141,9 +144,9 @@ static dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service
 }
 
 - (void)invalidate {
-	CFRunLoopSourceRef *sourceRef = &_sources._runLoop._source;
-	if (*sourceRef != NULL) {
-		CFRunLoopSourceInvalidate(*sourceRef);
+	CFRunLoopSourceRef runLoopSource = _sources._runLoop._source;
+	if (runLoopSource != NULL) {
+		CFRunLoopSourceInvalidate(runLoopSource);
 	}
 	
 	if (_sources._dispatchSource != NULL) {
@@ -152,9 +155,9 @@ static dispatch_source_t AFNetworkServiceCreateQueueSource(DNSServiceRef service
 }
 
 - (BOOL)isValid {
-	CFRunLoopSourceRef *sourceRef = &_sources._runLoop._source;
-	if (*sourceRef != NULL) {
-		return CFRunLoopSourceIsValid(*sourceRef);
+	CFRunLoopSourceRef runLoopSource = _sources._runLoop._source;
+	if (runLoopSource != NULL) {
+		return CFRunLoopSourceIsValid(runLoopSource);
 	}
 	
 	if (_sources._dispatchSource != NULL) {
