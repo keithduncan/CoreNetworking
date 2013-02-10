@@ -41,7 +41,7 @@
 	\brief
 	Instead of calling `-currentReadProgress...` on a timer - which would be highly inefficient - you should implement this delegate method to be notified of read progress.
  
-	\param total
+	\param totalBytesExpectedToRead
 	Will be `NSUIntegerMax` if the packet terminator is a data pattern.
  */
 - (void)networkTransport:(AFNetworkTransport *)transport didReadPartialDataOfLength:(NSInteger)partialBytes totalBytesRead:(NSInteger)totalBytesRead totalBytesExpectedToRead:(NSInteger)totalBytesExpectedToRead context:(void *)context;

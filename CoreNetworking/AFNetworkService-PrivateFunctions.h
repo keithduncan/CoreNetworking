@@ -18,7 +18,7 @@
 
 /*!
 	\brief
-	
+	Concatenate name, type and domain to form a full name
  */
 AFNETWORK_EXTERN DNSServiceErrorType _AFNetworkServiceScopeFullname(AFNetworkServiceScope *scope, NSString **fullnameRef);
 
@@ -33,12 +33,15 @@ AFNETWORK_EXTERN BOOL _AFNetworkServiceCheckAndForwardError(id self, id delegate
 
 /*!
 	\brief
-	
+	Create and schedule a source appropriate for the environment
  */
 AFNETWORK_EXTERN AFNetworkServiceSource *_AFNetworkServiceSourceForSchedule(DNSServiceRef service, AFNetworkSchedule *schedule);
 
 /*!
 	\brief
+	Parse length prefixed answer body into strings
 	
+	\return nil
+	If any of the length bytes point outside the answer body
  */
 AFNETWORK_EXTERN AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_t rdlen, uint8_t const *rdata);

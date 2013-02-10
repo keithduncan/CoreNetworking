@@ -135,7 +135,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 	
 	[self _configureSocketNativePreBind:newSocketNative];
 	
-	int bindError = bind(newSocketNative, (struct sockaddr const *)CFDataGetBytePtr(signature->address), CFDataGetLength(signature->address));
+	int bindError = bind(newSocketNative, (struct sockaddr const *)CFDataGetBytePtr(signature->address), (socklen_t)CFDataGetLength(signature->address));
 	if (bindError != 0) {
 		if (errorRef != NULL) {
 			int underlyingErrorCode = errno;

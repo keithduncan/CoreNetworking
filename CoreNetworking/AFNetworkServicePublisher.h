@@ -33,7 +33,7 @@
 
 /*!
 	\brief
-	
+	Publishes (DNS Update) an SRV record for a service and maintains the ephemeral records such as PTR, also allowing for additional records to be associated with the service name such as TXT and NULL records.
  */
 @interface AFNetworkServicePublisher : NSObject {
  @private
