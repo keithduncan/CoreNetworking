@@ -116,7 +116,7 @@ bool af_sockaddr_compare(struct sockaddr_storage const *addr_a, struct sockaddr_
 	return false;
 }
 
-int af_sockaddr_ntop(struct sockaddr_storage const *addr, char *destination, size_t destinationSize) {
+int af_sockaddr_ntop(struct sockaddr_storage const *addr, char *destination, socklen_t destinationSize) {
 	return getnameinfo((struct sockaddr const *)addr, addr->ss_len, destination, destinationSize, NULL, 0, NI_NUMERICHOST);
 }
 
@@ -159,7 +159,7 @@ NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress, NSError **
 	struct sockaddr_storage const *socketAddressBytes = (struct sockaddr_storage const *)[socketAddress bytes];
 	
 	char socketAddressPresentation[INET6_ADDRSTRLEN] = {};
-	size_t socketAddressPresentationLength = (sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation));
+	socklen_t socketAddressPresentationLength = (sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation));
 	
 	int ntopError = af_sockaddr_ntop(socketAddressBytes, socketAddressPresentation, socketAddressPresentationLength);
 	
@@ -252,7 +252,7 @@ NSError *AFNetworkStreamPrepareDisplayError(AFNetworkStreamQueue *stream, NSErro
 	NSString *streamRemoteHostname = [stream streamPropertyForKey:(id)kCFStreamPropertySocketRemoteHostName];
 	
 	if ([[error domain] isEqualToString:(id)kCFErrorDomainCFNetwork] && [error code] == kCFHostErrorUnknown) {
-		int getaddrinfoError = [[[error userInfo] objectForKey:(id)kCFGetAddrInfoFailureKey] integerValue];
+		int getaddrinfoError = [[[error userInfo] objectForKey:(id)kCFGetAddrInfoFailureKey] intValue];
 		
 		NSError *underlyingError = nil;
 		BOOL checkGetaddrinfoError = _AFNetworkSocketCheckGetAddressInfoError(getaddrinfoError, &underlyingError);

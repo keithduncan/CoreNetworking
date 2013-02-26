@@ -114,15 +114,15 @@ NSHTTPURLResponse *AFHTTPURLResponseForHTTPMessage(NSURL *URL, CFHTTPMessageRef 
 	return [[[_AFHTTPURLResponse alloc] initWithURL:URL message:message] autorelease];
 }
 
-void _AFHTTPPrintMessage(CFHTTPMessageRef message) {
+static void _AFHTTPPrintMessage(CFHTTPMessageRef message) {
 	printf("%s", [[[[NSString alloc] initWithData:[NSMakeCollectable(CFHTTPMessageCopySerializedMessage(message)) autorelease] encoding:NSMacOSRomanStringEncoding] autorelease] UTF8String]);
 }
 
-void _AFHTTPPrintRequest(NSURLRequest *request) {
+static __attribute__((used)) void _AFHTTPPrintRequest(NSURLRequest *request) {
 	_AFHTTPPrintMessage((CFHTTPMessageRef)[NSMakeCollectable(AFHTTPMessageCreateForRequest((id)request)) autorelease]);
 }
 
-void _AFHTTPPrintResponse(NSURLResponse *response) {
+static __attribute__((used)) void _AFHTTPPrintResponse(NSURLResponse *response) {
 	_AFHTTPPrintMessage((CFHTTPMessageRef)[NSMakeCollectable(AFHTTPMessageCreateForResponse((id)response)) autorelease]);
 }
 

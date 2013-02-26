@@ -210,7 +210,7 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 
 /*!
 	\brief
-	
+	Called by `-openSocketWithSignature:address:error:` can be used to add externally configured listen sockets such as those inherited from launchd
  */
 - (BOOL)addListenSocket:(AFNetworkSocket *)socket error:(NSError **)errorRef;
 

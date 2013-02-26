@@ -33,7 +33,7 @@
 
 /*!
 	\brief
-	Can resolve address records and monitor ephemeral record types such as TXT or NULL records.
+	Can resolve (query) and monitor (long lived query) address records (A and AAAA) and ephemeral records such as TXT or NULL records, associated with an SRV record.
  */
 @interface AFNetworkServiceResolver : NSObject {
  @private

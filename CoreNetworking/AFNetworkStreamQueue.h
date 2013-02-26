@@ -60,7 +60,7 @@
 
 /*!
 	\brief
-	
+	Asynchronously read / write data from / to an NSStream
  */
 @interface AFNetworkStreamQueue : NSObject {
  @private

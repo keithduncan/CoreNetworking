@@ -287,7 +287,7 @@
 	
 	CFRetain(address);
 	
-	unsigned long protocolFamily = ((struct sockaddr_storage const *)[address bytes])->ss_family;
+	sa_family_t protocolFamily = ((struct sockaddr_storage const *)[address bytes])->ss_family;
 	
 	CFSocketSignature socketSignature = {
 		.protocolFamily = protocolFamily,

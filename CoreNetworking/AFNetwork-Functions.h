@@ -49,7 +49,7 @@ AFNETWORK_EXTERN bool af_sockaddr_compare(struct sockaddr_storage const *addr_a,
 	\brief
 	Convert network form into presentation form.
  */
-AFNETWORK_EXTERN int af_sockaddr_ntop(struct sockaddr_storage const *addr, char *destination, size_t destinationSize);
+AFNETWORK_EXTERN int af_sockaddr_ntop(struct sockaddr_storage const *addr, char *destination, socklen_t destinationSize);
 
 /*!
 	\brief
