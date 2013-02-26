@@ -476,4 +476,8 @@
 	[layer setDelegate:nil];
 }
 
+- (void)_unscheduleLayer:(id)layer {
+	[layer setDelegate:nil];
+}
+
 @end
