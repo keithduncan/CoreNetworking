@@ -392,7 +392,7 @@
 }
 
 - (void)configureLayer:(id)layer {
-	
+	[self _scheduleLayer:layer];
 }
 
 @end

@@ -136,6 +136,26 @@ int af_sockaddr_pton(char const *presentation, struct sockaddr_storage *storage)
 	return 0;
 }
 
+int af_bind(int fileDescriptor, struct sockaddr_storage const *address, socklen_t addressLength) {
+	if (address->ss_family == AF_INET6) {
+		/*
+			Note
+			
+			we use getaddrinfo to be address family agnostic
+			
+			however when binding a socket to the wildcard IPv6 address "::" by default OS X also listens on the wildcard IPv4 address "0.0.0.0"
+			
+			a subsequent socket binding to the wildcard IPv4 address will fail with EADDRINUSE even though we didn't actually bind that address in userspace
+			
+			this prevents that behaviour, at the cost of hardcoding per-protocol knowledge into otherwise protocol agnostic code
+		 */
+		int ipv6Only = 1;
+		__unused int ipv6OnlyError = setsockopt(fileDescriptor, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
+	}
+	
+	return bind(fileDescriptor, (struct sockaddr const*)address, addressLength);
+}
+
 #pragma mark -
 
 static BOOL _AFNetworkSocketCheckGetAddressInfoError(int result, NSError **errorRef) {

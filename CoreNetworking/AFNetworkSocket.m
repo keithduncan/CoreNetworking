@@ -26,6 +26,11 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 	_AFNetworkSocketFlagsListen		= 1UL << 2, // listen() succeeded
 };
 
+struct _AFNetworkSocket_CompileTimeAssertion {
+	char assert0[(AF_INET == PF_INET) ? 1 : -1];
+	char assert1[(AF_INET6 == PF_INET6) ? 1 : -1];
+};
+
 @interface AFNetworkSocket ()
 @property (assign, nonatomic) CFSocketNativeHandle socketNative;
 @property (assign, nonatomic) NSUInteger socketFlags;
@@ -117,25 +122,11 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 		return NO;
 	}
 	
-	if (signature->protocolFamily == PF_INET6) {
-		/*
-			Note
-			
-			we use getaddrinfo to be address family agnostic
-			
-			however when binding a socket to the wildcard IPv6 address "::" by default OS X also listens on the wildcard IPv4 address "0.0.0.0"
-			
-			a subsequent socket binding to the wildcard IPv4 address will fail with EADDRINUSE even though we didn't actually bind that address in userspace
-			
-			this prevents that behaviour, at the cost of hardcoding per-protocol knowledge into otherwise protocol agnostic code
-		 */
-		int ipv6Only = 1;
-		__unused int ipv6OnlyError = setsockopt(newSocketNative, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
-	}
-	
 	[self _configureSocketNativePreBind:newSocketNative];
 	
-	int bindError = bind(newSocketNative, (struct sockaddr const *)CFDataGetBytePtr(signature->address), (socklen_t)CFDataGetLength(signature->address));
+	CFDataRef addressData = signature->address;
+	
+	int bindError = af_bind(newSocketNative, (struct sockaddr_storage const *)CFDataGetBytePtr(addressData), (socklen_t)CFDataGetLength(addressData));
 	if (bindError != 0) {
 		if (errorRef != NULL) {
 			int underlyingErrorCode = errno;
@@ -497,6 +488,14 @@ TryRecv:;
 	CFSocketSignature *signature = _signature;
 	NSParameterAssert(signature != NULL);
 	
+	/*
+		Note:
+		
+		relies on AF_INET* == PF_INET*
+		
+		the sender sockaddr ss_family is an address family
+		socket() expects a protocol family
+	 */
 	CFSocketNativeHandle newSocketNative = socket(sender.ss_family, signature->socketType, signature->protocol);
 	if (newSocketNative == -1) {
 		return;
