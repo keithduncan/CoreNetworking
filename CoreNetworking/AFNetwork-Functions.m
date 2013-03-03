@@ -174,9 +174,31 @@ static BOOL _AFNetworkSocketCheckGetAddressInfoError(int result, NSError **error
 	return NO;
 }
 
+static NSString *_AFNetworkSocketAddressDataIsNotValidError(NSError **errorRef) {
+	if (errorRef != NULL) {
+		NSDictionary *errorInfo = @{
+			NSLocalizedDescriptionKey : NSLocalizedString(@"Socket address data is not valid", @"AFNetwork-Functions invalid sockaddr_storage data"),
+		};
+		*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:errorInfo];
+	}
+	return nil;
+}
+
 NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress, NSError **errorRef) {
+	if ([socketAddress length] < sizeof(((struct sockaddr_storage *)NULL)->ss_len)) {
+		return _AFNetworkSocketAddressDataIsNotValidError(errorRef);
+	}
+	
 	CFRetain(socketAddress);
+	
 	struct sockaddr_storage const *socketAddressBytes = (struct sockaddr_storage const *)[socketAddress bytes];
+	
+	__uint8_t length = socketAddressBytes->ss_len;
+	if ([socketAddress length] != length) {
+		CFRelease(socketAddress);
+		
+		return _AFNetworkSocketAddressDataIsNotValidError(errorRef);
+	}
 	
 	char socketAddressPresentation[INET6_ADDRSTRLEN] = {};
 	socklen_t socketAddressPresentationLength = (sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation));
