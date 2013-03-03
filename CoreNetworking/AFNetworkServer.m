@@ -320,6 +320,7 @@
 
 - (BOOL)addListenSocket:(AFNetworkSocket *)socket error:(NSError **)errorRef {
 	[self _scheduleLayer:socket];
+	[socket setDelegate:self];
 	
 	BOOL open = [socket open:errorRef];
 	if (!open) {
@@ -377,9 +378,11 @@
 
 - (void)networkLayerDidClose:(id <AFNetworkConnectionLayer>)layer {
 	if ([self.listeners containsObject:layer]) {
+		[self _unscheduleLayer:layer];
 		[self.listeners removeObject:layer];
 	}
 	else if ([self.connections containsObject:layer]) {
+		[self _unscheduleLayer:layer];
 		[self.connections removeObject:layer];
 	}
 	else {
@@ -393,6 +396,7 @@
 
 - (void)configureLayer:(id)layer {
 	[self _scheduleLayer:layer];
+	[layer setDelegate:self];
 }
 
 @end
@@ -467,8 +471,6 @@
 	else {
 		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment" userInfo:nil];
 	}
-	
-	[layer setDelegate:self];
 }
 
 - (void)_unscheduleLayer:(id)layer {
