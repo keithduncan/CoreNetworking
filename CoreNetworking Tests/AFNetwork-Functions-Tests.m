@@ -30,4 +30,13 @@
 	STAssertNotNil(presentationError, @"data with single byte should return error");
 }
 
+- (void)testPtonWithSingleByteButTenBytePrefix
+{
+	NSError *presentationError = nil;
+	NSString *presentation = AFNetworkSocketAddressToPresentation([NSData dataWithBytes:"\xA" length:1], &presentationError);
+	
+	STAssertNil(presentation, @"data with single byte but internal length of ten should fail to parse");
+	STAssertNotNil(presentationError, @"data with single byte but internal length of ten should return error");
+}
+
 @end
