@@ -185,7 +185,7 @@ static NSString *_AFNetworkSocketAddressDataIsNotValidError(NSError **errorRef) 
 }
 
 NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress, NSError **errorRef) {
-	if ([socketAddress length] < sizeof(((struct sockaddr_storage *)NULL)->ss_len)) {
+	if ([socketAddress length] < sizeof(((struct sockaddr_storage const *)NULL)->ss_len)) {
 		return _AFNetworkSocketAddressDataIsNotValidError(errorRef);
 	}
 	
