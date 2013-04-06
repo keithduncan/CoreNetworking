@@ -340,14 +340,24 @@
 	[self.listeners removeAllObjects];
 }
 
-- (void)close {
-	[self closeListenSockets];
+- (void)addConnection:(id)connection {
+	[self configureLayer:connection];
 	
+	[self.connections addObject:connection];
+}
+
+- (void)closeConnections {
 	for (AFNetworkLayer <AFNetworkTransportLayer> *currentLayer in self.connections) {
 		[self _unscheduleLayer:currentLayer];
 		[currentLayer close];
 	}
 	[self.connections removeAllObjects];
+}
+
+- (void)close {
+	[self closeListenSockets];
+	
+	[self closeConnections];
 }
 
 #pragma mark - Delegate
@@ -448,8 +458,7 @@
 		currentLayer = encapsulatedLayer;
 	}
 	
-	[self configureLayer:currentLayer];
-	[self.connections addObject:currentLayer];
+	[self addConnection:currentLayer];
 	
 	[(id <AFNetworkTransportLayer>)currentLayer open];
 }

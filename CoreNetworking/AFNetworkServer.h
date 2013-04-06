@@ -214,15 +214,33 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
  */
 - (BOOL)addListenSocket:(AFNetworkSocket *)socket error:(NSError **)errorRef;
 
+/*!
+	\brief
+	Close all listen sockets
+ */
+- (void)closeListenSockets;
+
 /*
  
  */
 
 /*!
 	\brief
-	Close all listen sockets
+	Track an externally created connection, kept alive until it closes
  */
-- (void)closeListenSockets;
+- (void)addConnection:(id)connection;
+
+/*!
+	\brief
+	Close all previously received connections
+	
+	If the server is shutting down, listen sockets should be closed first
+ */
+- (void)closeConnections;
+
+/*
+ 
+ */
 
 /*!
 	\brief
