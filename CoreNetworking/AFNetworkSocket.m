@@ -236,15 +236,15 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 		return;
 	}
 	
-	if (self.socketNative == -1) {
+	CFSocketNativeHandle socketNative = self.socketNative;
+	if (socketNative == -1) {
 		return;
 	}
 	
-	[self _actuallyClose];
+	[self _actuallyClose:socketNative];
 }
 
-- (void)_actuallyClose {
-	CFSocketNativeHandle socketNative = self.socketNative;
+- (void)_actuallyClose:(CFSocketNativeHandle)socketNative {
 	if (socketNative >= 0) {
 		__unused int closeError = close(socketNative);
 #warning look into whether we can receive EINTR on OS X and whether we need a threadsafe close pattern that doesn't use an EINTR loop, libdispatch uses dup2 to /dev/null, perhaps that is to handle this issue?
@@ -364,7 +364,7 @@ static void _AFNetworkSocketFileDescriptorCallBack(CFFileDescriptorRef fileDescr
 			[self _readCallback];
 		});
 		dispatch_source_set_cancel_handler(newSource, ^ {
-			[self _actuallyClose];
+			[self _actuallyClose:socketNative];
 		});
 		_sources._dispatchSource = newSource;
 		
@@ -505,6 +505,7 @@ TryRecv:;
 	
 	int connectError = connect(newSocketNative, (struct sockaddr const *)&sender, senderSize);
 	if (connectError == -1) {
+		[self _actuallyClose:newSocketNative];
 		return;
 	}
 	
