@@ -14,6 +14,7 @@
 #import <objc/runtime.h>
 
 #import "AFNetworkSchedule.h"
+#import "AFNetworkDatagram.h"
 
 #import "AFNetwork-Functions.h"
 #import "AFNetwork-Constants.h"
@@ -283,12 +284,12 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 	switch (socketType) {
 		case SOCK_STREAM:
 		{
-			requiredSelector = @selector(networkLayer:didReceiveConnectionFromSender:);
+			requiredSelector = @selector(networkLayer:didReceiveConnection:);
 			break;
 		}
 		case SOCK_DGRAM:
 		{
-			requiredSelector = @selector(networkLayer:didReceiveMessage:fromSender:);
+			requiredSelector = @selector(networkLayer:didReceiveDatagram:);
 			break;
 		}
 	}
@@ -450,7 +451,7 @@ TryAccept:;
 		return;
 	}
 	
-	[self.delegate networkLayer:self didReceiveConnectionFromSender:newSocket];
+	[self.delegate networkLayer:self didReceiveConnection:newSocket];
 }
 
 - (void)_dataCallback {
@@ -485,33 +486,11 @@ TryRecv:;
 	
 	[data setLength:actualSize];
 	
-	CFSocketSignature *signature = _signature;
-	NSParameterAssert(signature != NULL);
+	NSData *senderAddress = [NSData dataWithBytes:&sender length:senderSize];
 	
-	/*
-		Note:
-		
-		relies on AF_INET* == PF_INET*
-		
-		the sender sockaddr ss_family is an address family
-		socket() expects a protocol family
-	 */
-	CFSocketNativeHandle newSocketNative = socket(sender.ss_family, signature->socketType, signature->protocol);
-	if (newSocketNative == -1) {
-		return;
-	}
+	AFNetworkDatagram *datagram = [[[AFNetworkDatagram alloc] initWithSenderAddress:senderAddress data:data] autorelease];
 	
-	// WARNING: should we bind() UDP sockets to the address of the socket they were received on, what if the socket has a wildcard address?
-	
-	int connectError = connect(newSocketNative, (struct sockaddr const *)&sender, senderSize);
-	if (connectError == -1) {
-		[self _actuallyClose:newSocketNative];
-		return;
-	}
-	
-	AFNetworkSocket *newSocket = [self _socketForSocketNative:newSocketNative];
-	
-	[self.delegate networkLayer:self didReceiveMessage:data fromSender:newSocket];
+	[self.delegate networkLayer:self didReceiveDatagram:datagram];
 }
 
 - (AFNetworkSocket *)_socketForSocketNative:(CFSocketNativeHandle)socketNative {

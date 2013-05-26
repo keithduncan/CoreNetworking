@@ -16,20 +16,21 @@
 
 @class AFNetworkSocket;
 @class AFNetworkSchedule;
+@class AFNetworkDatagram;
 
 /*!
 	\brief
 	Delegates must implement the method appropriate for the socket type.
 	SOCK_STREAM socket delegates must implement `-networkLayer:didReceiveConnection:`
-	SOCK_DGRAM socket delegates must implement `-networkLayer:didReceiveMessage:fromSender:`
+	SOCK_DGRAM socket delegates must implement `-networkLayer:didReceiveDatagram:`
  */
 @protocol AFNetworkSocketHostDelegate <NSObject>
 
  @optional
 
-- (void)networkLayer:(AFNetworkSocket *)socket didReceiveConnectionFromSender:(AFNetworkSocket *)sender;
+- (void)networkLayer:(AFNetworkSocket *)socket didReceiveConnection:(AFNetworkSocket *)connection;
 
-- (void)networkLayer:(AFNetworkSocket *)socket didReceiveMessage:(NSData *)message fromSender:(AFNetworkSocket *)sender;
+- (void)networkLayer:(AFNetworkSocket *)socket didReceiveDatagram:(AFNetworkDatagram *)datagram;
 
 @end
 

@@ -362,7 +362,7 @@
 
 #pragma mark - Delegate
 
-- (void)networkLayer:(id)layer didReceiveConnectionFromSender:(AFNetworkSocket *)sender {
+- (void)networkLayer:(id)layer didReceiveConnection:(AFNetworkSocket *)sender {
 	NSParameterAssert([self.listeners containsObject:layer]);
 	
 	BOOL shouldAccept = YES;
