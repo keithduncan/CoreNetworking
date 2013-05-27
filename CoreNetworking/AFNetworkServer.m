@@ -273,7 +273,7 @@
 	
 	NSData *addressData = [NSData dataWithBytes:&address length:address.sun_len];
 	
-	AFNetworkSocket *socket = [self openSocketWithSignature:signature address:addressData error:errorRef];
+	AFNetworkSocket *socket = [self openSocketWithSignature:signature address:addressData options:nil error:errorRef];
 	if (socket == nil) {
 		return NO;
 	}
@@ -281,7 +281,7 @@
 	return YES;
 }
 
-- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address error:(NSError **)errorRef {
+- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address options:(NSSet *)options error:(NSError **)errorRef {
 	NSParameterAssert(self.listeners != nil);
 	NSParameterAssert(self.schedule != nil);
 	
@@ -296,7 +296,7 @@
 		.address = (CFDataRef)address,
 	};
 	
-	AFNetworkSocket *newSocket = [[[AFNetworkSocket alloc] initWithSocketSignature:&socketSignature] autorelease];
+	AFNetworkSocket *newSocket = [[[AFNetworkSocket alloc] initWithSocketSignature:&socketSignature options:options] autorelease];
 	
 	CFRelease(address);
 	
@@ -367,7 +367,7 @@
 	
 	BOOL shouldAccept = YES;
 	if ([self.delegate respondsToSelector:@selector(networkServer:shouldAcceptConnection:)]) {
-		shouldAccept = [self.delegate networkServer:self shouldAcceptConnection:sender];
+		shouldAccept = [self.delegate networkServer:self shouldAcceptConnection:(id)sender];
 	}
 	
 	if (!shouldAccept) {
@@ -376,7 +376,7 @@
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(networkServer:didAcceptConnection:)]) {
-		[self.delegate networkServer:self didAcceptConnection:sender];
+		[self.delegate networkServer:self didAcceptConnection:(id)sender];
 	}
 	
 	[self _fullyEncapsulateLayer:sender];

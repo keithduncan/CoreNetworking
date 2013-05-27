@@ -15,6 +15,7 @@
 
 #import "AFNetworkSchedule.h"
 #import "AFNetworkDatagram.h"
+#import "AFNetworkSocketOption.h"
 
 #import "AFNetwork-Functions.h"
 #import "AFNetwork-Constants.h"
@@ -34,6 +35,7 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 
 @interface AFNetworkSocket ()
 @property (assign, nonatomic) CFSocketNativeHandle socketNative;
+@property (copy, nonatomic) NSSet *options;
 @property (assign, nonatomic) NSUInteger socketFlags;
 
 @property (retain, nonatomic) AFNetworkSchedule *schedule;
@@ -51,6 +53,7 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 @dynamic delegate;
 
 @synthesize socketNative=_socketNative;
+@synthesize options=_options;
 @synthesize socketFlags=_socketFlags;
 @synthesize schedule=_schedule;
 
@@ -63,13 +66,15 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 	return self;
 }
 
-- (id)initWithSocketSignature:(CFSocketSignature const *)socketSignature {
+- (id)initWithSocketSignature:(CFSocketSignature const *)signature options:(NSSet *)options {
 	self = [self init];
 	if (self == nil) return nil;
 	
 	_signature = malloc(sizeof(CFSocketSignature));
-	memcpy(_signature, socketSignature, sizeof(CFSocketSignature));
+	memcpy(_signature, signature, sizeof(CFSocketSignature));
 	CFRetain(_signature->address);
+	
+	_options = [options copy];
 	
 	return self;
 }
@@ -90,6 +95,8 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 		}
 		free(_signature);
 	}
+	
+	[_options release];
 	
 	[_schedule release];
 	
@@ -467,6 +474,8 @@ TryRecv:;
 	
 	NSMutableData *data = [NSMutableData dataWithLength:availableData];
 	CFRetain(data);
+	
+#warning should use `recvmsg(s, &msg, 0);` to read data + metadata
 	
 	struct sockaddr_storage sender = {};
 	socklen_t senderSize = sizeof(sender);

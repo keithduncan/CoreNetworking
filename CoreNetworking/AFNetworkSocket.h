@@ -52,6 +52,7 @@
 	
  @private
 	AFNETWORK_STRONG CFSocketSignature *_signature;
+	NSSet *_options;
 	
 	NSUInteger _socketFlags;
 	
@@ -71,10 +72,13 @@
 	`AFNetworkServer` uses this method for the addresses passed to its open methods.
 	A socket is created with the given characteristics and the address is set/bound.
 	
+	\param options
+	Options are set on the socket pre-bind() when opening
+	
 	\details
 	If the socket cannot be created they return nil.
  */
-- (id)initWithSocketSignature:(CFSocketSignature const *)signature;
+- (id)initWithSocketSignature:(CFSocketSignature const *)signature options:(NSSet *)options;
 
 /*!
 	\brief

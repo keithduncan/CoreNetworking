@@ -123,10 +123,10 @@
 		5390ACAB1752A78100CCF5A9 /* AFNetworkDatagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 5390ACA81752A78100CCF5A9 /* AFNetworkDatagram.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5390ACAC1752A78100CCF5A9 /* AFNetworkDatagram.m in Sources */ = {isa = PBXBuildFile; fileRef = 5390ACA91752A78100CCF5A9 /* AFNetworkDatagram.m */; };
 		5390ACAD1752A78100CCF5A9 /* AFNetworkDatagram.m in Sources */ = {isa = PBXBuildFile; fileRef = 5390ACA91752A78100CCF5A9 /* AFNetworkDatagram.m */; };
-		5390ACB01752AA4200CCF5A9 /* AFNetworkSocketRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 5390ACAE1752AA4200CCF5A9 /* AFNetworkSocketRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5390ACB11752AA4200CCF5A9 /* AFNetworkSocketRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 5390ACAE1752AA4200CCF5A9 /* AFNetworkSocketRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5390ACB21752AA4200CCF5A9 /* AFNetworkSocketRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5390ACAF1752AA4200CCF5A9 /* AFNetworkSocketRequest.m */; };
-		5390ACB31752AA4200CCF5A9 /* AFNetworkSocketRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5390ACAF1752AA4200CCF5A9 /* AFNetworkSocketRequest.m */; };
+		5390ACB617536A2200CCF5A9 /* AFNetworkSocketOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 5390ACB417536A2200CCF5A9 /* AFNetworkSocketOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5390ACB717536A2200CCF5A9 /* AFNetworkSocketOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 5390ACB417536A2200CCF5A9 /* AFNetworkSocketOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5390ACB817536A2200CCF5A9 /* AFNetworkSocketOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 5390ACB517536A2200CCF5A9 /* AFNetworkSocketOption.m */; };
+		5390ACB917536A2200CCF5A9 /* AFNetworkSocketOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 5390ACB517536A2200CCF5A9 /* AFNetworkSocketOption.m */; };
 		53A028E60F6E8F41004F5414 /* AFNetwork-Types.h in Headers */ = {isa = PBXBuildFile; fileRef = 53A028E40F6E8F41004F5414 /* AFNetwork-Types.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53A028E70F6E8F41004F5414 /* AFNetwork-Types.m in Sources */ = {isa = PBXBuildFile; fileRef = 53A028E50F6E8F41004F5414 /* AFNetwork-Types.m */; };
 		53A028E80F6E8F41004F5414 /* AFNetwork-Types.h in Headers */ = {isa = PBXBuildFile; fileRef = 53A028E40F6E8F41004F5414 /* AFNetwork-Types.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -298,8 +298,8 @@
 		538EC15B115D6E5A00A8E8F9 /* AFNetworkFormDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkFormDocument.m; path = CoreNetworking/AFNetworkFormDocument.m; sourceTree = SOURCE_ROOT; };
 		5390ACA81752A78100CCF5A9 /* AFNetworkDatagram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkDatagram.h; path = CoreNetworking/AFNetworkDatagram.h; sourceTree = "<group>"; };
 		5390ACA91752A78100CCF5A9 /* AFNetworkDatagram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkDatagram.m; path = CoreNetworking/AFNetworkDatagram.m; sourceTree = "<group>"; };
-		5390ACAE1752AA4200CCF5A9 /* AFNetworkSocketRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkSocketRequest.h; path = CoreNetworking/AFNetworkSocketRequest.h; sourceTree = "<group>"; };
-		5390ACAF1752AA4200CCF5A9 /* AFNetworkSocketRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkSocketRequest.m; path = CoreNetworking/AFNetworkSocketRequest.m; sourceTree = "<group>"; };
+		5390ACB417536A2200CCF5A9 /* AFNetworkSocketOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkSocketOption.h; sourceTree = "<group>"; };
+		5390ACB517536A2200CCF5A9 /* AFNetworkSocketOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkSocketOption.m; sourceTree = "<group>"; };
 		53A028E40F6E8F41004F5414 /* AFNetwork-Types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AFNetwork-Types.h"; path = "CoreNetworking/AFNetwork-Types.h"; sourceTree = SOURCE_ROOT; };
 		53A028E50F6E8F41004F5414 /* AFNetwork-Types.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "AFNetwork-Types.m"; path = "CoreNetworking/AFNetwork-Types.m"; sourceTree = SOURCE_ROOT; };
 		53A39FD714DE0303001E1DA4 /* AFNetworkService-PrivateFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AFNetworkService-PrivateFunctions.h"; path = "CoreNetworking/AFNetworkService-PrivateFunctions.h"; sourceTree = SOURCE_ROOT; };
@@ -521,8 +521,8 @@
 				53210FED1698C02300D26765 /* AFNetworkSchedule.m */,
 				5390ACA81752A78100CCF5A9 /* AFNetworkDatagram.h */,
 				5390ACA91752A78100CCF5A9 /* AFNetworkDatagram.m */,
-				5390ACAE1752AA4200CCF5A9 /* AFNetworkSocketRequest.h */,
-				5390ACAF1752AA4200CCF5A9 /* AFNetworkSocketRequest.m */,
+				5390ACB417536A2200CCF5A9 /* AFNetworkSocketOption.h */,
+				5390ACB517536A2200CCF5A9 /* AFNetworkSocketOption.m */,
 			);
 			name = "Other Objects";
 			sourceTree = "<group>";
@@ -724,7 +724,7 @@
 				53A9875E16B1BBE300EBDB3F /* AFNetworkStream.h in Headers */,
 				53F82FAD16A75ABB004E6920 /* AFNetworkPortMapper.h in Headers */,
 				5390ACAA1752A78100CCF5A9 /* AFNetworkDatagram.h in Headers */,
-				5390ACB01752AA4200CCF5A9 /* AFNetworkSocketRequest.h in Headers */,
+				5390ACB617536A2200CCF5A9 /* AFNetworkSocketOption.h in Headers */,
 				532298E714D5FC450097133D /* AFNetworkServiceScope+AFNetworkPrivate.h in Headers */,
 				53A39FD914DE0303001E1DA4 /* AFNetworkService-PrivateFunctions.h in Headers */,
 				53ECEAF614E14F6900F7517E /* AFNetworkPacket+AFNetworkPrivate.h in Headers */,
@@ -781,7 +781,7 @@
 				53F82FAE16A75ABB004E6920 /* AFNetworkPortMapper.h in Headers */,
 				53A9875F16B1BBE300EBDB3F /* AFNetworkStream.h in Headers */,
 				5390ACAB1752A78100CCF5A9 /* AFNetworkDatagram.h in Headers */,
-				5390ACB11752AA4200CCF5A9 /* AFNetworkSocketRequest.h in Headers */,
+				5390ACB717536A2200CCF5A9 /* AFNetworkSocketOption.h in Headers */,
 				532298E814D5FC450097133D /* AFNetworkServiceScope+AFNetworkPrivate.h in Headers */,
 				53A39FDA14DE0303001E1DA4 /* AFNetworkService-PrivateFunctions.h in Headers */,
 				53ECEAF714E14F6900F7517E /* AFNetworkPacket+AFNetworkPrivate.h in Headers */,
@@ -965,7 +965,7 @@
 				53F82FAF16A75ABB004E6920 /* AFNetworkPortMapper.m in Sources */,
 				53A9876016B1BBE300EBDB3F /* AFNetworkStream.m in Sources */,
 				5390ACAC1752A78100CCF5A9 /* AFNetworkDatagram.m in Sources */,
-				5390ACB21752AA4200CCF5A9 /* AFNetworkSocketRequest.m in Sources */,
+				5390ACB817536A2200CCF5A9 /* AFNetworkSocketOption.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1020,7 +1020,7 @@
 				53F82FB016A75ABB004E6920 /* AFNetworkPortMapper.m in Sources */,
 				53A9876116B1BBE300EBDB3F /* AFNetworkStream.m in Sources */,
 				5390ACAD1752A78100CCF5A9 /* AFNetworkDatagram.m in Sources */,
-				5390ACB31752AA4200CCF5A9 /* AFNetworkSocketRequest.m in Sources */,
+				5390ACB917536A2200CCF5A9 /* AFNetworkSocketOption.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
