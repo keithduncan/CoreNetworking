@@ -18,7 +18,7 @@
 	\brief
 	When a request is received an object is asked to render a response
 	
-	\detail
+	\details
 	If no renderer returns a response the server generates a 404 response
  */
 - (CFHTTPMessageRef)networkServer:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;
@@ -33,7 +33,7 @@
 	\brief
 	When a request is received an object is asked to render a response
 	
-	\detail
+	\details
 	If no renderer returns a response the server generates a 404 response
  */
 - (CFHTTPMessageRef)networkServer:(AFHTTPServer *)server renderResourceForRequest:(CFHTTPMessageRef)request;
