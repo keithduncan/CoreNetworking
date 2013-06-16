@@ -182,7 +182,7 @@
 	
 	for (NSData *currentSocketAddress in socketAddresses) {
 		NSError *currentSocketObjectError = nil;
-		AFNetworkSocket *currentSocketObject = [self openSocketWithSignature:socketSignature address:currentSocketAddress error:&currentSocketObjectError];
+		AFNetworkSocket *currentSocketObject = [self openSocketWithSignature:socketSignature address:currentSocketAddress options:nil error:&currentSocketObjectError];
 		if (currentSocketObject == nil) {
 			if (errorHandler != nil) {
 				BOOL errorHandlerValue = errorHandler(currentSocketAddress, currentSocketObjectError);
@@ -220,7 +220,7 @@
 	};
 	NSData *addressData = [NSData dataWithBytes:&address length:address.sin_len];
 	
-	AFNetworkSocket *socket = [self openSocketWithSignature:socketSignature address:addressData error:errorRef];
+	AFNetworkSocket *socket = [self openSocketWithSignature:socketSignature address:addressData options:nil error:errorRef];
 	if (socket == nil) {
 		return NO;
 	}
@@ -299,16 +299,6 @@
 	AFNetworkSocket *newSocket = [[[AFNetworkSocket alloc] initWithSocketSignature:&socketSignature options:options] autorelease];
 	
 	CFRelease(address);
-	
-	if (newSocket == nil) {
-		if (errorRef != NULL) {
-			NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									   [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"Couldn\u2019t open socket with protocol family \u201c%ld\u201d", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkServer open socket protocol family not supported"), (unsigned long)protocolFamily], NSLocalizedDescriptionKey,
-									   nil];
-			*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:errorInfo];
-		}
-		return nil;
-	}
 	
 	BOOL addListen = [self addListenSocket:newSocket error:errorRef];
 	if (!addListen) {
