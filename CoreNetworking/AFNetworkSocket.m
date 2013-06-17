@@ -130,16 +130,66 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 		return NO;
 	}
 	
-	[self _configureSocketNativePreBind:newSocketNative];
+	BOOL configure = [self _configureSocketNativePreBind:newSocketNative error:errorRef];
+	if (!configure) {
+		close(newSocketNative);
+		return NO;
+	}
 	
-	CFDataRef addressData = signature->address;
+	BOOL bind = [self _bindSocket:newSocketNative error:errorRef];
+	if (!bind) {
+		close(newSocketNative);
+		return NO;
+	}
 	
-	int bindError = af_bind(newSocketNative, (struct sockaddr_storage const *)CFDataGetBytePtr(addressData), (socklen_t)CFDataGetLength(addressData));
+	/*
+		Note
+		
+		this may fail for socket types that aren't connection-oriented
+		
+		hence we ignore the return value (and the value of errno) as in the CFSocket implementation of CFSocketSetAddress
+	 */
+	int listenError = listen(newSocketNative, 256);
+	if (listenError != -1) {
+		self.socketFlags = (self.socketFlags | _AFNetworkSocketFlagsListen);
+	}
+	
+	self.socketNative = newSocketNative;
+	return YES;
+}
+
+- (BOOL)_configureSocketNativePreBind:(CFSocketNativeHandle)socketNative error:(NSError **)errorRef {
+	NSMutableSet *options = [NSMutableSet setWithSet:self.options];
+	
+#if DEBUGFULL
+	int reuseAddress = 1;
+	AFNetworkSocketOption *reuseAddressOption = [[[AFNetworkSocketOption alloc] initWithLevel:SOL_SOCKET option:SO_REUSEADDR value:[NSData dataWithBytes:&reuseAddress length:sizeof(reuseAddress)]] autorelease];
+	[options addObject:reuseAddressOption];
+#endif /* DEBUGFULL */
+	
+	for (AFNetworkSocketOption *currentOption in self.options) {
+		NSData *currentValue = currentOption.value;
+		int setOption = setsockopt(socketNative, currentOption.level, currentOption.option, currentValue.bytes, (socklen_t)currentValue.length);
+		if (setOption != 0) {
+			if (errorRef != NULL) {
+				*errorRef = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:nil];
+			}
+			return NO;
+		}
+	}
+	
+	return YES;
+}
+
+- (BOOL)_bindSocket:(CFSocketNativeHandle)socketNative error:(NSError **)errorRef {
+	CFDataRef addressData = _signature->address;
+	
+	int bindError = af_bind(socketNative, (struct sockaddr_storage const *)CFDataGetBytePtr(addressData), (socklen_t)CFDataGetLength(addressData));
 	if (bindError != 0) {
+		int underlyingErrorCode = errno;
+		NSError *underlyingError = [NSError errorWithDomain:NSPOSIXErrorDomain code:underlyingErrorCode userInfo:nil];
+		
 		if (errorRef != NULL) {
-			int underlyingErrorCode = errno;
-			NSError *underlyingError = [NSError errorWithDomain:NSPOSIXErrorDomain code:underlyingErrorCode userInfo:nil];
-			
 			AFNetworkErrorCode errorCode = AFNetworkSocketErrorUnknown;
 			switch (underlyingErrorCode) {
 				case EPERM:
@@ -163,27 +213,7 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 		return NO;
 	}
 	
-	/*
-		Note
-		
-		this may fail for socket types that aren't connection-oriented
-		
-		hence we ignore the return value (and the value of errno) as in the CFSocket implementation of CFSocketSetAddress
-	 */
-	int listenError = listen(newSocketNative, 256);
-	if (listenError != -1) {
-		self.socketFlags = (self.socketFlags | _AFNetworkSocketFlagsListen);
-	}
-	
-	self.socketNative = newSocketNative;
 	return YES;
-}
-
-- (void)_configureSocketNativePreBind:(CFSocketNativeHandle)socketNative {
-#if DEBUGFULL
-	int reuseAddress = 1;
-	__unused int reuseAddressError = setsockopt(socketNative, SOL_SOCKET, SO_REUSEADDR, &reuseAddress, sizeof(reuseAddress));
-#endif /* DEBUGFULL */
 }
 
 - (BOOL)open:(NSError **)errorRef {
@@ -464,7 +494,10 @@ TryAccept:;
 - (void)_dataCallback {
 	CFSocketNativeHandle socketNative = self.socketNative;
 	
+	struct sockaddr_storage from = {};
+	
 TryRecv:;
+	
 	int availableData = 0;
 	socklen_t availableDataSize = sizeof(availableData);
 	int availableDataError = getsockopt(socketNative, SOL_SOCKET, SO_NREAD, &availableData, &availableDataSize);
@@ -472,32 +505,54 @@ TryRecv:;
 		return;
 	}
 	
-	NSMutableData *data = [NSMutableData dataWithLength:availableData];
-	CFRetain(data);
+	NSMutableData *buffer = [NSMutableData dataWithLength:availableData];
 	
-#warning should use `recvmsg(s, &msg, 0);` to read data + metadata
+	struct iovec storageArea = {
+		.iov_base = [buffer mutableBytes],
+		.iov_len = [buffer length],
+	};
 	
-	struct sockaddr_storage sender = {};
-	socklen_t senderSize = sizeof(sender);
-	ssize_t actualSize = recvfrom(socketNative, [data mutableBytes], [data length], /* flags */ 0, (struct sockaddr *)&sender, &senderSize);
+	uint8_t ancillary[1024];
 	
-	CFRelease(data);
+	struct msghdr message = {
+		.msg_name = &from,
+		.msg_namelen = sizeof(from),
+		.msg_iov = &storageArea,
+		.msg_iovlen = 1,
+		.msg_control = &ancillary,
+		.msg_controllen = sizeof(ancillary),
+		.msg_flags = 0,
+	};
+	ssize_t size = recvmsg(socketNative, &message, 0);
 	
-	if (actualSize == 0) {
+	if (size == 0) {
 		return;
 	}
-	else if (actualSize == -1) {
+	else if (size == -1) {
 		if (errno == EINTR) {
 			goto TryRecv;
 		}
 		return;
 	}
 	
-	[data setLength:actualSize];
+	// Read Metadata
+	do {
+		if (message.msg_controllen < sizeof(struct cmsghdr)) {
+			break;
+		}
+		
+		if ((message.msg_flags & MSG_CTRUNC) == MSG_CTRUNC) {
+			break;
+		}
+		
+		
+	} while (0);
 	
-	NSData *senderAddress = [NSData dataWithBytes:&sender length:senderSize];
+	NSData *senderAddress = [NSData dataWithBytes:&from length:message.msg_namelen];
 	
-	AFNetworkDatagram *datagram = [[[AFNetworkDatagram alloc] initWithSenderAddress:senderAddress data:data] autorelease];
+	[buffer setLength:storageArea.iov_len];
+	
+	AFNetworkDatagram *datagram = [[[AFNetworkDatagram alloc] initWithSenderAddress:senderAddress data:buffer] autorelease];
 	
 	[self.delegate networkLayer:self didReceiveDatagram:datagram];
 }
