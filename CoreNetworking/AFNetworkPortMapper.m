@@ -10,6 +10,7 @@
 
 #import <sys/socket.h>
 #import <arpa/inet.h>
+#define __APPLE_USE_RFC_3542
 #import <netinet/in.h>
 
 #import "AFNetworkSchedule.h"
