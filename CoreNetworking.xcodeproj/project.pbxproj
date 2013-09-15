@@ -20,8 +20,8 @@
 		530911790F646BAA00525632 /* AFNetwork-Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 530911770F646BAA00525632 /* AFNetwork-Constants.m */; };
 		5309117C0F646BAA00525632 /* AFNetwork-Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 530911760F646BAA00525632 /* AFNetwork-Constants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5309117D0F646BAA00525632 /* AFNetwork-Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 530911770F646BAA00525632 /* AFNetwork-Constants.m */; };
-		5313CE56176E656100B741AE /* AFNetworkSocketOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313CE54176E656100B741AE /* AFNetworkSocketOption.h */; };
-		5313CE57176E656100B741AE /* AFNetworkSocketOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313CE54176E656100B741AE /* AFNetworkSocketOption.h */; };
+		5313CE56176E656100B741AE /* AFNetworkSocketOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313CE54176E656100B741AE /* AFNetworkSocketOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5313CE57176E656100B741AE /* AFNetworkSocketOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313CE54176E656100B741AE /* AFNetworkSocketOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5313CE58176E656100B741AE /* AFNetworkSocketOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 5313CE55176E656100B741AE /* AFNetworkSocketOption.m */; };
 		5313CE59176E656100B741AE /* AFNetworkSocketOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 5313CE55176E656100B741AE /* AFNetworkSocketOption.m */; };
 		53151A400FC49A270026E2F1 /* AFHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 532AA4850FC206C2000FCC3F /* AFHTTPConnection.m */; };
