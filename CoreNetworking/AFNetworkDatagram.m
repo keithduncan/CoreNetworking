@@ -11,11 +11,12 @@
 @interface AFNetworkDatagram ()
 @property (readwrite, copy, nonatomic) NSData *senderAddress;
 @property (readwrite, copy, nonatomic) NSData *data;
+@property (readwrite, copy, nonatomic) NSSet *metadata;
 @end
 
 @implementation AFNetworkDatagram
 
-- (id)initWithSenderAddress:(NSData *)senderAddress data:(NSData *)data
+- (id)initWithSenderAddress:(NSData *)senderAddress data:(NSData *)data metadata:(NSSet *)metadata
 {
 	self = [self init];
 	if (self == nil) {
@@ -24,6 +25,7 @@
 	
 	_senderAddress = [senderAddress copy];
 	_data = [data copy];
+	_metadata = [metadata copy];
 	
 	return self;
 }
@@ -32,6 +34,7 @@
 {
 	[_senderAddress release];
 	[_data release];
+	[_metadata release];
 	
 	[super dealloc];
 }

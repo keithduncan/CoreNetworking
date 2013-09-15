@@ -10,6 +10,7 @@
 
 #import <sys/socket.h>
 #import <sys/ioctl.h>
+#define __APPLE_USE_RFC_3542
 #import <netinet/in.h>
 #import <objc/runtime.h>
 
@@ -167,7 +168,7 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 	[options addObject:reuseAddressOption];
 #endif /* DEBUGFULL */
 	
-	for (AFNetworkSocketOption *currentOption in self.options) {
+	for (AFNetworkSocketOption *currentOption in options) {
 		NSData *currentValue = currentOption.value;
 		int setOption = setsockopt(socketNative, currentOption.level, currentOption.option, currentValue.bytes, (socklen_t)currentValue.length);
 		if (setOption != 0) {
@@ -534,7 +535,9 @@ TryRecv:;
 		}
 		return;
 	}
-	
+
+	NSMutableSet *metadata = [NSMutableSet set];
+
 	// Read Metadata
 	do {
 		if (message.msg_controllen < sizeof(struct cmsghdr)) {
@@ -545,14 +548,18 @@ TryRecv:;
 			break;
 		}
 		
-		
+		for (struct cmsghdr *controlMessageHeader = CMSG_FIRSTHDR(&message); controlMessageHeader != NULL; controlMessageHeader = CMSG_NXTHDR(&message, controlMessageHeader)) {
+			NSData *value = [NSData dataWithBytes:CMSG_DATA(controlMessageHeader) length:controlMessageHeader->cmsg_len - sizeof(*controlMessageHeader)];
+			AFNetworkSocketOption *option = [[[AFNetworkSocketOption alloc] initWithLevel:controlMessageHeader->cmsg_level option:controlMessageHeader->cmsg_type value:value] autorelease];
+			[metadata addObject:option];
+		}
 	} while (0);
 	
 	NSData *senderAddress = [NSData dataWithBytes:&from length:message.msg_namelen];
 	
 	[buffer setLength:storageArea.iov_len];
 	
-	AFNetworkDatagram *datagram = [[[AFNetworkDatagram alloc] initWithSenderAddress:senderAddress data:buffer] autorelease];
+	AFNetworkDatagram *datagram = [[[AFNetworkDatagram alloc] initWithSenderAddress:senderAddress data:buffer metadata:metadata] autorelease];
 	
 	[self.delegate networkLayer:self didReceiveDatagram:datagram];
 }

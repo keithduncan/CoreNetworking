@@ -10,9 +10,10 @@
 
 @interface AFNetworkDatagram : NSObject
 
-- (id)initWithSenderAddress:(NSData *)senderAddress data:(NSData *)data;
+- (id)initWithSenderAddress:(NSData *)senderAddress data:(NSData *)data metadata:(NSSet *)metadata;
 
 @property (readonly, copy, nonatomic) NSData *senderAddress;
 @property (readonly, copy, nonatomic) NSData *data;
+@property (readonly, copy, nonatomic) NSSet *metadata;
 
 @end
