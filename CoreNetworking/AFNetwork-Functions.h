@@ -61,7 +61,7 @@ AFNETWORK_EXTERN int af_sockaddr_pton(char const *presentation, struct sockaddr_
 	\brief
 	bind() replacement which only binds a single address family, i.e. turns IPv6-only ON
  */
-AFNETWORK_EXTERN int af_bind(int fileDescriptor, struct sockaddr_storage const *address, socklen_t addressLength);
+AFNETWORK_EXTERN int af_bind(int fileDescriptor, struct sockaddr_storage const *address);
 
 /*
 	Cocoa Networking

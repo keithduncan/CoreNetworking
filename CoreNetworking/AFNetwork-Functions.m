@@ -136,7 +136,7 @@ int af_sockaddr_pton(char const *presentation, struct sockaddr_storage *storage)
 	return 0;
 }
 
-int af_bind(int fileDescriptor, struct sockaddr_storage const *address, socklen_t addressLength) {
+int af_bind(int fileDescriptor, struct sockaddr_storage const *address) {
 	if (address->ss_family == AF_INET6) {
 		/*
 			Note
@@ -153,7 +153,7 @@ int af_bind(int fileDescriptor, struct sockaddr_storage const *address, socklen_
 		__unused int ipv6OnlyError = setsockopt(fileDescriptor, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
 	}
 	
-	return bind(fileDescriptor, (struct sockaddr const*)address, addressLength);
+	return bind(fileDescriptor, (struct sockaddr const*)address, address->ss_len);
 }
 
 #pragma mark -

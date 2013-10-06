@@ -185,7 +185,7 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 - (BOOL)_bindSocket:(CFSocketNativeHandle)socketNative error:(NSError **)errorRef {
 	CFDataRef addressData = _signature->address;
 	
-	int bindError = af_bind(socketNative, (struct sockaddr_storage const *)CFDataGetBytePtr(addressData), (socklen_t)CFDataGetLength(addressData));
+	int bindError = af_bind(socketNative, (struct sockaddr_storage const *)CFDataGetBytePtr(addressData));
 	if (bindError != 0) {
 		int underlyingErrorCode = errno;
 		NSError *underlyingError = [NSError errorWithDomain:NSPOSIXErrorDomain code:underlyingErrorCode userInfo:nil];
