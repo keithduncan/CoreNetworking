@@ -63,6 +63,12 @@ AFNETWORK_EXTERN int af_sockaddr_pton(char const *presentation, struct sockaddr_
  */
 AFNETWORK_EXTERN int af_bind(int fileDescriptor, struct sockaddr_storage const *address);
 
+/*!
+	\brief
+	Address family agnostic check for a multicast address
+ */
+AFNETWORK_EXTERN bool af_sockaddr_is_multicast(struct sockaddr_storage const *address);
+
 /*
 	Cocoa Networking
  */

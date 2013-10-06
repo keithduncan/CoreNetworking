@@ -156,6 +156,22 @@ int af_bind(int fileDescriptor, struct sockaddr_storage const *address) {
 	return bind(fileDescriptor, (struct sockaddr const*)address, address->ss_len);
 }
 
+bool af_sockaddr_is_multicast(struct sockaddr_storage const *address) {
+	switch (address->ss_family) {
+		case AF_INET:
+		{
+			return IN_MULTICAST(((struct sockaddr_in const *)address)->sin_addr.s_addr);
+		}
+		case AF_INET6:
+		{
+			return IN6_IS_ADDR_MULTICAST(&((struct sockaddr_in6 const *)address)->sin6_addr);
+		}
+	}
+	
+	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"%s, unknown address family (%ld)", __PRETTY_FUNCTION__, (unsigned long)address->ss_family] userInfo:nil];
+	return false;
+}
+
 #pragma mark -
 
 static BOOL _AFNetworkSocketCheckGetAddressInfoError(int result, NSError **errorRef) {
