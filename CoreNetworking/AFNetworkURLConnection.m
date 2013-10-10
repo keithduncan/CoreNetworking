@@ -8,6 +8,4 @@
 
 #import "AFNetworkURLConnection.h"
 
-@implementation AFNetworkURLConnection
 
-@end
