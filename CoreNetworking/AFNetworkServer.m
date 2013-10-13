@@ -209,47 +209,6 @@
 	return YES;
 }
 
-- (BOOL)openExternalSocketWithSocketSignature:(AFNetworkSocketSignature const)socketSignature port:(uint16_t)port error:(NSError **)errorRef {
-	struct sockaddr_in address = {
-		.sin_len = sizeof(address),
-		.sin_family = AF_INET,
-		.sin_port = htons(port),
-		.sin_addr = {
-			.s_addr = INADDR_ANY,
-		},
-	};
-	NSData *addressData = [NSData dataWithBytes:&address length:address.sin_len];
-	
-	AFNetworkSocket *socket = [self openSocketWithSignature:socketSignature address:addressData options:nil error:errorRef];
-	if (socket == nil) {
-		return NO;
-	}
-	
-	struct sockaddr_in localAddress = {};
-	NSData *localAddressData = [socket localAddress];
-	if ([localAddressData length] > sizeof(localAddress)) {
-		if (errorRef != NULL) {
-			*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:nil];
-		}
-		return NO;
-	}
-	
-	struct sockaddr_in suggestedExternalAddress = {
-		.sin_len = sizeof(suggestedExternalAddress),
-		.sin_family = AF_INET,
-		.sin_port = localAddress.sin_port,
-		.sin_addr = {
-			.s_addr = INADDR_ANY,
-		},
-	};
-	NSData *suggestedExternalAddressData = [NSData dataWithBytes:&suggestedExternalAddress length:suggestedExternalAddress.sin_len];
-	
-	AFNetworkPortMapper *portMapper = [[[AFNetworkPortMapper alloc] initWithSocketSignature:socketSignature localAddress:[socket localAddress] suggestedExternalAddress:suggestedExternalAddressData] autorelease];
-	[self _scheduleLayer:portMapper];
-	
-	
-}
-
 - (BOOL)openPathSocketWithLocation:(NSURL *)location error:(NSError **)errorRef {
 	NSParameterAssert([location isFileURL]);
 	

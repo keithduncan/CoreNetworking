@@ -170,18 +170,6 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 
 /*!
 	\brief
-	Open an IPv4 address socket and enable NAT-PMP or UPnP for the socket.
-	
-	\details
-	Data received on this socket will have their `localAddress` faked to return the external interface's address
-	When returning providing the address to other network peers, or creating out-of-band channels, they should use this re-written `localAddress`
-	
-	External sockets require the host to be able to bind a wildcard IPv4 address.
- */
-- (BOOL)openExternalSocketWithSocketSignature:(AFNetworkSocketSignature const)socketSignature port:(uint16_t)port error:(NSError **)errorRef;
-
-/*!
-	\brief
 	Opens a UNIX socket at the specified path.
 	
 	\details
