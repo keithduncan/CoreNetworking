@@ -32,6 +32,8 @@
 }
 
 - (void)scheduleInQueue:(dispatch_queue_t)dispatchQueue {
+	NSParameterAssert(dispatchQueue != NULL);
+	
 	NSParameterAssert(![self _isScheduled]);
 	
 	dispatch_retain(dispatchQueue);
