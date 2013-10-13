@@ -18,7 +18,6 @@
 
 @end
 
-
 @protocol AFNetworkConnectionLayerDataDelegate <AFNetworkTransportLayerDataDelegate>
 
 @end
