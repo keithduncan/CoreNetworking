@@ -56,8 +56,8 @@
 	
 	NSUInteger _socketFlags;
 	
-	AFNetworkSchedule *_schedule;
 	void *_dispatchSource;
+	AFNetworkSchedule *_schedule;
 }
 
 /*!

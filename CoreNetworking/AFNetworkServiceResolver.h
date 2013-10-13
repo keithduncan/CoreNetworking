@@ -41,16 +41,16 @@
 	
 	id <AFNetworkServiceResolverDelegate> _delegate;
 	
+	void *_queue;
+	
 	NSMapTable *_recordToQueryServiceMap;
 	void *_resolveService;
 	void *_getInfoService;
 	
-	AFNetworkSchedule *_schedule;
 	NSMapTable *_serviceToServiceSourceMap;
-	struct {
-		AFNETWORK_STRONG CFTypeRef _runLoopTimer;
-		void *_dispatchTimer;
-	} _timers;
+	void *_dispatchTimer;
+	
+	AFNetworkSchedule *_schedule;
 	
 	NSMapTable *_recordToDataMap;
 	NSMutableArray *_addresses;

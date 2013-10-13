@@ -34,10 +34,6 @@ struct _AFNetworkServicePublisher_CompileTimeAssertions {
 	char assert2[(sizeof(AFNetworkDomainRecordType) <= sizeof(void *) ? 1 : -1)];
 };
 
-static BOOL _AFNetworkServicePublisherCheckAndForwardError(AFNetworkServicePublisher *self, DNSServiceErrorType errorCode) {
-	return _AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(networkServicePublisher:didReceiveError:), errorCode);
-}
-
 @interface AFNetworkServicePublisher ()
 @property (retain, nonatomic) AFNetworkServiceScope *serviceScope;
 @property (assign, nonatomic) uint32_t port;
@@ -52,6 +48,10 @@ static BOOL _AFNetworkServicePublisherCheckAndForwardError(AFNetworkServicePubli
 
 @property (retain, nonatomic) NSMutableSet *scopes;
 @end
+
+static BOOL _AFNetworkServicePublisherCheckAndForwardError(AFNetworkServicePublisher *self, DNSServiceErrorType errorCode) {
+	return _AFNetworkServiceCheckAndForwardError(self, self.schedule, self.delegate, @selector(networkServicePublisher:didReceiveError:), errorCode);
+}
 
 @interface AFNetworkServicePublisher (AFNetworkPrivate)
 - (NSData *)_validatedRecordDataForRecord:(AFNetworkDomainRecordType)record;
@@ -197,7 +197,8 @@ static void _AFNetworkServicePublisherRegisterCallback(DNSServiceRef sdRef, DNSS
 		return;
 	}
 	
-	AFNetworkServiceSource *newServiceSource = _AFNetworkServiceSourceForSchedule(_service, self.schedule);
+	AFNetworkServiceSource *newServiceSource = [[[AFNetworkServiceSource alloc] initWithService:self.service] autorelease];
+	newServiceSource.schedule = self.schedule;
 	self.serviceSource = newServiceSource;
 	
 	[newServiceSource resume];

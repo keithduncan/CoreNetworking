@@ -29,13 +29,7 @@ AFNETWORK_EXTERN DNSServiceErrorType _AFNetworkServiceScopeFullname(AFNetworkSer
 	\details
 	Forward onto the delegate argument if an error has occurred, delegate selector must be of the form `networkService:didReceiveError:`
 */
-AFNETWORK_EXTERN BOOL _AFNetworkServiceCheckAndForwardError(id self, id delegate, SEL delegateSelector, int32_t errorCode);
-
-/*!
-	\brief
-	Create and schedule a source appropriate for the environment
- */
-AFNETWORK_EXTERN AFNetworkServiceSource *_AFNetworkServiceSourceForSchedule(DNSServiceRef service, AFNetworkSchedule *schedule);
+AFNETWORK_EXTERN BOOL _AFNetworkServiceCheckAndForwardError(id self, AFNetworkSchedule *schedule, id delegate, SEL delegateSelector, int32_t errorCode);
 
 /*!
 	\brief

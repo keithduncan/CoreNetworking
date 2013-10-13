@@ -11,10 +11,6 @@
 #import "AFNetworkSchedule.h"
 #import "AFNetworkSchedule+AFNetworkPrivate.h"
 
-@interface AFNetworkServiceSource ()
-@property (retain, nonatomic) AFNetworkSchedule *schedule;
-@end
-
 @implementation AFNetworkServiceSource
 
 @synthesize service=_service;

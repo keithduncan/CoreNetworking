@@ -13,6 +13,7 @@
 #import "AFNetworkServiceScope.h"
 #import "AFNetworkServiceSource.h"
 #import "AFNetworkSchedule.h"
+#import "AFNetworkSchedule+AFNetworkPrivate.h"
 
 #import "AFNetwork-Constants.h"
 
@@ -29,7 +30,7 @@ DNSServiceErrorType _AFNetworkServiceScopeFullname(AFNetworkServiceScope *scope,
 	return kDNSServiceErr_NoError;
 }
 
-BOOL _AFNetworkServiceCheckAndForwardError(id self, id delegate, SEL delegateSelector, int32_t errorCode) {
+BOOL _AFNetworkServiceCheckAndForwardError(id self, AFNetworkSchedule *schedule, id delegate, SEL delegateSelector, int32_t errorCode) {
 	if (errorCode == kDNSServiceErr_NoError) {
 		return YES;
 	}
@@ -42,26 +43,11 @@ BOOL _AFNetworkServiceCheckAndForwardError(id self, id delegate, SEL delegateSel
 							   nil];
 	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkServiceErrorUnknown userInfo:errorInfo];
 	
-	((void (*)(id, SEL, id, NSError *))objc_msgSend)(delegate, delegateSelector, self, error);
+	[schedule _performBlock:^ {
+		((void (*)(id, SEL, id, NSError *))objc_msgSend)(delegate, delegateSelector, self, error);
+	}];
 	
 	return NO;
-}
-
-AFNetworkServiceSource *_AFNetworkServiceSourceForSchedule(DNSServiceRef service, AFNetworkSchedule *schedule) {
-	NSCParameterAssert(service != NULL);
-	NSCParameterAssert(schedule != nil);
-	
-	AFNetworkServiceSource *newServiceSource = [[[AFNetworkServiceSource alloc] initWithService:service] autorelease];
-	
-	if (schedule->_runLoop != nil) {
-		[newServiceSource scheduleInRunLoop:schedule->_runLoop forMode:schedule->_runLoopMode];
-	}
-	else if (schedule->_dispatchQueue != NULL) {
-		dispatch_queue_t queue = schedule->_dispatchQueue;
-		[newServiceSource scheduleInQueue:queue];
-	}
-	
-	return newServiceSource;
 }
 
 AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_t rdlen, uint8_t const *rdata) {

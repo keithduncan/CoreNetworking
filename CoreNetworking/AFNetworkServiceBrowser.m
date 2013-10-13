@@ -131,7 +131,7 @@ NSString *const AFNetworkServiceBrowserDomainPublishable = @"*r";
 }
 
 static BOOL _AFNetworkServiceBrowserCheckAndForwardError(AFNetworkServiceBrowser *self, DNSServiceErrorType errorCode) {
-	return _AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(networkServiceBrowser:didReceiveError:), errorCode);
+	return _AFNetworkServiceCheckAndForwardError(self, self.schedule, self.delegate, @selector(networkServiceBrowser:didReceiveError:), errorCode);
 }
 
 static void _AFNetworkServiceBrowserEnumerateDomainsCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *replyDomain, void *context) {
@@ -266,7 +266,8 @@ static void _AFNetworkServiceBrowserEnumerateNamesCallback(DNSServiceRef sdRef, 
 	}
 	self.service = newService;
 	
-	AFNetworkServiceSource *newServiceSource = _AFNetworkServiceSourceForSchedule(newService, self.schedule);
+	AFNetworkServiceSource *newServiceSource = [[[AFNetworkServiceSource alloc] initWithService:newService] autorelease];
+	newServiceSource.schedule = self.schedule;
 	self.serviceSource = newServiceSource;
 	
 	[newServiceSource resume];

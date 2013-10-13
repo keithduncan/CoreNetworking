@@ -25,13 +25,16 @@
  @private
 	DNSServiceRef _service;
 	
-	AFNetworkSchedule *_schedule;
 	void *_dispatchSource;
+	AFNetworkSchedule *_schedule;
 }
 
 /*!
 	\brief
 	Because the DNS-SD doesn't provide a reference counting mechanism, you must ensure the service remains valid for the lifetime of this object.
+ 
+	\details
+	The callback function `service` was created with will be invoked in the scheduled environment.
  */
 - (id)initWithService:(DNSServiceRef)service;
 
@@ -51,7 +54,17 @@
 
 /*!
 	\brief
-	Must be sent after scheduling
+	The source must have a schedule to work.
+	
+	\details
+	The schedule must be set before resuming, changes to the schedule after
+	resuming will have no effect.
+ */
+@property (strong, nonatomic) AFNetworkSchedule *schedule;
+
+/*!
+	\brief
+	Must be sent after scheduling.
  */
 - (void)resume;
 

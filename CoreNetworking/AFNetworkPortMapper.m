@@ -82,7 +82,7 @@
 }
 
 static BOOL _AFNetworkPortMapperCheckAndForwardError(AFNetworkPortMapper *self, DNSServiceErrorType errorCode) {
-	return _AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(portMapper:didReceiveError:), errorCode);
+	return _AFNetworkServiceCheckAndForwardError(self, self.schedule, self.delegate, @selector(portMapper:didReceiveError:), errorCode);
 }
 
 static void _AFNetworkPortMapperNATPortMappingReply(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, uint32_t externalAddress, DNSServiceProtocol protocol, uint16_t internalPort, uint16_t externalPort, uint32_t ttl, void *context) {
@@ -157,8 +157,10 @@ static void _AFNetworkPortMapperNATPortMappingReply(DNSServiceRef sdRef, DNSServ
 	}
 	self.service = newService;
 	
-	AFNetworkServiceSource *newSource = _AFNetworkServiceSourceForSchedule(newService, self.schedule);
+	AFNetworkServiceSource *newSource = [[[AFNetworkServiceSource alloc] initWithService:newService] autorelease];
+	newSource.schedule = self.schedule;
 	self.source = newSource;
+	
 	[newSource resume];
 }
 

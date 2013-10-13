@@ -15,15 +15,12 @@
 #import "AFNetworkServiceScope+AFNetworkPrivate.h"
 #import "AFNetworkServiceSource.h"
 #import "AFNetworkSchedule.h"
+#import "AFNetworkSchedule+AFNetworkPrivate.h"
 
 #import "AFNetworkService-Functions.h"
 #import "AFNetworkService-PrivateFunctions.h"
 
 #import "AFNetwork-Constants.h"
-
-static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolver *self, DNSServiceErrorType errorCode) {
-	return _AFNetworkServiceCheckAndForwardError(self, self.delegate, @selector(networkServiceResolver:didReceiveError:), errorCode);
-}
 
 @interface AFNetworkServiceResolver ()
 @property (retain, nonatomic) AFNetworkServiceScope *serviceScope;
@@ -37,6 +34,10 @@ static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolv
 
 @property (retain, nonatomic) NSMapTable *recordToDataMap;
 @end
+
+static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolver *self, DNSServiceErrorType errorCode) {
+	return _AFNetworkServiceCheckAndForwardError(self, self.schedule, self.delegate, @selector(networkServiceResolver:didReceiveError:), errorCode);
+}
 
 @interface AFNetworkServiceResolver (AFNetworkPrivate)
 - (AFNetworkServiceSource *)_serviceSourceForService:(DNSServiceRef)service;
@@ -70,6 +71,9 @@ static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolv
 	self = [self init];
 	if (self == nil) return nil;
 	
+	// Internal serialisation
+	_queue = dispatch_queue_create("com.thirty-three.corenetworking.service-resolver.control", DISPATCH_QUEUE_SERIAL);
+	
 	_serviceScope = [serviceScope retain];
 	
 	NSPointerFunctionsOptions recordToMapKeyOptions = (NSPointerFunctionsOpaqueMemory | NSPointerFunctionsIntegerPersonality);
@@ -85,7 +89,7 @@ static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolv
 - (void)dealloc {
 	[_serviceScope release];
 	
-	[_schedule release];
+	dispatch_release(_queue);
 	
 	[self invalidate];
 	[_serviceToServiceSourceMap release];
@@ -97,18 +101,18 @@ static BOOL _AFNetworkServiceResolverCheckAndForwardError(AFNetworkServiceResolv
 	}
 	[_recordToQueryServiceMap release];
 	
-	[(id)_timers._runLoopTimer release];
-	if (_timers._dispatchTimer != NULL) {
-		dispatch_source_cancel(_timers._dispatchTimer);
-		dispatch_release(_timers._dispatchTimer);
-	}
-	
 	if (_resolveService != NULL) {
 		DNSServiceRefDeallocate(_resolveService);
 	}
 	if (_getInfoService != NULL) {
 		DNSServiceRefDeallocate(_getInfoService);
 	}
+	
+	if (_dispatchTimer != NULL) {
+		dispatch_release(_dispatchTimer);
+	}
+	
+	[_schedule release];
 	
 	[_recordToDataMap release];
 	[_addresses release];
@@ -152,9 +156,13 @@ static void _AFNetworkServiceResolverQueryRecordCallback(DNSServiceRef sdRef, DN
 	NSData *recordData = [NSData dataWithBytes:rdata length:rdlen];
 	NSMapInsert(self.recordToDataMap, (void const *)record, (void const *)recordData);
 	
-	if ([self.delegate respondsToSelector:@selector(networkServiceResolver:didUpdateRecord:withData:)]) {
-		[self.delegate networkServiceResolver:self didUpdateRecord:record withData:recordData];
+	if (![self.delegate respondsToSelector:@selector(networkServiceResolver:didUpdateRecord:withData:)]) {
+		return;
 	}
+	
+	[self.schedule _performBlock:^ {
+		[self.delegate networkServiceResolver:self didUpdateRecord:record withData:recordData];
+	}];
 }
 
 - (void)addMonitorForRecord:(AFNetworkDomainRecordType)record {
@@ -222,9 +230,13 @@ static void _AFNetworkServiceResolverGetAddrInfoCallback(DNSServiceRef sdRef, DN
 	[addresses addObject:addressValue];
 	[self _unscheduleTimer];
 	
-	if ([self.delegate respondsToSelector:@selector(networkServiceResolver:didResolveAddress:)]) {
-		[self.delegate networkServiceResolver:self didResolveAddress:addressValue];
+	if (![self.delegate respondsToSelector:@selector(networkServiceResolver:didResolveAddress:)]) {
+		return;
 	}
+	
+	[self.schedule _performBlock:^ {
+		[self.delegate networkServiceResolver:self didResolveAddress:addressValue];
+	}];
 }
 
 static void _AFNetworkServiceResolverResolveCallback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode, char const *fullname, char const *hostname, uint16_t port, uint16_t txtLen, unsigned char const *txtRecord, void *context) {
@@ -293,7 +305,8 @@ SharedTeardown:;
 }
 
 - (void)_addServiceSourceForService:(DNSServiceRef)service {
-	AFNetworkServiceSource *newServiceSource = _AFNetworkServiceSourceForSchedule(service, self.schedule);
+	AFNetworkServiceSource *newServiceSource = [[[AFNetworkServiceSource alloc] initWithService:service] autorelease];
+	[newServiceSource scheduleInQueue:_queue];
 	NSMapInsert(self.serviceToServiceSourceMap, (void const *)service, (void const *)newServiceSource);
 	
 	[newServiceSource resume];
@@ -313,49 +326,28 @@ SharedTeardown:;
 		return;
 	}
 	
-	AFNetworkSchedule *schedule = self.schedule;
-	if (schedule->_runLoop != nil) {
-		NSRunLoop *runLoop = schedule->_runLoop;
+	NSParameterAssert(_dispatchTimer == NULL);
 		
-		NSTimer *resolveTimeout = [[NSTimer alloc] initWithFireDate:[[NSDate date] dateByAddingTimeInterval:timeout] interval:0 target:self selector:@selector(_resolveDidTimeout) userInfo:nil repeats:NO];
-		[runLoop addTimer:resolveTimeout forMode:schedule->_runLoopMode];
-		
-		_timers._runLoopTimer = resolveTimeout;
-	}
-	else if (schedule->_dispatchQueue != NULL) {
-		dispatch_queue_t dispatchQueue = schedule->_dispatchQueue;
-		
-		dispatch_source_t dispatchTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatchQueue);
-		
-		__weak __block AFNetworkServiceResolver *weakResolver = self;
-		dispatch_source_set_event_handler(dispatchTimer, ^ {
-			[weakResolver _resolveDidTimeout];
-		});
-		dispatch_source_set_timer(dispatchTimer, DISPATCH_TIME_NOW, timeout * NSEC_PER_SEC, 0);
-		dispatch_resume(dispatchTimer);
-		
-		_timers._dispatchTimer = dispatchTimer;
-	}
-	else {
-		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment, cannot set up resolve timeout" userInfo:nil];
-	}
+	_dispatchTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _queue);
+	
+	__weak __block AFNetworkServiceResolver *weakResolver = self;
+	dispatch_source_set_event_handler(_dispatchTimer, ^ {
+		__strong AFNetworkServiceResolver *strongResolver = weakResolver;
+		[strongResolver _resolveDidTimeout];
+	});
+	dispatch_source_set_timer(_dispatchTimer, DISPATCH_TIME_NOW, timeout * NSEC_PER_SEC, 0);
+	dispatch_resume(_dispatchTimer);
 }
 
 - (void)_unscheduleTimer {
-	if (_timers._runLoopTimer != nil) {
-		[(id)_timers._runLoopTimer invalidate];
-	}
-	if (_timers._dispatchTimer != NULL) {
-		dispatch_source_cancel(_timers._dispatchTimer);
+	if (_dispatchTimer != NULL) {
+		dispatch_source_cancel(_dispatchTimer);
 	}
 }
 
 - (BOOL)_timerIsValid {
-	if (_timers._runLoopTimer != nil) {
-		return [(id)_timers._runLoopTimer isValid];
-	}
-	if (_timers._dispatchTimer != NULL) {
-		return (dispatch_source_testcancel(_timers._dispatchTimer) == 0);
+	if (_dispatchTimer != NULL) {
+		return (dispatch_source_testcancel(_dispatchTimer) == 0);
 	}
 	return NO;
 }
@@ -383,7 +375,9 @@ SharedTeardown:;
 							   nil];
 	NSError *error = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkServiceErrorUnknown userInfo:errorInfo];
 	
-	[self.delegate networkServiceResolver:self didReceiveError:error];
+	[self.schedule _performBlock:^ {
+		[self.delegate networkServiceResolver:self didReceiveError:error];
+	}];
 }
 
 @end
