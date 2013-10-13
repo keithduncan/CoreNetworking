@@ -28,11 +28,10 @@
 	\field protocol
 	One of the 'PROTOCOL NUMBERS' defined in IETF-RFC-1700 <http://tools.ietf.org/html/rfc1700> - it is important that an appropriate `socketType` is also provided.
  */
-struct _AFNetworkSocketSignature {
+typedef struct {
 	int32_t const socketType;
 	int32_t const protocol;
-};
-typedef struct _AFNetworkSocketSignature AFNetworkSocketSignature;
+} AFNetworkSocketSignature;
 
 /*!
 	\brief
@@ -69,12 +68,10 @@ AFNETWORK_EXTERN AFNetworkSocketSignature const AFNetworkSocketSignatureInternet
 	\field port
 	Identifies the Transport Layer address to communicate using (see IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122> in network byte order.
  */
-struct _AFNetworkInternetTransportSignature {
+typedef struct {
 	AFNetworkSocketSignature const type;
 	uint16_t port;
-};
-typedef struct _AFNetworkInternetTransportSignature AFNetworkInternetTransportSignature;
-
+} AFNetworkInternetTransportSignature;
 
 /*
 	AFNetwork types
@@ -94,7 +91,7 @@ typedef struct _AFNetworkInternetTransportSignature AFNetworkInternetTransportSi
 	\field transport
 	See the documentation for `AFNetworkTransportLayer`, it encapsulates the transport type (TCP/UDP/SCTP/DCCP etc.) and the port.
  */
-struct _AFNetworkHostSignature {
+typedef struct {
 	/*
 		This defines _where_ to communicate
 	 */
@@ -103,28 +100,25 @@ struct _AFNetworkHostSignature {
 		This defines _how_ to communicate.
 	 */
 	AFNetworkInternetTransportSignature const transport;
-};
-typedef struct _AFNetworkHostSignature AFNetworkHostSignature;
+} AFNetworkHostSignature;
 
 /*!
 	\brief
 	This is a partner to `AFNetworkTransportHostSignature` except that a `CFNetServiceRef` is self describing and doesn't require a `transport` field.
  */
-struct _AFNetworkServiceSignature {
+typedef struct {
 	/*
 		This defines _where_ and _how_ to communicate
 	 */
 	AFNETWORK_STRONG CFNetServiceRef service;
-};
-typedef struct _AFNetworkServiceSignature AFNetworkServiceSignature;
+} AFNetworkServiceSignature;
 
 /*!
 	\brief
 	Allows for implemetations to accept either `AFNetworkHostSignature` or `AFNetworkServiceSignature`.
 	A receiver will introspect the type using `CFGetTypeID()` to determine which has been passed.
  */
-union _AFNetworkSignature {
+typedef union {
 	AFNetworkHostSignature *_host;
 	AFNetworkServiceSignature *_service;
-};
-typedef union _AFNetworkSignature AFNetworkSignature __attribute__((transparent_union));
+} AFNetworkSignature __attribute__((transparent_union));
