@@ -31,7 +31,7 @@
 
 /*!
 	\brief
-	An `AFNetworkConnectionLayer` should maintain a stateful connection between endpoints.
+	An `AFNetworkConnectionLayer` maintains a stateful connection between endpoints.
  */
 @protocol AFNetworkConnectionLayer <AFNetworkTransportLayer>
 

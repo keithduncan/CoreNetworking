@@ -67,7 +67,7 @@
 
 /*!
 	\brief
-	When accessing this property, you will not recieve the same object you passed in, this method returns a transparent proxy that allows a caller to forward messages up the delegate stack.
+	When accessing this property, you will not receive the same object you passed in, this method returns a transparent proxy that allows a caller to forward messages up the delegate stack.
  */
 @property (assign, nonatomic) id delegate;
 
@@ -85,18 +85,21 @@
 /*
 	Scheduling
 	
-	These methods do nothing by default as the abstract superclass has nothing to schedule
+	These methods do nothing by default as the abstract superclass has nothing to schedule.
+	
+	Layers must be scheduled in either a run loop or a dispatch queue to function.
+	All delegate messages are received in the scheduled environment.
  */
 
 /*!
 	\brief
-	The socket connection must be scheduled in at least one run loop to function.
+	Deliver delegate messages to `runLoop` when running in `mode`.
  */
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
 /*!
 	\brief
-	Create a dispatch_source internally and set the target to the provided queue.
+	Deliver delegate messages on the given queue.
 	
 	\param queue
 	A layer can only be scheduled in a single queue at a time, to unschedule it pass NULL.
