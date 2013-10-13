@@ -10,8 +10,16 @@
 
 @interface AFNetworkServiceScope (AFNetworkPrivate)
 
+/*!
+	\brief
+	All labels are wildcard
+ */
 - (BOOL)_scopeDomainIsWildcard;
 
+/*!
+	\brief
+	One label is wildcard
+ */
 - (BOOL)_scopeContainsWildcard;
 
 @end
