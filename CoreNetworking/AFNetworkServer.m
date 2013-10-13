@@ -215,7 +215,7 @@
 		.sin_family = AF_INET,
 		.sin_port = htons(port),
 		.sin_addr = {
-			.s_addr = INADDR_ANY,
+			.s_addr = htonl(INADDR_ANY),
 		},
 	};
 	NSData *addressData = [NSData dataWithBytes:&address length:address.sin_len];
