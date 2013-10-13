@@ -117,6 +117,7 @@
 		538307B2101384DF000DA939 /* AFHTTPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 538307B0101384DF000DA939 /* AFHTTPMessage.m */; };
 		538307B3101384DF000DA939 /* AFHTTPMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 538307AF101384DF000DA939 /* AFHTTPMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		538307B4101384DF000DA939 /* AFHTTPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 538307B0101384DF000DA939 /* AFHTTPMessage.m */; };
+		53889820180B515600C0AAE7 /* CoreNetworking.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 5370E0710F5B0571008F5991 /* CoreNetworking.framework */; };
 		538AA1C71446D9C2003EEEE4 /* AFNetworkService-Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 538AA1C51446D9C2003EEEE4 /* AFNetworkService-Constants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		538AA1C81446D9C2003EEEE4 /* AFNetworkService-Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 538AA1C51446D9C2003EEEE4 /* AFNetworkService-Constants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		538AA1C91446D9C2003EEEE4 /* AFNetworkService-Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 538AA1C61446D9C2003EEEE4 /* AFNetworkService-Constants.m */; };
@@ -225,6 +226,20 @@
 			remoteInfo = CoreNetworking;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5388981F180B514900C0AAE7 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				53889820180B515600C0AAE7 /* CoreNetworking.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		5301E20E14CCA0450045F87C /* AFNetworkURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkURLConnection.h; path = CoreNetworking/AFNetworkURLConnection.h; sourceTree = SOURCE_ROOT; };
@@ -829,6 +844,7 @@
 				53D4567C16209630006FAD65 /* Sources */,
 				53D4567D16209630006FAD65 /* Frameworks */,
 				53D4567E16209630006FAD65 /* Resources */,
+				5388981F180B514900C0AAE7 /* Copy Frameworks */,
 				53D4567F16209630006FAD65 /* ShellScript */,
 			);
 			buildRules = (
@@ -1246,6 +1262,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "CoreNetworking Tests/CoreNetworking Tests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
@@ -1270,6 +1287,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "CoreNetworking Tests/CoreNetworking Tests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
