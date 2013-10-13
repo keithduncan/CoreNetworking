@@ -10,7 +10,7 @@
 
 #import <mach/vm_map.h>
 
-#import "AFNetworkServiceBrowser.h"
+#import "CoreNetworking/CoreNetworking.h"
 #import "AFNetworkService-PrivateFunctions.h"
 
 @implementation AFNetworkService_DNSLabelBufferOverflow
@@ -34,6 +34,8 @@
 	
 	AFNetworkServiceScope *scope = _AFNetworkServiceBrowserParseEscapedRecord(PAGE_SIZE, (void *)buffer);
 	STAssertNil(scope, @"scope should be nil");
+	
+	vm_deallocate(mach_task_self(), buffer, bufferSize);
 }
 
 @end
