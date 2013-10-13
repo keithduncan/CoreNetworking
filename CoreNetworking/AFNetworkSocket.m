@@ -10,11 +10,14 @@
 
 #import <sys/socket.h>
 #import <sys/ioctl.h>
+#define __APPLE_USE_RFC_3542
 #import <netinet/in.h>
 #import <objc/runtime.h>
 
 #import "AFNetworkSchedule.h"
 #import "AFNetworkSchedule+AFNetworkPrivate.h"
+#import "AFNetworkDatagram.h"
+#import "AFNetworkSocketOption.h"
 
 #import "AFNetwork-Functions.h"
 #import "AFNetwork-Constants.h"
@@ -27,8 +30,14 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 	_AFNetworkSocketFlagsListen		= 1UL << 2, // listen() succeeded
 };
 
+struct _AFNetworkSocket_CompileTimeAssertion {
+	char assert0[(AF_INET == PF_INET) ? 1 : -1];
+	char assert1[(AF_INET6 == PF_INET6) ? 1 : -1];
+};
+
 @interface AFNetworkSocket ()
 @property (assign, nonatomic) CFSocketNativeHandle socketNative;
+@property (copy, nonatomic) NSSet *options;
 @property (assign, nonatomic) NSUInteger socketFlags;
 
 @property (retain, nonatomic) AFNetworkSchedule *schedule;
@@ -46,6 +55,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 @dynamic delegate;
 
 @synthesize socketNative=_socketNative;
+@synthesize options=_options;
 @synthesize socketFlags=_socketFlags;
 @synthesize schedule=_schedule;
 
@@ -58,13 +68,15 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 	return self;
 }
 
-- (id)initWithSocketSignature:(CFSocketSignature const *)socketSignature {
+- (id)initWithSocketSignature:(CFSocketSignature const *)signature options:(NSSet *)options {
 	self = [self init];
 	if (self == nil) return nil;
 	
 	_signature = malloc(sizeof(CFSocketSignature));
-	memcpy(_signature, socketSignature, sizeof(CFSocketSignature));
+	memcpy(_signature, signature, sizeof(CFSocketSignature));
 	CFRetain(_signature->address);
+	
+	_options = [options copy];
 	
 	return self;
 }
@@ -85,6 +97,8 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 		}
 		free(_signature);
 	}
+	
+	[_options release];
 	
 	[_schedule release];
 	
@@ -115,30 +129,66 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 		return NO;
 	}
 	
-	if (signature->protocolFamily == PF_INET6) {
-		/*
-			Note
-			
-			we use getaddrinfo to be address family agnostic
-			
-			however when binding a socket to the wildcard IPv6 address "::" by default OS X also listens on the wildcard IPv4 address "0.0.0.0"
-			
-			a subsequent socket binding to the wildcard IPv4 address will fail with EADDRINUSE even though we didn't actually bind that address in userspace
-			
-			this prevents that behaviour, at the cost of hardcoding per-protocol knowledge into otherwise protocol agnostic code
-		 */
-		int ipv6Only = 1;
-		__unused int ipv6OnlyError = setsockopt(newSocketNative, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
+	BOOL configure = [self _configureSocketNativePreBind:newSocketNative error:errorRef];
+	if (!configure) {
+		close(newSocketNative);
+		return NO;
 	}
 	
-	[self _configureSocketNativePreBind:newSocketNative];
+	BOOL bind = [self _bindSocket:newSocketNative error:errorRef];
+	if (!bind) {
+		close(newSocketNative);
+		return NO;
+	}
 	
-	int bindError = bind(newSocketNative, (struct sockaddr const *)CFDataGetBytePtr(signature->address), CFDataGetLength(signature->address));
+	/*
+		Note
+		
+		this may fail for socket types that aren't connection-oriented
+		
+		hence we ignore the return value (and the value of errno) as in the CFSocket implementation of CFSocketSetAddress
+	 */
+	int listenError = listen(newSocketNative, 256);
+	if (listenError != -1) {
+		self.socketFlags = (self.socketFlags | _AFNetworkSocketFlagsListen);
+	}
+	
+	self.socketNative = newSocketNative;
+	return YES;
+}
+
+- (BOOL)_configureSocketNativePreBind:(CFSocketNativeHandle)socketNative error:(NSError **)errorRef {
+	NSMutableSet *options = [NSMutableSet setWithSet:self.options];
+	
+#if DEBUGFULL
+	int reuseAddress = 1;
+	AFNetworkSocketOption *reuseAddressOption = [[[AFNetworkSocketOption alloc] initWithLevel:SOL_SOCKET option:SO_REUSEADDR value:[NSData dataWithBytes:&reuseAddress length:sizeof(reuseAddress)]] autorelease];
+	[options addObject:reuseAddressOption];
+#endif /* DEBUGFULL */
+	
+	for (AFNetworkSocketOption *currentOption in options) {
+		NSData *currentValue = currentOption.value;
+		int setOption = setsockopt(socketNative, currentOption.level, currentOption.option, currentValue.bytes, (socklen_t)currentValue.length);
+		if (setOption != 0) {
+			if (errorRef != NULL) {
+				*errorRef = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:nil];
+			}
+			return NO;
+		}
+	}
+	
+	return YES;
+}
+
+- (BOOL)_bindSocket:(CFSocketNativeHandle)socketNative error:(NSError **)errorRef {
+	CFDataRef addressData = _signature->address;
+	
+	int bindError = af_bind(socketNative, (struct sockaddr_storage const *)CFDataGetBytePtr(addressData));
 	if (bindError != 0) {
+		int underlyingErrorCode = errno;
+		NSError *underlyingError = [NSError errorWithDomain:NSPOSIXErrorDomain code:underlyingErrorCode userInfo:nil];
+		
 		if (errorRef != NULL) {
-			int underlyingErrorCode = errno;
-			NSError *underlyingError = [NSError errorWithDomain:NSPOSIXErrorDomain code:underlyingErrorCode userInfo:nil];
-			
 			AFNetworkErrorCode errorCode = AFNetworkSocketErrorUnknown;
 			switch (underlyingErrorCode) {
 				case EPERM:
@@ -162,40 +212,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 		return NO;
 	}
 	
-	/*
-		Note
-		
-		this may fail for socket types that aren't connection-oriented
-		
-		hence we ignore the return value (and the value of errno) as in the CFSocket implementation of CFSocketSetAddress
-	 */
-	int listenError = listen(newSocketNative, 256);
-	if (listenError != -1) {
-		self.socketFlags = (self.socketFlags | _AFNetworkSocketFlagsListen);
-	}
-	
-	self.socketNative = newSocketNative;
 	return YES;
-}
-
-- (void)_configureSocketNativePreBind:(CFSocketNativeHandle)socketNative {
-#if DEBUGFULL
-	int reuseAddress = 1;
-	__unused int reuseAddressError = setsockopt(socketNative, SOL_SOCKET, SO_REUSEADDR, &reuseAddress, sizeof(reuseAddress));
-	
-	do {
-		int socketType = 0;
-		socklen_t socketTypeSize = sizeof(socketType);
-		int socketTypeError = getsockopt(socketNative, SOL_SOCKET, SO_TYPE, &socketType, &socketTypeSize);
-		if (socketTypeError == -1) {
-			break;
-		}
-		
-		if (socketType != SOCK_DGRAM) {
-			break;
-		}
-	} while (0);
-#endif /* DEBUGFULL */
 }
 
 - (BOOL)open:(NSError **)errorRef {
@@ -293,12 +310,12 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 	switch (socketType) {
 		case SOCK_STREAM:
 		{
-			requiredSelector = @selector(networkLayer:didReceiveConnectionFromSender:);
+			requiredSelector = @selector(networkLayer:didReceiveConnection:);
 			break;
 		}
 		case SOCK_DGRAM:
 		{
-			requiredSelector = @selector(networkLayer:didReceiveMessage:fromSender:);
+			requiredSelector = @selector(networkLayer:didReceiveDatagram:);
 			break;
 		}
 	}
@@ -330,36 +347,21 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkSocketFlags) {
 	self.schedule = newSchedule;
 }
 
-static void _AFNetworkSocketFileDescriptorEnableCallbacks(CFFileDescriptorRef fileDescriptor) {
-	CFFileDescriptorEnableCallBacks(fileDescriptor, kCFFileDescriptorReadCallBack);
-}
-
-static void _AFNetworkSocketFileDescriptorCallBack(CFFileDescriptorRef fileDescriptor, CFOptionFlags callBackTypes, void *info) {
-	AFNetworkSocket *self = info;
-	
-	@autoreleasepool {
-		[self _readCallback];
-	}
-	
-	_AFNetworkSocketFileDescriptorEnableCallbacks(fileDescriptor);
-}
-
 - (void)_resumeSources {
 	AFNetworkSchedule *schedule = self.schedule;
 	NSParameterAssert(schedule != nil);
 	
 	CFSocketNativeHandle socketNative = self.socketNative;
 	
-	dispatch_source_t newSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, socketNative, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
-	dispatch_source_set_event_handler(newSource, ^ {
+	_dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, socketNative, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+	dispatch_source_set_event_handler(_dispatchSource, ^ {
 		[self _readCallback];
 	});
-	dispatch_source_set_cancel_handler(newSource, ^ {
+	dispatch_source_set_cancel_handler(_dispatchSource, ^ {
 		[self _actuallyClose];
 	});
-	_dispatchSource = newSource;
 	
-	dispatch_resume(newSource);
+	dispatch_resume(_dispatchSource);
 }
 
 - (BOOL)_isValid {
@@ -428,16 +430,19 @@ TryAccept:;
 		close(newSocketNative);
 		return;
 	}
-	
+
 	[self _messageDelegate:^ {
-		[self.delegate networkLayer:self didReceiveConnectionFromSender:newSocket];
+		[self.delegate networkLayer:self didReceiveConnection:newSocket];
 	}];
 }
 
 - (void)_dataCallback {
 	CFSocketNativeHandle socketNative = self.socketNative;
 	
+	struct sockaddr_storage from = {};
+	
 TryRecv:;
+	
 	int availableData = 0;
 	socklen_t availableDataSize = sizeof(availableData);
 	int availableDataError = getsockopt(socketNative, SOL_SOCKET, SO_NREAD, &availableData, &availableDataSize);
@@ -445,46 +450,63 @@ TryRecv:;
 		return;
 	}
 	
-	NSMutableData *data = [NSMutableData dataWithLength:availableData];
-	CFRetain(data);
+	NSMutableData *buffer = [NSMutableData dataWithLength:availableData];
 	
-	struct sockaddr_storage sender = {};
-	socklen_t senderSize = sizeof(sender);
-	ssize_t actualSize = recvfrom(socketNative, [data mutableBytes], [data length], /* flags */ 0, (struct sockaddr *)&sender, &senderSize);
+	struct iovec storageArea = {
+		.iov_base = [buffer mutableBytes],
+		.iov_len = [buffer length],
+	};
 	
-	CFRelease(data);
+	uint8_t ancillary[1024];
 	
-	if (actualSize == 0) {
+	struct msghdr message = {
+		.msg_name = &from,
+		.msg_namelen = sizeof(from),
+		.msg_iov = &storageArea,
+		.msg_iovlen = 1,
+		.msg_control = &ancillary,
+		.msg_controllen = sizeof(ancillary),
+		.msg_flags = 0,
+	};
+	ssize_t size = recvmsg(socketNative, &message, 0);
+	
+	if (size == 0) {
 		return;
 	}
-	else if (actualSize == -1) {
+	else if (size == -1) {
 		if (errno == EINTR) {
 			goto TryRecv;
 		}
 		return;
 	}
+
+	NSMutableSet *metadata = [NSMutableSet set];
+
+	// Read Metadata
+	do {
+		if (message.msg_controllen < sizeof(struct cmsghdr)) {
+			break;
+		}
+		
+		if ((message.msg_flags & MSG_CTRUNC) == MSG_CTRUNC) {
+			break;
+		}
+		
+		for (struct cmsghdr *controlMessageHeader = CMSG_FIRSTHDR(&message); controlMessageHeader != NULL; controlMessageHeader = CMSG_NXTHDR(&message, controlMessageHeader)) {
+			NSData *value = [NSData dataWithBytes:CMSG_DATA(controlMessageHeader) length:controlMessageHeader->cmsg_len - sizeof(*controlMessageHeader)];
+			AFNetworkSocketOption *option = [[[AFNetworkSocketOption alloc] initWithLevel:controlMessageHeader->cmsg_level option:controlMessageHeader->cmsg_type value:value] autorelease];
+			[metadata addObject:option];
+		}
+	} while (0);
 	
-	[data setLength:actualSize];
+	NSData *senderAddress = [NSData dataWithBytes:&from length:message.msg_namelen];
 	
-	CFSocketSignature *signature = _signature;
-	NSParameterAssert(signature != NULL);
+	[buffer setLength:storageArea.iov_len];
 	
-	CFSocketNativeHandle newSocketNative = socket(sender.ss_family, signature->socketType, signature->protocol);
-	if (newSocketNative == -1) {
-		return;
-	}
-	
-	// WARNING: should we bind() UDP sockets to the address of the socket they were received on, what if the socket has a wildcard address?
-	
-	int connectError = connect(newSocketNative, (struct sockaddr const *)&sender, senderSize);
-	if (connectError == -1) {
-		return;
-	}
-	
-	AFNetworkSocket *newSocket = [self _socketForSocketNative:newSocketNative];
-	
+	AFNetworkDatagram *datagram = [[[AFNetworkDatagram alloc] initWithSenderAddress:senderAddress data:buffer metadata:metadata] autorelease];
+
 	[self _messageDelegate:^ {
-		[self.delegate networkLayer:self didReceiveMessage:data fromSender:newSocket];
+		[self.delegate networkLayer:self didReceiveDatagram:datagram];
 	}];
 }
 

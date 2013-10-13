@@ -116,7 +116,7 @@ bool af_sockaddr_compare(struct sockaddr_storage const *addr_a, struct sockaddr_
 	return false;
 }
 
-int af_sockaddr_ntop(struct sockaddr_storage const *addr, char *destination, size_t destinationSize) {
+int af_sockaddr_ntop(struct sockaddr_storage const *addr, char *destination, socklen_t destinationSize) {
 	return getnameinfo((struct sockaddr const *)addr, addr->ss_len, destination, destinationSize, NULL, 0, NI_NUMERICHOST);
 }
 
@@ -134,6 +134,42 @@ int af_sockaddr_pton(char const *presentation, struct sockaddr_storage *storage)
 	freeaddrinfo(addressInfoList);
 	
 	return 0;
+}
+
+int af_bind(int fileDescriptor, struct sockaddr_storage const *address) {
+	if (address->ss_family == AF_INET6) {
+		/*
+			Note
+			
+			we use getaddrinfo to be address family agnostic
+			
+			however when binding a socket to the wildcard IPv6 address "::" by default OS X also listens on the wildcard IPv4 address "0.0.0.0"
+			
+			a subsequent socket binding to the wildcard IPv4 address will fail with EADDRINUSE even though we didn't actually bind that address in userspace
+			
+			this prevents that behaviour, at the cost of hardcoding per-protocol knowledge into otherwise protocol agnostic code
+		 */
+		int ipv6Only = 1;
+		__unused int ipv6OnlyError = setsockopt(fileDescriptor, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6Only, sizeof(ipv6Only));
+	}
+	
+	return bind(fileDescriptor, (struct sockaddr const*)address, address->ss_len);
+}
+
+bool af_sockaddr_is_multicast(struct sockaddr_storage const *address) {
+	switch (address->ss_family) {
+		case AF_INET:
+		{
+			return IN_MULTICAST(((struct sockaddr_in const *)address)->sin_addr.s_addr);
+		}
+		case AF_INET6:
+		{
+			return IN6_IS_ADDR_MULTICAST(&((struct sockaddr_in6 const *)address)->sin6_addr);
+		}
+	}
+	
+	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"%s, unknown address family (%ld)", __PRETTY_FUNCTION__, (unsigned long)address->ss_family] userInfo:nil];
+	return false;
 }
 
 #pragma mark -
@@ -154,12 +190,34 @@ static BOOL _AFNetworkSocketCheckGetAddressInfoError(int result, NSError **error
 	return NO;
 }
 
+static NSString *_AFNetworkSocketAddressDataIsNotValidError(NSError **errorRef) {
+	if (errorRef != NULL) {
+		NSDictionary *errorInfo = @{
+			NSLocalizedDescriptionKey : NSLocalizedString(@"Socket address data is not valid", @"AFNetwork-Functions invalid sockaddr_storage data"),
+		};
+		*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:errorInfo];
+	}
+	return nil;
+}
+
 NSString *AFNetworkSocketAddressToPresentation(NSData *socketAddress, NSError **errorRef) {
+	if ([socketAddress length] < sizeof(((struct sockaddr_storage const *)NULL)->ss_len)) {
+		return _AFNetworkSocketAddressDataIsNotValidError(errorRef);
+	}
+	
 	CFRetain(socketAddress);
+	
 	struct sockaddr_storage const *socketAddressBytes = (struct sockaddr_storage const *)[socketAddress bytes];
 	
+	__uint8_t length = socketAddressBytes->ss_len;
+	if ([socketAddress length] != length) {
+		CFRelease(socketAddress);
+		
+		return _AFNetworkSocketAddressDataIsNotValidError(errorRef);
+	}
+	
 	char socketAddressPresentation[INET6_ADDRSTRLEN] = {};
-	size_t socketAddressPresentationLength = (sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation));
+	socklen_t socketAddressPresentationLength = (sizeof(socketAddressPresentation) / sizeof(*socketAddressPresentation));
 	
 	int ntopError = af_sockaddr_ntop(socketAddressBytes, socketAddressPresentation, socketAddressPresentationLength);
 	
@@ -252,7 +310,7 @@ NSError *AFNetworkStreamPrepareDisplayError(AFNetworkStreamQueue *stream, NSErro
 	NSString *streamRemoteHostname = [stream streamPropertyForKey:(id)kCFStreamPropertySocketRemoteHostName];
 	
 	if ([[error domain] isEqualToString:(id)kCFErrorDomainCFNetwork] && [error code] == kCFHostErrorUnknown) {
-		int getaddrinfoError = [[[error userInfo] objectForKey:(id)kCFGetAddrInfoFailureKey] integerValue];
+		int getaddrinfoError = [[[error userInfo] objectForKey:(id)kCFGetAddrInfoFailureKey] intValue];
 		
 		NSError *underlyingError = nil;
 		BOOL checkGetaddrinfoError = _AFNetworkSocketCheckGetAddressInfoError(getaddrinfoError, &underlyingError);

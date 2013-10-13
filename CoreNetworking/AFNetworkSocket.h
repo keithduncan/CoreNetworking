@@ -16,20 +16,21 @@
 
 @class AFNetworkSocket;
 @class AFNetworkSchedule;
+@class AFNetworkDatagram;
 
 /*!
 	\brief
 	Delegates must implement the method appropriate for the socket type.
 	SOCK_STREAM socket delegates must implement `-networkLayer:didReceiveConnection:`
-	SOCK_DGRAM socket delegates must implement `-networkLayer:didReceiveMessage:fromSender:`
+	SOCK_DGRAM socket delegates must implement `-networkLayer:didReceiveDatagram:`
  */
 @protocol AFNetworkSocketHostDelegate <NSObject>
 
  @optional
 
-- (void)networkLayer:(AFNetworkSocket *)socket didReceiveConnectionFromSender:(AFNetworkSocket *)sender;
+- (void)networkLayer:(AFNetworkSocket *)socket didReceiveConnection:(AFNetworkSocket *)connection;
 
-- (void)networkLayer:(AFNetworkSocket *)socket didReceiveMessage:(NSData *)message fromSender:(AFNetworkSocket *)sender;
+- (void)networkLayer:(AFNetworkSocket *)socket didReceiveDatagram:(AFNetworkDatagram *)datagram;
 
 @end
 
@@ -51,6 +52,7 @@
 	
  @private
 	AFNETWORK_STRONG CFSocketSignature *_signature;
+	NSSet *_options;
 	
 	NSUInteger _socketFlags;
 	
@@ -64,10 +66,13 @@
 	`AFNetworkServer` uses this method for the addresses passed to its open methods.
 	A socket is created with the given characteristics and the address is set/bound.
 	
+	\param options
+	Options are set on the socket pre-bind() when opening
+	
 	\details
 	If the socket cannot be created they return nil.
  */
-- (id)initWithSocketSignature:(CFSocketSignature const *)signature;
+- (id)initWithSocketSignature:(CFSocketSignature const *)signature options:(NSSet *)options;
 
 /*!
 	\brief

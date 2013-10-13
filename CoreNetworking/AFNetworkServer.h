@@ -170,18 +170,6 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 
 /*!
 	\brief
-	Open an IPv4 address socket and enable NAT-PMP or UPnP for the socket.
-	
-	\details
-	Data received on this socket will have their `localAddress` faked to return the external interface's address
-	When returning providing the address to other network peers, or creating out-of-band channels, they should use this re-written `localAddress`
-	
-	External sockets require the host to be able to bind a wildcard IPv4 address.
- */
-- (BOOL)openExternalSocketWithSocketSignature:(AFNetworkSocketSignature const)socketSignature port:(uint16_t)port error:(NSError **)errorRef;
-
-/*!
-	\brief
 	Opens a UNIX socket at the specified path.
 	
 	\details
@@ -206,13 +194,19 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 	\details
 	Rarely applicable to higher-level servers, sockets are opened on the lowest layer of the stack.
  */
-- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address error:(NSError **)errorRef;
+- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address options:(NSSet *)options error:(NSError **)errorRef;
 
 /*!
 	\brief
-	
+	Called by `-openSocketWithSignature:address:error:` can be used to add externally configured listen sockets such as those inherited from launchd
  */
 - (BOOL)addListenSocket:(AFNetworkSocket *)socket error:(NSError **)errorRef;
+
+/*!
+	\brief
+	Close all listen sockets
+ */
+- (void)closeListenSockets;
 
 /*
  
@@ -220,9 +214,21 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 
 /*!
 	\brief
-	Close all listen sockets
+	Track an externally created connection, kept alive until it closes
  */
-- (void)closeListenSockets;
+- (void)addConnection:(id)connection;
+
+/*!
+	\brief
+	Close all previously received connections
+	
+	If the server is shutting down, listen sockets should be closed first
+ */
+- (void)closeConnections;
+
+/*
+ 
+ */
 
 /*!
 	\brief

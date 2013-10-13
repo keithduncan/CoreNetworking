@@ -41,7 +41,7 @@
 
 - (void)_cleanup {
 	[self invalidate];
-	
+
 	if (_dispatchSource != NULL) {
 		dispatch_release(_dispatchSource);
 	}

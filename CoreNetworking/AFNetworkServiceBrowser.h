@@ -43,7 +43,7 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 
 /*!
 	\brief
-	Query the DNS services including link-local multicast for services matching a pattern.
+	Query DNS (including link-local multicast) for services matching a pattern.
  */
 @interface AFNetworkServiceBrowser : NSObject {
  @private
@@ -115,5 +115,3 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 - (void)invalidate;
 
 @end
-
-extern AFNetworkServiceScope *_AFNetworkServiceBrowserParseEscapedRecord(uint16_t rdlen, uint8_t const *rdata);

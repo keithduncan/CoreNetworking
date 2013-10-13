@@ -38,6 +38,7 @@
 - (AFNetworkLayer *)_encapsulateNetworkLayer:(AFNetworkLayer *)layer;
 - (void)_fullyEncapsulateLayer:(AFNetworkLayer *)layer;
 - (void)_scheduleLayer:(id)layer;
+- (void)_unscheduleLayer:(id)layer;
 @end
 
 @implementation AFNetworkServer
@@ -181,7 +182,7 @@
 	
 	for (NSData *currentSocketAddress in socketAddresses) {
 		NSError *currentSocketObjectError = nil;
-		AFNetworkSocket *currentSocketObject = [self openSocketWithSignature:socketSignature address:currentSocketAddress error:&currentSocketObjectError];
+		AFNetworkSocket *currentSocketObject = [self openSocketWithSignature:socketSignature address:currentSocketAddress options:nil error:&currentSocketObjectError];
 		if (currentSocketObject == nil) {
 			if (errorHandler != nil) {
 				BOOL errorHandlerValue = errorHandler(currentSocketAddress, currentSocketObjectError);
@@ -208,47 +209,6 @@
 	return YES;
 }
 
-- (BOOL)openExternalSocketWithSocketSignature:(AFNetworkSocketSignature const)socketSignature port:(uint16_t)port error:(NSError **)errorRef {
-	struct sockaddr_in address = {
-		.sin_len = sizeof(address),
-		.sin_family = AF_INET,
-		.sin_port = htons(port),
-		.sin_addr = {
-			.s_addr = INADDR_ANY,
-		},
-	};
-	NSData *addressData = [NSData dataWithBytes:&address length:address.sin_len];
-	
-	AFNetworkSocket *socket = [self openSocketWithSignature:socketSignature address:addressData error:errorRef];
-	if (socket == nil) {
-		return NO;
-	}
-	
-	struct sockaddr_in localAddress = {};
-	NSData *localAddressData = [socket localAddress];
-	if ([localAddressData length] > sizeof(localAddress)) {
-		if (errorRef != NULL) {
-			*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:nil];
-		}
-		return NO;
-	}
-	
-	struct sockaddr_in suggestedExternalAddress = {
-		.sin_len = sizeof(suggestedExternalAddress),
-		.sin_family = AF_INET,
-		.sin_port = localAddress.sin_port,
-		.sin_addr = {
-			.s_addr = INADDR_ANY,
-		},
-	};
-	NSData *suggestedExternalAddressData = [NSData dataWithBytes:&suggestedExternalAddress length:suggestedExternalAddress.sin_len];
-	
-	AFNetworkPortMapper *portMapper = [[[AFNetworkPortMapper alloc] initWithSocketSignature:socketSignature localAddress:[socket localAddress] suggestedExternalAddress:suggestedExternalAddressData] autorelease];
-	[self _scheduleLayer:portMapper];
-	
-	
-}
-
 - (BOOL)openPathSocketWithLocation:(NSURL *)location error:(NSError **)errorRef {
 	NSParameterAssert([location isFileURL]);
 	
@@ -272,7 +232,7 @@
 	
 	NSData *addressData = [NSData dataWithBytes:&address length:address.sun_len];
 	
-	AFNetworkSocket *socket = [self openSocketWithSignature:signature address:addressData error:errorRef];
+	AFNetworkSocket *socket = [self openSocketWithSignature:signature address:addressData options:nil error:errorRef];
 	if (socket == nil) {
 		return NO;
 	}
@@ -280,13 +240,13 @@
 	return YES;
 }
 
-- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address error:(NSError **)errorRef {
+- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address options:(NSSet *)options error:(NSError **)errorRef {
 	NSParameterAssert(self.listeners != nil);
 	NSParameterAssert(self.schedule != nil);
 	
 	CFRetain(address);
 	
-	unsigned long protocolFamily = ((struct sockaddr_storage const *)[address bytes])->ss_family;
+	sa_family_t protocolFamily = ((struct sockaddr_storage const *)[address bytes])->ss_family;
 	
 	CFSocketSignature socketSignature = {
 		.protocolFamily = protocolFamily,
@@ -295,19 +255,9 @@
 		.address = (CFDataRef)address,
 	};
 	
-	AFNetworkSocket *newSocket = [[[AFNetworkSocket alloc] initWithSocketSignature:&socketSignature] autorelease];
+	AFNetworkSocket *newSocket = [[[AFNetworkSocket alloc] initWithSocketSignature:&socketSignature options:options] autorelease];
 	
 	CFRelease(address);
-	
-	if (newSocket == nil) {
-		if (errorRef != NULL) {
-			NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									   [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"Couldn\u2019t open socket with protocol family \u201c%ld\u201d", nil, [NSBundle bundleWithIdentifier:AFCoreNetworkingBundleIdentifier], @"AFNetworkServer open socket protocol family not supported"), (unsigned long)protocolFamily], NSLocalizedDescriptionKey,
-									   nil];
-			*errorRef = [NSError errorWithDomain:AFCoreNetworkingBundleIdentifier code:AFNetworkErrorUnknown userInfo:errorInfo];
-		}
-		return nil;
-	}
 	
 	BOOL addListen = [self addListenSocket:newSocket error:errorRef];
 	if (!addListen) {
@@ -319,6 +269,7 @@
 
 - (BOOL)addListenSocket:(AFNetworkSocket *)socket error:(NSError **)errorRef {
 	[self _scheduleLayer:socket];
+	[socket setDelegate:self];
 	
 	BOOL open = [socket open:errorRef];
 	if (!open) {
@@ -332,28 +283,40 @@
 
 - (void)closeListenSockets {
 	for (AFNetworkSocket *currentLayer in self.listeners) {
+		[self _unscheduleLayer:currentLayer];
 		[currentLayer close];
 	}
 	[self.listeners removeAllObjects];
 }
 
-- (void)close {
-	[self closeListenSockets];
+- (void)addConnection:(id)connection {
+	[self configureLayer:connection];
 	
+	[self.connections addObject:connection];
+}
+
+- (void)closeConnections {
 	for (AFNetworkLayer <AFNetworkTransportLayer> *currentLayer in self.connections) {
+		[self _unscheduleLayer:currentLayer];
 		[currentLayer close];
 	}
 	[self.connections removeAllObjects];
 }
 
+- (void)close {
+	[self closeListenSockets];
+	
+	[self closeConnections];
+}
+
 #pragma mark - Delegate
 
-- (void)networkLayer:(id)layer didReceiveConnectionFromSender:(AFNetworkSocket *)sender {
+- (void)networkLayer:(id)layer didReceiveConnection:(AFNetworkSocket *)sender {
 	NSParameterAssert([self.listeners containsObject:layer]);
 	
 	BOOL shouldAccept = YES;
 	if ([self.delegate respondsToSelector:@selector(networkServer:shouldAcceptConnection:)]) {
-		shouldAccept = [self.delegate networkServer:self shouldAcceptConnection:sender];
+		shouldAccept = [self.delegate networkServer:self shouldAcceptConnection:(id)sender];
 	}
 	
 	if (!shouldAccept) {
@@ -362,7 +325,7 @@
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(networkServer:didAcceptConnection:)]) {
-		[self.delegate networkServer:self didAcceptConnection:sender];
+		[self.delegate networkServer:self didAcceptConnection:(id)sender];
 	}
 	
 	[self _fullyEncapsulateLayer:sender];
@@ -374,9 +337,11 @@
 
 - (void)networkLayerDidClose:(id <AFNetworkConnectionLayer>)layer {
 	if ([self.listeners containsObject:layer]) {
+		[self _unscheduleLayer:layer];
 		[self.listeners removeObject:layer];
 	}
 	else if ([self.connections containsObject:layer]) {
+		[self _unscheduleLayer:layer];
 		[self.connections removeObject:layer];
 	}
 	else {
@@ -384,12 +349,13 @@
 	}
 }
 
-- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didReceiveError:(NSError *)error {
-	[(id)self.delegate networkLayer:layer didReceiveError:error];
+- (void)networkLayer:(id <AFNetworkConnectionLayer>)layer didReceiveError:(NSError *)error {
+	[layer close];
 }
 
 - (void)configureLayer:(id)layer {
-	
+	[self _scheduleLayer:layer];
+	[layer setDelegate:self];
 }
 
 @end
@@ -441,8 +407,7 @@
 		currentLayer = encapsulatedLayer;
 	}
 	
-	[self configureLayer:currentLayer];
-	[self.connections addObject:currentLayer];
+	[self addConnection:currentLayer];
 	
 	[(id <AFNetworkTransportLayer>)currentLayer open];
 }
@@ -464,8 +429,10 @@
 	else {
 		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment" userInfo:nil];
 	}
-	
-	[layer setDelegate:self];
+}
+
+- (void)_unscheduleLayer:(id)layer {
+	[layer setDelegate:nil];
 }
 
 @end

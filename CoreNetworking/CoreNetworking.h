@@ -16,11 +16,14 @@
 #import "CoreNetworking/AFNetworkTransportLayer.h"
 #import "CoreNetworking/AFNetworkConnectionLayer.h"
 
+#import "CoreNetworking/AFNetworkSocketOption.h"
+
 #import "CoreNetworking/AFNetworkSocket.h"
 #import "CoreNetworking/AFNetworkTransport.h"
 #import "CoreNetworking/AFNetworkStreamQueue.h"
-#import "CoreNetworking/AFNetworkStream.h"
 #import "CoreNetworking/AFNetworkConnection.h"
+
+#import "CoreNetworking/AFNetworkDatagram.h"
 
 #import "CoreNetworking/AFNetworkPacketQueue.h"
 #import "CoreNetworking/AFNetworkPacket.h"

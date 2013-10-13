@@ -18,22 +18,19 @@
 
 /*!
 	\brief
-	The source must be scheduled in at least one run loop to function.
+	A connection must be scheduled in at least one environment to function.
  */
 - (void)scheduleInRunLoop:(NSRunLoop *)runLoop forMode:(NSString *)mode;
 
 /*!
 	\brief
-	Creates a dispatch source internally.
-	
-	\param queue
-	A layer can only be scheduled in a single queue at a time, to unschedule it pass NULL.
+	A connection must be scheduled in at least one environment to function.
  */
 - (void)scheduleInQueue:(dispatch_queue_t)queue;
 
 /*!
 	\brief
-	
+	Issue the request
  */
 - (void)start;
 
