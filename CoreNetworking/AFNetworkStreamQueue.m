@@ -166,10 +166,20 @@ typedef AFNETWORK_OPTIONS(NSUInteger, _AFNetworkStreamFlags) {
 - (void)_resumeSources {
 	AFNetworkSchedule *schedule = self.schedule;
 	
+	NSStream *stream = self.stream;
+	
 	if (schedule->_runLoop != nil) {
 		NSRunLoop *runLoop = schedule->_runLoop;
 		
-		[self.stream scheduleInRunLoop:runLoop forMode:schedule->_runLoopMode];
+		[stream scheduleInRunLoop:runLoop forMode:schedule->_runLoopMode];
+	}
+	else if (schedule->_dispatchQueue != NULL) {
+		if ([stream isKindOfClass:[NSOutputStream class]]) {
+			CFReadStreamSetDispatchQueue((CFReadStreamRef)stream, schedule->_dispatchQueue);
+		}
+		else if ([stream isKindOfClass:[NSInputStream class]]) {
+			CFWriteStreamSetDispatchQueue((CFWriteStreamRef)stream, schedule->_dispatchQueue);
+		}
 	}
 	else {
 		@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unsupported schedule environment, cannot resume stream" userInfo:nil];
