@@ -10,13 +10,15 @@
 
 @interface AFNetworkSocketOption : NSObject
 
-+ (instancetype)optionWithLevel:(int)level option:(int)option value:(NSData *)value;
++ (instancetype)optionWithLevel:(int)level option:(int)option value:(NSValue *)value;
 
-- (id)initWithLevel:(int)level option:(int)option value:(NSData *)value;
++ (instancetype)optionWithLevel:(int)level option:(int)option data:(NSData *)data;
+
+- (id)initWithLevel:(int)level option:(int)option data:(NSData *)data;
 
 @property (readonly, assign, nonatomic) int level;
 @property (readonly, assign, nonatomic) int option;
 
-@property (readonly, copy, nonatomic) NSData *value;
+@property (readonly, copy, nonatomic) NSData *data;
 
 @end
