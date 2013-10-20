@@ -162,12 +162,12 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 	
 #if DEBUGFULL
 	int reuseAddress = 1;
-	AFNetworkSocketOption *reuseAddressOption = [[[AFNetworkSocketOption alloc] initWithLevel:SOL_SOCKET option:SO_REUSEADDR value:[NSData dataWithBytes:&reuseAddress length:sizeof(reuseAddress)]] autorelease];
+	AFNetworkSocketOption *reuseAddressOption = [[[AFNetworkSocketOption alloc] initWithLevel:SOL_SOCKET option:SO_REUSEADDR data:[NSData dataWithBytes:&reuseAddress length:sizeof(reuseAddress)]] autorelease];
 	[options addObject:reuseAddressOption];
 #endif /* DEBUGFULL */
 	
 	for (AFNetworkSocketOption *currentOption in options) {
-		NSData *currentValue = currentOption.value;
+		NSData *currentValue = currentOption.data;
 		int setOption = setsockopt(socketNative, currentOption.level, currentOption.option, currentValue.bytes, (socklen_t)currentValue.length);
 		if (setOption != 0) {
 			if (errorRef != NULL) {
@@ -489,7 +489,7 @@ TryRecv:;
 		
 		for (struct cmsghdr *controlMessageHeader = CMSG_FIRSTHDR(&message); controlMessageHeader != NULL; controlMessageHeader = CMSG_NXTHDR(&message, controlMessageHeader)) {
 			NSData *value = [NSData dataWithBytes:CMSG_DATA(controlMessageHeader) length:controlMessageHeader->cmsg_len - sizeof(*controlMessageHeader)];
-			AFNetworkSocketOption *option = [[[AFNetworkSocketOption alloc] initWithLevel:controlMessageHeader->cmsg_level option:controlMessageHeader->cmsg_type value:value] autorelease];
+			AFNetworkSocketOption *option = [[[AFNetworkSocketOption alloc] initWithLevel:controlMessageHeader->cmsg_level option:controlMessageHeader->cmsg_type data:value] autorelease];
 			[metadata addObject:option];
 		}
 	} while (0);
