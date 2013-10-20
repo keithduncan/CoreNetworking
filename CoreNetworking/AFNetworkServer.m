@@ -127,10 +127,10 @@
 	return [self delegateProxy:nil];
 }
 
-- (BOOL)openInternetSocketsWithSocketSignature:(AFNetworkSocketSignature const)socketSignature scope:(AFNetworkInternetSocketScope)scope port:(uint16_t)port errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler {
+- (BOOL)openInternetSocketsWithSignature:(AFNetworkSocketSignature)signature options:(NSSet *)options scope:(AFNetworkInternetSocketScope)scope port:(uint16_t)port errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler {
 	struct addrinfo hints = {
 		.ai_family = AF_UNSPEC,
-		.ai_socktype = socketSignature.socketType,
+		.ai_socktype = signature.socketType,
 		.ai_flags = AI_PASSIVE,
 	};
 	struct addrinfo *addresses = NULL;
@@ -173,16 +173,16 @@
 	
 	freeaddrinfo(addresses);
 	
-	return [self openInternetSocketsWithSocketSignature:socketSignature socketAddresses:socketAddresses errorHandler:errorHandler];
+	return [self openInternetSocketsWithSignature:signature options:options addresses:socketAddresses errorHandler:errorHandler];
 }
 
-- (BOOL)openInternetSocketsWithSocketSignature:(AFNetworkSocketSignature const)socketSignature socketAddresses:(NSSet *)socketAddresses errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler {
-	NSMutableSet *socketObjects = [NSMutableSet setWithCapacity:[socketAddresses count]];
+- (BOOL)openInternetSocketsWithSignature:(AFNetworkSocketSignature)socketSignature options:(NSSet *)options addresses:(NSSet *)addresses errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler {
+	NSMutableSet *socketObjects = [NSMutableSet setWithCapacity:[addresses count]];
 	BOOL shouldCloseSocketObjects = NO;
 	
-	for (NSData *currentSocketAddress in socketAddresses) {
+	for (NSData *currentSocketAddress in addresses) {
 		NSError *currentSocketObjectError = nil;
-		AFNetworkSocket *currentSocketObject = [self openSocketWithSignature:socketSignature address:currentSocketAddress options:nil error:&currentSocketObjectError];
+		AFNetworkSocket *currentSocketObject = [self openSocketWithSignature:socketSignature options:options address:currentSocketAddress error:&currentSocketObjectError];
 		if (currentSocketObject == nil) {
 			if (errorHandler != nil) {
 				BOOL errorHandlerValue = errorHandler(currentSocketAddress, currentSocketObjectError);
@@ -209,10 +209,10 @@
 	return YES;
 }
 
-- (BOOL)openPathSocketWithLocation:(NSURL *)location error:(NSError **)errorRef {
+- (BOOL)openPathSocketWithLocation:(NSURL *)location options:(NSSet *)options error:(NSError **)errorRef {
 	NSParameterAssert([location isFileURL]);
 	
-	AFNetworkSocketSignature signature = (AFNetworkSocketSignature){
+	AFNetworkSocketSignature signature = {
 		.socketType = SOCK_STREAM,
 		.protocol = 0,
 	};
@@ -232,7 +232,7 @@
 	
 	NSData *addressData = [NSData dataWithBytes:&address length:address.sun_len];
 	
-	AFNetworkSocket *socket = [self openSocketWithSignature:signature address:addressData options:nil error:errorRef];
+	AFNetworkSocket *socket = [self openSocketWithSignature:signature options:options address:addressData error:errorRef];
 	if (socket == nil) {
 		return NO;
 	}
@@ -240,7 +240,7 @@
 	return YES;
 }
 
-- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address options:(NSSet *)options error:(NSError **)errorRef {
+- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature)signature options:(NSSet *)options address:(NSData *)address error:(NSError **)errorRef {
 	NSParameterAssert(self.listeners != nil);
 	NSParameterAssert(self.schedule != nil);
 	

@@ -152,19 +152,28 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 
 /*!
 	\brief
-	Provides a socket address construction API and calls
-	-openInternetSocketsWithSocketSignature:socketAddresses:errorHandler:, see
-	its documentation for more information.
+	Constructis socket addresses from scope and port, calls `-openInternetSocketsWithSocketSignature:socketAddresses:errorHandler:`,
+	see its documentation for more information.
+	
+	\details
+	The scope and port arguments are combined to generate appropraite socket
+	addresses.
 	
 	\param scope
 	`AFNetworkInternetSocketScopeLocalOnly` opens sockets using the localhost
 	addresses.
 	`AFNetworkInternetSocketScopeGlobal` opens sockets using wildcard addresses.
 	
+	\param errorHandler
+	Can be called if there is an error mapping scope+port to socket addresses,
+	in this case returning YES will not allow the server to continue. See the
+	documentation for `-openInternetSocketsWithSocketSignature:options:socketAddresses:errorHandler:`
+	for more details.
+	
 	\param port
 	Transport layer port, can pass 0 to have an address chosen by the system.
  */
-- (BOOL)openInternetSocketsWithSocketSignature:(AFNetworkSocketSignature const)socketSignature scope:(AFNetworkInternetSocketScope)scope port:(uint16_t)port errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler;
+- (BOOL)openInternetSocketsWithSignature:(AFNetworkSocketSignature)socketSignature options:(NSSet *)options scope:(AFNetworkInternetSocketScope)scope port:(uint16_t)port errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler;
 
 /*!
 	\brief
@@ -176,7 +185,7 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 	
 	Use getaddrinfo to be IP address family agnostic and avoid hard coding
 	address families in the userspace.
-	
+ 
 	If any of the socket addresses cannot be opened:
 	- if no errorHandler parameter is provided, all sockets opened by the
 	  current message are closed and NO is returned.
@@ -185,12 +194,26 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 		- if the errorHandler returns NO, all sockets opened by the current
 		  message are closed and NO is returned.
 		- if the errorHandler returns YES, the enumeration continues.
+ 
+	\param signature
+	The listen socket type to create, stream or datagram and which transport
+	protocol to layer on top.
+ 
+	\param options
+	Options for `setsockopt`, these are set on each socket created before the
+	socket is bound to its address.
+	
+	\param addresses
+	Socket addresses to bind and listen on.
+ 
+	\param errorHandler
+	Control how the server should proceed when opening a socket address fails.
 	
 	\return
 	NO if any of the sockets couldn't be created (in which case this method is
 	idempotent), YES if all sockets were successfully created.
  */
-- (BOOL)openInternetSocketsWithSocketSignature:(AFNetworkSocketSignature const)socketSignature socketAddresses:(NSSet *)socketAddresses errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler;
+- (BOOL)openInternetSocketsWithSignature:(AFNetworkSocketSignature)signature options:(NSSet *)options addresses:(NSSet *)addresses errorHandler:(BOOL (^)(NSData *, NSError *))errorHandler;
 
 /*!
 	\brief
@@ -203,11 +226,15 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 	\param location
 	Only file scheme URLs are supported, an exception is thrown if you provide
 	another scheme.
+ 
+	\param options
+	Options for `setsockopt`, these are set on each socket created before the
+	socket is bound to its address.
 	
 	\return
 	NO if the socket couldn't be created.
  */
-- (BOOL)openPathSocketWithLocation:(NSURL *)location error:(NSError **)errorRef;
+- (BOOL)openPathSocketWithLocation:(NSURL *)location options:(NSSet *)options error:(NSError **)errorRef;
 
 /*
  
@@ -216,8 +243,11 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 /*!
 	\brief
 	This is a funnel method, all the socket opening methods call this one.
+	
+	\details
+	Does not add the socket to the listen socket set of the server.
  */
-- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature const)signature address:(NSData *)address options:(NSSet *)options error:(NSError **)errorRef;
+- (AFNetworkSocket *)openSocketWithSignature:(AFNetworkSocketSignature)signature options:(NSSet *)options address:(NSData *)address error:(NSError **)errorRef;
 
 /*!
 	\brief
