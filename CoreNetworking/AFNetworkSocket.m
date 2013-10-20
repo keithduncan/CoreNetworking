@@ -388,11 +388,8 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 }
 
 - (void)_acceptCallback {
-	struct sockaddr *newSocketAddress = alloca(SOCK_MAXADDRLEN);
-	socklen_t newSocketAddressLength = sizeof(newSocketAddress);
-	
 TryAccept:;
-	CFSocketNativeHandle newSocketNative = accept(self.socketNative, newSocketAddress, &newSocketAddressLength);
+	CFSocketNativeHandle newSocketNative = accept(self.socketNative, NULL, NULL);
 	if (newSocketNative == -1) {
 		if (errno == EINTR) {
 			goto TryAccept;
@@ -423,14 +420,12 @@ TryAccept:;
 		return;
 	}
 	
-	__unused NSData *newSocketAddressData = [NSData dataWithBytes:&newSocketAddress length:newSocketAddressLength];
-	
 	AFNetworkSocket *newSocket = [self _socketForSocketNative:newSocketNative];
 	if (newSocket == nil) {
 		close(newSocketNative);
 		return;
 	}
-
+	
 	[self _messageDelegate:^ {
 		[self.delegate networkLayer:self didReceiveConnection:newSocket];
 	}];
