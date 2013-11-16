@@ -17,6 +17,7 @@
 @class AFNetworkSocket;
 @class AFNetworkSchedule;
 @class AFNetworkDatagram;
+@class AFNetworkSocketOption;
 
 /*!
 	\brief
@@ -119,5 +120,11 @@
 	This is likely to be of most use when determining the reachbility of an endpoint.
  */
 @property (readonly, nonatomic) NSData *peerAddress;
+
+/*!
+	\brief
+	Set socket option.
+ */
+- (BOOL)setOption:(AFNetworkSocketOption *)option error:(NSError **)errorRef;
 
 @end

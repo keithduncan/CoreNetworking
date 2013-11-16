@@ -167,12 +167,8 @@ struct _AFNetworkSocket_CompileTimeAssertion {
 #endif /* DEBUGFULL */
 	
 	for (AFNetworkSocketOption *currentOption in options) {
-		NSData *currentValue = currentOption.data;
-		int setOption = setsockopt(socketNative, currentOption.level, currentOption.option, currentValue.bytes, (socklen_t)currentValue.length);
-		if (setOption != 0) {
-			if (errorRef != NULL) {
-				*errorRef = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:nil];
-			}
+		BOOL set = [self _setOption:currentOption socket:socketNative error:errorRef];
+		if (!set) {
 			return NO;
 		}
 	}
@@ -532,6 +528,28 @@ TryRecv:;
 	}
 	
 	return [NSData dataWithBytes:&address length:addressSize];
+}
+
+- (BOOL)setOption:(AFNetworkSocketOption *)option error:(NSError **)errorRef {
+	return [self _setOption:option socket:_socketNative error:errorRef];
+}
+
+- (BOOL)_setOption:(AFNetworkSocketOption *)option socket:(CFSocketNativeHandle)socket error:(NSError **)errorRef {
+	NSData *currentData = option.data;
+TrySetOpt:;
+	int setOption = setsockopt(socket, option.level, option.option, currentData.bytes, (socklen_t)currentData.length);
+	if (setOption != 0) {
+		if (errno == EINTR) {
+			goto TrySetOpt;
+		}
+		
+		if (errorRef != NULL) {
+			*errorRef = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:nil];
+		}
+		return NO;
+	}
+	
+	return YES;
 }
 
 @end
