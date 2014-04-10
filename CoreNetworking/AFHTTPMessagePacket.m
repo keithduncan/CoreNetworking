@@ -147,7 +147,7 @@ typedef NSUInteger AFHTTPMessagePacketState;
 }
 
 - (void)_unobserveAndClearCurrentPacket {
-	AFNetworkPacket <AFNetworkPacketReading> *currentPacket = self.currentRead;
+	AFNetworkPacket <AFNetworkPacketReading> *currentPacket = [[self.currentRead retain] autorelease];
 	if (currentPacket == nil) {
 		return;
 	}
