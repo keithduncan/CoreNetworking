@@ -79,7 +79,7 @@ NSInteger AFHTTPMessageGetExpectedBodyLength(CFHTTPMessageRef message) {
 }
 
 - (void)_unobserveAndClearCurrentPacket {
-	AFNetworkPacket <AFNetworkPacketReading> *currentPacket = self.currentRead;
+	AFNetworkPacket <AFNetworkPacketReading> *currentPacket = [[self.currentRead retain] autorelease];
 	if (currentPacket == nil) {
 		return;
 	}

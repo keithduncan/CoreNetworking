@@ -162,7 +162,7 @@ AFNETWORK_NSSTRING_CONSTANT(AFHTTPBodyPacketDidReadDataKey);
 }
 
 - (void)_unobserveAndClearCurrentPacket {
-	AFNetworkPacket <AFNetworkPacketReading> *currentPacket = self.currentRead;
+	AFNetworkPacket <AFNetworkPacketReading> *currentPacket = [[self.currentRead retain] autorelease];
 	if (currentPacket == nil) {
 		return;
 	}
