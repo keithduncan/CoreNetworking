@@ -24,11 +24,6 @@
 	\brief
 	An `AFNetworkTransportLayer` object should encapsulate data (as defined in
 	IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122>).
-	
-	\details
-	A layer should pass data to it's superclass for further processing, the
-	top-level superclass will pass the data to the lower layer. This creates a
-	two dimensional chain allowing for maximum flexiblity.
 */
 @protocol AFNetworkTransportLayer <NSObject>
 
