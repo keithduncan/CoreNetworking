@@ -411,7 +411,7 @@
 	[(id <AFNetworkTransportLayer>)currentLayer open];
 }
 
-- (void)_scheduleLayer:(id)layer {
+- (void)_scheduleLayer:(AFNetworkLayer *)layer {
 	AFNetworkSchedule *schedule = self.schedule;
 	NSParameterAssert(schedule != nil);
 	
@@ -430,7 +430,7 @@
 	}
 }
 
-- (void)_unscheduleLayer:(id)layer {
+- (void)_unscheduleLayer:(AFNetworkLayer *)layer {
 	[layer setDelegate:nil];
 }
 
