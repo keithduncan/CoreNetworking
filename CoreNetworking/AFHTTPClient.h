@@ -21,7 +21,7 @@
 @class AFNetworkPacketQueue;
 @class AFHTTPTransaction;
 
-@protocol AFHTTPClientDelegate <AFHTTPConnectionDelegate>
+@protocol AFHTTPClientDelegate
 
 - (void)networkConnection:(AFHTTPClient *)connection didReceiveResponse:(CFHTTPMessageRef)response context:(void *)context;
 

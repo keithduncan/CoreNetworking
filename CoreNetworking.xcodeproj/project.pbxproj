@@ -20,6 +20,10 @@
 		530911790F646BAA00525632 /* AFNetwork-Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 530911770F646BAA00525632 /* AFNetwork-Constants.m */; };
 		5309117C0F646BAA00525632 /* AFNetwork-Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 530911760F646BAA00525632 /* AFNetwork-Constants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5309117D0F646BAA00525632 /* AFNetwork-Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 530911770F646BAA00525632 /* AFNetwork-Constants.m */; };
+		530F7EEF1A27A0B2002FAB5B /* AFNetworkConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 530F7EED1A27A0B2002FAB5B /* AFNetworkConnection.h */; };
+		530F7EF01A27A0B2002FAB5B /* AFNetworkConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 530F7EED1A27A0B2002FAB5B /* AFNetworkConnection.h */; };
+		530F7EF11A27A0B2002FAB5B /* AFNetworkConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 530F7EEE1A27A0B2002FAB5B /* AFNetworkConnection.m */; };
+		530F7EF21A27A0B2002FAB5B /* AFNetworkConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 530F7EEE1A27A0B2002FAB5B /* AFNetworkConnection.m */; };
 		5313CE56176E656100B741AE /* AFNetworkSocketOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313CE54176E656100B741AE /* AFNetworkSocketOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5313CE57176E656100B741AE /* AFNetworkSocketOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 5313CE54176E656100B741AE /* AFNetworkSocketOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5313CE58176E656100B741AE /* AFNetworkSocketOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 5313CE55176E656100B741AE /* AFNetworkSocketOption.m */; };
@@ -229,6 +233,8 @@
 		5301E29514CCA18B0045F87C /* AFNetworkService-Functions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "AFNetworkService-Functions.m"; path = "CoreNetworking/AFNetworkService-Functions.m"; sourceTree = SOURCE_ROOT; };
 		530911760F646BAA00525632 /* AFNetwork-Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AFNetwork-Constants.h"; path = "CoreNetworking/AFNetwork-Constants.h"; sourceTree = SOURCE_ROOT; };
 		530911770F646BAA00525632 /* AFNetwork-Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "AFNetwork-Constants.m"; path = "CoreNetworking/AFNetwork-Constants.m"; sourceTree = SOURCE_ROOT; };
+		530F7EED1A27A0B2002FAB5B /* AFNetworkConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkConnection.h; path = CoreNetworking/AFNetworkConnection.h; sourceTree = "<group>"; };
+		530F7EEE1A27A0B2002FAB5B /* AFNetworkConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkConnection.m; path = CoreNetworking/AFNetworkConnection.m; sourceTree = "<group>"; };
 		5313CE54176E656100B741AE /* AFNetworkSocketOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkSocketOption.h; path = CoreNetworking/AFNetworkSocketOption.h; sourceTree = "<group>"; };
 		5313CE55176E656100B741AE /* AFNetworkSocketOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkSocketOption.m; path = CoreNetworking/AFNetworkSocketOption.m; sourceTree = "<group>"; };
 		5315B13C124DF1AF009A6280 /* AFHTTPBodyPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPBodyPacket.h; path = CoreNetworking/AFHTTPBodyPacket.h; sourceTree = SOURCE_ROOT; };
@@ -478,6 +484,8 @@
 				53C0B63D113DAD360011A604 /* AFNetworkStreamQueue.m */,
 				53A9875C16B1BBE300EBDB3F /* AFNetworkStream.h */,
 				53A9875D16B1BBE300EBDB3F /* AFNetworkStream.m */,
+				530F7EED1A27A0B2002FAB5B /* AFNetworkConnection.h */,
+				530F7EEE1A27A0B2002FAB5B /* AFNetworkConnection.m */,
 			);
 			name = Implementations;
 			sourceTree = "<group>";
@@ -683,6 +691,7 @@
 				53151A430FC49A2B0026E2F1 /* AFHTTPConnection.h in Headers */,
 				53151A440FC49A300026E2F1 /* AFHTTPTransaction.h in Headers */,
 				533508260FD6FC4E004FFF97 /* AFHTTPClient.h in Headers */,
+				530F7EEF1A27A0B2002FAB5B /* AFNetworkConnection.h in Headers */,
 				53D25F670FEAFED200490AA8 /* AFHTTPMessagePacket.h in Headers */,
 				53D6A4C50FF7B72F002E05CC /* AFNetworkXMLElementPacket.h in Headers */,
 				538307B1101384DF000DA939 /* AFHTTPMessage.h in Headers */,
@@ -738,6 +747,7 @@
 				53151A410FC49A280026E2F1 /* AFHTTPConnection.h in Headers */,
 				53151A470FC49A350026E2F1 /* AFHTTPTransaction.h in Headers */,
 				533508280FD6FC4E004FFF97 /* AFHTTPClient.h in Headers */,
+				530F7EF01A27A0B2002FAB5B /* AFNetworkConnection.h in Headers */,
 				53D25F690FEAFED600490AA8 /* AFHTTPMessagePacket.h in Headers */,
 				53D6A4C30FF7B72F002E05CC /* AFNetworkXMLElementPacket.h in Headers */,
 				538307B3101384DF000DA939 /* AFHTTPMessage.h in Headers */,
@@ -935,6 +945,7 @@
 				535677D1126B8DC8002872B2 /* AFNetworkDelegateProxy.m in Sources */,
 				53CB1DA514462B430013C40A /* AFNetworkServiceBrowser.m in Sources */,
 				53CB1DAB14462C350013C40A /* AFNetworkServiceScope.m in Sources */,
+				530F7EF11A27A0B2002FAB5B /* AFNetworkConnection.m in Sources */,
 				53CB1E7F144645F40013C40A /* AFNetworkServicePublisher.m in Sources */,
 				53CB1E85144646000013C40A /* AFNetworkServiceResolver.m in Sources */,
 				538AA1C91446D9C2003EEEE4 /* AFNetworkService-Constants.m in Sources */,
@@ -989,6 +1000,7 @@
 				535677D3126B8DC8002872B2 /* AFNetworkDelegateProxy.m in Sources */,
 				53CB1DA614462B430013C40A /* AFNetworkServiceBrowser.m in Sources */,
 				53CB1DAC14462C350013C40A /* AFNetworkServiceScope.m in Sources */,
+				530F7EF21A27A0B2002FAB5B /* AFNetworkConnection.m in Sources */,
 				53CB1E80144645F40013C40A /* AFNetworkServicePublisher.m in Sources */,
 				53CB1E86144646000013C40A /* AFNetworkServiceResolver.m in Sources */,
 				538AA1CA1446D9C2003EEEE4 /* AFNetworkService-Constants.m in Sources */,

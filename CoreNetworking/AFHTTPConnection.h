@@ -16,23 +16,11 @@
 
 @class AFHTTPConnection;
 
-@protocol AFHTTPConnectionControlDelegate <AFNetworkConnectionControlDelegate>
-
-@end
-
-@protocol AFHTTPConnectionDataDelegate <AFNetworkConnectionDataDelegate>
+@protocol AFHTTPConnectionDataDelegate
 
 - (void)networkConnection:(AFHTTPConnection *)connection didReceiveRequest:(CFHTTPMessageRef)request;
 
 - (void)networkConnection:(AFHTTPConnection *)connection didReceiveResponse:(CFHTTPMessageRef)response;
-
-@end
-
-/*!
-	\brief
-	Wrapper protocol.
- */
-@protocol AFHTTPConnectionDelegate <AFNetworkConnectionDelegate, AFHTTPConnectionControlDelegate, AFHTTPConnectionDataDelegate>
 
 @end
 
@@ -54,7 +42,7 @@
 	\brief
 	This property adds HTTP message data callbacks to the delegate.
  */
-@property (assign, nonatomic) id <AFHTTPConnectionDelegate> delegate;
+@property (assign, nonatomic) id <AFHTTPConnectionDataDelegate> delegate;
 
 /*!
 	\brief
