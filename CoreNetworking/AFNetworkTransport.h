@@ -13,8 +13,6 @@
 
 #import "CoreNetworking/AFNetworkLayer.h"
 
-#import "CoreNetworking/AFNetworkConnectionLayer.h"
-
 #import "CoreNetworking/AFNetwork-Types.h"
 
 @class AFNetworkTransport;
@@ -23,23 +21,23 @@
 @class AFNetworkPacketWrite;
 @class AFNetworkPacketRead;
 
-@protocol AFNetworkTransportControlDelegate <AFNetworkConnectionLayerControlDelegate>
-
-@end
-
-@protocol AFNetworkTransportDataDelegate <AFNetworkConnectionLayerDataDelegate>
+@protocol AFNetworkTransportDataDelegate <AFNetworkTransportLayerDataDelegate>
 
  @optional
 
 /*!
 	\brief
-	Instead of calling `-currentWriteProgress...` on a timer - which would be highly inefficient - you should implement this delegate method to be notified of write progress.
+	Instead of calling `-currentWriteProgress...` on a timer - which would be
+	highly inefficient - you should implement this delegate method to be
+	notified of write progress.
  */
 - (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSInteger)partialBytes totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite context:(void *)context;
 
 /*!
 	\brief
-	Instead of calling `-currentReadProgress...` on a timer - which would be highly inefficient - you should implement this delegate method to be notified of read progress.
+	Instead of calling `-currentReadProgress...` on a timer - which would be
+	highly inefficient - you should implement this delegate method to be
+	notified of read progress.
  
 	\param totalBytesExpectedToRead
 	Will be `NSUIntegerMax` if the packet terminator is a data pattern.
@@ -48,20 +46,20 @@
 
 @end
 
-@protocol AFNetworkTransportDelegate <AFNetworkConnectionLayerDelegate, AFNetworkTransportControlDelegate, AFNetworkTransportDataDelegate>
-
-@end
-
 /*!
 	\brief
-	Primarily an extention of the CFSocketStream API. Originally named for that purpose as 'AFSocketStream' though the name was changed so not to imply the exclusive use of SOCK_STREAM.
+	Primarily an extention of the CFSocketStream API. Originally named for that
+	purpose as 'AFSocketStream' though the name was changed so not to imply the
+	exclusive use of SOCK_STREAM.
 	
 	\details
 	This class is a mix of two of the primary patterns:
-	- Internally, it acts an adaptor between the CFSocketRef and CFStreamRef API.
-	- Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and CFStreamRef providing an asyncronous CFStreamRef like API.
+	- Internally, it acts an adaptor between the CFSocketRef and CFStreamRef
+	  API.
+	- Externally, it bridges CFHostRef and CFNetServiceRef with CFSocketRef and
+	  CFStreamRef providing an asyncronous CFStreamRef like API.
 */
-@interface AFNetworkTransport : AFNetworkLayer <AFNetworkConnectionLayer> {
+@interface AFNetworkTransport : AFNetworkLayer <AFNetworkTransportLayer> {
  @private
 	union {
 		AFNetworkServiceSignature _service;
@@ -77,7 +75,7 @@
 	NSUInteger _connectionFlags;
 }
 
-@property (assign, nonatomic) id <AFNetworkTransportDelegate> delegate;
+@property (assign, nonatomic) id <AFNetworkTransportLayerControlDelegate, AFNetworkTransportDataDelegate> delegate;
 
 /*!
 	\brief

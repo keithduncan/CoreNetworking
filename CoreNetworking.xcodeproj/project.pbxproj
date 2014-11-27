@@ -44,8 +44,6 @@
 		532298E814D5FC450097133D /* AFNetworkServiceScope+AFNetworkPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 532298E514D5FC450097133D /* AFNetworkServiceScope+AFNetworkPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		532298E914D5FC450097133D /* AFNetworkServiceScope+AFNetworkPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 532298E614D5FC450097133D /* AFNetworkServiceScope+AFNetworkPrivate.m */; };
 		532298EA14D5FC450097133D /* AFNetworkServiceScope+AFNetworkPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 532298E614D5FC450097133D /* AFNetworkServiceScope+AFNetworkPrivate.m */; };
-		5333F83C0F82CB7A00A9AF8A /* AFNetworkConnectionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5333F83A0F82CB7A00A9AF8A /* AFNetworkConnectionLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5333F83E0F82CB7A00A9AF8A /* AFNetworkConnectionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5333F83A0F82CB7A00A9AF8A /* AFNetworkConnectionLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533508260FD6FC4E004FFF97 /* AFHTTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 533508240FD6FC4E004FFF97 /* AFHTTPClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		533508270FD6FC4E004FFF97 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 533508250FD6FC4E004FFF97 /* AFHTTPClient.m */; };
 		533508280FD6FC4E004FFF97 /* AFHTTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 533508240FD6FC4E004FFF97 /* AFHTTPClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -248,7 +246,6 @@
 		532AA48A0FC206FD000FCC3F /* AFHTTPTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPTransaction.h; path = CoreNetworking/AFHTTPTransaction.h; sourceTree = SOURCE_ROOT; };
 		532AA48B0FC206FD000FCC3F /* AFHTTPTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPTransaction.m; path = CoreNetworking/AFHTTPTransaction.m; sourceTree = SOURCE_ROOT; };
 		532F73E20F0EB1D7004D6056 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		5333F83A0F82CB7A00A9AF8A /* AFNetworkConnectionLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkConnectionLayer.h; path = CoreNetworking/AFNetworkConnectionLayer.h; sourceTree = SOURCE_ROOT; };
 		533508240FD6FC4E004FFF97 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPClient.h; path = CoreNetworking/AFHTTPClient.h; sourceTree = SOURCE_ROOT; };
 		533508250FD6FC4E004FFF97 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = AFHTTPClient.m; path = CoreNetworking/AFHTTPClient.m; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		53395D5415D44597007F602C /* AFNetworkPacketClose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkPacketClose.h; path = CoreNetworking/AFNetworkPacketClose.h; sourceTree = SOURCE_ROOT; };
@@ -472,7 +469,6 @@
 			isa = PBXGroup;
 			children = (
 				535511EC0FAF4A27004F8FC5 /* AFNetworkTransportLayer.h */,
-				5333F83A0F82CB7A00A9AF8A /* AFNetworkConnectionLayer.h */,
 			);
 			name = Prototypes;
 			sourceTree = "<group>";
@@ -689,7 +685,6 @@
 				53B201560F6D7739001DC8E7 /* AFNetworkPacketWrite.h in Headers */,
 				53B201580F6D7739001DC8E7 /* AFNetworkSocket.h in Headers */,
 				53A028E80F6E8F41004F5414 /* AFNetwork-Types.h in Headers */,
-				5333F83C0F82CB7A00A9AF8A /* AFNetworkConnectionLayer.h in Headers */,
 				53FE19030F856A3200980D32 /* AFNetworkPacketQueue.h in Headers */,
 				535511ED0FAF4A27004F8FC5 /* AFNetworkTransportLayer.h in Headers */,
 				535511F10FAF4A34004F8FC5 /* AFNetworkTransport.h in Headers */,
@@ -746,7 +741,6 @@
 				53B2015E0F6D7739001DC8E7 /* AFNetworkPacketWrite.h in Headers */,
 				53B201600F6D7739001DC8E7 /* AFNetworkSocket.h in Headers */,
 				53A028E60F6E8F41004F5414 /* AFNetwork-Types.h in Headers */,
-				5333F83E0F82CB7A00A9AF8A /* AFNetworkConnectionLayer.h in Headers */,
 				53FE19050F856A3200980D32 /* AFNetworkPacketQueue.h in Headers */,
 				535511EE0FAF4A27004F8FC5 /* AFNetworkTransportLayer.h in Headers */,
 				535511F30FAF4A34004F8FC5 /* AFNetworkTransport.h in Headers */,
@@ -843,7 +837,7 @@
 			name = "CoreNetworking Tests";
 			productName = "CoreNetworking Tests";
 			productReference = 53D4568116209630006FAD65 /* CoreNetworking Tests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 

@@ -23,10 +23,13 @@
 
 /*!
 	\brief
-	An `AFNetworkTransportLayer` object should encapsulate data (as defined in IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122>
+	An `AFNetworkTransportLayer` object should encapsulate data (as defined in
+	IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122>).
 	
 	\details
-	A layer should pass data to it's superclass for further processing, the top-level superclass will pass the data to the lower layer. This creates a two dimensional chain allowing for maximum flexiblity.
+	A layer should pass data to it's superclass for further processing, the
+	top-level superclass will pass the data to the lower layer. This creates a
+	two dimensional chain allowing for maximum flexiblity.
 */
 @protocol AFNetworkTransportLayer <NSObject>
 
@@ -56,43 +59,72 @@
 /*!
 	\brief
 	The delegate callbacks will convey success or failure.
- 
-	\details
-	This is a good candidate for a block callback argument, allowing for asynchronous -open methods and eliminating the delegate callbacks.
  */
 - (void)open;
 
 /*!
 	\return
-	YES if the layer is currently open.
+	YES if the layer is currently open, NO otherwise.
  */
 - (BOOL)isOpen;
 
 /*!
 	\details
-	A layer may elect to remain open, in which case you will not receive the -networkLayerDidClose: delegate callback until it actually closes.
+	A layer may elect to remain open, in which case you will not receive the
+	-networkLayerDidClose: delegate callback until it actually closes.
  */
 - (void)close;
 
 /*!
 	\brief
-	Many layers are linear non-recurrant in nature, like a TCP stream; once closed it cannot be reopened.
+	Many layers are linear non-recurrant in nature, like a TCP stream; once
+	closed it cannot be reopened.
  */
 - (BOOL)isClosed;
 
+ @required
+
 /*!
 	\brief
-	`buffer` is an `NSData` object to write over the file descriptor
-	Accepts an `AFNetworkPacket` subclass too, the tag and timeout of the packet will be set with the values you provide.
+	Schedule a write to the network stack.
+	
+	\param buffer
+	Can be an `NSData` or <AFNetworkPacketWriting> conforming object.
+
+	The timeout and context of the packet will be set to the given values.
  */
 - (void)performWrite:(id)buffer withTimeout:(NSTimeInterval)duration context:(void *)context;
 
 /*!
+	\brief
+	Schedule a read from the network stack.
+
 	\param terminator
-	Provide a pattern to match for the delegate to be called. This can be an `NSNumber` object for length or an `NSData` object for bit pattern.
-	Accepts an `AFNetworkPacket` subclass too, the tag and timeout of the packet will be set with the values you provide.
+	Provide a pattern to match for the delegate to be called. This can be an
+	`NSNumber` object for length or an `NSData` object for bit pattern.
+
+	Accepts an <AFNetworkPacketReading> conforming object too, the timeout and
+	context will be set to the given values.
  */
 - (void)performRead:(id)terminator withTimeout:(NSTimeInterval)duration context:(void *)context;
+
+ @optional
+
+/*!
+	\brief
+	Pass a dictionary with the SSL keys specified in CFSocketStream.h
+
+	\details
+	Any immediate error is returned by reference, if negotiation fails the error
+	will be delivered by delegate callback.
+ */
+- (BOOL)startTLS:(NSDictionary *)options error:(NSError **)errorRef;
+
+/*!
+	\brief
+	Determine if SSL/TLS has been started on the connection.
+ */
+- (BOOL)isSecure;
 
 @end
 

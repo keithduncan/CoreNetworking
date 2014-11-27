@@ -10,8 +10,6 @@
 
 #import "CoreNetworking/AFNetworkLayer.h"
 
-#import "CoreNetworking/AFNetworkConnectionLayer.h"
-
 #import "CoreNetworking/AFNetwork-Macros.h"
 
 @class AFNetworkSocket;
@@ -44,7 +42,8 @@
 
 /*!
 	\brief
-	Creates more `AFNetworkSocket` objects upon revieving inbound connections or datagrams.
+	Creates more `AFNetworkSocket` objects upon revieving inbound connections or
+	datagrams.
  */
 @interface AFNetworkSocket : AFNetworkLayer {
  @package
@@ -68,33 +67,40 @@
 
 /*!
 	\brief
-	Host Initialiser.
-	`AFNetworkServer` uses this method for the addresses passed to its open methods.
-	A socket is created with the given characteristics and the address is set/bound.
+	Host initialiser.
+
+	`AFNetworkServer` uses this method for the addresses passed to its open
+	methods.
+
+	A socket is created with the given characteristics and the address is
+	set/bound.
 	
 	\param options
 	Options are set on the socket pre-bind() when opening
-	
-	\details
-	If the socket cannot be created they return nil.
+
+	\return
+	If the socket cannot be created nil is returned.
  */
 - (id)initWithSocketSignature:(CFSocketSignature const *)signature options:(NSSet *)options;
 
 /*!
 	\brief
 	Connect initialiser.
+
 	Used to create new sockets for inbound connections or datagrams.
 	
 	\details
-	Since AFNetworkSocket doesnt actually perform any read/write operations; this method doesn't take any options.
+	Since AFNetworkSocket doesnt actually perform any read/write operations;
+	this method doesn't take any options.
+
 	This is intended to provide a socket to a higher layer.
  */
 - (id)initWithNativeHandle:(CFSocketNativeHandle)handle;
 
 /*!
 	\brief
-	SOCK_STREAM sockets will spawn additional connected layers
-	SOCK_DGRAM sockets will spwan messages
+	SOCK_STREAM sockets will spawn additional connected layers.
+	SOCK_DGRAM sockets will spwan messages.
  */
 @property (assign, nonatomic) id <AFNetworkSocketDelegate> delegate;
 
@@ -122,7 +128,9 @@
 /*!
 	\brief
 	This returns the remote socket address.
-	This is likely to be of most use when determining the reachbility of an endpoint.
+
+	This is likely to be of most use when determining the reachbility of an
+	endpoint.
  */
 @property (readonly, nonatomic) NSData *peerAddress;
 

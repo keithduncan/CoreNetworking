@@ -23,7 +23,7 @@
 
 /*!
 	\brief
-	Only the following events are forwarded before being processed internally
+	Only the following events are forwarded before being processed internally:
 	
 	- NSStreamEventOpenCompleted
 	- NSStreamEventHasBytesAvailable
@@ -60,7 +60,7 @@
 
 /*!
 	\brief
-	Asynchronously read / write data from / to an NSStream
+	Asynchronously read/write data from/to an NSStream.
  */
 @interface AFNetworkStreamQueue : NSObject {
  @private
