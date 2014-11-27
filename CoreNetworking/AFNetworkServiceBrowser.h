@@ -17,13 +17,15 @@
 
 /*!
 	\brief
-	Placeholder domain for AFNetworkServiceScope to browse for browsable domains
+	Placeholder domain for AFNetworkServiceScope to browse for browsable
+	domains.
  */
 AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainBrowsable;
 
 /*!
 	\brief
-	Placeholder domain for AFNetworkServiceScope to browse for publishable domains
+	Placeholder domain for AFNetworkServiceScope to browse for publishable
+	domains.
  */
 AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 
@@ -80,7 +82,8 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceBrowserDomainPublishable;
 	(**, Y , **) - find all name scopes with type Y in every domain
 	(X , Y , **) - find all name scopes with type Y in domain X
 	
-	The first two and last two modes are the browse operations supported by `NSNetServiceBrowser`, the others are composite searches.
+	The first two and last two modes are the browse operations supported by
+	`NSNetServiceBrowser`, the others are composite searches.
  */
 - (id)initWithServiceScope:(AFNetworkServiceScope *)serviceScope;
 

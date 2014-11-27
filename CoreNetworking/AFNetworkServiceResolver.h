@@ -33,7 +33,9 @@
 
 /*!
 	\brief
-	Can resolve (query) and monitor (long lived query) address records (A and AAAA) and ephemeral records such as TXT or NULL records, associated with an SRV record.
+	Can resolve (query) and monitor (long lived query) address records (A and
+	AAAA) and ephemeral records such as TXT or NULL records, associated with an
+	SRV record.
  */
 @interface AFNetworkServiceResolver : NSObject {
  @private
@@ -61,7 +63,8 @@
 	Designated initialiser.
 	
 	\param serviceScope
-	Must be a fully qualified scope, with no wildcard or blank values for domain, type or name.
+	Must be a fully qualified scope, with no wildcard or blank values for
+	domain, type or name.
  */
 - (id)initWithServiceScope:(AFNetworkServiceScope *)serviceScope;
 
@@ -102,10 +105,15 @@
 /*!
 	\brief
 	Applications are unlikely to need to resolve to raw addresses.
-	Instead, applications should create a CFStream with a CFNetService, CFStream will resolve and try the best addresses in a system defined order.
-	Only use this method if you absolutely need to lookup the remote socket addresses youself.
+
+	Instead, applications should create a CFStream with a CFNetService, CFStream
+	will resolve and try the best addresses in a system defined order.
+
+	Only use this method if you absolutely need to lookup the remote socket
+	addresses youself.
  */
 - (void)resolveWithTimeout:(NSTimeInterval)timeout;
+
 /*!
 	\brief
 	Accumulated discovered addresses, will return nil until the first address is resolved.

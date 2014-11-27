@@ -13,13 +13,17 @@
 /*!
 	\brief
 	Wildcard field value, used to initialise a scope for browsing.
-	Browse scopes must have at least one wildcard value, publish and resolve scopes must not have any wildcard values.
+
+	\details
+	Browse scopes must have at least one wildcard value, publish and resolve
+	scopes must not have any wildcard values.
  */
 AFNETWORK_EXTERN NSString *const AFNetworkServiceScopeWildcard;
 
 /*!
 	\brief
-	Scope can include a wildcard to define a area of interest, or fully specify an individual service.
+	Scope can include a wildcard to define a area of interest, or fully specify
+	an individual service.
 	
 	This is the primitive type for all the DNS-SD integration.
  */
@@ -32,28 +36,29 @@ AFNETWORK_EXTERN NSString *const AFNetworkServiceScopeWildcard;
 
 /*!
 	\brief
-	Designated initialiser
+	Designated initialiser.
  */
 - (id)initWithDomain:(NSString *)domain type:(NSString *)type name:(NSString *)name;
 
 extern NSString *const AFNetworkServiceScopeDomainKey;
 /*!
 	\brief
-	Domain may be the local domain, registered and queried using multicast DNS, or a wide area domain.
+	Domain may be the local domain, registered and queried using multicast DNS,
+	or a wide area domain.
  */
 @property (readonly, copy, nonatomic) NSString *domain;
 
 extern NSString *const AFNetworkServiceScopeTypeKey;
 /*!
 	\brief
-	Suitable application and network layers can be inferred from the type
+	Suitable application and network layers can be inferred from the type.
  */
 @property (readonly, copy, nonatomic) NSString *type;
 
 extern NSString *const AFNetworkServiceScopeNameKey;
 /*!
 	\brief
-	Per service identifier
+	Per service identifier.
  */
 @property (readonly, copy, nonatomic) NSString *name;
 

@@ -22,7 +22,10 @@ AFNETWORK_EXTERN NSData *AFNetworkServiceTXTRecordDataFromPropertyDictionary(NSD
 
 /*!
 	\brief
-	Convert TXT record data where the keys are ASCII strings and the values are UTF8 strings.
-	If a value isn't a UTF8 string, it isn't included in the returned dictionary.
+	Convert TXT record data where the keys are ASCII strings and the values are
+	UTF8 strings.
+
+	If a value isn't a UTF8 string, it isn't included in the returned
+	dictionary.
  */
 AFNETWORK_EXTERN NSDictionary *AFNetworkServicePropertyDictionaryFromTXTRecordData(NSData *TXTRecordData);

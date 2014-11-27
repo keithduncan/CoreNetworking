@@ -19,7 +19,9 @@
 	Allows for asynchronous DNSService API callbacks.
  
 	\details
-	This class doesn't take ownership of the DNSServiceRef it is instantiated with, it is still the client's responsibility to deallocate the DNSServiceRef once it is no longer needed.
+	This class doesn't take ownership of the DNSServiceRef it is instantiated
+	with, it is still the client's responsibility to deallocate the
+	DNSServiceRef once it is no longer needed.
 */
 @interface AFNetworkServiceSource : NSObject {
  @private
@@ -37,7 +39,8 @@
 
 /*!
 	\brief
-	Because the DNS-SD doesn't provide a reference counting mechanism, you must ensure the service remains valid for the lifetime of this object.
+	Because the DNS-SD doesn't provide a reference counting mechanism, you must
+	ensure the service remains valid for the lifetime of this object.
  */
 - (id)initWithService:(DNSServiceRef)service;
 
