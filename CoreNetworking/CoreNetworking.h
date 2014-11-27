@@ -77,7 +77,7 @@
 #import "CoreNetworking/AFHTTPServer.h"
 
 /* FTP */
-// See <http://github.com/keithduncan/camera_server>
+// See <https://github.com/keithduncan/ftp_server>
 
 /* XMPP */
 // See <http://code.google.com/p/objectivexmpp/> for implementation
@@ -85,37 +85,7 @@
 #import "CoreNetworking/AFNetworkXMLElementPacket.h"
 
 /* DNS */
-// Not Yet Implemented
-
-/* SMTP */
-// Not Yet Implemented
-
-/* AMQP */
-// Not Yet Implemented
-
-/* RTSP */
-// Not Yet Implemented
-
-/* IMAP */
-// Not Yet Implemented
-
-/* MySQL */
-// Not Yet Implemented
-
-/* PostgresSQL */
-// Not Yet Implemented
-
-/* LDAP */
-// Not Yet Implemented
-
-/* AFP */
-// Not Yet Implememted
-
-/* SVN */
-// Not Yet Implememted
-
-/* Git */
-// Not Yet Implememted
+// See <https://github.com/keithduncan/dns_server>
 
 /*
 	MIME Documents
