@@ -43,7 +43,9 @@
 	Designated Initialiser.
 	
 	\details
-	For the moment this is designed to be used for an inbound network communication initialisation chain, outbound initialisers have a more specific signatures.
+	For the moment this is designed to be used for an inbound network
+	communication initialisation chain, outbound initialisers have a more
+	specific signatures.
  */
 - (id)initWithLowerLayer:(id <AFNetworkTransportLayer>)layer;
 
@@ -137,7 +139,8 @@
 
 /*!
 	\brief
-	The negative case handling methods are required, otherwise you can assume the connection succeeds.
+	The negative case handling methods are required, otherwise you can assume
+	the connection succeeds.
  */
 @protocol AFNetworkTransportLayerControlDelegate <NSObject>
 
