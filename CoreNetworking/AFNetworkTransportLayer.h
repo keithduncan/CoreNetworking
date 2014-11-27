@@ -15,7 +15,6 @@
  *	Transport + Internetwork
  */
 
-@protocol AFNetworkTransportLayerHostDelegate;
 @protocol AFNetworkTransportLayerControlDelegate;
 @protocol AFNetworkTransportLayerDataDelegate;
 

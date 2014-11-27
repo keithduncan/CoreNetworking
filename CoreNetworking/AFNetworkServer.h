@@ -61,7 +61,7 @@
 	After instantiating the server you can use one of the convenience methods to
 	open socket(s).
  */
-@interface AFNetworkServer : NSObject <AFNetworkServerDelegate> {
+@interface AFNetworkServer : NSObject <AFNetworkTransportLayerControlDelegate, AFNetworkTransportLayerDataDelegate> {
  @private
 	AFNetworkSchedule *_schedule;
 	

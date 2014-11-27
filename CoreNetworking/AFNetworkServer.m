@@ -352,7 +352,7 @@
 	[layer close];
 }
 
-- (void)configureLayer:(id)layer {
+- (void)configureLayer:(id <AFNetworkTransportLayer>)layer {
 	[self _scheduleLayer:layer];
 	[layer setDelegate:self];
 }
