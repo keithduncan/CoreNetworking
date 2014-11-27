@@ -22,14 +22,10 @@
 
 + (AFNetworkInternetTransportSignature)transportSignatureForScheme:(NSString *)scheme {
 	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"%s, cannot provide an AFNetworkInternetTransportSignature for scheme (%@)", __PRETTY_FUNCTION__, scheme] userInfo:nil];
-	
-	AFNetworkInternetTransportSignature signature = {};
-	return signature;
 }
 
 + (NSString *)serviceDiscoveryType {
 	@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"%s, connot provide a service discovery type", __PRETTY_FUNCTION__] userInfo:nil];
-	return nil;
 }
 
 - (id)initWithURL:(NSURL *)endpoint {
