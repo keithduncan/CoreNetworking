@@ -22,8 +22,8 @@
 
 /*!
 	\brief
-	An `AFNetworkTransportLayer` object should encapsulate data (as defined in
-	IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122>).
+	The transport layer defines read and write queuing primitives, and transport
+	layer security methods.
 */
 @protocol AFNetworkTransportLayer <NSObject>
 
