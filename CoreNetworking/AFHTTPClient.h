@@ -29,9 +29,10 @@
 
 /*!
 	\brief
-	Adds request/response transaction tracking to AFHTTPConnection raw messaging
+	Adds request/response transaction tracking on top of AFHTTPConnection raw
+	messaging.
  */
-@interface AFHTTPClient : AFHTTPConnection {
+@interface AFHTTPClient : AFNetworkLayer {
  @private
 	NSString *_userAgent;
 	
@@ -49,25 +50,33 @@
 
 /*
 	Transaction Methods
-		These automatically enqueue reading a response.
+	
+	These automatically enqueue reading a response.
  */
 
 /*!
 	\brief
-	Enqueues a transaction, which pairs a request with it's response. The request may not be issued immediately.
+	Enqueues a transaction, which pairs a request with it's response. The
+	request may not be issued immediately.
  */
 - (void)performRequest:(NSString *)HTTPMethod onResource:(NSString *)resource withHeaders:(NSDictionary *)headers withBody:(NSData *)body context:(void *)context;
 
 /*!
 	\brief
-	Enqueues a transaction, which pairs a request with it's response. The request may not be issued immediately.
-	May assist you in moving to a request/response model from the URL loading architecture in Cocoa.
-	
+	Enqueues a transaction, which pairs a request with it's response. The
+	request may not be issued immediately.
+
+	May assist you in moving to a request/response model from the URL loading
+	architecture in Cocoa.
+
 	\details
-	This is likely to be most useful where you already have a web service context, which vends preconstructed requests.
-	
+	This is likely to be most useful where you already have a web service
+	context, which vends preconstructed requests.
+
 	\param request
-	Acceptable `NSURLRequest` objects are "HTTP" scheme with an `HTTPBodyData`, or `HTTPBodyFile`.
+	Acceptable `NSURLRequest` objects are "HTTP" scheme with an `HTTPBodyData`,
+	or `HTTPBodyFile`.
+
 	If passed an NSURLRequest with an `HTTPBodyStream`, an exception is thrown.
  */
 - (void)performRequest:(NSURLRequest *)request context:(void *)context;

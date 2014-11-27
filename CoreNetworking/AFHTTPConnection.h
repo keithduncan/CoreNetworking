@@ -26,12 +26,10 @@
 
 /*!
 	\brief
-	This class is indended to sit on top of AFNetworkTransport and provides HTTP messaging semantics.
+	Provides HTTP request/response messaging semantics.
 	
 	\details
-	It handles each request in series; and includes automatic behaviour for serveral responses:
-	
-	- 
+	It handles each request in series.
  */
 @interface AFHTTPConnection : AFNetworkConnection {
  @private
@@ -49,7 +47,8 @@
 	These headers will be added to each request/response written to the connection.
  
 	\details
-	A client could add a 'User-Agent' header, likewise a server could add a 'Server' header.
+	A client could add a 'User-Agent' header, likewise a server could add a
+	'Server' header.
  */
 @property (readonly, retain, nonatomic) NSMutableDictionary *messageHeaders;
 
@@ -78,13 +77,15 @@
 
 /*!
 	\brief
-	Allows for raw HTTP messaging without starting the internal request/response matching.
+	Allows for raw HTTP messaging without starting the internal request/response
+	matching.
  */
 - (void)performRequestMessage:(CFHTTPMessageRef)message;
 
 /*!
 	\brief
-	This enqueues a request reading packet, and is useful for servers and raw messaging.
+	This enqueues a request reading packet, and is useful for servers and raw
+	messaging.
  */
 - (void)readRequest;
 
@@ -104,12 +105,5 @@
 	This enqueues a response reading packet, and is useful for raw messaging.
  */
 - (void)readResponse;
-
-/*
-	Lower layer overrides
- */
-
-- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didWrite:(id)data context:(void *)context;
-- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didRead:(id)data context:(void *)context;
 
 @end

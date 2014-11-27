@@ -14,14 +14,6 @@
 
 /*!
 	\brief
-	Wrapper protocol.
- */
-@protocol AFNetworkConnectionDelegate
-
-@end
-
-/*!
-	\brief
 	Your subclass should encapsulate Application Layer data (as defined in
 	IETF-RFC-1122 <http://tools.ietf.org/html/rfc1122> and pass it to the
 	superclass for further processing.
@@ -76,8 +68,6 @@
 	AFNetworkTransportServiceSignature.
  */
 - (id)initWithService:(AFNetworkServiceScope *)serviceScope;
-
-@property (assign, nonatomic) id <AFNetworkConnectionDelegate> delegate;
 
 /*!
 	\brief
