@@ -21,6 +21,10 @@
 
 @end
 
+/*
+	\brief
+	NAT portmapping client
+ */
 @interface AFNetworkPortMapper : NSObject
 
 - (id)initWithSocketSignature:(AFNetworkSocketSignature const)socketSignature localAddress:(NSData *)localAddress suggestedExternalAddress:(NSData *)suggestedExternalAddress;

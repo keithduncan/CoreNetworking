@@ -300,8 +300,8 @@ typedef AFNETWORK_ENUM(NSUInteger, AFNetworkInternetSocketScope) {
 	the server environment using `scheduler`.
 	
 	\details
-	Preferred set up point over `-networkLayer:didOpen:` which is messaged by the
-	listen layer sockets too.
+	Preferred set up point over `-networkLayer:didOpen:` which is messaged by
+	the listen layer sockets too.
 	
 	\param layer
 	An instance of your server `clientClass`
