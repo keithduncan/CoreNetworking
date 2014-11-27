@@ -16,7 +16,6 @@
 
 #import "AFNetworkSocket.h"
 #import "AFNetworkTransport.h"
-#import "AFNetworkConnection.h"
 #import "AFNetworkSchedule.h"
 #import "AFNetworkPortMapper.h"
 
@@ -27,7 +26,7 @@
 #import "AFNetwork-Constants.h"
 #import "AFNetwork-Macros.h"
 
-@interface AFNetworkServer () <AFNetworkSocketDelegate, AFNetworkConnectionLayerControlDelegate>
+@interface AFNetworkServer () <AFNetworkSocketDelegate, AFNetworkTransportLayerControlDelegate>
 @property (retain, nonatomic) NSMutableSet *listeners;
 @property (retain, nonatomic) NSArray *encapsulationClasses;
 @property (retain, nonatomic) NSMutableSet *connections;
@@ -335,7 +334,7 @@
 	//nop
 }
 
-- (void)networkLayerDidClose:(id <AFNetworkConnectionLayer>)layer {
+- (void)networkLayerDidClose:(id <AFNetworkTransportLayer>)layer {
 	if ([self.listeners containsObject:layer]) {
 		[self _unscheduleLayer:layer];
 		[self.listeners removeObject:layer];
@@ -349,7 +348,7 @@
 	}
 }
 
-- (void)networkLayer:(id <AFNetworkConnectionLayer>)layer didReceiveError:(NSError *)error {
+- (void)networkLayer:(id <AFNetworkTransportLayer>)layer didReceiveError:(NSError *)error {
 	[layer close];
 }
 

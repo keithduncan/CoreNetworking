@@ -13,7 +13,6 @@
 #endif /* TARGET_OS_IPHONE */
 
 #import "CoreNetworking/AFNetworkConnection.h"
-#import "CoreNetworking/AFNetworkConnectionLayer.h"
 
 @class AFHTTPConnection;
 

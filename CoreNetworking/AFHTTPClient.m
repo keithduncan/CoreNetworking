@@ -249,7 +249,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	[self.transactionQueue tryDequeue];
 }
 
-- (void)networkLayerDidOpen:(id <AFNetworkConnectionLayer>)layer {
+- (void)networkLayerDidOpen:(id <AFNetworkTransportLayer>)layer {
 	if ([self _shouldStartTLS]) {
 		/*
 			Note
@@ -277,7 +277,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 	}
 }
 
-- (void)networkLayerDidClose:(id <AFNetworkConnectionLayer>)layer {
+- (void)networkLayerDidClose:(id <AFNetworkTransportLayer>)layer {
 	if (self.transactionQueue.count > 0) {
 		[self.transactionQueue emptyQueue];
 		
@@ -294,7 +294,7 @@ static NSString *_AFHTTPClientUserAgent = nil;
 		.receiver = self,
 		.super_class = [self superclass],
 	};
-	((void (*)(struct objc_super *, SEL, id <AFNetworkConnectionLayer>))objc_msgSendSuper)(&target, @selector(networkLayerDidClose:), layer);
+	((void (*)(struct objc_super *, SEL, id <AFNetworkTransportLayer>))objc_msgSendSuper)(&target, @selector(networkLayerDidClose:), layer);
 }
 
 - (void)networkTransport:(AFNetworkTransport *)transport didWritePartialDataOfLength:(NSInteger)partialLength totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite context:(void *)context {
