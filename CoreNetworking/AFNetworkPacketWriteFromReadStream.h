@@ -14,10 +14,12 @@
 
 /*!
 	\brief
-	Acts as an adaptor between streams, allowing you to write a large file out over the wire.
+	Acts as an adaptor between streams, allowing you to write a large file out
+	over the wire.
 	
 	\details
-	Currently, all read stream operations are blocking, this restricts practical usage to file streams.
+	Currently, all read stream operations are blocking, this restricts practical
+	usage to file streams.
  */
 @interface AFNetworkPacketWriteFromReadStream : AFNetworkPacket <AFNetworkPacketWriting> {
  @private
@@ -43,7 +45,7 @@
 
 /*!
 	\brief
-	Designated Initialiser.
+	Designated initialiser.
 	
 	\param totalBytesToWrite
 	Pass -1 to read until the readStream is at end.
@@ -57,7 +59,8 @@
 
 /*!
 	\brief
-	Bytes read from the stream are transformed using this filter before being written to the output stream.
+	Bytes read from the stream are transformed using this filter before being
+	written to the output stream.
  */
 @property (copy, nonatomic) NSData * (^readStreamFilter)(NSData *);
 

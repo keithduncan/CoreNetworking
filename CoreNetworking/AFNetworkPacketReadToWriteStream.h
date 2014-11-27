@@ -14,10 +14,12 @@
 
 /*!
 	\brief
-	Acts as an adaptor between streams, allowing you to read a large file over the wire to disk.
+	Acts as an adaptor between streams, allowing you to read a large file over
+	the wire to disk.
 	
 	\details
-	Currently, all write stream operations are blocking, this restricts practical usage to file streams.
+	Currently, all write stream operations are blocking, this restricts
+	practical usage to file streams.
  */
 @interface AFNetworkPacketReadToWriteStream : AFNetworkPacket <AFNetworkPacketReading> {
  @private
@@ -33,7 +35,7 @@
 
 /*!
 	\brief
-	Designated Initialiser.
+	Designated initialiser.
  
 	\param writeStream
 	The stream should not be open, an exception is thrown if it is.
@@ -42,7 +44,8 @@
 	Pass -1 to read until the read stream is at end.
 	
 	\details
-	writeStream is opened when this packet starts and is closed when this packet finishes
+	writeStream is opened when this packet starts and is closed when this packet
+	finishes.
  */
 - (id)initWithTotalBytesToRead:(NSInteger)totalBytesToRead writeStream:(NSOutputStream *)writeStream;
 

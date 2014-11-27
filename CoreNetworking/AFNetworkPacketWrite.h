@@ -22,7 +22,7 @@
 
 /*!
 	\brief
-	Designated Initialiser.
+	Designated initialiser.
  */
 - (id)initWithData:(NSData *)buffer;
 

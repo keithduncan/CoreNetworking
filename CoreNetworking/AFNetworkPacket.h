@@ -15,7 +15,8 @@
 	Posted when the packet completed (successfully or otherwise).
 	
 	\details
-	If the packet is completing because an error was encountered, return it under the `AFPacketErrorKey` key.
+	If the packet is completing because an error was encountered, return it
+	under the `AFPacketErrorKey` key.
  */
 AFNETWORK_EXTERN NSString *const AFNetworkPacketDidCompleteNotificationName;
 
@@ -23,7 +24,8 @@ AFNETWORK_EXTERN NSString *const AFNetworkPacketDidCompleteNotificationName;
 
 /*!
 	\brief
-	This is an abstract packet superclass. It provides simple functionality such as tagging and timeouts.
+	This is an abstract packet superclass. It provides simple functionality such
+	as timeout and context.
  */
 @interface AFNetworkPacket : NSObject {
  @package
@@ -56,13 +58,17 @@ AFNETWORK_EXTERN NSString *const AFNetworkPacketDidCompleteNotificationName;
 
 /*!
 	\brief
-	Timeouts are enabled by default, disabling the timeout prevents the idle timer from starting.
+	Timeouts are enabled by default, disabling the timeout prevents the idle
+	timer from starting.
  */
 - (void)disableIdleTimeout;
 /*!
 	\brief
-	Balances a previous `disbleTimeout` message, when the disabled count reaches zero, an idle timer is started.
-	Must not be called more than `disableIdleTimeout`, an exception is thrown if the disable count becomes negative.
+	Balances a previous `disbleTimeout` message, when the disabled count reaches
+	zero, an idle timer is started.
+
+	Must not be called more than `disableIdleTimeout`, an exception is thrown if
+	the disable count becomes negative.
  */
 - (void)enableIdleTimeout;
 
@@ -90,10 +96,12 @@ AFNETWORK_EXTERN NSString *const AFNetworkPacketDidCompleteNotificationName;
 
 /*!
 	\brief
-	Called to perform the read once the stream has signalled that it has bytes available.
+	Called to perform the read once the stream has signalled that it has bytes
+	available.
 	
 	\return
-	The number of bytes read, if greater than zero this is returned as part of the packet progress notification.
+	The number of bytes read, if greater than zero this is returned as part of
+	the packet progress notification.
  */
 - (NSInteger)performRead:(NSInputStream *)readStream;
 
@@ -107,13 +115,16 @@ AFNETWORK_EXTERN NSString *const AFNetworkPacketDidCompleteNotificationName;
 
 /*!
 	\brief
-	Called to perform the write once the stream has signalled that it can accept bytes.
+	Called to perform the write once the stream has signalled that it can accept
+	bytes.
 	
 	\details
-	If a value of `<0` is returned, an error must also have been posted via the `AFNetworkPacketDidCompleteNotificationName` notification.
+	If a value of `<0` is returned, an error must also have been posted via the
+	`AFNetworkPacketDidCompleteNotificationName` notification.
 	
 	\return
-	The number of bytes written, if greater than zero this is returned as part of the packet progress notification.
+	The number of bytes written, if greater than zero this is returned as part
+	of the packet progress notification.
  */
 - (NSInteger)performWrite:(NSOutputStream *)writeStream;
 
