@@ -12,7 +12,7 @@
 
 /*!
 	\brief
-	Schedule environment for run loop and dispatch
+	Schedule environment for run loop and dispatch.
  */
 @interface AFNetworkSchedule : NSObject {
  @public
