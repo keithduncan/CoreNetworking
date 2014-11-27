@@ -129,7 +129,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	return self;
 }
 
-- (id <AFNetworkConnectionLayer>)_initWithHostSignature:(AFNetworkHostSignature *)signature {
+- (id <AFNetworkTransportLayer>)_initWithHostSignature:(AFNetworkHostSignature *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
@@ -163,7 +163,7 @@ typedef AFNETWORK_OPTIONS(NSUInteger, AFNetworkTransportConnectionFlags) {
 	return self;
 }
 
-- (id <AFNetworkConnectionLayer>)_initWithServiceSignature:(AFNetworkServiceSignature *)signature {
+- (id <AFNetworkTransportLayer>)_initWithServiceSignature:(AFNetworkServiceSignature *)signature {
 	self = [self init];
 	if (self == nil) return nil;
 	
